@@ -1,4 +1,5 @@
 .env
-data/*
-cmd/*
+data/config.json
+data/secret.json
+data/streamer.json
 logs/*

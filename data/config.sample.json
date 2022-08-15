@@ -1,0 +1,29 @@
+{
+    "countdown": "300000",
+    "version": "v1.1-devbuild",
+    "debug": false,
+    "waiting": true,
+    "channel": {
+        "debug": "",
+        "announce": ""
+    },
+    "role": {
+        "announce": "",
+        "community": "",
+        "onlive": ""
+    },
+    "bang": "!",
+    "emoji": {
+        "poll": "",
+        "live": ""
+    },
+    "api": {
+        "twitch_stream": "https://api.twitch.tv/helix/streams?user_id=",
+        "twitch_oauth": "https://id.twitch.tv/oauth2/token?client_id="
+    },
+    "app_name": {
+        "worker": "CMDS_WORKER",
+        "twitch":"MOD_TWITCH",
+        "cmds":"CMDS_REGISTER"
+    }
+}
