@@ -1,10 +1,9 @@
 {
     "dependencies": {
       "discord.js": "^14.2.0",
-      "dotenv": "^16.0.1",
-      "got": "^12.1.0",
       "xmlhttprequest": "^1.8.0",
-      "@discordjs/rest": "^1.0.1"
+      "@discordjs/rest": "^1.0.1",
+      "fs": "^0.0.1-security"
     }
   }
   
