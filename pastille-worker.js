@@ -14,10 +14,6 @@ function fc_dateReturn(ajd) {
 	if(ajd.getMinutes() < 10) { ret += `0${ajd.getMinutes()}:`; } else { ret += `${ajd.getMinutes()}:`; }
 	if(ajd.getSeconds() < 10) { ret += `0${ajd.getSeconds()}`; } else { ret += `${ajd.getSeconds()}`; }
 
-	if(ajd.getMilliseconds() < 10 && ajd.getMilliseconds() < 100) { ret += `.00${ajd.getMilliseconds()}`; }
-	else if(ajd.getMilliseconds() > 10 && ajd.getMilliseconds() < 100) { ret += `.0${ajd.getMilliseconds()}`; }
-	else { ret += `.${ajd.getMilliseconds()}`; }
-
 	return ret;
 }
 function fc_logger(txt, timed = true) {
@@ -46,6 +42,23 @@ function fc_startlog() {
   fc_logger(`\x1b[43m\x1b[30m END VAR SETTINGS \x1b[0m `, false);
   fc_logger(`is initialized at \x1b[34m${fc_dateReturn(new Date())}\x1b[0m`, false);
 	fc_logger(`\x1b[42m\x1b[30m ${config_settings.app_name.worker} [${config_settings.version}] INITIALIZED \x1b[0m `, false);
+}
+function fc_booter() {
+	let debug = client.channels.cache.find(channel => channel.name === config_settings.channel.debug);
+
+	let bootEmbed = new EmbedBuilder()
+                            .setColor('#5865f2')
+                            .setDescription(`${config_settings.app_name.worker} as full operate at ${fc_dateReturn(new Date())}`)
+                            .addFields(
+                              { name: 'Date starting', value: fc_dateReturn(new Date()), inline: true },
+                              { name: 'Debug', value: config_settings.debug.toString(), inline: true },
+                              { name: 'Version', value: config_settings.version.toString(), inline: true }
+                            )
+                            .setTimestamp()
+                            .setFooter({ text: `Version ${config_settings.version}`, });
+	debug.send({ embeds: [bootEmbed] });
+
+  fc_startlog();
 }
 
 client.on('interactionCreate', async interaction => {
@@ -84,5 +97,5 @@ client.on('interactionCreate', async interaction => {
   }
 });
 
-client.on('ready', () => { fc_startlog(); });
+client.on('ready', () => { fc_booter(); });
 client.login(secret_settings.BOT_TOKEN);

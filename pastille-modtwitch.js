@@ -30,10 +30,6 @@ function fc_dateReturn(ajd) {
 	if(ajd.getMinutes() < 10) { ret += `0${ajd.getMinutes()}:`; } else { ret += `${ajd.getMinutes()}:`; }
 	if(ajd.getSeconds() < 10) { ret += `0${ajd.getSeconds()}`; } else { ret += `${ajd.getSeconds()}`; }
 
-	if(ajd.getMilliseconds() < 10 && ajd.getMilliseconds() < 100) { ret += `.00${ajd.getMilliseconds()}`; }
-	else if(ajd.getMilliseconds() > 10 && ajd.getMilliseconds() < 100) { ret += `.0${ajd.getMilliseconds()}`; }
-	else { ret += `.${ajd.getMilliseconds()}`; }
-
 	return ret;
 }
 function fc_logger(txt, timed = true) {
@@ -127,21 +123,23 @@ function fc_isOnLive(data, settings) {
 
 function fc_booter() {
 	let server = client.guilds.cache.get(secret_settings.GUILD_ID);
-	let announce = client.channels.cache.find(channel => channel.name === config_settings.channel.announce)
-	let debug = client.channels.cache.find(channel => channel.name === config_settings.channel.debug)
+	let announce = client.channels.cache.find(channel => channel.name === config_settings.channel.announce);
+	let debug = client.channels.cache.find(channel => channel.name === config_settings.channel.debug);
 	let every = server.roles.cache.find(role => role.name === '@everyone');
 
 	let bootEmbed = new EmbedBuilder()
                             .setColor('#5865f2')
-                            .setTitle('mod_twitch as initialized')
-                            .setDescription('mod_twitch[live_notif_mod] as full operate at ' + fc_dateReturn(new Date()))
+                            .setDescription(`${config_settings.app_name.twitch}`)
                             .addFields(
-                                { name: 'Debug', value: config_settings.debug.toString() },
-                                { name: 'Announce channel', value: announce.toString() },
-                                { name: 'Announce role', value: '<@&' + config_settings.role.announce.toString() + '>' }
+                                { name: 'Date starting', value: fc_dateReturn(new Date()), inline: true },
+                                { name: 'Debug', value: config_settings.debug.toString(), inline: true },
+                                { name: 'Version', value: config_settings.version.toString(), inline: true },
+								{ name: '\u200b', value: '\u200b', inline: false },
+                                { name: 'Announce channel', value: announce.toString(), inline: true },
+                                { name: 'Announce role', value: '<@&' + config_settings.role.announce.toString() + '>', inline: true }
                             )
                             .setTimestamp()
-                            .setFooter({ text: '— mod_twitch ' + config_settings.version.toString() });
+                            .setFooter({ text: `Version ${config_settings.version}`, });
 	debug.send({ embeds: [bootEmbed] });
     fc_startlog();
 
