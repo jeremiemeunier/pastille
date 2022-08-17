@@ -44,7 +44,7 @@ To create your twitch app : [Twitch Developers](https://dev.twitch.tv/console/ap
 ```json
 {
     "countdown": WAITING_TIME_IN_MS,
-    "version": "v1.1-devbuild",
+    "version": "1.1.dev",
     "debug": false,
     "waiting": true,
     "channel": {
