@@ -48,7 +48,7 @@ function fc_booter() {
 
 	let bootEmbed = new EmbedBuilder()
                             .setColor('#5865f2')
-                            .setDescription(`${config_settings.app_name.worker} as full operate at ${fc_dateReturn(new Date())}`)
+                            .setDescription(`${config_settings.app_name.worker}`)
                             .addFields(
                               { name: 'Date starting', value: fc_dateReturn(new Date()), inline: true },
                               { name: 'Debug', value: config_settings.debug.toString(), inline: true },
