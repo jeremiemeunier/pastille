@@ -45,7 +45,6 @@ function fc_startlog() {
 }
 function fc_booter() {
 	let debug = client.channels.cache.find(channel => channel.name === config_settings.channel.debug);
-
 	let bootEmbed = new EmbedBuilder()
                             .setColor('#5865f2')
                             .setDescription(`${config_settings.app_name.worker}`)
@@ -57,7 +56,6 @@ function fc_booter() {
                             .setTimestamp()
                             .setFooter({ text: `Version ${config_settings.version}`, });
 	debug.send({ embeds: [bootEmbed] });
-
   fc_startlog();
 }
 
