@@ -10,7 +10,7 @@ const commands = [
         options: [
             {
                 name: 'list',
-                description: 'Liste l\'ensemble des rôle disponible avec cette commande',
+                description: 'Liste l\'ensemble des rôle disponibles avec cette commande',
                 type: 1,
             },
             {
@@ -35,20 +35,20 @@ const commands = [
         ]
     },
     {
-      "name": "poll",
-      "description": "Crée un sondage",
-      "options": [
+      name: "poll",
+      description: "Crée un sondage",
+      options: [
         {
-          "name": "question",
-          "description": "Quelle est la question ?",
-          "type": 3,
-          "required": true
+          name: "question",
+          description: "Quelle est la question ?",
+          type: 3,
+          required: true
         },
         {
-          "name": "response",
-          "description": "Quelles sont les réponses (maximum 5) ? (Il faudra séparer les réponses possible par un \";\")",
-          "type": 3,
-          "required": true
+          name: "response",
+          description: "Quelles sont les réponses (maximum 5) ? (Il faudra séparer les réponses possible par un \";\")",
+          type: 3,
+          required: true
         }
       ]
     }
