@@ -101,9 +101,9 @@ function fc_isOnLive(data, settings) {
                             let live_button = new ActionRowBuilder()
                                                         .addComponents(
                                                             new ButtonBuilder()
-                                                                    .setLabel('Rejoindre en live')
-                                                                    .setStyle(ButtonStyle.Link)
-                                                                    .setURL(`https://twitch.tv/${data.twitch_name.toString()}`)
+                                                                .setLabel('Rejoindre en live')
+                                                                .setStyle(ButtonStyle.Link)
+                                                                .setURL(`https://twitch.tv/${data.twitch_name.toString()}`)
                                                         );
                             let live_txt = `Hey <@&${config_settings.role.announce.toString()}> ! **${data.twitch_name.toString()}** est actuellement en live. Il stream : **${_API_data_response.title}** sur **${_API_data_response.game_name}**`;
                             let msg = settings.announce.send({ content: live_txt, components: [live_button] });
