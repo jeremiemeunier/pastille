@@ -9,10 +9,10 @@ It's a bot. An explosive bot named Pastille but only for an discord !
   <br>
   <p>
     Dependencies<br>
-    <a href="https://www.npmjs.com/package/discord.js"><img alt="npm" src="https://img.shields.io/npm/v/discord.js?label=discord.js&style=flat-square"></a>
-    <a href="https://www.npmjs.com/package/xmlhttprequest"><img alt="npm" src="https://img.shields.io/npm/v/xmlhttprequest?label=xmlhttprequest&style=flat-square"></a>
-    <a href="https://www.npmjs.com/package/@discordjs/rest"><img alt="npm" src="https://img.shields.io/npm/v/@discordjs/rest?label=@discordjs/rest&style=flat-square"></a>
-    <a href="https://www.npmjs.com/package/fs"><img alt="npm" src="https://img.shields.io/npm/v/fs?label=fs&style=flat-square"></a>
+    <a href="https://www.npmjs.com/package/discord.js"><img alt="npm" src="https://img.shields.io/npm/v/discord.js?label=discord.js"></a>
+    <a href="https://www.npmjs.com/package/xmlhttprequest"><img alt="npm" src="https://img.shields.io/npm/v/xmlhttprequest?label=xmlhttprequest"></a>
+    <a href="https://www.npmjs.com/package/@discordjs/rest"><img alt="npm" src="https://img.shields.io/npm/v/@discordjs/rest?label=@discordjs/rest"></a>
+    <a href="https://www.npmjs.com/package/fs"><img alt="npm" src="https://img.shields.io/npm/v/fs?label=fs"></a>
   </p>
 </div>
 
