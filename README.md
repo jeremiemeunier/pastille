@@ -77,10 +77,16 @@ To create your twitch app : [Twitch Developers](https://dev.twitch.tv/console/ap
 ```json
 {
   "0": {
-    "discord_id": ID_DISCORD,
-    "discord_name": DISCORD_NAME,
-    "twitch_id": ID_TWITCH,
-    "twitch_name": TWITCH_NAME
+    "discord": {
+      "id": ID_DISCORD,
+      "name": DISCORD_NAME,
+    },
+    "twitch": {
+      "id": ID_TWITCH,
+      "name": TWITCH_NAME
+    },
+    "progress": BOOLEAN,
+    "notif_line": STRING
   }
 }
 ```
