@@ -85,7 +85,7 @@ function fc_autoBotChecker(settings) {
 function fc_isOnLive(data, settings) {
     let _XML_data = new XMLHttpRequest();
     let _XML_auth = new XMLHttpRequest();
-    let _API_data = config_settings.api.twitch_stream + data.twitch_id;
+    let _API_data = config_settings.api.twitch_stream + data.twitch.id;
     let _API_auth = `https://id.twitch.tv/oauth2/token?client_id=${secret_settings.TWITCH_CLIENT_TOKEN}&client_secret=${secret_settings.TWITCH_SECRET_TOKEN}&grant_type=client_credentials&scope=viewing_activity_read`;
 
     _XML_auth.onreadystatechange = function(e) {
@@ -103,10 +103,12 @@ function fc_isOnLive(data, settings) {
                                                             new ButtonBuilder()
                                                                 .setLabel('Rejoindre en live')
                                                                 .setStyle(ButtonStyle.Link)
-                                                                .setURL(`https://twitch.tv/${data.twitch_name.toString()}`)
+                                                                .setURL(`https://twitch.tv/${data.twitch.name.toString()}`)
                                                         );
-                            let live_txt = `Hey <@&${config_settings.role.announce.toString()}> ! **${data.twitch_name.toString()}** est actuellement en live. Il stream : **${_API_data_response.title}** sur **${_API_data_response.game_name}**`;
-                            let msg = settings.announce.send({ content: live_txt, components: [live_button] });
+                            let live_txt = `Hey <@&${config_settings.role.announce.toString()}> ! **${data.twitch.name.toString()}** est actuellement en live.`;
+							if(notif_line != undefined) { live_txt += data.notif_line.toString(); }
+							live_txt += `Il stream : **${_API_data_response.title}** sur **${_API_data_response.game_name}**`
+                            settings.announce.send({ content: live_txt, components: [live_button] });
                         }
                     }
                 }

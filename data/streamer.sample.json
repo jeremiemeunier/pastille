@@ -1,9 +1,14 @@
 {
     "0": {
-        "discord_id": "",
-        "discord_name": "",
-        "twitch_id": "",
-        "twitch_name": "",
-        "progress": true
+        "discord": {
+            "id": DISCORD_USER_ID,
+            "name": DISCORD_USER_NAME
+        },
+        "twitch": {
+            "id": TWITCH_STREAMER_ID,
+            "name": TWITCH_STREAMER_NAME
+        },
+        "progress": true,
+        "notif_line": AN_PERSONALIZED_TEXT
     }
 }
