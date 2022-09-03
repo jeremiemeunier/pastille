@@ -2,7 +2,7 @@ const fs = require('fs');
 let secret_settings = JSON.parse(fs.readFileSync('data/secret.json'));
 let config_settings = JSON.parse(fs.readFileSync('data/config.json'));
 
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle, Client, EmbedBuilder, GatewayIntentBits } = require('discord.js');
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle, Client, EmbedBuilder, GatewayIntentBits, SelectMenuBuilder } = require('discord.js');
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
 function fc_dateReturn(ajd) {
@@ -60,10 +60,81 @@ function fc_booter() {
 }
 
 client.on('interactionCreate', async interaction => {
+  if (!interaction.isSelectMenu()) return;
+
+  if(interaction.customId === 'role_select') {
+    await interaction.update({ content: `Tu as choisi un rôle :clap: ! Je vais t'ajouter le rôle <@&${interaction.values[0]}>`, components: [] });
+        interaction.member.roles.add(`${interaction.values[0]}`);
+  }
+  else if(interaction.customId === 'notif_select') {
+    await interaction.update({ content: `Tu as choisis une notification :bell: ! Je vais t'ajouter le rôle <@&${interaction.values[0]}> pour que tu ai toutes les notifs !`, components: [] });
+        interaction.member.roles.add(`${interaction.values[0]}`);
+  }
+
+  let logs = client.channels.cache.find(channel => channel.name === config_settings.channel.logs);
+      logs.send({ content: `J'ai ajouter le rôle <@&${interaction.values[0]}> au membre ${interaction.member}` });
+});
+
+client.on('interactionCreate', async interaction => {
+  //if (!interaction.isReaction()) return;
+});
+
+client.on('interactionCreate', async interaction => {
   if (!interaction.isChatInputCommand()) return;
 
   if (interaction.commandName === 'role') {
-    await interaction.reply({ content:'Tu dois indiquer un nom de rôle par exemple : `/role add 1` pour les connaîtres : `/role list` ou `/role notifs` selon les notifications que tu souhaite recevoir. Si tu veux te retirer un rôle fait `/role remove 1`', fetchReplay:true });
+    const select = new ActionRowBuilder()
+			.addComponents(
+				new SelectMenuBuilder()
+					.setCustomId('role_select')
+					.setPlaceholder('Aucun rôle sélectionné')
+					.addOptions(
+						{
+							label: 'Amateur de frisbee',
+							description: 'Rejoins nous pour jouer ou partager tes jeux',
+							value: '882582552550965261',
+						},
+						{
+							label: 'Minecraft',
+							description: 'Si tu aime les blocs',
+							value: '882582552550965260',
+						},
+						{
+							label: 'Boss d\'internet',
+							description: 'Deviens le plus malin de BichonWood et vient parler code',
+							value: '882582552538390550',
+						},
+						{
+							label: 'La 3ème dimension',
+							description: 'Montre tout tes talents en modélisation 3D',
+							value: '909759890107547658',
+						},
+					),
+			);
+
+		await interaction.reply({ content: `Pour t'ajouter un rôle, choisis dans la liste ci-dessous :`, components: [select], fetchReply: true });
+  }
+  else if (interaction.commandName === 'notifs') {
+    const select = new ActionRowBuilder()
+			.addComponents(
+				new SelectMenuBuilder()
+					.setCustomId('notif_select')
+					.setPlaceholder('Aucunes notifications sélectionné')
+					.addOptions(
+						{
+							label: 'Notifs mod twitch',
+							description: 'Reçois les notifs de tout les streams de mes streamers favoris',
+							value: '882582552538390549',
+						},
+						{
+							label: 'Bichon en live',
+							description: 'Reçois ton alerte dès que je suis en live',
+							value: '997269081185075270',
+						},
+					),
+			);
+
+		await interaction.reply({ content: `Pour t'ajouter un rôle, choisis dans la liste ci-dessous :`, components: [select], fetchReply: true });
   }
   else if(interaction.commandName === 'poll') {
     let questionValue = `${interaction.guild.emojis.cache.find(emoji => emoji.name === config_settings.emoji.poll)} **${interaction.options.getString("question")}**`;
