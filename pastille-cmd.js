@@ -4,36 +4,14 @@ const fs = require('fs');
 
 let secret_settings = JSON.parse(fs.readFileSync('data/secret.json'));
 const commands = [
-    {
-        name: "role",
-        description: "Différentes possibilité sur les rôles",
-        options: [
-            {
-                name: 'list',
-                description: 'Liste l\'ensemble des rôle disponibles avec cette commande',
-                type: 1,
-            },
-            {
-              name: "add",
-              description: "Ajoute le rôle indiqué en paramètre",
-              type: 1,
-              options: [
-                {
-                  name: "role",
-                  description: "Le rôle qu'il faut ajouter",
-                  type: 8,
-                  required: true
-                },
-                {
-                  name: "user",
-                  description: "L'utilisateur",
-                  type: 6,
-                  required: false
-                }
-              ]
-          }
-        ]
-    },
+    { name: "role",
+      description: "Ajoute les rôles de ton choix" },
+    { name: "mods",
+      description: "Demande de l'aide à nos modérateurs" },
+      { name: "help",
+        description: "Obtiens de l'aide sur les différentes commandes" },
+    { name: "notifs",
+      description: "Sélectionne les notifications que tu veux recevoir" },
     {
       name: "poll",
       description: "Crée un sondage",
@@ -59,12 +37,9 @@ const rest = new REST({ version: '10' }).setToken(secret_settings.BOT_TOKEN);
 (async () => {
 	try {
 	  await rest.put(
-		Routes.applicationGuildCommands(secret_settings.BOT_ID, secret_settings.GUILD_ID),
-		{ body: commands },
+      Routes.applicationGuildCommands(secret_settings.BOT_ID, secret_settings.GUILD_ID),
+      { body: commands },
 	  );
-  
 	  console.log('Successfully reloaded application (/) commands.');
-	} catch (error) {
-	  console.error(error);
-	}
+	} catch (error) { console.error(error); }
  })();
