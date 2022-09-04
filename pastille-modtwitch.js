@@ -109,19 +109,8 @@ function fc_isOnLive(data, settings) {
 							if(data.notif_line != undefined) { live_txt += data.notif_line.toString(); }
 							live_txt += `Il stream : **${_API_data_response.title}** sur **${_API_data_response.game_name}**`
                             settings.announce.send({ content: live_txt, components: [live_button] });
-
-							if(data.discord != undefined && data.discord.id != undefined) {
-								// on ajoute le rôle onlive
-								let streamer = client.guild.users.cache.find(user => user.id === data.discord.id);
-									console.log(streamer);
-							}
                         }
                     }
-					else {
-						if(data.discord != undefined && data.discord.id != undefined) {
-							// on retire le rôle onlive
-						}
-					}
                 }
             }
             _XML_data.open('GET', _API_data, false);
