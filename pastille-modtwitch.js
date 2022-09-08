@@ -107,7 +107,7 @@ function fc_isOnLive(data, settings) {
                                                         );
                             let live_txt = `Hey <@&${config_settings.role.announce.toString()}> ! **${data.twitch.name.toString()}** est actuellement en live.`;
 							if(data.notif_line != undefined) { live_txt += data.notif_line.toString(); }
-							live_txt += `Il stream : **${_API_data_response.title}** sur **${_API_data_response.game_name}**`
+							live_txt += ` Il stream : **${_API_data_response.title}** sur **${_API_data_response.game_name}**`
                             settings.announce.send({ content: live_txt, components: [live_button] });
                         }
                     }
