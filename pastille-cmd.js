@@ -5,11 +5,23 @@ const fs = require('fs');
 let secret_settings = JSON.parse(fs.readFileSync('data/secret.json'));
 const commands = [
     { name: "role",
-      description: "Ajoute les rôles de ton choix" },
+      description: "Ajoute les rôles de ton choix",
+      options: [
+        {
+          name: 'add',
+          description: 'Ajoute le rôle choisi dans la liste',
+          type: 1
+        },
+        {
+          name: 'remove',
+          description: 'Retire le rôle choisi dans la liste',
+          type: 1
+        }
+      ]},
     { name: "mods",
       description: "Demande de l'aide à nos modérateurs" },
-      { name: "help",
-        description: "Obtiens de l'aide sur les différentes commandes" },
+    { name: "help",
+      description: "Obtiens de l'aide sur les différentes commandes" },
     { name: "notifs",
       description: "Sélectionne les notifications que tu veux recevoir" },
     {
