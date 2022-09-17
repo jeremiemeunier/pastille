@@ -62,7 +62,7 @@ function fc_booter() {
 client.on('interactionCreate', async interaction => {
   if (!interaction.isSelectMenu()) return;
 
-  if(interaction.customId === 'role_select') {
+  if(interaction.customId === 'role_select_add') {
     await interaction.update({ content: `Tu as choisi un rôle :clap: ! Je vais t'ajouter le rôle <@&${interaction.values[0]}>`, components: [] });
         interaction.member.roles.add(`${interaction.values[0]}`);
   }
@@ -70,9 +70,6 @@ client.on('interactionCreate', async interaction => {
     await interaction.update({ content: `Tu as choisis une notification :bell: ! Je vais t'ajouter le rôle <@&${interaction.values[0]}> pour que tu ai toutes les notifs !`, components: [] });
         interaction.member.roles.add(`${interaction.values[0]}`);
   }
-
-  let logs = client.channels.cache.find(channel => channel.name === config_settings.channel.logs);
-      logs.send({ content: `J'ai ajouter le rôle <@&${interaction.values[0]}> au membre ${interaction.member}` });
 });
 
 client.on('interactionCreate', async interaction => {
@@ -83,10 +80,11 @@ client.on('interactionCreate', async interaction => {
   if (!interaction.isChatInputCommand()) return;
 
   if (interaction.commandName === 'role') {
-    const select = new ActionRowBuilder()
+    if(interaction.options.getSubcommand() === 'add') {
+		const select = new ActionRowBuilder()
 			.addComponents(
 				new SelectMenuBuilder()
-					.setCustomId('role_select')
+					.setCustomId('role_select_add')
 					.setPlaceholder('Aucun rôle sélectionné')
 					.addOptions(
 						{
@@ -111,8 +109,11 @@ client.on('interactionCreate', async interaction => {
 						},
 					),
 			);
-
-		await interaction.reply({ content: `Pour t'ajouter un rôle, choisis dans la liste ci-dessous :`, components: [select], fetchReply: true });
+		await interaction.reply({ content: `Pour t'ajouter un rôle, choisis dans la liste ci-dessous :`, components: [select], fetchReply: true, ephemeral: true });
+	}
+	else if(interaction.options.getSubcommand() === 'remove') {
+		console.log(interaction.member);
+	}
   }
   else if (interaction.commandName === 'notifs') {
     const select = new ActionRowBuilder()
@@ -128,13 +129,13 @@ client.on('interactionCreate', async interaction => {
 						},
 						{
 							label: 'Bichon en live',
-							description: 'Reçois ton alerte dès que je suis en live',
+							description: 'Reçois ton alerte dès que le proprio est en live',
 							value: '997269081185075270',
 						},
 					),
 			);
 
-		await interaction.reply({ content: `Pour t'ajouter un rôle, choisis dans la liste ci-dessous :`, components: [select], fetchReply: true });
+		await interaction.reply({ content: `Pour t'ajouter un rôle, choisis dans la liste ci-dessous :`, components: [select], fetchReply: true, ephemeral: true });
   }
   else if(interaction.commandName === 'poll') {
     let questionValue = `${interaction.guild.emojis.cache.find(emoji => emoji.name === config_settings.emoji.poll)} **${interaction.options.getString("question")}**`;
