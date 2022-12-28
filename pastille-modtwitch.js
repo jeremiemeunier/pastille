@@ -105,9 +105,14 @@ function fc_isOnLive(data, settings) {
                                                                 .setStyle(ButtonStyle.Link)
                                                                 .setURL(`https://twitch.tv/${data.twitch.name.toString()}`)
                                                         );
-                            let live_txt = `Hey <@&${config_settings.role.announce.toString()}> ! **${data.twitch.name.toString()}** est actuellement en live.`;
+                            let live_txt = `**${data.twitch.name.toString()}** est actuellement en live.`;
 							if(data.notif_line != undefined) { live_txt += data.notif_line.toString(); }
-							live_txt += `Il stream : **${_API_data_response.title}** sur **${_API_data_response.game_name}**`
+							live_txt += ` Il stream : **${_API_data_response.title}** sur **${_API_data_response.game_name}** C'est pour vous <@&${config_settings.role.announce.toString()}> !`;
+
+							if(data.discord.id != undefined) {
+								
+							}
+
                             settings.announce.send({ content: live_txt, components: [live_button] });
                         }
                     }
