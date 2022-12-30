@@ -1,5 +1,5 @@
 var net = require('net');
-var hosts = [['api.pooks.fr', 443], ['pooks.fr', 443], ['pma.pookswebservice.fr', 443],];
+var hosts = [['api.pooks.fr', 443],];
 hosts.forEach(function(item) {
     var sock = new net.Socket();
     sock.setTimeout(2500);
