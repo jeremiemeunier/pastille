@@ -25,26 +25,21 @@ function fc_clock() {
 	var actual = new Date();
 	var timing;
 
-	function fc_clock_diff_day(d1,d2){
-		var WNbJours = d2.getTime() - d1.getTime();
-		return Math.ceil(WNbJours/(1000*60*60*24));
+	
+	var TempsRestant = deadline.getTime() - actual.getTime();
+	var HeuresRestant = Math.floor(TempsRestant/(1000*60*60));
+	var MinRestant = Math.floor(TempsRestant/(1000*60)) - (HeuresRestant*60);
+
+	if(MinRestant.toString().length == 1) {
+		MinRestant = `0${MinRestant}`;
 	}
 
-	function fc_clock_diff_hours(d1,d2){
-		var WNbJours = d2.getTime() - d1.getTime();
-		return Math.ceil(WNbJours/(1000*60*60));
-	}
-
-	if(fc_clock_diff_day(deadline, actual).toString() === '-1') {
-		timing = `H${fc_clock_diff_hours(deadline, actual)}`;
+	if(TempsRestant > 0) {
+		client.user.setPresence({ activities: [{ name: `H-${HeuresRestant.toString()}:${MinRestant.toString()}`, type: ActivityType.Competing }] });
 	}
 	else {
-		timing = `J${fc_clock_diff_day(deadline, actual)}`;
+		client.user.setPresence({ activities: [{ name: `lancement Haltero.app`, type: ActivityType.Competing }] });
 	}
-
-	
-
-	client.user.setPresence({ activities: [{ name: `Haltero.app ${timing.toString()}`, type: ActivityType.Competing }] });
 }
 
 function fc_booter() {
@@ -54,7 +49,7 @@ function fc_booter() {
 	let every = server.roles.cache.find(role => role.name === '@everyone');
 
 	let bootEmbed = new EmbedBuilder()
-                            .setColor('#5865f2')
+                            .setColor('#277CCB')
                             .setDescription(`TIMER`)
                             .addFields(
                                 { name: 'Date starting', value: fc_dateReturn(new Date()), inline: true },
@@ -67,7 +62,7 @@ function fc_booter() {
 
 	setInterval(function() {
 		fc_clock({"announce":announce,"debug":debug,"every":every});
-	}, 1000);
+	}, 30000);
 }
 
 client.on('ready', () => { fc_booter(); });
