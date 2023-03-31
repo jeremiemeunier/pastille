@@ -4,3 +4,6 @@ data/secret.json
 data/streamer.json
 data/automod.json
 logs/*
+pastille-satisfactory.js
+pastille-haltero.js
+node_modules

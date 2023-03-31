@@ -3,160 +3,124 @@ const fs = require('fs');
 const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
-const config_settings = JSON.parse(fs.readFileSync('data/config.json'));
-const secret_settings = JSON.parse(fs.readFileSync('data/secret.json'));
+const settingsConfig = JSON.parse(fs.readFileSync('data/config.json'));
+const settingsSecret = JSON.parse(fs.readFileSync('data/secret.json'));
 
-// Base function for optimal working
+// Basic function to optimal working
 
-function fc_stream_start(str, mtn) {
-	if(mtn == undefined) { mtn = Date.parse(new Date()); }
+const startStreamVerifier = (startTime, now) => {
+    if(now === undefined) { now = Date.parse(new Date()); }
 
-		str = Date.parse(str);
-	let pre = mtn - config_settings.countdown;
-	let nex = mtn + config_settings.countdown;
+    let previousTime = now - settingsConfig.app.twitch.countdown;
+    let nextTime = now + settingsConfig.app.twitch.countdown;
 
-	if(str > pre && str < nex) { return true; } else { return false; }
-}
-function fc_xhr_verifier(xhr) {
-	if(xhr.readyState === 4 && xhr.status === 200) { return true; }
-	else { return false; }
-}
-function fc_dateReturn(ajd) {
-	let ret = '';
-
-	if(ajd == undefined) { ajd = new Date(); }
-
-	if(ajd.getHours() < 10) { ret += `0${ajd.getHours()}:`; } else { ret += `${ajd.getHours()}:`; }
-	if(ajd.getMinutes() < 10) { ret += `0${ajd.getMinutes()}:`; } else { ret += `${ajd.getMinutes()}:`; }
-	if(ajd.getSeconds() < 10) { ret += `0${ajd.getSeconds()}`; } else { ret += `${ajd.getSeconds()}`; }
-
-	return ret;
-}
-function fc_logger(txt, timed = true) {
-	let logs_tag = `\x1b[34mpastille_bot[\x1b[0m${config_settings.app_name.twitch}\x1b[34m][\x1b[0m${config_settings.version}\x1b[34m]`;
-  let logs_txt_tag = `pastille_bot[${config_settings.app_name.twitch}][${config_settings.version}]`;
-
-	if(timed == true) {
-		logs_tag += ` ${dateReturn()} \x1b[0m `;
-	} else { logs_tag += `\x1b[0m `; }
-
-	console.log(`${logs_tag}${txt}`);
-	let ajd = new Date();
-
-	if(ajd.getDate() < 10) { ajdDate = `0${ajd.getDate()}`; } else { ajdDate = ajd.getDate(); }
-	if(Number(ajd.getMonth() + 1) < 10) { ajdMonth = `0${Number(ajd.getMonth())+1}`; } else { ajdMonth = Number(ajd.getMonth())+1; }
-
-	let ajd_compose = `${ajdMonth}-${ajdDate}-${ajd.getFullYear()}`;
-	fs.writeFile(`logs/${config_settings.app_name.twitch}-${ajd_compose}.log`, `${logs_txt_tag}${txt}\r\n`, { flag: 'a' }, err => {
-		if(err) {
-			console.log(err);
-			return;
-		}
-	});
-}
-function fc_startlog() {
-    let server = client.guilds.cache.get(secret_settings.GUILD_ID);
-	let announce = client.channels.cache.find(channel => channel.name === config_settings.channel.announce)
-	let debug = client.channels.cache.find(channel => channel.name === config_settings.channel.debug)
-	let every = server.roles.cache.find(role => role.name === '@everyone');
-
-    fc_logger(`as \x1b[34m${client.user.tag}\x1b[0m`, false);
-    fc_logger(`\x1b[43m\x1b[30m START VAR SETTINGS \x1b[0m `, false);
-    fc_logger(`as set channel \x1b[34m${config_settings.channel.announce}\x1b[0m to \x1b[34m${announce.id}\x1b[0m`, false);
-    fc_logger(`as set channel \x1b[34m${config_settings.channel.debug}\x1b[0m to \x1b[34m${debug.id}\x1b[0m`, false);
-    fc_logger(`as set everyone to \x1b[34m${every.id}\x1b[0m`, false);
-    fc_logger(`\x1b[43m\x1b[30m END VAR SETTINGS \x1b[0m `, false);
-    fc_logger(`is initialized at \x1b[34m${fc_dateReturn(new Date())}\x1b[0m`, false);
-	fc_logger(`\x1b[42m\x1b[30m ${config_settings.app_name.twitch} [${config_settings.version}] INITIALIZED \x1b[0m `, false);
+    if(startTime > previousTime && startTime < nextTime) { return true; }
+    else { return false; }
 }
 
-// mod_twitch function
-
-function fc_autoBotChecker(settings) {
-	var JsonUsers = fs.readFileSync('data/streamer.json');
-	var dataUsers = JSON.parse(JsonUsers);
-	var dataLenght = Object.keys(dataUsers).length;
-
-	for(var i = 0; i < dataLenght; i++) {
-		let data = dataUsers[i];
-		fc_isOnLive(data, settings);
-	}
+const xhrStateVerifier = (xhr) => {
+    if(xhr.readyState === 4 && xhr.status === 200) { return true; }
+    else { return false; }
 }
-function fc_isOnLive(data, settings) {
-    let _XML_data = new XMLHttpRequest();
-    let _XML_auth = new XMLHttpRequest();
-    let _API_data = config_settings.api.twitch_stream + data.twitch.id;
-    let _API_auth = `https://id.twitch.tv/oauth2/token?client_id=${secret_settings.TWITCH_CLIENT_TOKEN}&client_secret=${secret_settings.TWITCH_SECRET_TOKEN}&grant_type=client_credentials&scope=viewing_activity_read`;
 
-    _XML_auth.onreadystatechange = function(e) {
-        if(fc_xhr_verifier(_XML_auth)) {
-            let _API_auth_token = JSON.parse(_XML_auth.responseText);
+const dateReturnFormater = (dat) => {
+    let dateFormated = "";
 
-            _XML_data.onreadystatechange = function(e) {
-                if(fc_xhr_verifier(_XML_data)) {
-                    let _API_data_response = JSON.parse(_XML_data.responseText).data[0];
+	if(dat == undefined) { dat = new Date(); }
 
-                    if(_API_data_response != undefined) {
-                        if(fc_stream_start(_API_data_response.started_at)) {
-                            let live_button = new ActionRowBuilder()
-                                                        .addComponents(
-                                                            new ButtonBuilder()
-                                                                .setLabel('Rejoindre en live')
-                                                                .setStyle(ButtonStyle.Link)
-                                                                .setURL(`https://twitch.tv/${data.twitch.name.toString()}`)
-                                                        );
-                            let live_txt = `**${data.twitch.name.toString()}** est actuellement en live.`;
-							if(data.notif_line != undefined) { live_txt += data.notif_line.toString(); }
-							live_txt += ` Il stream : **${_API_data_response.title}** sur **${_API_data_response.game_name}** C'est pour vous <@&${config_settings.role.announce.toString()}> !`;
+	if(dat.getHours() < 10) { dateFormated += `0${dat.getHours()}:`; } else { dateFormated += `${dat.getHours()}:`; }
+	if(dat.getMinutes() < 10) { dateFormated += `0${dat.getMinutes()}:`; } else { dateFormated += `${dat.getMinutes()}:`; }
+	if(dat.getSeconds() < 10) { dateFormated += `0${dat.getSeconds()}`; } else { dateFormated += `${dat.getSeconds()}`; }
 
-							if(data.discord.id != undefined) {
-								
-							}
+	return dateFormated;
+}
 
-                            settings.announce.send({ content: live_txt, components: [live_button] });
-                        }
-                    }
-                }
+// const pastilleLogger = (content, timed = true) => {
+//    let logsTag = logs_txt_tag = `pastille_bot[${settingsConfig.twitch.app_name}][${settingsConfig.twitch.version}]`;
+// }
+
+// ########## //
+
+const onliveBotChecked = (params) => {
+    const streamerList = JSON.parse(fs.readFileSync('data/streamer.json'));
+    const streamerLength = Object.keys(streamerList).length;
+
+    const _XHR_authBearer = new XMLHttpRequest();
+    const authBearerAPI = `https://id.twitch.tv/oauth2/token?client_id=${settingsSecret.TWITCH_CLIENT_TOKEN}&client_secret=${settingsSecret.TWITCH_SECRET_TOKEN}&grant_type=client_credentials&scope=viewing_activity_read`;
+
+    _XHR_authBearer.onreadystatechange = (e) => {
+        if(xhrStateVerifier(_XHR_authBearer) && _XHR_authBearer.responseText !== undefined) {
+            let authBearerToken = JSON.parse(_XHR_authBearer.responseText);
+
+            for(let i = 0;i < streamerLength;i++) {
+                onliveBotSender(authBearerToken, streamerList[i], params);
             }
-            _XML_data.open('GET', _API_data, false);
-			_XML_data.setRequestHeader('client-id', secret_settings.TWITCH_CLIENT_TOKEN);
-			_XML_data.setRequestHeader('Authorization', 'Bearer ' + _API_auth_token['access_token']);
-			_XML_data.send();
         }
     }
-    _XML_auth.open('POST', _API_auth, false);
-	_XML_auth.send();
+
+    _XHR_authBearer.open('POST', authBearerAPI, false);
+    _XHR_authBearer.send();
 }
 
-function fc_booter() {
-	let server = client.guilds.cache.get(secret_settings.GUILD_ID);
-	let announce = client.channels.cache.find(channel => channel.name === config_settings.channel.announce);
-	let debug = client.channels.cache.find(channel => channel.name === config_settings.channel.debug);
-	let every = server.roles.cache.find(role => role.name === '@everyone');
+const onliveBotSender = (token, streamer, params) => {
+    const _XHR_streamerData = new XMLHttpRequest();
+    const streamerDataAPI = settingsConfig.api.twitch_stream + streamer.twitch.id;
 
-	let bootEmbed = new EmbedBuilder()
-                            .setColor('#5865f2')
-                            .setDescription(`${config_settings.app_name.twitch}`)
-                            .addFields(
-                                { name: 'Date starting', value: fc_dateReturn(new Date()), inline: true },
-                                { name: 'Debug', value: config_settings.debug.toString(), inline: true },
-                                { name: 'Version', value: config_settings.version.toString(), inline: true },
-								{ name: '\u200b', value: '\u200b', inline: false },
-                                { name: 'Announce channel', value: announce.toString(), inline: true },
-                                { name: 'Announce role', value: '<@&' + config_settings.role.announce.toString() + '>', inline: true }
-                            )
-                            .setTimestamp()
-                            .setFooter({ text: `Version ${config_settings.version}`, });
-	debug.send({ embeds: [bootEmbed] });
-    fc_startlog();
+    _XHR_streamerData.onreadystatechange = (e) => {
+        if(xhrStateVerifier(_XHR_streamerData)) {
+            let streamerData = JSON.parse(_XHR_streamerData.responseText).data[0];
 
-	if(config_settings.waiting == true) {
-		setInterval(function() {
-			fc_autoBotChecker({"announce":announce,"debug":debug,"every":every});
-		}, config_settings.countdown);
-	}
-	else { fc_autoBotChecker({"announce":announce,"debug":debug,"every":every}); }
+            if(streamerData !== undefined) {
+                if(startStreamVerifier(streamerData.started_at)) {
+                    let liveButton = new ActionRowBuilder()
+                                            .addComponents(
+                                                new ButtonBuilder()
+                                                    .setLabel('Rejoindre sur twitch.tv')
+                                                    .setStyle(ButtonStyle.Link)
+                                                    .setURL(`https://twitch.tv/${streamer.twitch.name.toString()}`)
+                                            );
+                    let liveTextMessage = `**${streamer.twitch.name.toString()}** est actuellement en live.`;
+                    if(streamer.notif_line !== undefined) { liveTextMessage += `\n${data.notif_line.toString()}`; }
+                    liveTextMessage += `\nIl stream : **${streamerData.title}** sur **${streamerData.game_name}** C'est pour vous <@&${params.notifsRole}> !`;
+
+                    params.announce.send({ content: live_txt, components: [liveButton] });
+                }
+            }
+        }
+    }
+
+    _XHR_streamerData.open('GET', streamerDataAPI, true);
+    _XHR_streamerData.setRequestHeader('client-id', settingsSecret.TWITCH_CLIENT_TOKEN);
+    _XHR_streamerData.setRequestHeader('Authorization', 'Bearer ' + token['access_token']);
+    _XHR_streamerData.send();
 }
 
-client.on('ready', () => { fc_booter(); });
-client.login(secret_settings.BOT_TOKEN);
+// ########## //
+
+const pastilleBooter = () => {
+	let channelAnnounce = client.channels.cache.find(channel => channel.name === settingsConfig.channel.live);
+	let channelDebug = client.channels.cache.find(channel => channel.name === settingsConfig.channel.debug);
+
+    let bootEmbedMessage = new EmbedBuilder()
+                                .setColor('#277CCB')
+                                .setAuthor({ name: settingsConfig.app.twitch.name, iconURL: 'https://1.images.cdn.pooks.fr/github/pastillebot/pastille_avatar.png' })
+                                .addFields(
+                                    { name: 'Date starting', value: dateReturnFormater(new Date()), inline: true },
+                                    { name: 'Debug', value: settingsConfig.debug.toString(), inline: true },
+                                    { name: 'Version', value: settingsConfig.version.toString(), inline: true },
+                                    { name: 'Announce channel', value: channelAnnounce.toString(), inline: false },
+                                    { name: 'Announce role', value: '<@&' + settingsConfig.role.livemod.toString() + '>', inline: false }
+                                )
+                                .setTimestamp()
+                                .setFooter({ text: `Version ${settingsConfig.app.twitch.version}`, });
+    channelDebug.send({ embeds: [bootEmbedMessage] });
+
+    if(settingsConfig.app.twitch.waiting === true) {
+        setInterval(() => {
+            onliveBotChecked({"announce": channelAnnounce.toString(), "debug": channelDebug.toString(), "notifsRole": settingsConfig.role.livemod.toString() });
+        }, settingsConfig.app.twitch.countdown);
+    }
+}
+
+client.on('ready', () => { pastilleBooter(); });
+client.login(settingsSecret.BOT_TOKEN);
