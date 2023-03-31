@@ -69,7 +69,6 @@ const onliveBotSender = (token, streamer, params) => {
     _XHR_streamerData.onreadystatechange = (e) => {
         if(xhrStateVerifier(_XHR_streamerData)) {
             let streamerData = JSON.parse(_XHR_streamerData.responseText).data[0];
-
             if(streamerData !== undefined) {
                 if(startStreamVerifier(streamerData.started_at)) {
                     let liveButton = new ActionRowBuilder()
@@ -83,7 +82,7 @@ const onliveBotSender = (token, streamer, params) => {
                     if(streamer.notif_line !== undefined) { liveTextMessage += `\n${data.notif_line.toString()}`; }
                     liveTextMessage += `\nIl stream : **${streamerData.title}** sur **${streamerData.game_name}** C'est pour vous <@&${params.notifsRole}> !`;
 
-                    params.announce.send({ content: live_txt, components: [liveButton] });
+                    params.announce.send({ content: liveTextMessage, components: [liveButton] });
                 }
             }
         }
@@ -114,7 +113,6 @@ const pastilleBooter = () => {
                                 .setTimestamp()
                                 .setFooter({ text: `Version ${settingsConfig.app.twitch.version}`, });
     channelDebug.send({ embeds: [bootEmbedMessage] });
-
     if(settingsConfig.app.twitch.waiting === true) {
         setInterval(() => {
             onliveBotChecked({"announce": channelAnnounce.toString(), "debug": channelDebug.toString(), "notifsRole": settingsConfig.role.livemod.toString() });
