@@ -11,6 +11,7 @@ const settingsSecret = JSON.parse(fs.readFileSync('data/secret.json'));
 const startStreamVerifier = (startTime, now) => {
     if(now === undefined) { now = Date.parse(new Date()); }
 
+        startTime = Date.parse(startTime);
     let previousTime = now - settingsConfig.app.twitch.countdown;
     let nextTime = now + settingsConfig.app.twitch.countdown;
 
@@ -18,20 +19,19 @@ const startStreamVerifier = (startTime, now) => {
     else { return false; }
 }
 
-const pastilleHello = () => {
-    const terminalLogTag = `\x1b[34mpastille_bot[\x1b[0m${settingsConfig.app.twitch.name}\x1b[34m][\x1b[0m${settingsConfig.app.twitch.version}\x1b[34m]\x1b[0m`;
-    const textLogTag = `pastille_bot[${settingsConfig.app.twitch.name}][${settingsConfig.app.twitch.version}]`;
-
-    console.log(`${terminalLogTag} Hi here ! I'm pastille_bot 😀`);
-    console.log(`${terminalLogTag} You launch the : \x1b[34m${settingsConfig.app.twitch.name}\x1b[0m module`);
-    console.log(`${terminalLogTag} Now i'm listen all \x1b[34m${settingsConfig.app.twitch.countdown/1000}s\x1b[0m for all following streamer :`);
-
+const pastilleHello = (debugChannel) => {
+    const logTag = `pastille_bot[${settingsConfig.app.twitch.name}][${settingsConfig.app.twitch.version}]`;
     const streamerList = JSON.parse(fs.readFileSync('data/streamer.json'));
     const streamerLength = Object.keys(streamerList).length;
+    let logTextDebug = "";
 
-    for(let i = 0;i < streamerLength;i++) {
-        console.log(`${terminalLogTag}   - ${streamerList[i].twitch.name}`);
-    }
+    logTextDebug = logTextDebug + `\`\`\`${logTag} Hi here ! I'm pastille_bot 😀\r`;
+    logTextDebug = logTextDebug + `${logTag} You launch the : ${settingsConfig.app.twitch.name} module\r`;
+    logTextDebug = logTextDebug + `${logTag} Now i'm listen all ${settingsConfig.app.twitch.countdown/1000}s for all following streamer :\r`;
+
+    for(let i = 0;i < streamerLength;i++) { logTextDebug = logTextDebug + `${logTag}   - ${streamerList[i].twitch.name}\r`; }
+    logTextDebug = logTextDebug + "\`\`\`";
+    debugChannel.send(logTextDebug);
 }
 
 const xhrStateVerifier = (xhr) => {
@@ -49,11 +49,6 @@ const dateReturnFormater = (dat = new Date()) => {
 	return dateFormated;
 }
 
-const pastilleLogger = (content, timed = true) => {
-    const terminalLogTag = `\x1b[34mpastille_bot[\x1b[0m${settingsConfig.app.twitch.name}\x1b[34m][\x1b[0m${settingsConfig.app.twitch.version}\x1b[34m]\x1b[0m`;
-    const textLogTag = `pastille_bot[${settingsConfig.app.twitch.name}][${settingsConfig.app.twitch.version}]`;
-}
-
 // ########## //
 
 const onliveBotChecked = (params) => {
@@ -63,7 +58,7 @@ const onliveBotChecked = (params) => {
     const _XHR_authBearer = new XMLHttpRequest();
     const authBearerAPI = `https://id.twitch.tv/oauth2/token?client_id=${settingsSecret.TWITCH_CLIENT_TOKEN}&client_secret=${settingsSecret.TWITCH_SECRET_TOKEN}&grant_type=client_credentials&scope=viewing_activity_read`;
 
-    _XHR_authBearer.onreadystatechange = (e) => {
+    _XHR_authBearer.onreadystatechange = () => {
         if(xhrStateVerifier(_XHR_authBearer) && _XHR_authBearer.responseText !== undefined) {
             let authBearerToken = JSON.parse(_XHR_authBearer.responseText);
 
@@ -81,9 +76,10 @@ const onliveBotSender = (token, streamer, params) => {
     const _XHR_streamerData = new XMLHttpRequest();
     const streamerDataAPI = settingsConfig.api.twitch_stream + streamer.twitch.id;
 
-    _XHR_streamerData.onreadystatechange = (e) => {
+    _XHR_streamerData.onreadystatechange = () => {
         if(xhrStateVerifier(_XHR_streamerData)) {
             let streamerData = JSON.parse(_XHR_streamerData.responseText).data[0];
+
             if(streamerData !== undefined) {
                 if(startStreamVerifier(streamerData.started_at)) {
                     let liveButton = new ActionRowBuilder()
@@ -112,18 +108,16 @@ const onliveBotSender = (token, streamer, params) => {
 // ########## //
 
 const pastilleBooter = () => {
-	let channelAnnounce = client.channels.cache.find(channel => channel.name === settingsConfig.channel.live);
-	let channelDebug = client.channels.cache.find(channel => channel.name === settingsConfig.channel.debug);
+	const channelAnnounce = client.channels.cache.find(channel => channel.name === settingsConfig.app.twitch.channel.announce);
+	const channelDebug = client.channels.cache.find(channel => channel.name === settingsConfig.channel.debug);
 
     let bootEmbedMessage = new EmbedBuilder()
-                                .setColor('#277CCB')
+                                .setColor('#20A68E')
                                 .setAuthor({ name: settingsConfig.app.twitch.name, iconURL: 'https://1.images.cdn.pooks.fr/github/pastillebot/pastille_avatar.png' })
                                 .addFields(
                                     { name: 'Date starting', value: dateReturnFormater(new Date()), inline: true },
                                     { name: 'Debug', value: settingsConfig.debug.toString(), inline: true },
-                                    { name: 'Version', value: settingsConfig.version.toString(), inline: true },
-                                    { name: 'Announce channel', value: channelAnnounce.toString(), inline: false },
-                                    { name: 'Announce role', value: '<@&' + settingsConfig.role.livemod.toString() + '>', inline: false }
+                                    { name: 'Version', value: settingsConfig.version.toString(), inline: true }
                                 )
                                 .setTimestamp()
                                 .setFooter({ text: `Version ${settingsConfig.app.twitch.version}`, });
@@ -134,7 +128,7 @@ const pastilleBooter = () => {
         }, settingsConfig.app.twitch.countdown);
     }
 
-    pastilleHello();
+    pastilleHello(channelDebug);
 }
 
 client.on('ready', () => { pastilleBooter(); });
