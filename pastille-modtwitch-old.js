@@ -34,7 +34,7 @@ function fc_dateReturn(ajd) {
 }
 function fc_logger(txt, timed = true) {
 	let logs_tag = `\x1b[34mpastille_bot[\x1b[0m${config_settings.app_name.twitch}\x1b[34m][\x1b[0m${config_settings.version}\x1b[34m]`;
-  let logs_txt_tag = `pastille_bot[${config_settings.app_name.twitch}][${config_settings.version}]`;
+  	let logs_txt_tag = `pastille_bot[${config_settings.app_name.twitch}][${config_settings.version}]`;
 
 	if(timed == true) {
 		logs_tag += ` ${dateReturn()} \x1b[0m `;
