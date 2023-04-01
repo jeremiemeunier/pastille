@@ -18,15 +18,29 @@ const startStreamVerifier = (startTime, now) => {
     else { return false; }
 }
 
+const pastilleHello = () => {
+    const terminalLogTag = `\x1b[34mpastille_bot[\x1b[0m${settingsConfig.app.twitch.name}\x1b[34m][\x1b[0m${settingsConfig.app.twitch.version}\x1b[34m]\x1b[0m`;
+    const textLogTag = `pastille_bot[${settingsConfig.app.twitch.name}][${settingsConfig.app.twitch.version}]`;
+
+    console.log(`${terminalLogTag} Hi here ! I'm pastille_bot 😀`);
+    console.log(`${terminalLogTag} You launch the : \x1b[34m${settingsConfig.app.twitch.name}\x1b[0m module`);
+    console.log(`${terminalLogTag} Now i'm listen all \x1b[34m${settingsConfig.app.twitch.countdown/1000}s\x1b[0m for all following streamer :`);
+
+    const streamerList = JSON.parse(fs.readFileSync('data/streamer.json'));
+    const streamerLength = Object.keys(streamerList).length;
+
+    for(let i = 0;i < streamerLength;i++) {
+        console.log(`${terminalLogTag}   - ${streamerList[i].twitch.name}`);
+    }
+}
+
 const xhrStateVerifier = (xhr) => {
     if(xhr.readyState === 4 && xhr.status === 200) { return true; }
     else { return false; }
 }
 
-const dateReturnFormater = (dat) => {
+const dateReturnFormater = (dat = new Date()) => {
     let dateFormated = "";
-
-	if(dat == undefined) { dat = new Date(); }
 
 	if(dat.getHours() < 10) { dateFormated += `0${dat.getHours()}:`; } else { dateFormated += `${dat.getHours()}:`; }
 	if(dat.getMinutes() < 10) { dateFormated += `0${dat.getMinutes()}:`; } else { dateFormated += `${dat.getMinutes()}:`; }
@@ -35,9 +49,10 @@ const dateReturnFormater = (dat) => {
 	return dateFormated;
 }
 
-// const pastilleLogger = (content, timed = true) => {
-//    let logsTag = logs_txt_tag = `pastille_bot[${settingsConfig.twitch.app_name}][${settingsConfig.twitch.version}]`;
-// }
+const pastilleLogger = (content, timed = true) => {
+    const terminalLogTag = `\x1b[34mpastille_bot[\x1b[0m${settingsConfig.app.twitch.name}\x1b[34m][\x1b[0m${settingsConfig.app.twitch.version}\x1b[34m]\x1b[0m`;
+    const textLogTag = `pastille_bot[${settingsConfig.app.twitch.name}][${settingsConfig.app.twitch.version}]`;
+}
 
 // ########## //
 
@@ -115,9 +130,11 @@ const pastilleBooter = () => {
     channelDebug.send({ embeds: [bootEmbedMessage] });
     if(settingsConfig.app.twitch.waiting === true) {
         setInterval(() => {
-            onliveBotChecked({"announce": channelAnnounce.toString(), "debug": channelDebug.toString(), "notifsRole": settingsConfig.role.livemod.toString() });
+            onliveBotChecked({"announce": channelAnnounce, "debug": channelDebug, "notifsRole": settingsConfig.role.livemod.toString() });
         }, settingsConfig.app.twitch.countdown);
     }
+
+    pastilleHello();
 }
 
 client.on('ready', () => { pastilleBooter(); });
