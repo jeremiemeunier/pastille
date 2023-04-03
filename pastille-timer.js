@@ -20,37 +20,41 @@ function fc_dateReturn(ajd) {
 	return ret;
 }
 
-function fc_clock() {
-	var deadline = new Date(2023, 2, 16, 8, 0);
-	var actual = new Date();
-	var timing;
-
+const fc_clock = (channels) => {
+	let deadline = new Date(2023, 8, 1, 8, 30);
+	let actual = new Date();
+	let textActivities;
 	
-	var TempsRestant = deadline.getTime() - actual.getTime();
-	var HeuresRestant = Math.floor(TempsRestant/(1000*60*60));
-	var MinRestant = Math.floor(TempsRestant/(1000*60)) - (HeuresRestant*60);
+	let TempsRestant = deadline.getTime() - actual.getTime();
+	let dayToPass = Math.floor((deadline.getTime() - actual.getTime()) / ((60*60*1000)*24));
+	let HeuresRestant = Math.floor(TempsRestant/(1000*60*60));
+	let MinRestant = Math.floor(TempsRestant/(1000*60)) - (HeuresRestant*60);
 
-	if(MinRestant.toString().length == 1) {
-		MinRestant = `0${MinRestant}`;
-	}
-
-	if(TempsRestant > 0) {
-		client.user.setPresence({ activities: [{ name: `H-${HeuresRestant.toString()}:${MinRestant.toString()}`, type: ActivityType.Competing }] });
+	if(dayToPass > 2) {
+		textActivities = `J-${dayToPass.toString()}`;
+		client.user.setPresence({ activities: [{ name: textActivities.toString(), type: ActivityType.Playing }] });
 	}
 	else {
-		client.user.setPresence({ activities: [{ name: `lancement Haltero.app`, type: ActivityType.Competing }] });
+		if(MinRestant.toString().length == 1) {
+			MinRestant = `0${MinRestant}`;
+		}
+		if(TempsRestant > 0) {
+			client.user.setPresence({ activities: [{ name: `H-${HeuresRestant.toString()}:${MinRestant.toString()}`, type: ActivityType.Playing }] });
+		}
+		else {
+			client.user.setPresence({ activities: [{ name: `lancement DigitalTeaCompany`, type: ActivityType.Playing }] });
+		}
 	}
+
 }
 
 function fc_booter() {
-	let server = client.guilds.cache.get(secret_settings.GUILD_ID);
 	let announce = client.channels.cache.find(channel => channel.name === config_settings.channel.announce);
 	let debug = client.channels.cache.find(channel => channel.name === config_settings.channel.debug);
-	let every = server.roles.cache.find(role => role.name === '@everyone');
 
 	let bootEmbed = new EmbedBuilder()
-                            .setColor('#277CCB')
-                            .setDescription(`TIMER`)
+                            .setColor('#20A68E')
+							.setAuthor({ name: `TIMER`, iconURL: 'https://1.images.cdn.pooks.fr/github/pastillebot/pastille_avatar.png' })
                             .addFields(
                                 { name: 'Date starting', value: fc_dateReturn(new Date()), inline: true },
                                 { name: 'Debug', value: config_settings.debug.toString(), inline: true },
@@ -61,8 +65,10 @@ function fc_booter() {
 	debug.send({ embeds: [bootEmbed] });
 
 	setInterval(function() {
-		fc_clock({"announce":announce,"debug":debug,"every":every});
-	}, 30000);
+		fc_clock({"announce":announce,"debug":debug});
+	}, 60000);
+
+	fc_clock({"announce":announce,"debug":debug});
 }
 
 client.on('ready', () => { fc_booter(); });

@@ -3,7 +3,11 @@ data/config.json
 data/secret.json
 data/streamer.json
 data/automod.json
+data/alphabet.json
 logs/*
 pastille-satisfactory.js
 pastille-haltero.js
+pastille-ermes.js
+pastille-timer.js
+pastille-modtwitch-old.js
 node_modules

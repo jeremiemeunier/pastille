@@ -2,45 +2,37 @@ const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 const fs = require('fs');
 
+const alphabetLetters = JSON.parse(fs.readFileSync('data/alphabet.json'));
+
+const pollOptions = () => {
+  let options = [
+    {
+      "name": "question",
+      "description": "La quesiton que tu souhaite poser",
+      "type": 3,
+      "required": true
+    }
+  ];
+
+  for(let i = 0;i < 21; i++) {
+    let optionContent = {
+      "name": "choice_" + alphabetLetters[i]['letter'],
+      "description": "Indique un choix. Tu peux mettre un emoji en premier pour changer la réaction du bot.",
+      "type": 3,
+      "required": false
+    }
+    options.push(optionContent);
+  }
+
+  return options;
+};
+
 let secret_settings = JSON.parse(fs.readFileSync('data/secret.json'));
 const commands = [
-    { name: "role",
-      description: "Ajoute les rôles de ton choix",
-      options: [
-        {
-          name: 'add',
-          description: 'Ajoute le rôle choisi dans la liste',
-          type: 1
-        },
-        {
-          name: 'remove',
-          description: 'Retire le rôle choisi dans la liste',
-          type: 1
-        }
-      ]},
-    { name: "mods",
-      description: "Demande de l'aide à nos modérateurs" },
-    { name: "help",
-      description: "Obtiens de l'aide sur les différentes commandes" },
-    { name: "notifs",
-      description: "Sélectionne les notifications que tu veux recevoir" },
     {
       name: "poll",
       description: "Crée un sondage",
-      options: [
-        {
-          name: "question",
-          description: "Quelle est la question ?",
-          type: 3,
-          required: true
-        },
-        {
-          name: "response",
-          description: "Quelles sont les réponses (maximum 5) ? (Il faudra séparer les réponses possible par un \";\")",
-          type: 3,
-          required: true
-        }
-      ]
+      options: pollOptions()
     }
 ];
 

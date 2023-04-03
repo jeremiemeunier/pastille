@@ -19,7 +19,7 @@ const startStreamVerifier = (startTime, now) => {
     else { return false; }
 }
 
-const pastilleHello = (debugChannel) => {
+const pastilleHello = (debugChannel, logsChannel) => {
     const logTag = `pastille_bot[${settingsConfig.app.twitch.name}][${settingsConfig.app.twitch.version}]`;
     const streamerList = JSON.parse(fs.readFileSync('data/streamer.json'));
     const streamerLength = Object.keys(streamerList).length;
@@ -31,7 +31,7 @@ const pastilleHello = (debugChannel) => {
 
     for(let i = 0;i < streamerLength;i++) { logTextDebug = logTextDebug + `${logTag}   - ${streamerList[i].twitch.name}\r`; }
     logTextDebug = logTextDebug + "\`\`\`";
-    debugChannel.send(logTextDebug);
+    logsChannel.send(logTextDebug);
 }
 
 const xhrStateVerifier = (xhr) => {
@@ -110,6 +110,7 @@ const onliveBotSender = (token, streamer, params) => {
 const pastilleBooter = () => {
 	const channelAnnounce = client.channels.cache.find(channel => channel.name === settingsConfig.app.twitch.channel.announce);
 	const channelDebug = client.channels.cache.find(channel => channel.name === settingsConfig.channel.debug);
+	const channelLogs = client.channels.cache.find(channel => channel.name === settingsConfig.channel.logs);
 
     let bootEmbedMessage = new EmbedBuilder()
                                 .setColor('#20A68E')
@@ -124,11 +125,11 @@ const pastilleBooter = () => {
     channelDebug.send({ embeds: [bootEmbedMessage] });
     if(settingsConfig.app.twitch.waiting === true) {
         setInterval(() => {
-            onliveBotChecked({"announce": channelAnnounce, "debug": channelDebug, "notifsRole": settingsConfig.role.livemod.toString() });
+            onliveBotChecked({"announce": channelAnnounce, "debug": channelDebug, "notifsRole": settingsConfig.role.livemod.toString(), "logs": channelLogs });
         }, settingsConfig.app.twitch.countdown);
     }
 
-    pastilleHello(channelDebug);
+    pastilleHello(channelDebug, channelLogs);
 }
 
 client.on('ready', () => { pastilleBooter(); });
