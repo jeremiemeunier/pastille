@@ -1,9 +1,9 @@
 {
     "dependencies": {
-      "discord.js": "^14.9.0",
-      "xmlhttprequest": "^1.8.0",
-      "@discordjs/rest": "^1.0.1",
-      "fs": "^0.0.1-security"
+        "@discordjs/rest": "^1.0.1",
+        "discord.js": "^14.9.0",
+        "fs": "^0.0.1-security",
+        "nodemon": "^2.0.22",
+        "xmlhttprequest": "^1.8.0"
     }
-  }
-  
+}
