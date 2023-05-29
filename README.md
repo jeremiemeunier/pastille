@@ -1,4 +1,7 @@
 # pastille-bot
+
+📣 A big update is on the way ! Wait a few days and it come
+
 It's a bot. An explosive bot named Pastille but only for an discord !
 
 <div align="center">
