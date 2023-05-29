@@ -82,18 +82,28 @@ const onliveBotSender = (token, streamer, params) => {
 
             if(streamerData !== undefined) {
                 if(startStreamVerifier(streamerData.started_at)) {
-                    let liveButton = new ActionRowBuilder()
-                                            .addComponents(
-                                                new ButtonBuilder()
-                                                    .setLabel('Rejoindre sur twitch.tv')
-                                                    .setStyle(ButtonStyle.Link)
-                                                    .setURL(`https://twitch.tv/${streamer.twitch.name.toString()}`)
-                                            );
-                    let liveTextMessage = `**${streamer.twitch.name.toString()}** est actuellement en live.`;
-                    if(streamer.notif_line !== undefined) { liveTextMessage += `\n${data.notif_line.toString()}`; }
-                    liveTextMessage += `\nIl stream : **${streamerData.title}** sur **${streamerData.game_name}** C'est pour vous <@&${params.notifsRole}> !`;
+                    try {
+                        let thumbnail = streamerData.thumbnail_url;
+                            thumbnail = thumbnail.replace('{width}', 1920);
+                            thumbnail = thumbnail.replace('{height}', 1080);
+                        const liveButton = new ActionRowBuilder()
+                                                .addComponents(
+                                                    new ButtonBuilder()
+                                                        .setLabel('Rejoindre sur twitch.tv')
+                                                        .setStyle(ButtonStyle.Link)
+                                                        .setURL(`https://twitch.tv/${streamer.twitch.name.toString()}`)
+                                                );
+                        const liveEmbed = new EmbedBuilder()
+                                                .setColor('#20A68E')
+                                                .setTitle(`${streamer.twitch.name.toString()} est actuellement en live !`)
+                                                .setDescription(`Il stream : **${streamerData.title}** sur **${streamerData.game_name}**`)
+                                                .setThumbnail(thumbnail);
 
-                    params.announce.send({ content: liveTextMessage, components: [liveButton] });
+                        console.log()
+
+                        params.announce.send({ content: `${streamer.twitch.name.toString()} est en live ! <@&${params.notifsRole}>`, embeds: [liveEmbed], components: [liveButton] });
+                    }
+                    catch(error) { console.log('An error occured', error); }
                 }
             }
         }

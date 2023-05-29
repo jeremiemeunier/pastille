@@ -76,7 +76,7 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
         let nbConnected = channel.members.map(x => x).length;
 
         if(nbConnected === 0) { deleteThreadOnLeave(channel, text); }
-        else { leaveThreadOnLeave(channel, oldState.member.user.id, text); }
+        else { leaveThreadOnLeave(channel, text, oldState.member.user.id); }
     }
     else if (oldState.channelId === null) {
         const guild = client.guilds.cache.find(guild => guild.id === newState.guild.id);
@@ -286,7 +286,6 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
     }
 });
 
-
 client.on(Events.MessageCreate, async (message) => {
     const content = message.content;
     const guild = client.guilds.cache.find(guild => guild.id === message.guildId);
@@ -364,7 +363,6 @@ client.on(Events.MessageCreate, async (message) => {
     }
     else { return; }
 });
-
 
 client.on('ready', () => { fc_booter(); });
 client.login(secret_settings.BOT_TOKEN);
