@@ -2,32 +2,32 @@
     "version": "1.2.dev_0.2",
     "options": {
         "debug": false,
-        "bang": UNIQUE_CHARACTERE, For example '!'
-        "color": HEXADECIMAL_CODE it's the color of embed elements
+        "bang": "!",
+        "color": "#000000"
     },
     "channels": {
         "console": "pastille-logs",
         "debug": "pastille-hello",
-        "announce": "annonces",
-        "help": "staff",
+        "announce": "0000000000000000000",
+        "help": "0000000000000000000",
         "voiceText": "voix-avec-les-mains"
     },
     "moderation": {
         "automod": true,
         "limit": {
-            // Set to -1 to ignore limit
             "emoji": 8,
             "tags": 4
         },
         "imune": [
-            AN_LIST_OF_IMMUNE_ROLE
+            "0000000000000000000",
+            "0000000000000000000"
         ],
         "channels": {
-            "alert": "automod-alertes",
-            "report": YOUR_AUTOMOD_REPORT,
-            "reclamation": YOUR_CHANNEL_STAFF_NAME
+            "alert": "0000000000000000000",
+            "report": "0000000000000000000",
+            "reclamation": "0000000000000000000"
         },
-        "rule": YOUR_CHANNEL_RULE_ID
+        "rule": "0000000000000000000"
     },
     "app": {
         "worker": {
