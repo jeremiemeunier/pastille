@@ -1,49 +1,50 @@
-const { REST } = require('@discordjs/rest');
-const { Routes } = require('discord-api-types/v9');
-const fs = require('fs');
+const { REST, Routes } = require('discord.js');
+const { BOT_ID, GUILD_ID, BOT_TOKEN } = require('./data/secret.json');
+const fs = require('node:fs');
+const path = require('node:path');
 
-const alphabetLetters = JSON.parse(fs.readFileSync('data/alphabet.json'));
+const commands = [];
+const foldersPath = path.join(__dirname, 'commands');
+const commandFolders = fs.readdirSync(foldersPath);
 
-const pollOptions = () => {
-  let options = [
-    {
-      "name": "question",
-      "description": "La quesiton que tu souhaite poser",
-      "type": 3,
-      "required": true
-    }
-  ];
+if (!String.prototype.endsWith) {
+    Object.defineProperty(String.prototype, 'endsWith', {
+        enumerable: false,
+        configurable: false,
+        writable: false,
+        value: function (searchString, position) {
+            position = position || this.length;
+            position = position - searchString.length;
+            var lastIndex = this.lastIndexOf(searchString);
+            return lastIndex !== -1 && lastIndex === position;
+        }
+    });
+}
 
-  for(let i = 0;i < 21; i++) {
-    let optionContent = {
-      "name": "choice_" + alphabetLetters[i]['letter'],
-      "description": "Indique un choix. Tu peux mettre un emoji en premier pour changer la réaction du bot.",
-      "type": 3,
-      "required": false
-    }
-    options.push(optionContent);
-  }
+for(const folder of commandFolders) {
+	const commandsPath = path.join(foldersPath, folder);
+	const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
 
-  return options;
-};
+	for(const file of commandFiles) {
+		const filePath = path.join(commandsPath, file);
+		const command = require(filePath);
+		if('data' in command) {
+			commands.push(command.data);
+		} else {
+			console.log(`[WARNING] The command at ${filePath} is missing a required "data" property.`);
+		}
+	}
+}
 
-let secret_settings = JSON.parse(fs.readFileSync('data/secret.json'));
-const commands = [
-    {
-      name: "poll",
-      description: "Crée un sondage",
-      options: pollOptions()
-    }
-];
-
-const rest = new REST({ version: '10' }).setToken(secret_settings.BOT_TOKEN);
-
+const rest = new REST().setToken(BOT_TOKEN);
 (async () => {
 	try {
-	  await rest.put(
-      Routes.applicationGuildCommands(secret_settings.BOT_ID, secret_settings.GUILD_ID),
-      { body: commands },
-	  );
-	  console.log('Successfully reloaded application (/) commands.');
-	} catch (error) { console.error(error); }
- })();
+		console.log(`Started refreshing ${commands.length} application (/) commands.`);
+		const data = await rest.put(
+			Routes.applicationGuildCommands(BOT_ID, GUILD_ID),
+			{ body: commands },
+		);
+		console.log(`Successfully reloaded ${data.length} application (/) commands.`);
+	}
+	catch (error) { console.error(error); }
+})();

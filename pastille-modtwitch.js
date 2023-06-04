@@ -12,8 +12,8 @@ const startStreamVerifier = (startTime, now) => {
     if(now === undefined) { now = Date.parse(new Date()); }
 
         startTime = Date.parse(startTime);
-    let previousTime = now - settingsConfig.app.twitch.countdown;
-    let nextTime = now + settingsConfig.app.twitch.countdown;
+    let previousTime = now - settingsConfig.app.twitch.delay;
+    let nextTime = now + settingsConfig.app.twitch.delay;
 
     if(startTime > previousTime && startTime < nextTime) { return true; }
     else { return false; }
@@ -27,7 +27,7 @@ const pastilleHello = (debugChannel, logsChannel) => {
 
     logTextDebug = logTextDebug + `\`\`\`${logTag} Hi here ! I'm pastille_bot 😀\r`;
     logTextDebug = logTextDebug + `${logTag} You launch the : ${settingsConfig.app.twitch.name} module\r`;
-    logTextDebug = logTextDebug + `${logTag} Now i'm listen all ${settingsConfig.app.twitch.countdown/1000}s for all following streamer :\r`;
+    logTextDebug = logTextDebug + `${logTag} Now i'm listen all ${settingsConfig.app.twitch.delay/1000}s for all following streamer :\r`;
 
     for(let i = 0;i < streamerLength;i++) { logTextDebug = logTextDebug + `${logTag}   - ${streamerList[i].twitch.name}\r`; }
     logTextDebug = logTextDebug + "\`\`\`";
@@ -74,7 +74,7 @@ const onliveBotChecked = (params) => {
 
 const onliveBotSender = (token, streamer, params) => {
     const _XHR_streamerData = new XMLHttpRequest();
-    const streamerDataAPI = settingsConfig.api.twitch_stream + streamer.twitch.id;
+    const streamerDataAPI = `https://api.twitch.tv/helix/streams?user_id=${streamer.twitch.id}`;
 
     _XHR_streamerData.onreadystatechange = () => {
         if(xhrStateVerifier(_XHR_streamerData)) {
@@ -94,13 +94,10 @@ const onliveBotSender = (token, streamer, params) => {
                                                         .setURL(`https://twitch.tv/${streamer.twitch.name.toString()}`)
                                                 );
                         const liveEmbed = new EmbedBuilder()
-                                                .setColor('#20A68E')
+                                                .setColor(`${settingsConfig.options.color}`)
                                                 .setTitle(`${streamer.twitch.name.toString()} est actuellement en live !`)
                                                 .setDescription(`Il stream : **${streamerData.title}** sur **${streamerData.game_name}**`)
                                                 .setThumbnail(thumbnail);
-
-                        console.log()
-
                         params.announce.send({ content: `${streamer.twitch.name.toString()} est en live ! <@&${params.notifsRole}>`, embeds: [liveEmbed], components: [liveButton] });
                     }
                     catch(error) { console.log('An error occured', error); }
@@ -118,25 +115,24 @@ const onliveBotSender = (token, streamer, params) => {
 // ########## //
 
 const pastilleBooter = () => {
-	const channelAnnounce = client.channels.cache.find(channel => channel.name === settingsConfig.app.twitch.channel.announce);
-	const channelDebug = client.channels.cache.find(channel => channel.name === settingsConfig.channel.debug);
-	const channelLogs = client.channels.cache.find(channel => channel.name === settingsConfig.channel.logs);
+	const channelAnnounce = client.channels.cache.find(channel => channel.id === settingsConfig.app.twitch.channel);
+	const channelDebug = client.channels.cache.find(channel => channel.name === settingsConfig.channels.debug);
+	const channelLogs = client.channels.cache.find(channel => channel.name === settingsConfig.channels.console);
 
     let bootEmbedMessage = new EmbedBuilder()
-                                .setColor('#20A68E')
+                                .setColor(`${settingsConfig.options.color}`)
                                 .setAuthor({ name: settingsConfig.app.twitch.name, iconURL: 'https://1.images.cdn.pooks.fr/github/pastillebot/pastille_avatar.png' })
                                 .addFields(
                                     { name: 'Date starting', value: dateReturnFormater(new Date()), inline: true },
-                                    { name: 'Debug', value: settingsConfig.debug.toString(), inline: true },
                                     { name: 'Version', value: settingsConfig.version.toString(), inline: true }
                                 )
                                 .setTimestamp()
                                 .setFooter({ text: `Version ${settingsConfig.app.twitch.version}`, });
     channelDebug.send({ embeds: [bootEmbedMessage] });
-    if(settingsConfig.app.twitch.waiting === true) {
+    if(settingsConfig.app.twitch.wait === true) {
         setInterval(() => {
             onliveBotChecked({"announce": channelAnnounce, "debug": channelDebug, "notifsRole": settingsConfig.role.livemod.toString(), "logs": channelLogs });
-        }, settingsConfig.app.twitch.countdown);
+        }, settingsConfig.app.twitch.delay);
     }
 
     pastilleHello(channelDebug, channelLogs);

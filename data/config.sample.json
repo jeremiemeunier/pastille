@@ -1,29 +1,49 @@
 {
-    "countdown": "300000",
-    "version": "v1.1-devbuild",
-    "debug": false,
-    "waiting": true,
-    "channel": {
-        "debug": "",
-        "announce": ""
+    "version": "1.2.dev_0.2",
+    "options": {
+        "debug": false,
+        "bang": "!",
+        "color": "#000000"
     },
-    "role": {
-        "announce": "",
-        "community": "",
-        "onlive": ""
+    "channels": {
+        "console": "pastille-logs",
+        "debug": "pastille-hello",
+        "announce": "0000000000000000000",
+        "help": "0000000000000000000",
+        "voiceText": "voix-avec-les-mains"
     },
-    "bang": "!",
-    "emoji": {
-        "poll": "",
-        "live": ""
+    "moderation": {
+        "automod": true,
+        "limit": {
+            "emoji": 8,
+            "tags": 4
+        },
+        "imune": [
+            "0000000000000000000",
+            "0000000000000000000"
+        ],
+        "channels": {
+            "alert": "0000000000000000000",
+            "report": "0000000000000000000",
+            "reclamation": "0000000000000000000"
+        },
+        "rule": "0000000000000000000"
     },
-    "api": {
-        "twitch_stream": "https://api.twitch.tv/helix/streams?user_id=",
-        "twitch_oauth": "https://id.twitch.tv/oauth2/token?client_id="
-    },
-    "app_name": {
-        "worker": "CMDS_WORKER",
-        "twitch":"MOD_TWITCH",
-        "cmds":"CMDS_REGISTER"
+    "app": {
+        "worker": {
+            "name": "CMDS_WORKER",
+            "version": "1.2.dev_0.2"
+        },
+        "twitch": {
+            "name": "MOD_TWITCH",
+            "version": "1.2.dev_0.2",
+            "role": "",
+            "wait": true,
+            "delay": 300000
+        },
+        "commands": {
+            "name": "CMDS_REGISTER",
+            "version": "1.2.dev_0.2"
+        }
     }
 }
