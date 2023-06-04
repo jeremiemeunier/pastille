@@ -97,7 +97,7 @@ To create your twitch app : [Twitch Developers](https://dev.twitch.tv/console/ap
 }
 ```
 
-##### Mod twitch options
+##### Mod worker options
 
 ```json
 "worker": {
@@ -106,7 +106,7 @@ To create your twitch app : [Twitch Developers](https://dev.twitch.tv/console/ap
 },
 ```
 
-##### Mod twitch options
+##### Mod commands options
 
 ```json
 "commands": {
