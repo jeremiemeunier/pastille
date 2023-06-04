@@ -35,7 +35,7 @@ const pastilleBooter = () => {
                                 )
                                 .setTimestamp()
                                 .setFooter({ text: `Version ${globalSettings.version}`, });
-        debugChannel.send({ embeds: [bootEmbed] });
+        // debugChannel.send({ embeds: [bootEmbed] });
         autoLog('Hello here !');
     }
     catch (error) { autoLog(`An error occured : ${error}`); }
@@ -49,9 +49,9 @@ client.on('interactionCreate', async interaction => {
         try {
             const embed = new EmbedBuilder()
                                 .setColor(`${globalSettings.options.color}`)
-                                .setDescription(`Pour contacter le staff cliquer sur 📨`);
+                                .setDescription(`Pour contacter le staff cliquer sur 🎟️`);
             const message = await interaction.reply({ embeds: [embed], fetchReply: true });
-            message.react('📨');
+            message.react('🎟️');
         }
         catch(error) { autoLog(`An error occured\r\n ${error}`); }
     }
@@ -167,6 +167,93 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
             else { leaveThreadOnLeave(oldChannel, text, oldState.member.user.id); }
             if(newNbConnected === 1) { createThreadOnJoin(newChannel, text, console, newState.member.user.id); }
             else { joinThreadOnJoin(newChannel, text, newState.member.user.id); }
+        }
+    }
+});
+
+client.on(Events.MessageReactionAdd, async (reaction, user) => {
+    if(user.username === 'pastille_bot') { return; }
+    else {
+        const helpZone = client.channels.cache.find(channel => channel.id === globalSettings.channels.help);
+        if (reaction.partial) {
+            try { await reaction.fetch(); }
+            catch (error) { autoLog(`An error occured\r\n ${error}`); return; }
+        }
+
+        if(reaction.message.interaction != undefined) {
+            if(reaction.message.interaction.commandName === 'rule') {
+                if(reaction.emoji.name === '🐶') {
+                    const guild = client.guilds.cache.find(guild => guild.id === reaction.message.guildId);
+                    const member = guild.members.cache.find(member => member.id === user.id);
+                    const role = guild.roles.cache.find(role => role.id === globalSettings.moderation.rule);
+
+                    try { await member.roles.add(role); }
+                    catch(error) { autoLog(`An error occured\r\n ${error}`); return; }
+                }
+                else { reaction.users.remove(user); }
+            }
+            else if(reaction.message.interaction.commandName === 'staff') {
+                if(reaction.emoji.name === '🎟️') {
+                    try {
+                        reaction.users.remove(user);
+                        const thread = await helpZone.threads.create({
+                            name: `@${user.username} request help`,
+                            autoArchiveDuration: 60,
+                            reason: `Requested help form @${user.username}`,
+                            type: ChannelType.PrivateThread,
+                        });
+                        await thread.members.add(user);
+                        let embed = new EmbedBuilder()
+                                                .setColor(`${globalSettings.options.color}`)
+                                                .setTitle(`Requested help from @${user.username}`)
+                                                .setDescription(`Pour mettre fin à ta demande d'aide clique sur 🔒`);
+                        const message = await thread.send({ embeds: [embed] });
+                        message.react('🔒');
+                    }
+                    catch(error) { autoLog(`An error occured\r\n ${error}`); return; }
+                }
+                else { reaction.users.remove(user); }
+            }
+        }
+        else {
+            if(reaction.emoji.name === '🔒') {
+                let channel = client.channels.cache.find(channel => channel.id === globalSettings.channels.help);
+                let thread = channel.threads.cache.find(thread => thread.id === reaction.message.channelId);
+
+                try {
+                    thread.setLocked(true);
+                    let embed = new EmbedBuilder()
+                                        .setColor(`${globalSettings.options.color}`)
+                                        .addFields(
+                                            { name: "Archivage", value: 'Clique sur 📦 pour archiver ce fil.', inline: true },
+                                            { name: "Déverouillage", value: 'Clique sur 🔓 pour débloquer ce fil.', inline: true })
+                                        .setDescription(`Ce fil est maintenant verrouillé.`);
+                    const message = await thread.send({ embeds: [embed]});
+                    message.react('📦');
+                    message.react('🔓');
+                }
+                catch(error) { autoLog(`An error occured\r\n ${error}`); return; }
+            }
+            else if(reaction.emoji.name === '📦') {
+                let channel = client.channels.cache.find(channel => channel.id === globalSettings.channels.help);
+                let thread = channel.threads.cache.find(thread => thread.id === reaction.message.channelId);
+
+                try { thread.setArchived(true); } catch(error) { autoLog(`An error occured\r\n ${error}`); return; }
+            }
+            else if(reaction.emoji.name === '🔓') {
+                let channel = client.channels.cache.find(channel => channel.id === globalSettings.channels.help);
+                let thread = channel.threads.cache.find(thread => thread.id === reaction.message.channelId);
+
+                try {
+                    thread.setLocked(false);
+                    let embed = new EmbedBuilder()
+                                        .setColor(`${globalSettings.options.color}`)
+                                        .setDescription(`Ce fil est de nouveau disponible. Pour mettre fin à ta demande clique sur 🔒`);
+                    const message = await thread.send({ embeds: [embed] });
+                    message.react('🔒');
+                }
+                catch(error) { autoLog(`An error occured\r\n ${error}`); return; }
+            }
         }
     }
 });
