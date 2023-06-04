@@ -35,7 +35,7 @@ const pastilleBooter = () => {
                                 )
                                 .setTimestamp()
                                 .setFooter({ text: `Version ${globalSettings.version}`, });
-        // debugChannel.send({ embeds: [bootEmbed] });
+        debugChannel.send({ embeds: [bootEmbed] });
         autoLog('Hello here !');
     }
     catch (error) { autoLog(`An error occured : ${error}`); }
@@ -49,7 +49,8 @@ client.on('interactionCreate', async interaction => {
         try {
             const embed = new EmbedBuilder()
                                 .setColor(`${globalSettings.options.color}`)
-                                .setDescription(`Pour contacter le staff cliquer sur 🎟️`);
+                                .setTitle(`Demande de support`)
+                                .setDescription(`Comment pouvons-nous t'aider ? Si tu as des questions ou des demandes clique sur 🎟️ pour contacter le staff`);
             const message = await interaction.reply({ embeds: [embed], fetchReply: true });
             message.react('🎟️');
         }
