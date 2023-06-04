@@ -1,6 +1,7 @@
 const { ChannelType, EmbedBuilder } = require('discord.js');
+const { logger } = require('../function/base.js');
 
-const createThreadOnJoin = async (channel, threadChannel, user) => {
+const createThreadOnJoin = async (channel, threadChannel, channelConsole, user) => {
     try { const thread = await threadChannel.threads.create({
             name: `Voice : ${channel.name}`,
             autoArchiveDuration: 60,
@@ -13,10 +14,10 @@ const createThreadOnJoin = async (channel, threadChannel, user) => {
                             .setDescription(`<@${user}> tu as rejoint un salon vocal 🎙️`);
         const message = await thread.send({ embeds: [embed, embedExplicative] });
     }
-    catch(error) { console.log('An error occured', error); }
+    catch(error) { logger(channelConsole, `An error occured\r\n ${error}`); }
 }
 
-const joinThreadOnJoin = async (channel, threadChannel, user) => {
+const joinThreadOnJoin = async (channel, threadChannel, channelConsole, user) => {
     try {
         const thread = threadChannel.threads.cache.find(thread => thread.name === `Voice : ${channel.name}`);
         await thread.members.add(user);
@@ -25,10 +26,10 @@ const joinThreadOnJoin = async (channel, threadChannel, user) => {
                             .setDescription(`<@${user}> a rejoint le salon vocal 🎙️`);
         const message = await thread.send({ embeds: [embed] });
     }
-    catch(error) { console.log('An error occured', error); }
+    catch(error) { logger(channelConsole, `An error occured\r\n ${error}`); }
 }
 
-const leaveThreadOnLeave = async (channel, threadChannel, user) => {
+const leaveThreadOnLeave = async (channel, threadChannel, channelConsole, user) => {
     try {
         const thread = threadChannel.threads.cache.find(thread => thread.name === `Voice : ${channel.name}`);
         await thread.members.remove(user);
@@ -37,15 +38,15 @@ const leaveThreadOnLeave = async (channel, threadChannel, user) => {
                             .setDescription(`<@${user}> a quitter ce salon vocal 💨`);
         const message = await thread.send({ embeds: [embed] });
     }
-    catch(error) { console.log('An error occured', error); }
+    catch(error) { logger(channelConsole, `An error occured\r\n ${error}`); }
 }
 
-const deleteThreadOnLeave = async (channel, threadChannel) => {
+const deleteThreadOnLeave = async (channel, threadChannel, channelConsole) => {
     try {
         const thread = threadChannel.threads.cache.find(thread => thread.name === `Voice : ${channel.name}`);
         await thread.delete();
     }
-    catch(error) { console.log('An error occured', error); }
+    catch(error) { logger(channelConsole, `An error occured\r\n ${error}`); }
 }
 
 const embedExplicative = new EmbedBuilder()

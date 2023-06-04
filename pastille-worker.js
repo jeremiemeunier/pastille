@@ -14,11 +14,10 @@ const { dateParser, logger } = require('./function/base.js');
 
 let consoleChannel;
 let debugChannel;
-const tag = `pastille_bot[${globalSettings.version}] `;
 
 // ##### APP ##### \\
 
-const autoLog = (content) => { logger(tag, consoleChannel, content); }
+const autoLog = (content) => { logger(consoleChannel, content); }
 
 const pastilleBooter = () => {
     debugChannel = client.channels.cache.find(channel => channel.name === globalSettings.channels.debug);
@@ -34,7 +33,7 @@ const pastilleBooter = () => {
                                     { name: 'Command bang', value: globalSettings.options.bang, inline: true }
                                 )
                                 .setTimestamp()
-                                .setFooter({ text: `Version ${globalSettings.version}`, });
+                                .setFooter({ text: `Version ${globalSettings.version}` });
         debugChannel.send({ embeds: [bootEmbed] });
         autoLog('Hello here !');
     }
@@ -143,20 +142,21 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
         const guild = client.guilds.cache.find(guild => guild.id === oldState.guild.id) ||
                       client.guilds.cache.find(guild => guild.id === newState.guild.id);
         const text = guild.channels.cache.find(text => text.name === globalSettings.channels.voiceText);
+        const user = oldState.member.user.id || newState.member.user.id;
 
         if (newState.channelId === null) {
             const channel = guild.channels.cache.find(channel => channel.id === oldState.channelId);
             const connected = channel.members.map(x => x).length;
 
             if(connected === 0) { deleteThreadOnLeave(channel, text, console); }
-            else { leaveThreadOnLeave(channel, text, console, oldState.member.user.id); }
+            else { leaveThreadOnLeave(channel, text, consoleChannel, user); }
         }
         else if (oldState.channelId === null) {
             const channel = guild.channels.cache.find(channel => channel.id === newState.channelId);
             const connected = channel.members.map(x => x).length;
     
-            if(connected === 1) {  createThreadOnJoin(channel, text, console, oldState.member.user.id); }
-            else { joinThreadOnJoin(channel, text, console, newState.member.user.id); }
+            if(connected === 1) {  createThreadOnJoin(channel, text, consoleChannel, user); }
+            else { joinThreadOnJoin(channel, text, consoleChannel, user); }
         }
         else {
             const oldChannel = guild.channels.cache.find(oldChannel => oldChannel.id === oldState.channelId);
@@ -164,10 +164,10 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
             const oldNbConnected = oldChannel.members.map(x => x).length;
             const newNbConnected = newChannel.members.map(x => x).length;
     
-            if(oldNbConnected === 0) { deleteThreadOnLeave(oldChannel, text, console); }
-            else { leaveThreadOnLeave(oldChannel, text, oldState.member.user.id); }
-            if(newNbConnected === 1) { createThreadOnJoin(newChannel, text, console, newState.member.user.id); }
-            else { joinThreadOnJoin(newChannel, text, newState.member.user.id); }
+            if(oldNbConnected === 0) { deleteThreadOnLeave(oldChannel, text, consoleChannel); }
+            else { leaveThreadOnLeave(oldChannel, text, consoleChannel, user); }
+            if(newNbConnected === 1) { createThreadOnJoin(newChannel, text, consoleChannel, user); }
+            else { joinThreadOnJoin(newChannel, text, consoleChannel, user); }
         }
     }
 });
