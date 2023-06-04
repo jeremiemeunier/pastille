@@ -28,7 +28,6 @@ For configuration of pastille-bot you must have these files : [data/secret.json]
 
 #### data/secret.json
 
-
 To create your discord app : [Discord Developers](https://discord.com/developers/applications)<br />
 To create your twitch app : [Twitch Developers](https://dev.twitch.tv/console/apps/create)<br />
 
@@ -47,34 +46,76 @@ To create your twitch app : [Twitch Developers](https://dev.twitch.tv/console/ap
 
 ```json
 {
-    "countdown": WAITING_TIME_IN_MS,
-    "version": "1.1.dev",
-    "debug": false,
-    "waiting": true,
-    "channel": {
-        "debug": DISCORD_CHANNEL_NAME_FOR_DEBUG,
-        "announce": DISCORD_CHANNEL_NAME_FOR_ANNOUNCEMENT
+    "version": "1.2.dev_0.4",
+    "options": {
+        "debug": false,
+        "bang": UNIQUE_CHARACTERS,
+        "color": HEXADECIMAL_CODE
     },
-    "role": {
-        "announce": ROLE_ID_FOR_ANNOUNCEMENT,
-        "onlive": ROLE_ID_FOR_USER_LIVE
+    "channels": {
+        "console": NAME_OF_CHANNEL_FOR_CONSOLE,
+        "debug": NAME_OF_CHANNEL_FOR_LOGS,
+        "announce": "0000000000000000000",
+        "help": "0000000000000000000",
+        "voiceText": NAME_OF_CHANNEL_FOR_VOCAL_THREADS
     },
-    "bang": "!",
-    "emoji": {
-        "poll": EMOJI_NAME_FOR_POLL,
-        "live": EMOJI_NAME_FOR_LIVE
+    "moderation": {
+        "automod": true,
+        "limit": {
+            "emoji": 8,
+            "tags": 4
+        },
+        "imune": [
+            "0000000000000000000",
+            "0000000000000000000",
+            "0000000000000000000"
+        ],
+        "channels": {
+            "alert": "0000000000000000000",
+            "report": "0000000000000000000",
+            "reclamation": "0000000000000000000"
+        },
+        "rule": "0000000000000000000"
     },
-    "api": {
-        "twitch_stream": "https://api.twitch.tv/helix/streams?user_id=",
-        "twitch_oauth": "https://id.twitch.tv/oauth2/token?client_id="
-    },
-    "app_name": {
-        "worker": "CMDS_WORKER",
-        "twitch": "MOD_TWITCH",
-        "cmds": "CMDS_REGISTER"
+    "app": {
+        SPECIFIC_OPTIONS_FOR_MODULE
     }
 }
 ```
+<hr>
+
+##### Mod twitch options
+
+```json
+"twitch": {
+    "name": "MOD_TWITCH",
+    "version": "1.2.dev_0.2",
+    "role": "0000000000000000000",
+    "wait": true,
+    "delay": WAITING_TIME_IN_MS,
+    "channel": "0000000000000000000"
+}
+```
+
+##### Mod twitch options
+
+```json
+"worker": {
+    "name": "CMDS_WORKER",
+    "version": "1.2.dev_0.2"
+},
+```
+
+##### Mod twitch options
+
+```json
+"commands": {
+    "name": "CMDS_WORKER",
+    "version": "1.2.dev_0.2"
+},
+```
+
+<hr>
 
 #### data/streamer.json
 ```json
@@ -91,5 +132,37 @@ To create your twitch app : [Twitch Developers](https://dev.twitch.tv/console/ap
     "progress": BOOLEAN,
     "notif_line": STRING
   }
+}
+```
+
+## commands
+
+Folder of commands
+
+### Folder structure
+
+You can add commands in subfolder.
+
+```
+your_bot_folder/
+├── node_modules
+├── data/
+|   ├── config.json
+|   └── secret.json
+├── commands/
+|   └── base/
+|       └── command.js
+└── pastille_worker.js
+```
+
+```js
+const commands =
+{
+    name: "NAME_OF_COMMANDS",
+    description: "DESCRIPTION_OF_COMMANDS"
+};
+
+module.exports = {
+    data: commands
 }
 ```
