@@ -7,7 +7,7 @@ const commands = [];
 const foldersPath = path.join(__dirname, 'commands');
 const commandFolders = fs.readdirSync(foldersPath);
 
-const { BOT_ID, GUILD_ID, BOT_TOKEN, BOT_OWNER_ID } = require('./data/secret.json');
+const { BOT_ID, BOT_TOKEN, BOT_OWNER_ID } = require('./data/secret.json');
 const { REST, Routes, ChannelType, Client, Events, EmbedBuilder, GatewayIntentBits, Partials, ShardingManager } = require('discord.js');
 const client = new Client({
     intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessageReactions, GatewayIntentBits.GuildVoiceStates],
@@ -40,31 +40,32 @@ if (!String.prototype.endsWith) {
 
 // ##### CMD ##### \\
 
-const commandRegister = () => {
-    for(const folder of commandFolders) {
-        const commandsPath = path.join(foldersPath, folder);
-        const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
-    
-        for(const file of commandFiles) {
-            const filePath = path.join(commandsPath, file);
-            const command = require(filePath);
-            if('data' in command) {
-                commands.push(command.data);
-            } else {
-                autoLog(`[WARNING] The command at ${filePath} is missing a required "data" property.`);
-            }
+for(const folder of commandFolders) {
+    const commandsPath = path.join(foldersPath, folder);
+    const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+
+    for(const file of commandFiles) {
+        const filePath = path.join(commandsPath, file);
+        const command = require(filePath);
+        if('data' in command) {
+            commands.push(command.data);
+        } else {
+            autoLog(`[WARNING] The command at ${filePath} is missing a required "data" property.`);
         }
     }
+}
 
+const commandRegister = (GUILD_ID) => {
     const rest = new REST().setToken(BOT_TOKEN);
+    const guildName = client.guilds.cache.find(guild => guild.id === GUILD_ID).name;
     (async () => {
         try {
-            autoLog(`Started refreshing ${commands.length} application (/) commands.`);
+            autoLog(`Started refreshing ${commands.length} application (/) commands for ${guildName}.`);
             const data = await rest.put(
                 Routes.applicationGuildCommands(BOT_ID, GUILD_ID),
                 { body: commands },
             );
-            autoLog(`Successfully reloaded ${data.length} application (/) commands.`);
+            autoLog(`Successfully reloaded ${data.length} application (/) commands for ${guildName}.`);
         }
         catch (error) { console.error(error); }
     })();
@@ -75,6 +76,9 @@ const commandRegister = () => {
 const pastilleBooter = () => {
     debugChannel = client.channels.cache.find(channel => channel.name === globalSettings.channels.debug);
     consoleChannel = client.channels.cache.find(channel => channel.name === globalSettings.channels.console);
+    
+    const clientGuildQuantity = client.guilds.cache.map(guild => guild.id).length;
+    const clientGuildIds = client.guilds.cache.map(guild => guild.id);
 
 	try {
         let bootEmbed = new EmbedBuilder()
@@ -90,7 +94,10 @@ const pastilleBooter = () => {
                                 .setFooter({ text: `Version ${globalSettings.version}` });
         debugChannel.send({ embeds: [bootEmbed] });
         autoLog('Hello here !');
-        commandRegister();
+        
+        for(let i = 0;i < clientGuildQuantity;i++) {
+            commandRegister(clientGuildIds[i]);
+        }
     }
     catch (error) { autoLog(`An error occured : ${error}`); }
 }
@@ -269,6 +276,9 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
                     catch(error) { autoLog(`An error occured\r\n ${error}`); return; }
                 }
                 else { reaction.users.remove(user); }
+            }
+            else if(reaction.message.interaction.commandName === 'voices') {
+
             }
         }
         else {
