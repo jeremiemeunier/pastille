@@ -324,6 +324,35 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
     }
 });
 
+client.on(Events.MessageCreate, async (message) => {
+    const content = message.content;
+    const guild = client.guilds.cache.find(guild => guild.id === message.guildId);
+    const channel = guild.channels.cache.find(channel => channel.id === message.channelId);
+
+    const msg = channel.messages.cache.find(message => message.id === message.id);
+    let splitedMsg = content.split(' ');
+    let cmd = splitedMsg.shift().slice(1);
+    let text = splitedMsg.join(' ');
+
+    if(message.author.bot === true) { return; }
+    if(content.startsWith(globalSettings.options.bang)) {
+        if(cmd === 'ip' || cmd === 'bichonwood') {
+            message.delete();
+            const embed = new EmbedBuilder()
+                                    .setColor(`${globalSettings.options.color}`)
+                                    .setTitle('Envie de nous rejoindre sur BichonWood ?')
+                                    .setDescription(`Pour rejoindre le serveur créatif de BichonWood, tu doit faire une demande auprès d'un modérateur ou un admin.`)
+                                    .addFields(
+                                        { name: 'Version', value: '1.19.4', inline: true },
+                                        { name: 'IP', value: 'minecraft.jeremiemeunier.fr', inline: true }
+                                    );
+            try { channel.send({ embeds: [embed] }); }
+            catch(error) { autoLog(`An error occured\r\n ${error}`); return; }
+        }
+    }
+    else { return; }
+});
+
 // ##### AUTOMOD ##### \\
 
 
