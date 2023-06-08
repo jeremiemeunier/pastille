@@ -37,7 +37,7 @@ To create your twitch app : [Twitch Developers](https://dev.twitch.tv/console/ap
     "BOT_OWNER_ID": YOUR_DISCORD_ID,
     "GUILD_ID": YOUR_DISCORD_SERVER_ID,
     "BOT_ID": YOUR_BOT_USER_ID,
-    "TWITCH_SECRET_TOKEN": YOUR_SECRET_APP_TOKEN
+    "TWITCH_SECRET_TOKEN": YOUR_SECRET_APP_TOKEN,
     "TWITCH_CLIENT_TOKEN": YOUR_CLIENT_APP_TOKEN
 }
 ```
