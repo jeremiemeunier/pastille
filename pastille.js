@@ -235,7 +235,7 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
 });
 
 client.on(Events.MessageReactionAdd, async (reaction, user) => {
-    if(user.username === 'pastille_bot') { return; }
+    if(user.bot === true) { return; }
     else {
         const helpZone = client.channels.cache.find(channel => channel.id === globalSettings.channels.help);
         if (reaction.partial) {
@@ -323,6 +323,10 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
         }
     }
 });
+
+// ##### AUTOMOD ##### \\
+
+
 
 client.on('ready', () => { pastilleBooter(); });
 client.login(secretSettings.BOT_TOKEN);
