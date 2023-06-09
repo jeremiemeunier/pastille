@@ -131,7 +131,7 @@ const pastilleBooter = () => {
     channelDebug.send({ embeds: [bootEmbedMessage] });
     if(settingsConfig.app.twitch.wait === true) {
         setInterval(() => {
-            onliveBotChecked({"announce": channelAnnounce, "debug": channelDebug, "notifsRole": settingsConfig.role.livemod.toString(), "logs": channelLogs });
+            onliveBotChecked({"announce": channelAnnounce, "debug": channelDebug, "notifsRole": settingsConfig.app.twitch.role.toString(), "logs": channelLogs });
         }, settingsConfig.app.twitch.delay);
     }
 

@@ -221,6 +221,26 @@ client.on('interactionCreate', async interaction => {
         }
         catch(error) { autoLog(`An error occured\r\n ${error}`); }
     }
+    else if(commandName === 'fils') {
+        const channel = client.channels.cache.find(channel => channel.id === interaction.channelId);
+
+        try {
+            const thread = await channel.threads.create({
+                name: interaction.options.getString('title'),
+                autoArchiveDuration: 60,
+                reason: interaction.options.getString('title'),
+                type: ChannelType.PrivateThread,
+            });
+            await thread.members.add('936929561302675456');
+            await thread.members.add(interaction.user.id);
+    
+            let embed = new EmbedBuilder()
+                                .setColor(`${globalSettings.options.color}`)
+                                .setDescription(`Create a new thread to request MidJourney`);
+            const msg = await thread.send({ embeds: [embed] });
+        }
+        catch(error) { autoLog(`An error occured\r\n ${error}`); }
+    }
 });
 
 client.on('voiceStateUpdate', async (oldState, newState) => {
