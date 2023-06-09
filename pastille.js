@@ -3,6 +3,7 @@ const path = require('node:path');
 const secretSettings = JSON.parse(fs.readFileSync('data/secret.json'));
 const globalSettings = JSON.parse(fs.readFileSync('data/config.json'));
 const alphabetLetters = JSON.parse(fs.readFileSync('data/alphabet.json'));
+const roleSettings = JSON.parse(fs.readFileSync('data/role/role.json'));
 const commands = [];
 const foldersPath = path.join(__dirname, 'commands');
 const commandFolders = fs.readdirSync(foldersPath);
@@ -196,6 +197,30 @@ client.on('interactionCreate', async interaction => {
         }
         catch(error) { autoLog(`An error occured\r\n ${error}`); }
     }
+    else if(commandName === 'role') {
+        let fields = [];
+
+        for(let i = 0;i < roleSettings.length;i++) {
+            const field = {
+                name: `${roleSettings[i].emoji}   ${roleSettings[i].name}`, value: roleSettings[i].description, inline: true
+            }
+            fields.push(field);
+        }
+
+        const embed = new EmbedBuilder()
+                            .setColor(`${globalSettings.options.color}`)
+                            .setTitle(`Pastille autorole`)
+                            .setDescription(`Clique sur les réactions en dessous de ce message pour t'ajouter les rôles en fonction de tes centres d'intérêt.`)
+                            .addFields(fields);
+        try {
+            const message = await interaction.reply({ embeds: [embed], fetchReply: true });
+            for(let i = 0;i < roleSettings.length;i++) {
+                try { await message.react(roleSettings[i].emoji); }
+                catch(error) { autoLog(`An error occured\r\n ${error}`); }
+            }
+        }
+        catch(error) { autoLog(`An error occured\r\n ${error}`); }
+    }
 });
 
 client.on('voiceStateUpdate', async (oldState, newState) => {
@@ -280,15 +305,27 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
             else if(reaction.message.interaction.commandName === 'voices') {
 
             }
+            else if(reaction.message.interaction.commandName === 'role') {
+                for(let i = 0;i < roleSettings.length;i++) {
+                    if(reaction.emoji.name === roleSettings[i].emoji) {
+                        const guild = client.guilds.cache.find(guild => guild.id === reaction.message.guildId);
+                        const member = guild.members.cache.find(member => member.id === user.id);
+                        const role = guild.roles.cache.find(role => role.id === roleSettings[i].role);
+
+                        try { await member.roles.add(role); }
+                        catch(error) { autoLog(`An error occured\r\n ${error}`); return; }
+                    }
+                }
+            }
         }
         else {
             if(reaction.emoji.name === '🔒') {
-                let channel = client.channels.cache.find(channel => channel.id === globalSettings.channels.help);
-                let thread = channel.threads.cache.find(thread => thread.id === reaction.message.channelId);
+                const channel = client.channels.cache.find(channel => channel.id === globalSettings.channels.help);
+                const thread = channel.threads.cache.find(thread => thread.id === reaction.message.channelId);
 
                 try {
                     thread.setLocked(true);
-                    let embed = new EmbedBuilder()
+                    const embed = new EmbedBuilder()
                                         .setColor(`${globalSettings.options.color}`)
                                         .addFields(
                                             { name: "Archivage", value: 'Clique sur 📦 pour archiver ce fil.', inline: true },
@@ -301,24 +338,48 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
                 catch(error) { autoLog(`An error occured\r\n ${error}`); return; }
             }
             else if(reaction.emoji.name === '📦') {
-                let channel = client.channels.cache.find(channel => channel.id === globalSettings.channels.help);
-                let thread = channel.threads.cache.find(thread => thread.id === reaction.message.channelId);
+                const channel = client.channels.cache.find(channel => channel.id === globalSettings.channels.help);
+                const thread = channel.threads.cache.find(thread => thread.id === reaction.message.channelId);
 
                 try { thread.setArchived(true); } catch(error) { autoLog(`An error occured\r\n ${error}`); return; }
             }
             else if(reaction.emoji.name === '🔓') {
-                let channel = client.channels.cache.find(channel => channel.id === globalSettings.channels.help);
-                let thread = channel.threads.cache.find(thread => thread.id === reaction.message.channelId);
+                const channel = client.channels.cache.find(channel => channel.id === globalSettings.channels.help);
+                const thread = channel.threads.cache.find(thread => thread.id === reaction.message.channelId);
 
                 try {
                     thread.setLocked(false);
-                    let embed = new EmbedBuilder()
+                    const embed = new EmbedBuilder()
                                         .setColor(`${globalSettings.options.color}`)
                                         .setDescription(`Ce fil est de nouveau disponible. Pour mettre fin à ta demande clique sur 🔒`);
                     const message = await thread.send({ embeds: [embed] });
                     message.react('🔒');
                 }
                 catch(error) { autoLog(`An error occured\r\n ${error}`); return; }
+            }
+        }
+    }
+});
+
+client.on(Events.MessageReactionRemove, async (reaction, user) => {
+    if(user.bot === true) { return; }
+    
+    if (reaction.partial) {
+        try { await reaction.fetch(); }
+        catch (error) { autoLog(`An error occured\r\n ${error}`); return; }
+    }
+
+    if(reaction.message.interaction != undefined) {
+        if(reaction.message.interaction.commandName === 'role') {
+            for(let i = 0;i < roleSettings.length;i++) {
+                if(reaction.emoji.name === roleSettings[i].emoji) {
+                    const guild = client.guilds.cache.find(guild => guild.id === reaction.message.guildId);
+                    const member = guild.members.cache.find(member => member.id === user.id);
+                    const role = guild.roles.cache.find(role => role.id === roleSettings[i].role);
+
+                    try { await member.roles.remove(role); }
+                    catch(error) { autoLog(`An error occured\r\n ${error}`); return; }
+                }
             }
         }
     }
