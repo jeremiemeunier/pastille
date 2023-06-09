@@ -28,7 +28,8 @@ const commands =
 {
     name: "poll",
     description: "Crée un sondage",
-    options: pollOptions()
+    options: pollOptions(),
+    default_member_permissions: 0
 };
 
 module.exports = {
