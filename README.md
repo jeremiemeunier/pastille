@@ -1,13 +1,13 @@
 # pastille-bot
 
-📣 A big update is on the way ! Wait a few days and it come
+📢 A big update is on the way ! Wait a few days and it come
 
 It's a bot. An explosive bot named Pastille but only for an discord !
 
 <div align="center">
 	<br />
 	<p>
-		<img src="https://1.images.cdn.pooks.fr/github/pastillebot/white.png" alt="Pastille" media="(prefers-color-scheme: light)" />
+		<img src="https://1.images.cdn.pooks.fr/github/pastillebot/white.png" alt="Pastille" />
 	</p>
   <br>
   <p>
@@ -16,7 +16,6 @@ It's a bot. An explosive bot named Pastille but only for an discord !
     <a href="https://www.npmjs.com/package/xmlhttprequest"><img alt="npm" src="https://img.shields.io/npm/v/xmlhttprequest?label=xmlhttprequest"></a>
     <a href="https://www.npmjs.com/package/@discordjs/rest"><img alt="npm" src="https://img.shields.io/npm/v/@discordjs/rest?label=@discordjs/rest"></a>
     <a href="https://www.npmjs.com/package/fs"><img alt="npm" src="https://img.shields.io/npm/v/fs?label=fs"></a>
-    <a href="https://www.npmjs.com/package/discordjs-automod"><img alt="npm" src="https://img.shields.io/npm/v/discordjs-automod?label=discordjs-automod"></a>
   </p>
 </div>
 
