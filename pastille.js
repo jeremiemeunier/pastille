@@ -233,13 +233,17 @@ client.on('interactionCreate', async interaction => {
             });
             await thread.members.add('936929561302675456');
             await thread.members.add(interaction.user.id);
+            await interaction.reply({ content: `Tu as maintenant accès au thread ${thread}`, ephemeral: true });
     
             let embed = new EmbedBuilder()
                                 .setColor(`${globalSettings.options.color}`)
                                 .setDescription(`Create a new thread to request MidJourney`);
             const msg = await thread.send({ embeds: [embed] });
         }
-        catch(error) { autoLog(`An error occured\r\n ${error}`); }
+        catch(error) {
+            autoLog(`An error occured\r\n ${error}`);
+            await interaction.reply({ content: `Une erreur est survenue. Essayer à nouveau plus tard.`, ephemeral: true });
+        }
     }
 });
 
