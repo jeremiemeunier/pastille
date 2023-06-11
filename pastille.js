@@ -283,7 +283,7 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
 
         if(reaction.message.interaction != undefined) {
             if(reaction.message.interaction.commandName === 'rule') {
-                if(reaction.reaction.name === globalSettings.options.reaction.rule) {
+                if(reaction.emoji.name === globalSettings.options.reaction.rule) {
                     const guild = client.guilds.cache.find(guild => guild.id === reaction.message.guildId);
                     const member = guild.members.cache.find(member => member.id === user.id);
                     const role = guild.roles.cache.find(role => role.id === globalSettings.moderation.rule);
@@ -293,8 +293,8 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
                 }
                 else { reaction.users.remove(user); }
             }
-            else if(reaction.message.interaction.commandName === 'staff') {
-                if(reaction.reaction.name === globalSettings.options.reaction.ticket) {
+            if(reaction.message.interaction.commandName === 'staff') {
+                if(reaction.emoji.name === globalSettings.options.reaction.ticket) {
                     try {
                         reaction.users.remove(user);
                         const thread = await helpZone.threads.create({
@@ -304,10 +304,10 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
                             type: ChannelType.PrivateThread,
                         });
                         await thread.members.add(user);
-                        let embed = new EmbedBuilder()
-                                                .setColor(`${globalSettings.options.color}`)
-                                                .setTitle(`Requested help from @${user.username}`)
-                                                .setDescription(`Pour mettre fin à ta demande d'aide clique sur 🔒`);
+                        const embed = new EmbedBuilder()
+                                            .setColor(`${globalSettings.options.color}`)
+                                            .setTitle(`Requested help from @${user.username}`)
+                                            .setDescription(`Pour mettre fin à ta demande d'aide clique sur 🔒`);
                         const message = await thread.send({ embeds: [embed] });
                         message.react('🔒');
                     }
@@ -315,10 +315,10 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
                 }
                 else { reaction.users.remove(user); }
             }
-            else if(reaction.message.interaction.commandName === 'voices') {
+            if(reaction.message.interaction.commandName === 'voices') {
 
             }
-            else if(reaction.message.interaction.commandName === 'role') {
+            if(reaction.message.interaction.commandName === 'role') {
                 for(let i = 0;i < roleSettings.length;i++) {
                     if(reaction.emoji.name === roleSettings[i].emoji) {
                         const guild = client.guilds.cache.find(guild => guild.id === reaction.message.guildId);
