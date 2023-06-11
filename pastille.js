@@ -119,16 +119,6 @@ client.on('interactionCreate', async interaction => {
         }
         catch(error) { autoLog(`An error occured\r\n ${error}`); }
     }
-    else if(commandName === 'modos') {
-        try {
-            const embed = new EmbedBuilder()
-                                .setColor(`${globalSettings.options.color}`)
-                                .setDescription(`Faire une réclamation sur une décision de modération, clique sur 🤕`);
-            const message = await interaction.reply({ embeds: [embed], fetchReply: true });
-            message.react('🤕');
-        }
-        catch(error) { autoLog(`An error occured\r\n ${error}`); }
-    }
     else if(commandName === 'rule') {
         try {
             let rulesField = [];
