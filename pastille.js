@@ -3,14 +3,16 @@ const path = require('node:path');
 const secretSettings = JSON.parse(fs.readFileSync('data/secret.json'));
 const globalSettings = JSON.parse(fs.readFileSync('data/config.json'));
 const alphabetLetters = JSON.parse(fs.readFileSync('data/alphabet.json'));
+
 const roleSettings = JSON.parse(fs.readFileSync('data/addons/role.json'));
 const rules = JSON.parse(fs.readFileSync('data/addons/rule.json'));
+
 const commands = [];
 const foldersPath = path.join(__dirname, 'commands');
 const commandFolders = fs.readdirSync(foldersPath);
 
 const { BOT_ID, BOT_TOKEN, BOT_OWNER_ID } = require('./data/secret.json');
-const { REST, Routes, ChannelType, Client, Events, EmbedBuilder, GatewayIntentBits, Partials, ShardingManager } = require('discord.js');
+const { REST, Routes, ChannelType, Client, Events, EmbedBuilder, GatewayIntentBits, Partials, ShardingManager, messageLink } = require('discord.js');
 const client = new Client({
     intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessageReactions, GatewayIntentBits.GuildVoiceStates],
     partials: [Partials.Message, Partials.Channel, Partials.Reaction],
