@@ -452,7 +452,9 @@ client.on(Events.MessageCreate, async (message) => {
 
 // ##### AUTOMOD ##### \\
 
+client.on(Events.MessageCreate, async (message) => {
 
+});
 
 client.on('ready', () => { pastilleBooter(); });
 client.login(secretSettings.BOT_TOKEN);
