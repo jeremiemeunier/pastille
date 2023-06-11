@@ -3,7 +3,8 @@ const path = require('node:path');
 const secretSettings = JSON.parse(fs.readFileSync('data/secret.json'));
 const globalSettings = JSON.parse(fs.readFileSync('data/config.json'));
 const alphabetLetters = JSON.parse(fs.readFileSync('data/alphabet.json'));
-const roleSettings = JSON.parse(fs.readFileSync('data/role/role.json'));
+const roleSettings = JSON.parse(fs.readFileSync('data/addons/role.json'));
+const rules = JSON.parse(fs.readFileSync('data/addons/rule.json'));
 const commands = [];
 const foldersPath = path.join(__dirname, 'commands');
 const commandFolders = fs.readdirSync(foldersPath);
@@ -112,9 +113,9 @@ client.on('interactionCreate', async interaction => {
             const embed = new EmbedBuilder()
                                 .setColor(`${globalSettings.options.color}`)
                                 .setTitle(`Demande de support`)
-                                .setDescription(`Comment pouvons-nous t'aider ? Si tu as des questions ou des demandes clique sur 🎟️ pour contacter le staff`);
+                                .setDescription(`Comment pouvons-nous t'aider ? Si tu as des questions ou des demandes clique sur ${globalSettings.options.reaction.ticket} pour contacter le staff`);
             const message = await interaction.reply({ embeds: [embed], fetchReply: true });
-            message.react('🎟️');
+            message.react(globalSettings.options.reaction.ticket);
         }
         catch(error) { autoLog(`An error occured\r\n ${error}`); }
     }
@@ -130,33 +131,28 @@ client.on('interactionCreate', async interaction => {
     }
     else if(commandName === 'rule') {
         try {
-            const rules = new EmbedBuilder()
-                                .setColor(`${globalSettings.options.color}`)
-                                .setTitle('Règles du serveur')
-                                .setDescription(`Les règles du serveur sont simples.\r\nEn utilisant ce serveur discord, l'utilisateur accepte d'emblée le réglement.`)
-                                .addFields(
-                                    { name: "🤜 Spams, menaces", value: "Pas de spam, de doxxing/menaces ou d'insultes", inline: false },
-                                    { name: "📺 Torrent", value: "Pas de choses illégales (torrent de film/musique, jeux craqué)", inline: false },
-                                    { name: "📖 Channel, topics", value: "Respectez les channels, topics, etc", inline: false },
-                                    { name: "💗 Respect", value: "Traitez tout le monde avec respect. Aucun harcèlement, chasse aux sorcières, sexisme, racisme ou discours de haine ne sera toléré.", inline: false },
-                                    { name: "📣 Pubs", value: "Pas de spam ni d'autopromotion (invitations de serveurs, publicités, etc.) sans l'autorisation d'un modérateur du serveur, y compris via les MP envoyés aux autres membres. Le salon <#882582553222082580> est prévu pour ça.", inline: false },
-                                    { name: "🔞 NSFW", value: "**Ce serveur est tout public !** Pas de contenu violent, obscène ou NSFW, qu'il s'agisse de texte, d'images ou de liens mettant en scène de la nudité, du sexe, de l'hyperviolence ou un quelconque contenu dérangeant.", inline: false },
-                                    { name: "\u200B", value: "Si tu remarques quelque chose de contraire aux règles ou qui te met dans un sentiment d'insécurité, informes en les modérateurs. Nous voulons que ce serveur soit accueillant pour tout le monde !", inline: false }
-                                );
-            const modos = new EmbedBuilder()
-                                .setColor(`${globalSettings.options.color}`)
-                                .setTitle('Modérations')
-                                .setDescription(`Les décisions des modérateur et de l'équipe du serveur ne sont pas discutable. Si tu pense qu'elle est injuste, utilise le ticket dans <#1049836337131434016>. Pour accompagner et faciliter le travail de la modération, un automod est présent sur ce discord.`)
-                                .addFields(
-                                    { name: "Modération", value: "<@&882582552550965262>", inline: true },
-                                    { name: "\u200B", value: "<@&1049094503157485708>", inline: true },
-                                    { name: "Automod", value: "<@782207025865949194>", inline: true }
-                                );
-            const embed = new EmbedBuilder()
-                                .setColor(`${globalSettings.options.color}`)
-                                .setDescription(`Pour accepter les règles et accéder au serveur clique sur 🐶`);
-            const message = await interaction.reply({ embeds: [rules, modos, embed], fetchReply: true });
-            message.react('🐶');
+            let rulesField = [];
+
+            for(let i = 0;i < rules.length;i++) {
+                const ruleField = {
+                    name: `${rules[i].title}`, value: rules[i].value, inline: false
+                }
+                rulesField.push(ruleField);
+            }
+            const rulesEmbed = new EmbedBuilder()
+                                    .setColor(`${globalSettings.options.color}`)
+                                    .setTitle('Règles du serveur')
+                                    .setDescription(`Les règles du serveur sont simples.\r\nEn utilisant ce serveur discord, l'utilisateur accepte d'emblée le réglement.`)
+                                    .addFields(rulesField);
+            const modosEmbed = new EmbedBuilder()
+                                    .setColor(`${globalSettings.options.color}`)
+                                    .setTitle('Modérations')
+                                    .setDescription(`Les décisions des modérateur et de l'équipe du serveur ne sont pas discutable. Si tu pense qu'elle est injuste, utilise le ticket dans <#1049836337131434016>. Pour accompagner et faciliter le travail de la modération, un automod est présent sur ce discord.`);
+            const validateEmbed = new EmbedBuilder()
+                                    .setColor(`${globalSettings.options.color}`)
+                                    .setDescription(`Pour accepter les règles et accéder au serveur clique sur ${globalSettings.options.reaction.rule}`);
+            const message = await interaction.reply({ embeds: [rulesEmbed, modosEmbed, validateEmbed], fetchReply: true });
+            message.react(globalSettings.options.reaction.rule);
         }
         catch(error) { autoLog(`An error occured\r\n ${error}`); }
     }
@@ -297,7 +293,7 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
 
         if(reaction.message.interaction != undefined) {
             if(reaction.message.interaction.commandName === 'rule') {
-                if(reaction.emoji.name === '🐶') {
+                if(reaction.reaction.name === globalSettings.options.reaction.rule) {
                     const guild = client.guilds.cache.find(guild => guild.id === reaction.message.guildId);
                     const member = guild.members.cache.find(member => member.id === user.id);
                     const role = guild.roles.cache.find(role => role.id === globalSettings.moderation.rule);
@@ -308,7 +304,7 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
                 else { reaction.users.remove(user); }
             }
             else if(reaction.message.interaction.commandName === 'staff') {
-                if(reaction.emoji.name === '🎟️') {
+                if(reaction.reaction.name === globalSettings.options.reaction.ticket) {
                     try {
                         reaction.users.remove(user);
                         const thread = await helpZone.threads.create({
@@ -355,20 +351,26 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
                     const embed = new EmbedBuilder()
                                         .setColor(`${globalSettings.options.color}`)
                                         .addFields(
-                                            { name: "Archivage", value: 'Clique sur 📦 pour archiver ce fil.', inline: true },
+                                            { name: "Supression", value: 'Clique sur 🗑️ pour supprimer ce fil.', inline: true },
                                             { name: "Déverouillage", value: 'Clique sur 🔓 pour débloquer ce fil.', inline: true })
                                         .setDescription(`Ce fil est maintenant verrouillé.`);
                     const message = await thread.send({ embeds: [embed]});
-                    message.react('📦');
+                    message.react('🗑️');
                     message.react('🔓');
                 }
                 catch(error) { autoLog(`An error occured\r\n ${error}`); return; }
             }
-            else if(reaction.emoji.name === '📦') {
+            else if(reaction.emoji.name === '🗑️') {
                 const channel = client.channels.cache.find(channel => channel.id === globalSettings.channels.help);
                 const thread = channel.threads.cache.find(thread => thread.id === reaction.message.channelId);
+                const embed = new EmbedBuilder()
+                                        .setColor(`${globalSettings.options.color}`)
+                                        .setDescription(`Ce fil va être supprimer dans quelques secondes`);
+                const message = await thread.send({ embeds: [embed]});
 
-                try { thread.setArchived(true); } catch(error) { autoLog(`An error occured\r\n ${error}`); return; }
+                setTimeout(() => {
+                    try { thread.setArchived(true); } catch(error) { autoLog(`An error occured\r\n ${error}`); return; }
+                }, 2000);
             }
             else if(reaction.emoji.name === '🔓') {
                 const channel = client.channels.cache.find(channel => channel.id === globalSettings.channels.help);
