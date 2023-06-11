@@ -359,7 +359,7 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
                 const message = await thread.send({ embeds: [embed]});
 
                 setTimeout(() => {
-                    try { thread.setArchived(true); } catch(error) { autoLog(`An error occured\r\n ${error}`); return; }
+                    try { thread.delete(true); } catch(error) { autoLog(`An error occured\r\n ${error}`); return; }
                 }, 2000);
             }
             else if(reaction.emoji.name === '🔓') {
