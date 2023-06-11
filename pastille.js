@@ -233,7 +233,7 @@ client.on('interactionCreate', async interaction => {
     }
 });
 
-client.on('voiceStateUpdate', async (oldState, newState) => {
+client.on(Events.VoiceStateUpdate, async (oldState, newState) => {
     if(newState.channelId === oldState.channelId) { return; }
     else {
         const guild = client.guilds.cache.find(guild => guild.id === oldState.guild.id) ||
