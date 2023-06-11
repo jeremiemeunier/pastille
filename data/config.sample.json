@@ -1,9 +1,15 @@
 {
-    "version": "1.2.dev_0.2",
+    "version": "1.2.dev_0.6",
     "options": {
         "debug": false,
         "bang": "!",
-        "color": "#000000"
+        "color": "#000000",
+        "reaction": {
+            "rule": "👍",
+            "ticket": "🎟️",
+            "announce": "📢",
+            "warn": "🚨"
+        }
     },
     "channels": {
         "console": "pastille-logs",
