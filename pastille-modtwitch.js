@@ -78,12 +78,12 @@ const onliveBotSender = (token, streamer, params) => {
 
     _XHR_streamerData.onreadystatechange = () => {
         if(xhrStateVerifier(_XHR_streamerData)) {
-            let streamerData = JSON.parse(_XHR_streamerData.responseText).data[0];
+            const streamData = JSON.parse(_XHR_streamerData.responseText).data[0];
 
-            if(streamerData !== undefined) {
-                if(startStreamVerifier(streamerData.started_at)) {
+            if(streamData !== undefined) {
+                if(startStreamVerifier(streamData.started_at)) {
                     try {
-                        let thumbnail = streamerData.thumbnail_url;
+                        let thumbnail = streamData.thumbnail_url;
                             thumbnail = thumbnail.replace('{width}', 1920);
                             thumbnail = thumbnail.replace('{height}', 1080);
                         const liveButton = new ActionRowBuilder()
@@ -96,8 +96,8 @@ const onliveBotSender = (token, streamer, params) => {
                         const liveEmbed = new EmbedBuilder()
                                                 .setColor(`${settingsConfig.options.color}`)
                                                 .setTitle(`${streamer.twitch.name.toString()} est actuellement en live !`)
-                                                .setDescription(`Il stream : **${streamerData.title}** sur **${streamerData.game_name}**`)
-                                                .setThumbnail(thumbnail);
+                                                .setDescription(`Il stream : **${streamData.title}** sur **${streamData.game_name}**`)
+                                                .setThumbnail(streamData.thumbnail);
                         params.announce.send({ content: `${streamer.twitch.name.toString()} est en live ! <@&${params.notifsRole}>`, embeds: [liveEmbed], components: [liveButton] });
                     }
                     catch(error) { console.log('An error occured', error); }
