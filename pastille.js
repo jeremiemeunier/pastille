@@ -330,6 +330,23 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
                     }
                 }
             }
+            if(reaction.message.interaction.commandName === 'poll') {
+                const userReactions = reaction.message.reactions.cache.filter(reaction => reaction.users.cache.has(user.id));
+                const botReactThis = reaction.users.cache.find(user => user.bot === true);
+
+                if(botReactThis === undefined) {
+                    try { await reaction.users.remove(user); }
+                    catch(error) { autoLog(`An error occured\r\n ${error}`); }
+                }
+                else {
+                    userReactions.map(async (react) => {
+                        if(react.emoji.name !== reaction.emoji.name) {
+                            try { await react.users.remove(user); }
+                            catch(error) { autoLog(`An error occured\r\n ${error}`); }
+                        }
+                    });
+                }
+            }
         }
         else {
             if(reaction.emoji.name === '🔒') {
