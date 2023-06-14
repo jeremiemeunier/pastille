@@ -1,10 +1,7 @@
-.env
 data/config.json
 data/secret.json
 data/streamer.json
 data/automod.json
-data/alphabet.json
-logs/*
-old/*
 node_modules
 package-lock.json
+old/
