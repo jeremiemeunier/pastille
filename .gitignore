@@ -5,11 +5,6 @@ data/streamer.json
 data/automod.json
 data/alphabet.json
 logs/*
-pastille-satisfactory.js
-pastille-haltero.js
-pastille-ermes.js
-pastille-timer.js
-pastille-modtwitch-old.js
+old/*
 node_modules
-package-lock.json
 package-lock.json
