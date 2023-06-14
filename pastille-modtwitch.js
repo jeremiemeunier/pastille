@@ -1,10 +1,16 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, Client, EmbedBuilder, GatewayIntentBits } = require('discord.js');
 const fs = require('fs');
 const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+const axios = require('axios');
 
-const settingsConfig = JSON.parse(fs.readFileSync('data/config.json'));
-const settingsSecret = JSON.parse(fs.readFileSync('data/secret.json'));
+const { BOT_ID, BOT_TOKEN, BOT_OWNER_ID } = require('config/secret.json');
+const { REST, Routes, ChannelType, Client, Events, EmbedBuilder, GatewayIntentBits, Partials, ShardingManager, messageLink } = require('discord.js');
+const client = new Client({
+    intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessageReactions, GatewayIntentBits.GuildVoiceStates],
+    partials: [Partials.Message, Partials.Channel, Partials.Reaction],
+});
+
+const settingsConfig = JSON.parse(fs.readFileSync('config/settings.json'));
 
 // Basic function to optimal working
 

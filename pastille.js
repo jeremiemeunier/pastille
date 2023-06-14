@@ -1,16 +1,14 @@
 const fs = require('node:fs');
 const path = require('node:path');
-const secretSettings = JSON.parse(fs.readFileSync('data/secret.json'));
-const globalSettings = JSON.parse(fs.readFileSync('data/config.json'));
-const alphabetLetters = JSON.parse(fs.readFileSync('data/alphabet.json'));
 
+const alphabetLetters = JSON.parse(fs.readFileSync('data/base/alphabet.json'));
 const roleSettings = JSON.parse(fs.readFileSync('data/addons/role.json'));
-const rules = JSON.parse(fs.readFileSync('data/addons/rule.json'));
 
 const commands = [];
 const foldersPath = path.join(__dirname, 'commands');
 const commandFolders = fs.readdirSync(foldersPath);
 
+const globalSettings = JSON.parse(fs.readFileSync('data/config.json'));
 const { BOT_ID, BOT_TOKEN, BOT_OWNER_ID } = require('./data/secret.json');
 const { REST, Routes, ChannelType, Client, Events, EmbedBuilder, GatewayIntentBits, Partials, ShardingManager, messageLink } = require('discord.js');
 const client = new Client({
@@ -88,7 +86,7 @@ const pastilleBooter = () => {
         let bootEmbed = new EmbedBuilder()
                                 .setColor(`${globalSettings.options.color}`)
                                 .setTitle(`Pastille Launch`)
-                                .setDescription(`Le bot de @dark_bichon pour effectuer l'ensemble des actions trop cool qu'il à coder`)
+                                .setDescription(`It's a bot. An explosive bot named Pastille but only for an discord !`)
                                 .addFields(
                                     { name: 'Date starting', value: dateParser(), inline: true },
                                     { name: 'Version', value: globalSettings.version, inline: true },
@@ -122,6 +120,7 @@ client.on('interactionCreate', async interaction => {
         catch(error) { autoLog(`An error occured\r\n ${error}`); }
     }
     else if(commandName === 'rule') {
+        const rules = JSON.parse(fs.readFileSync('data/addons/rule.json'));
         try {
             let rulesField = [];
 
@@ -139,7 +138,7 @@ client.on('interactionCreate', async interaction => {
             const modosEmbed = new EmbedBuilder()
                                     .setColor(`${globalSettings.options.color}`)
                                     .setTitle('Modérations')
-                                    .setDescription(`Les décisions des modérateur et de l'équipe du serveur ne sont pas discutable. Si tu pense qu'elle est injuste, utilise le ticket dans <#1049836337131434016>. Pour accompagner et faciliter le travail de la modération, un automod est présent sur ce discord.`);
+                                    .setDescription(`Les décisions des modérateur et de l'équipe du serveur ne sont pas discutable. Si tu pense qu'elle est injuste, utilise le ticket dans <#${globalSettings.channels.help}>. Pour accompagner et faciliter le travail de la modération, un automod est présent sur ce discord.`);
             const validateEmbed = new EmbedBuilder()
                                     .setColor(`${globalSettings.options.color}`)
                                     .setDescription(`Pour accepter les règles et accéder au serveur clique sur ${globalSettings.options.reaction.rule}`);
@@ -459,4 +458,4 @@ client.on(Events.MessageCreate, async (message) => {
 });
 
 client.on('ready', () => { pastilleBooter(); });
-client.login(secretSettings.BOT_TOKEN);
+client.login(BOT_TOKEN);
