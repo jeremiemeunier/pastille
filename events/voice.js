@@ -5,7 +5,7 @@ const createThreadOnJoin = async (channel, threadChannel, channelConsole, user) 
     try { const thread = await threadChannel.threads.create({
             name: `Voice : ${channel.name}`,
             autoArchiveDuration: 60,
-            reason: `Voice : ${channel.name}`,
+            reason: `Dedicated text channel for the voice channel ${channel.name}`,
             type: ChannelType.PrivateThread,
         });
         await thread.members.add(user);
