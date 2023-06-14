@@ -1,7 +1,7 @@
-data/config.json
-data/secret.json
+config/settings.json
+config/secret.json
+config/automod.json
 data/streamer.json
-data/automod.json
 node_modules
 package-lock.json
 old/
