@@ -8,8 +8,8 @@ const commands = [];
 const foldersPath = path.join(__dirname, 'commands');
 const commandFolders = fs.readdirSync(foldersPath);
 
-const globalSettings = JSON.parse(fs.readFileSync('data/config.json'));
-const { BOT_ID, BOT_TOKEN, BOT_OWNER_ID } = require('./data/secret.json');
+const globalSettings = JSON.parse(fs.readFileSync('./config/settings.json'));
+const { BOT_ID, BOT_TOKEN, BOT_OWNER_ID } = require('./config/secret.json');
 const { REST, Routes, ChannelType, Client, Events, EmbedBuilder, GatewayIntentBits, Partials, ShardingManager, messageLink } = require('discord.js');
 const client = new Client({
     intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessageReactions, GatewayIntentBits.GuildVoiceStates],
@@ -394,6 +394,14 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
                 }
                 catch(error) { autoLog(`An error occured\r\n ${error}`); return; }
             }
+            else if(reaction.emoji.name === '🤓') {
+                const guild = client.guilds.cache.find(guild => guild.id === reaction.message.guildId);
+                const member = guild.members.cache.find(member => member.id === user.id);
+                const role = guild.roles.cache.find(role => role.id === '1118500573675782235');
+
+                try { await member.roles.add(role); }
+                catch(error) { console.log(error); }
+            }
         }
     }
 });
@@ -418,6 +426,16 @@ client.on(Events.MessageReactionRemove, async (reaction, user) => {
                     catch(error) { autoLog(`An error occured\r\n ${error}`); return; }
                 }
             }
+        }
+    }
+    else {
+        if(reaction.emoji.name === '🤓') {
+            const guild = client.guilds.cache.find(guild => guild.id === reaction.message.guildId);
+            const member = guild.members.cache.find(member => member.id === user.id);
+            const role = guild.roles.cache.find(role => role.id === '1118500573675782235');
+
+            try { await member.roles.remove(role); }
+            catch(error) { console.log(error); }
         }
     }
 });
@@ -445,6 +463,18 @@ client.on(Events.MessageCreate, async (message) => {
                                         { name: 'IP', value: 'minecraft.jeremiemeunier.fr', inline: true }
                                     );
             try { channel.send({ embeds: [embed] }); }
+            catch(error) { autoLog(`An error occured\r\n ${error}`); return; }
+        }
+        else if(cmd === 'dailyui') {
+            message.delete();
+            const embed = new EmbedBuilder()
+                                    .setColor(`${globalSettings.options.color}`)
+                                    .setTitle(`Tu souhaite t'exercer à l'UI/UX ?`)
+                                    .setDescription(`Pour t'ajouter le rôle des DailyUi clique sur le 🤓`);
+            try {
+                const message = await channel.send({ embeds: [embed] });
+                message.react('🤓');
+            }
             catch(error) { autoLog(`An error occured\r\n ${error}`); return; }
         }
     }
