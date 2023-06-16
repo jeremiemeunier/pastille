@@ -465,8 +465,11 @@ client.on(Events.MessageCreate, async (message) => {
     const content = message.content;
     const guild = client.guilds.cache.find(guild => guild.id === message.guildId);
     const channel = guild.channels.cache.find(channel => channel.id === message.channelId);
-
+    const author = message.author.username;
+    const today = new Date();
+    const postedDate = `${today.getDate}/${today.getMonth}/${today.getFullYear}`;
     const msg = channel.messages.cache.find(message => message.id === message.id);
+
     let splitedMsg = content.split(' ');
     let cmd = splitedMsg.shift().slice(1);
     let text = splitedMsg.join(' ');
@@ -502,7 +505,7 @@ client.on(Events.MessageCreate, async (message) => {
     else if(channel.name === 'screenshots') {
         try {
             const thread = await message.startThread({
-                name: `Speak about a screenshots`,
+                name: `${author} (${today.getDay()}/${today.getMonth()}/${today.getFullYear()})`,
                 autoArchiveDuration: 60,
                 reason: 'New screenshots posted'
             });
