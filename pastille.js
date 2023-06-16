@@ -83,23 +83,23 @@ const pastilleBooter = () => {
     const clientGuildIds = client.guilds.cache.map(guild => guild.id);
 
 	try {
-        // let bootEmbed = new EmbedBuilder()
-        //                         .setColor(`${globalSettings.options.color}`)
-        //                         .setTitle(`Pastille Launch`)
-        //                         .setDescription(`It's a bot. An explosive bot named Pastille but only for an discord !`)
-        //                         .addFields(
-        //                             { name: 'Date starting', value: dateParser(), inline: true },
-        //                             { name: 'Version', value: globalSettings.version, inline: true },
-        //                             { name: 'Command bang', value: globalSettings.options.bang, inline: true }
-        //                         )
-        //                         .setTimestamp()
-        //                         .setFooter({ text: `Version ${globalSettings.version}` });
-        // debugChannel.send({ embeds: [bootEmbed] });
-        // autoLog('Hello here !');
+        let bootEmbed = new EmbedBuilder()
+                                .setColor(`${globalSettings.options.color}`)
+                                .setTitle(`Pastille Launch`)
+                                .setDescription(`It's a bot. An explosive bot named Pastille but only for an discord !`)
+                                .addFields(
+                                    { name: 'Date starting', value: dateParser(), inline: true },
+                                    { name: 'Version', value: globalSettings.version, inline: true },
+                                    { name: 'Command bang', value: globalSettings.options.bang, inline: true }
+                                )
+                                .setTimestamp()
+                                .setFooter({ text: `Version ${globalSettings.version}` });
+        debugChannel.send({ embeds: [bootEmbed] });
+        autoLog('Hello here !');
         
-        // for(let i = 0;i < clientGuildQuantity;i++) {
-        //     commandRegister(clientGuildIds[i]);
-        // }
+        for(let i = 0;i < clientGuildQuantity;i++) {
+            commandRegister(clientGuildIds[i]);
+        }
     }
     catch (error) { autoLog(`An error occured : ${error}`); }
 }
