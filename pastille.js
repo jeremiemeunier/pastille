@@ -9,7 +9,7 @@ const foldersPath = path.join(__dirname, 'commands');
 const commandFolders = fs.readdirSync(foldersPath);
 
 const globalSettings = JSON.parse(fs.readFileSync('./config/settings.json'));
-const { BOT_ID, BOT_TOKEN, BOT_OWNER_ID } = require('./config/secret.json');
+const { BOT_ID, BOT_TOKEN, BOT_OWNER_ID, GUILD_ID } = require('./config/secret.json');
 const { REST, Routes, ChannelType, Client, Events, EmbedBuilder, GatewayIntentBits, Partials, ShardingManager, messageLink } = require('discord.js');
 const client = new Client({
     intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessageReactions, GatewayIntentBits.GuildVoiceStates],
@@ -83,28 +83,28 @@ const pastilleBooter = () => {
     const clientGuildIds = client.guilds.cache.map(guild => guild.id);
 
 	try {
-        let bootEmbed = new EmbedBuilder()
-                                .setColor(`${globalSettings.options.color}`)
-                                .setTitle(`Pastille Launch`)
-                                .setDescription(`It's a bot. An explosive bot named Pastille but only for an discord !`)
-                                .addFields(
-                                    { name: 'Date starting', value: dateParser(), inline: true },
-                                    { name: 'Version', value: globalSettings.version, inline: true },
-                                    { name: 'Command bang', value: globalSettings.options.bang, inline: true }
-                                )
-                                .setTimestamp()
-                                .setFooter({ text: `Version ${globalSettings.version}` });
-        debugChannel.send({ embeds: [bootEmbed] });
-        autoLog('Hello here !');
+        // let bootEmbed = new EmbedBuilder()
+        //                         .setColor(`${globalSettings.options.color}`)
+        //                         .setTitle(`Pastille Launch`)
+        //                         .setDescription(`It's a bot. An explosive bot named Pastille but only for an discord !`)
+        //                         .addFields(
+        //                             { name: 'Date starting', value: dateParser(), inline: true },
+        //                             { name: 'Version', value: globalSettings.version, inline: true },
+        //                             { name: 'Command bang', value: globalSettings.options.bang, inline: true }
+        //                         )
+        //                         .setTimestamp()
+        //                         .setFooter({ text: `Version ${globalSettings.version}` });
+        // debugChannel.send({ embeds: [bootEmbed] });
+        // autoLog('Hello here !');
         
-        for(let i = 0;i < clientGuildQuantity;i++) {
-            commandRegister(clientGuildIds[i]);
-        }
+        // for(let i = 0;i < clientGuildQuantity;i++) {
+        //     commandRegister(clientGuildIds[i]);
+        // }
     }
     catch (error) { autoLog(`An error occured : ${error}`); }
 }
 
-client.on('interactionCreate', async interaction => {
+client.on(Events.InteractionCreate, async interaction => {
     if (!interaction.isChatInputCommand()) return;
         const { commandName } = interaction;
     
@@ -239,34 +239,55 @@ client.on(Events.VoiceStateUpdate, async (oldState, newState) => {
     else {
         const guild = client.guilds.cache.find(guild => guild.id === oldState.guild.id) ||
                       client.guilds.cache.find(guild => guild.id === newState.guild.id);
-        const text = guild.channels.cache.find(text => text.name === globalSettings.channels.voiceText);
+        let textChannel = guild.channels.cache.find(textChannel => textChannel.name === globalSettings.channels.voiceText);
         try {
             const user = oldState.member.user.id || newState.member.user.id;
 
             if (newState.channelId === null) {
-                const channel = guild.channels.cache.find(channel => channel.id === oldState.channelId);
-                const connected = channel.members.map(x => x).length;
+                const voiceChannel = guild.channels.cache.find(voiceChannel => voiceChannel.id === oldState.channelId);
+                const connected = voiceChannel.members.map(x => x).length;
 
-                if(connected === 0) { deleteThreadOnLeave(channel, text, console); }
-                else { leaveThreadOnLeave(channel, text, consoleChannel, user); }
+                if(voiceChannel.parentId !== null) {
+                    textChannel = guild.channels.cache.find(textChannel => textChannel.name === globalSettings.channels.voiceText
+                                                                        && textChannel.parentId === voiceChannel.parentId);
+                }
+
+                if(connected === 0) { deleteThreadOnLeave(voiceChannel, textChannel, console); }
+                else { leaveThreadOnLeave(voiceChannel, textChannel, consoleChannel, user); }
             }
             else if (oldState.channelId === null) {
-                const channel = guild.channels.cache.find(channel => channel.id === newState.channelId);
-                const connected = channel.members.map(x => x).length;
+                const voiceChannel = guild.channels.cache.find(voiceChannel => voiceChannel.id === newState.channelId);
+                const connected = voiceChannel.members.map(x => x).length;
+
+                if(voiceChannel.parentId !== null) {
+                    textChannel = guild.channels.cache.find(textChannel => textChannel.name === globalSettings.channels.voiceText
+                                                                        && textChannel.parentId === voiceChannel.parentId);
+                }
         
-                if(connected === 1) {  createThreadOnJoin(channel, text, consoleChannel, user); }
-                else { joinThreadOnJoin(channel, text, consoleChannel, user); }
+                if(connected === 1) {  createThreadOnJoin(voiceChannel, textChannel, consoleChannel, user); }
+                else { joinThreadOnJoin(voiceChannel, textChannel, consoleChannel, user); }
             }
             else {
-                const oldChannel = guild.channels.cache.find(oldChannel => oldChannel.id === oldState.channelId);
-                const newChannel = guild.channels.cache.find(newChannel => newChannel.id === newState.channelId);
-                const oldNbConnected = oldChannel.members.map(x => x).length;
-                const newNbConnected = newChannel.members.map(x => x).length;
+                const oldVoiceChannel = guild.channels.cache.find(oldVoiceChannel => oldVoiceChannel.id === oldState.channelId);
+                const newVoiceChannel = guild.channels.cache.find(newVoiceChannel => newVoiceChannel.id === newState.channelId);
+                const oldNbConnected = oldVoiceChannel.members.map(x => x).length;
+                const newNbConnected = newVoiceChannel.members.map(x => x).length;
+                let oldTextChannel = textChannel;
+                let newTextChannel = textChannel;
+
+                if(oldVoiceChannel.parentId !== null) {
+                    oldTextChannel = guild.channels.cache.find(oldTextChannel => oldTextChannel.name === globalSettings.channels.voiceText
+                                                                              && oldTextChannel.parentId === oldVoiceChannel.parentId);
+                }
+                if(newVoiceChannel.parentId !== null) {
+                    newTextChannel = guild.channels.cache.find(newTextChannel => newTextChannel.name === globalSettings.channels.voiceText
+                                                                              && newTextChannel.parentId === newVoiceChannel.parentId);
+                }
         
-                if(oldNbConnected === 0) { deleteThreadOnLeave(oldChannel, text, consoleChannel); }
-                else { leaveThreadOnLeave(oldChannel, text, consoleChannel, user); }
-                if(newNbConnected === 1) { createThreadOnJoin(newChannel, text, consoleChannel, user); }
-                else { joinThreadOnJoin(newChannel, text, consoleChannel, user); }
+                if(oldNbConnected === 0) { deleteThreadOnLeave(oldVoiceChannel, oldTextChannel, consoleChannel); }
+                else { leaveThreadOnLeave(oldVoiceChannel, oldTextChannel, consoleChannel, user); }
+                if(newNbConnected === 1) { createThreadOnJoin(newVoiceChannel, newTextChannel, consoleChannel, user); }
+                else { joinThreadOnJoin(newVoiceChannel, newTextChannel, consoleChannel, user); }
             }
         }
         catch(error) { autoLog(`An error occured\r\n ${error}`); return; }
