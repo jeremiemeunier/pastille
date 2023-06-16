@@ -47,6 +47,6 @@ client.on('ready', () => {
             }
             catch(error) { console.log(error); }
         }
-    }, 36000);
+    }, 60000);
 });
 client.login(BOT_TOKEN);
