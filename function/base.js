@@ -1,5 +1,5 @@
 const fs = require('fs');
-const globalSettings = JSON.parse(fs.readFileSync('data/config.json'));
+const globalSettings = JSON.parse(fs.readFileSync('config/settings.json'));
 const tag = `pastille_bot[${globalSettings.version}] `;
 
 const dateParser = (today) => {
@@ -14,8 +14,11 @@ const dateParser = (today) => {
 }
 
 const logger = (channel, message) => {
-    channel.send({ content: '```' + tag + message + '```' });
-	console.log(`${tag} ${message}`);
+    try {
+		channel.send({ content: '```' + tag + message + '```' });
+		console.log(`${tag} ${message}`);
+	}
+	catch(error) { console.log(error); }
 }
 
 module.exports = { dateParser, logger }

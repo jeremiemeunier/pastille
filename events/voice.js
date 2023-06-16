@@ -2,7 +2,8 @@ const { ChannelType, EmbedBuilder } = require('discord.js');
 const { logger } = require('../function/base.js');
 
 const createThreadOnJoin = async (channel, threadChannel, channelConsole, user) => {
-    try { const thread = await threadChannel.threads.create({
+    try {
+        const thread = await threadChannel.threads.create({
             name: `Voice : ${channel.name}`,
             autoArchiveDuration: 60,
             reason: `Dedicated text channel for the voice channel ${channel.name}`,
