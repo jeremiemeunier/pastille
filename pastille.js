@@ -499,6 +499,16 @@ client.on(Events.MessageCreate, async (message) => {
             catch(error) { autoLog(`An error occured\r\n ${error}`); return; }
         }
     }
+    else if(channel.name === 'screenshots') {
+        try {
+            const thread = await message.startThread({
+                name: `Speak about a screenshots`,
+                autoArchiveDuration: 60,
+                reason: 'New screenshots posted'
+            });
+        }
+        catch(error) { console.log(error); }
+    }
     else { return; }
 });
 
