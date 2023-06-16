@@ -502,7 +502,7 @@ client.on(Events.MessageCreate, async (message) => {
             catch(error) { autoLog(`An error occured\r\n ${error}`); return; }
         }
     }
-    else if(channel.name === 'screenshots') {
+    else if(channel.name === globalSettings.channels.screenshots) {
         try {
             const thread = await message.startThread({
                 name: `${author} (${today.getDay()}/${today.getMonth()}/${today.getFullYear()})`,
