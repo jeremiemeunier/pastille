@@ -14,7 +14,7 @@ const client = new Client({
 
 client.on('ready', () => {
     setInterval(async () => {
-        const actualDate = new Date(); 
+        const actualDate = new Date();
         if(actualDate.getHours() === 10 && actualDate.getMinutes() === 23) {
             let dailyUiAvancement = fs.readFileSync('./bin/dailyui.txt', 'utf8', (err, data) => {
                 if(err) { console.log(err); }
