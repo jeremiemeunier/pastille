@@ -19,6 +19,10 @@ It's a bot. An explosive bot named Pastille but only for an discord !
   </p>
 </div>
 
+## Prerequires
+
+If you are using category for control and organized your discord server, you must create an text channel with the name indicate in the settings for `channels > voiceText` in all category with an voice channel.
+
 ## Configuration files
 
 For configuration of pastille-bot you must have these files : [data/secret.json](https://github.com/jeremiemeunier/pastille-bot/blob/main/data/config.sample.json),

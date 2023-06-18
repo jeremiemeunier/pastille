@@ -1,17 +1,15 @@
 const fs = require('node:fs');
 const path = require('node:path');
-const secretSettings = JSON.parse(fs.readFileSync('data/secret.json'));
-const globalSettings = JSON.parse(fs.readFileSync('data/config.json'));
-const alphabetLetters = JSON.parse(fs.readFileSync('data/alphabet.json'));
 
+const alphabetLetters = JSON.parse(fs.readFileSync('data/base/alphabet.json'));
 const roleSettings = JSON.parse(fs.readFileSync('data/addons/role.json'));
-const rules = JSON.parse(fs.readFileSync('data/addons/rule.json'));
 
 const commands = [];
 const foldersPath = path.join(__dirname, 'commands');
 const commandFolders = fs.readdirSync(foldersPath);
 
-const { BOT_ID, BOT_TOKEN, BOT_OWNER_ID } = require('./data/secret.json');
+const globalSettings = JSON.parse(fs.readFileSync('./config/settings.json'));
+const { BOT_ID, BOT_TOKEN, BOT_OWNER_ID, GUILD_ID } = require('./config/secret.json');
 const { REST, Routes, ChannelType, Client, Events, EmbedBuilder, GatewayIntentBits, Partials, ShardingManager, messageLink } = require('discord.js');
 const client = new Client({
     intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessageReactions, GatewayIntentBits.GuildVoiceStates],
@@ -88,7 +86,7 @@ const pastilleBooter = () => {
         let bootEmbed = new EmbedBuilder()
                                 .setColor(`${globalSettings.options.color}`)
                                 .setTitle(`Pastille Launch`)
-                                .setDescription(`Le bot de @dark_bichon pour effectuer l'ensemble des actions trop cool qu'il à coder`)
+                                .setDescription(`It's a bot. An explosive bot named Pastille but only for an discord !`)
                                 .addFields(
                                     { name: 'Date starting', value: dateParser(), inline: true },
                                     { name: 'Version', value: globalSettings.version, inline: true },
@@ -106,7 +104,7 @@ const pastilleBooter = () => {
     catch (error) { autoLog(`An error occured : ${error}`); }
 }
 
-client.on('interactionCreate', async interaction => {
+client.on(Events.InteractionCreate, async interaction => {
     if (!interaction.isChatInputCommand()) return;
         const { commandName } = interaction;
     
@@ -122,6 +120,7 @@ client.on('interactionCreate', async interaction => {
         catch(error) { autoLog(`An error occured\r\n ${error}`); }
     }
     else if(commandName === 'rule') {
+        const rules = JSON.parse(fs.readFileSync('data/addons/rule.json'));
         try {
             let rulesField = [];
 
@@ -139,7 +138,7 @@ client.on('interactionCreate', async interaction => {
             const modosEmbed = new EmbedBuilder()
                                     .setColor(`${globalSettings.options.color}`)
                                     .setTitle('Modérations')
-                                    .setDescription(`Les décisions des modérateur et de l'équipe du serveur ne sont pas discutable. Si tu pense qu'elle est injuste, utilise le ticket dans <#1049836337131434016>. Pour accompagner et faciliter le travail de la modération, un automod est présent sur ce discord.`);
+                                    .setDescription(`Les décisions des modérateur et de l'équipe du serveur ne sont pas discutable. Si tu pense qu'elle est injuste, utilise le ticket dans <#${globalSettings.channels.help}>. Pour accompagner et faciliter le travail de la modération, un automod est présent sur ce discord.`);
             const validateEmbed = new EmbedBuilder()
                                     .setColor(`${globalSettings.options.color}`)
                                     .setDescription(`Pour accepter les règles et accéder au serveur clique sur ${globalSettings.options.reaction.rule}`);
@@ -240,34 +239,55 @@ client.on(Events.VoiceStateUpdate, async (oldState, newState) => {
     else {
         const guild = client.guilds.cache.find(guild => guild.id === oldState.guild.id) ||
                       client.guilds.cache.find(guild => guild.id === newState.guild.id);
-        const text = guild.channels.cache.find(text => text.name === globalSettings.channels.voiceText);
+        let textChannel = guild.channels.cache.find(textChannel => textChannel.name === globalSettings.channels.voiceText);
         try {
             const user = oldState.member.user.id || newState.member.user.id;
 
             if (newState.channelId === null) {
-                const channel = guild.channels.cache.find(channel => channel.id === oldState.channelId);
-                const connected = channel.members.map(x => x).length;
+                const voiceChannel = guild.channels.cache.find(voiceChannel => voiceChannel.id === oldState.channelId);
+                const connected = voiceChannel.members.map(x => x).length;
 
-                if(connected === 0) { deleteThreadOnLeave(channel, text, console); }
-                else { leaveThreadOnLeave(channel, text, consoleChannel, user); }
+                if(voiceChannel.parentId !== null) {
+                    textChannel = guild.channels.cache.find(textChannel => textChannel.name === globalSettings.channels.voiceText
+                                                                        && textChannel.parentId === voiceChannel.parentId);
+                }
+
+                if(connected === 0) { deleteThreadOnLeave(voiceChannel, textChannel, console); }
+                else { leaveThreadOnLeave(voiceChannel, textChannel, consoleChannel, user); }
             }
             else if (oldState.channelId === null) {
-                const channel = guild.channels.cache.find(channel => channel.id === newState.channelId);
-                const connected = channel.members.map(x => x).length;
+                const voiceChannel = guild.channels.cache.find(voiceChannel => voiceChannel.id === newState.channelId);
+                const connected = voiceChannel.members.map(x => x).length;
+
+                if(voiceChannel.parentId !== null) {
+                    textChannel = guild.channels.cache.find(textChannel => textChannel.name === globalSettings.channels.voiceText
+                                                                        && textChannel.parentId === voiceChannel.parentId);
+                }
         
-                if(connected === 1) {  createThreadOnJoin(channel, text, consoleChannel, user); }
-                else { joinThreadOnJoin(channel, text, consoleChannel, user); }
+                if(connected === 1) {  createThreadOnJoin(voiceChannel, textChannel, consoleChannel, user); }
+                else { joinThreadOnJoin(voiceChannel, textChannel, consoleChannel, user); }
             }
             else {
-                const oldChannel = guild.channels.cache.find(oldChannel => oldChannel.id === oldState.channelId);
-                const newChannel = guild.channels.cache.find(newChannel => newChannel.id === newState.channelId);
-                const oldNbConnected = oldChannel.members.map(x => x).length;
-                const newNbConnected = newChannel.members.map(x => x).length;
+                const oldVoiceChannel = guild.channels.cache.find(oldVoiceChannel => oldVoiceChannel.id === oldState.channelId);
+                const newVoiceChannel = guild.channels.cache.find(newVoiceChannel => newVoiceChannel.id === newState.channelId);
+                const oldNbConnected = oldVoiceChannel.members.map(x => x).length;
+                const newNbConnected = newVoiceChannel.members.map(x => x).length;
+                let oldTextChannel = textChannel;
+                let newTextChannel = textChannel;
+
+                if(oldVoiceChannel.parentId !== null) {
+                    oldTextChannel = guild.channels.cache.find(oldTextChannel => oldTextChannel.name === globalSettings.channels.voiceText
+                                                                              && oldTextChannel.parentId === oldVoiceChannel.parentId);
+                }
+                if(newVoiceChannel.parentId !== null) {
+                    newTextChannel = guild.channels.cache.find(newTextChannel => newTextChannel.name === globalSettings.channels.voiceText
+                                                                              && newTextChannel.parentId === newVoiceChannel.parentId);
+                }
         
-                if(oldNbConnected === 0) { deleteThreadOnLeave(oldChannel, text, consoleChannel); }
-                else { leaveThreadOnLeave(oldChannel, text, consoleChannel, user); }
-                if(newNbConnected === 1) { createThreadOnJoin(newChannel, text, consoleChannel, user); }
-                else { joinThreadOnJoin(newChannel, text, consoleChannel, user); }
+                if(oldNbConnected === 0) { deleteThreadOnLeave(oldVoiceChannel, oldTextChannel, consoleChannel); }
+                else { leaveThreadOnLeave(oldVoiceChannel, oldTextChannel, consoleChannel, user); }
+                if(newNbConnected === 1) { createThreadOnJoin(newVoiceChannel, newTextChannel, consoleChannel, user); }
+                else { joinThreadOnJoin(newVoiceChannel, newTextChannel, consoleChannel, user); }
             }
         }
         catch(error) { autoLog(`An error occured\r\n ${error}`); return; }
@@ -395,6 +415,14 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
                 }
                 catch(error) { autoLog(`An error occured\r\n ${error}`); return; }
             }
+            else if(reaction.emoji.name === '🤓') {
+                const guild = client.guilds.cache.find(guild => guild.id === reaction.message.guildId);
+                const member = guild.members.cache.find(member => member.id === user.id);
+                const role = guild.roles.cache.find(role => role.id === '1118500573675782235');
+
+                try { await member.roles.add(role); }
+                catch(error) { console.log(error); }
+            }
         }
     }
 });
@@ -421,14 +449,27 @@ client.on(Events.MessageReactionRemove, async (reaction, user) => {
             }
         }
     }
+    else {
+        if(reaction.emoji.name === '🤓') {
+            const guild = client.guilds.cache.find(guild => guild.id === reaction.message.guildId);
+            const member = guild.members.cache.find(member => member.id === user.id);
+            const role = guild.roles.cache.find(role => role.id === '1118500573675782235');
+
+            try { await member.roles.remove(role); }
+            catch(error) { console.log(error); }
+        }
+    }
 });
 
 client.on(Events.MessageCreate, async (message) => {
     const content = message.content;
     const guild = client.guilds.cache.find(guild => guild.id === message.guildId);
     const channel = guild.channels.cache.find(channel => channel.id === message.channelId);
-
+    const author = message.author.username;
+    const today = new Date();
+    const postedDate = `${today.getDate}/${today.getMonth}/${today.getFullYear}`;
     const msg = channel.messages.cache.find(message => message.id === message.id);
+
     let splitedMsg = content.split(' ');
     let cmd = splitedMsg.shift().slice(1);
     let text = splitedMsg.join(' ');
@@ -448,6 +489,28 @@ client.on(Events.MessageCreate, async (message) => {
             try { channel.send({ embeds: [embed] }); }
             catch(error) { autoLog(`An error occured\r\n ${error}`); return; }
         }
+        else if(cmd === 'dailyui') {
+            message.delete();
+            const embed = new EmbedBuilder()
+                                    .setColor(`${globalSettings.options.color}`)
+                                    .setTitle(`Tu souhaite t'exercer à l'UI/UX ?`)
+                                    .setDescription(`Pour t'ajouter le rôle des DailyUi clique sur le 🤓`);
+            try {
+                const message = await channel.send({ embeds: [embed] });
+                message.react('🤓');
+            }
+            catch(error) { autoLog(`An error occured\r\n ${error}`); return; }
+        }
+    }
+    else if(channel.name === globalSettings.channels.screenshots) {
+        try {
+            const thread = await message.startThread({
+                name: `${author} (${today.getDay()}/${today.getMonth()}/${today.getFullYear()})`,
+                autoArchiveDuration: 60,
+                reason: 'New screenshots posted'
+            });
+        }
+        catch(error) { console.log(error); }
     }
     else { return; }
 });
@@ -459,4 +522,4 @@ client.on(Events.MessageCreate, async (message) => {
 });
 
 client.on('ready', () => { pastilleBooter(); });
-client.login(secretSettings.BOT_TOKEN);
+client.login(BOT_TOKEN);
