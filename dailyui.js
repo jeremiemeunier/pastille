@@ -15,6 +15,8 @@ const client = new Client({
 client.on('ready', () => {
     setInterval(async () => {
         const actualDate = new Date();
+        const dailyUiList = JSON.parse(fs.readFileSync('./data/dailyui.json'));
+
         if(actualDate.getHours() === 10 && actualDate.getMinutes() === 23) {
             let dailyUiAvancement = fs.readFileSync('./bin/dailyui.txt', 'utf8', (err, data) => {
                 if(err) { console.log(err); }
@@ -25,15 +27,14 @@ client.on('ready', () => {
                 else { return data; }
             });
                 nextDailyUiAdvancement++;
-            const dailyUiList = JSON.parse(fs.readFileSync('./data/dailyui.json'));
 
-            const guild = client.guilds.cache.find(guild => guild.id === GUILD_ID);
-            const channel = guild.channels.cache.find(channel => channel.name === 'daily-ui');
-            const embed = new EmbedBuilder()
-                                .setColor(globalSettings.options.color)
-                                .setTitle(`C'est l'heure de ton dailyUi !`)
-                                .setDescription(`Pour aujourd'hui : **${dailyUiList[dailyUiAvancement].name}**`);
             try {
+                const guild = client.guilds.cache.find(guild => guild.id === GUILD_ID);
+                const channel = guild.channels.cache.find(channel => channel.name === 'daily-ui');
+                const embed = new EmbedBuilder()
+                                    .setColor(globalSettings.options.color)
+                                    .setTitle(`C'est l'heure de ton dailyUi !`)
+                                    .setDescription(`Pour aujourd'hui : **${dailyUiList[dailyUiAvancement].name}**`);
                 const message = await channel.send({ content: `<@&1118500573675782235> c'est l'heure du DailyUi !`, embeds: [embed] });
                 try {
                     const thread = await message.startThread({
