@@ -34,7 +34,7 @@ client.on('ready', () => {
                                     .setColor(globalSettings.options.color)
                                     .setTitle(`C'est l'heure de ton dailyUi !`)
                                     .setDescription(`Pour aujourd'hui : **${dailyUiList[dailyUiAvancement].name}**`);
-                const message = await channel.send({ content: `<@&1118500573675782235> c'est l'heure du DailyUi !`, embeds: [embed] });
+                const message = await channel.send({ content: `<@&1118500573675782235> c'est l'heure du DailyUi ! N'hésitez pas à partager vos créations dans le fils`, embeds: [embed] });
                 try {
                     const thread = await message.startThread({
                         name: `DailyUi : ${dailyUiList[dailyUiAvancement].name}`,
