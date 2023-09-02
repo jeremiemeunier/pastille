@@ -1,12 +1,6 @@
 const fs = require('node:fs');
-const path = require('node:path');
-
 const alphabetLetters = JSON.parse(fs.readFileSync('data/base/alphabet.json'));
 const roleSettings = JSON.parse(fs.readFileSync('data/addons/role.json'));
-
-const commands = [];
-const foldersPath = path.join(__dirname, 'commands');
-const commandFolders = fs.readdirSync(foldersPath);
 
 const { version, options, channels, moderation, app } = require ('./config/settings.json');
 const { BOT_ID, BOT_TOKEN, BOT_OWNER_ID, GUILD_ID } = require('./config/secret.json');
@@ -16,9 +10,10 @@ const client = new Client({
     partials: [Partials.Message, Partials.Channel, Partials.Reaction],
 });
 
-const { createThreadOnJoin, joinThreadOnJoin, leaveThreadOnLeave, deleteThreadOnLeave } = require('./events/voice.js');
 const { dateParser } = require('./function/base');
-const { logsBooter, logsEmiter } = require('./function/logs');
+const { logsBooter, logsEmiter, logsTester } = require('./function/logs');
+const { voiceEventInit } = require('./events/voiceEvent');
+const { commandRegister, commandRegisterInit } = require('./function/commandsRegister');
 
 // ##### FIX ##### \\
 
@@ -36,41 +31,6 @@ if (!String.prototype.endsWith) {
     });
 }
 
-// ##### CMD ##### \\
-
-for(const folder of commandFolders) {
-    const commandsPath = path.join(foldersPath, folder);
-    const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
-
-    for(const file of commandFiles) {
-        const filePath = path.join(commandsPath, file);
-        const command = require(filePath);
-        if('data' in command) {
-            commands.push(command.data);
-        } else {
-            logsEmiter(`[WARNING] The command at ${filePath} is missing a required "data" property.`);
-        }
-    }
-}
-
-const commandRegister = async (GUILD_ID) => {
-    setTimeout(async () => {
-        const rest = new REST().setToken(BOT_TOKEN);
-        const guildName = client.guilds.cache.find(guild => guild.id === GUILD_ID).name;
-        (async () => {
-            try {
-                await logsEmiter(`Started refreshing ${commands.length} application (/) commands for ${guildName}.`);
-                const data = await rest.put(
-                    Routes.applicationGuildCommands(BOT_ID, GUILD_ID),
-                    { body: commands },
-                );
-                logsEmiter(`Successfully reloaded ${data.length} application (/) commands for ${guildName}.`);
-            }
-            catch (error) { console.error(error); }
-        })();
-    }, 2000);
-}
-
 // ##### APP ##### \\
 
 const pastilleBooter = async () => {
@@ -82,23 +42,30 @@ const pastilleBooter = async () => {
 
 	try {
         let bootEmbed = new EmbedBuilder()
-                                .setColor(`${options.color}`)
-                                .setTitle(`Pastille Launch`)
-                                .setDescription(`It's a bot. An explosive bot named Pastille but only for an discord !`)
-                                .addFields(
-                                    { name: 'Date starting', value: dateParser(), inline: true },
-                                    { name: 'Version', value: version, inline: true },
-                                    { name: 'Command bang', value: options.bang, inline: true }
-                                )
-                                .setTimestamp()
-                                .setFooter({ text: `Version ${version}` });
+            .setColor(`${options.color}`)
+            .setTitle(`Pastille Launch`)
+            .setDescription(`It's a bot. An explosive bot named Pastille but only for an discord !`)
+            .addFields(
+                { name: 'Date starting', value: dateParser(), inline: true },
+                { name: 'Version', value: version, inline: true },
+                { name: 'Command bang', value: options.bang, inline: true }
+            )
+            .setTimestamp()
+            .setFooter({ text: `Version ${version}` });
         // channelDebug.send({ embeds: [bootEmbed] });
         logsBooter(client, channelConsole, channelDebug);
         logsEmiter('Hello here !');
-        
-        for(let i = 0;i < clientGuildQuantity;i++) {
-            commandRegister(clientGuildIds[i]);
-        }
+
+        setTimeout(() => {
+            if(logsTester()) {
+                commandRegisterInit(client);
+                voiceEventInit(client);
+                
+                for(let i = 0;i < clientGuildQuantity;i++) {
+                    commandRegister(clientGuildIds[i]);
+                }
+            }
+        }, 2000);
     }
     catch (error) { logsEmiter(`An error occured : ${error}`); }
 }
@@ -230,66 +197,6 @@ client.on(Events.InteractionCreate, async interaction => {
             logsEmiter(`An error occured\r\n ${error}`);
             await interaction.reply({ content: `Une erreur est survenue. Essayer à nouveau plus tard.`, ephemeral: true });
         }
-    }
-});
-
-client.on(Events.VoiceStateUpdate, async (oldState, newState) => {
-    if(newState.channelId === oldState.channelId) { return; }
-    else {
-        const guild = client.guilds.cache.find(guild => guild.id === oldState.guild.id) ||
-                      client.guilds.cache.find(guild => guild.id === newState.guild.id);
-        let textChannel = guild.channels.cache.find(textChannel => textChannel.name === channels.voiceText);
-        try {
-            const user = oldState.member.user.id || newState.member.user.id;
-
-            if (newState.channelId === null) {
-                const voiceChannel = guild.channels.cache.find(voiceChannel => voiceChannel.id === oldState.channelId);
-                const connected = voiceChannel.members.map(x => x).length;
-
-                if(voiceChannel.parentId !== null) {
-                    textChannel = guild.channels.cache.find(textChannel => textChannel.name === channels.voiceText
-                                                                        && textChannel.parentId === voiceChannel.parentId);
-                }
-
-                if(connected === 0) { deleteThreadOnLeave(voiceChannel, textChannel, channelConsole); }
-                else { leaveThreadOnLeave(voiceChannel, textChannel, channelConsole, user); }
-            }
-            else if (oldState.channelId === null) {
-                const voiceChannel = guild.channels.cache.find(voiceChannel => voiceChannel.id === newState.channelId);
-                const connected = voiceChannel.members.map(x => x).length;
-
-                if(voiceChannel.parentId !== null) {
-                    textChannel = guild.channels.cache.find(textChannel => textChannel.name === channels.voiceText
-                                                                        && textChannel.parentId === voiceChannel.parentId);
-                }
-        
-                if(connected === 1) {  createThreadOnJoin(voiceChannel, textChannel, channelConsole, user); }
-                else { joinThreadOnJoin(voiceChannel, textChannel, channelConsole, user); }
-            }
-            else {
-                const oldVoiceChannel = guild.channels.cache.find(oldVoiceChannel => oldVoiceChannel.id === oldState.channelId);
-                const newVoiceChannel = guild.channels.cache.find(newVoiceChannel => newVoiceChannel.id === newState.channelId);
-                const oldNbConnected = oldVoiceChannel.members.map(x => x).length;
-                const newNbConnected = newVoiceChannel.members.map(x => x).length;
-                let oldTextChannel = textChannel;
-                let newTextChannel = textChannel;
-
-                if(oldVoiceChannel.parentId !== null) {
-                    oldTextChannel = guild.channels.cache.find(oldTextChannel => oldTextChannel.name === channels.voiceText
-                                                                              && oldTextChannel.parentId === oldVoiceChannel.parentId);
-                }
-                if(newVoiceChannel.parentId !== null) {
-                    newTextChannel = guild.channels.cache.find(newTextChannel => newTextChannel.name === channels.voiceText
-                                                                              && newTextChannel.parentId === newVoiceChannel.parentId);
-                }
-        
-                if(oldNbConnected === 0) { deleteThreadOnLeave(oldVoiceChannel, oldTextChannel, channelConsole); }
-                else { leaveThreadOnLeave(oldVoiceChannel, oldTextChannel, channelConsole, user); }
-                if(newNbConnected === 1) { createThreadOnJoin(newVoiceChannel, newTextChannel, channelConsole, user); }
-                else { joinThreadOnJoin(newVoiceChannel, newTextChannel, channelConsole, user); }
-            }
-        }
-        catch(error) { logsEmiter(`An error occured\r\n ${error}`); return; }
     }
 });
 
