@@ -8,7 +8,7 @@ const commands = [];
 const foldersPath = path.join(__dirname, 'commands');
 const commandFolders = fs.readdirSync(foldersPath);
 
-const globalSettings = JSON.parse(fs.readFileSync('./config/settings.json'));
+const { version, options, channels, moderation, app } = require ('./config/settings.json');
 const { BOT_ID, BOT_TOKEN, BOT_OWNER_ID, GUILD_ID } = require('./config/secret.json');
 const { REST, Routes, ChannelType, Client, Events, EmbedBuilder, GatewayIntentBits, Partials, ShardingManager, messageLink } = require('discord.js');
 const client = new Client({
@@ -17,12 +17,8 @@ const client = new Client({
 });
 
 const { createThreadOnJoin, joinThreadOnJoin, leaveThreadOnLeave, deleteThreadOnLeave } = require('./events/voice.js');
-const { dateParser, logger } = require('./function/base.js');
-
-let consoleChannel;
-let debugChannel;
-
-const autoLog = (content) => { logger(consoleChannel, content); }
+const { dateParser } = require('./function/base');
+const { logsBooter, logsEmiter } = require('./function/logs');
 
 // ##### FIX ##### \\
 
@@ -52,56 +48,59 @@ for(const folder of commandFolders) {
         if('data' in command) {
             commands.push(command.data);
         } else {
-            autoLog(`[WARNING] The command at ${filePath} is missing a required "data" property.`);
+            logsEmiter(`[WARNING] The command at ${filePath} is missing a required "data" property.`);
         }
     }
 }
 
-const commandRegister = (GUILD_ID) => {
-    const rest = new REST().setToken(BOT_TOKEN);
-    const guildName = client.guilds.cache.find(guild => guild.id === GUILD_ID).name;
-    (async () => {
-        try {
-            autoLog(`Started refreshing ${commands.length} application (/) commands for ${guildName}.`);
-            const data = await rest.put(
-                Routes.applicationGuildCommands(BOT_ID, GUILD_ID),
-                { body: commands },
-            );
-            autoLog(`Successfully reloaded ${data.length} application (/) commands for ${guildName}.`);
-        }
-        catch (error) { console.error(error); }
-    })();
+const commandRegister = async (GUILD_ID) => {
+    setTimeout(async () => {
+        const rest = new REST().setToken(BOT_TOKEN);
+        const guildName = client.guilds.cache.find(guild => guild.id === GUILD_ID).name;
+        (async () => {
+            try {
+                await logsEmiter(`Started refreshing ${commands.length} application (/) commands for ${guildName}.`);
+                const data = await rest.put(
+                    Routes.applicationGuildCommands(BOT_ID, GUILD_ID),
+                    { body: commands },
+                );
+                logsEmiter(`Successfully reloaded ${data.length} application (/) commands for ${guildName}.`);
+            }
+            catch (error) { console.error(error); }
+        })();
+    }, 2000);
 }
 
 // ##### APP ##### \\
 
-const pastilleBooter = () => {
-    debugChannel = client.channels.cache.find(channel => channel.name === globalSettings.channels.debug);
-    consoleChannel = client.channels.cache.find(channel => channel.name === globalSettings.channels.console);
+const pastilleBooter = async () => {
+    const channelDebug = client.channels.cache.find(channel => channel.name === channels.debug);
+    const channelConsole = client.channels.cache.find(channel => channel.name === channels.console);
     
     const clientGuildQuantity = client.guilds.cache.map(guild => guild.id).length;
     const clientGuildIds = client.guilds.cache.map(guild => guild.id);
 
 	try {
         let bootEmbed = new EmbedBuilder()
-                                .setColor(`${globalSettings.options.color}`)
+                                .setColor(`${options.color}`)
                                 .setTitle(`Pastille Launch`)
                                 .setDescription(`It's a bot. An explosive bot named Pastille but only for an discord !`)
                                 .addFields(
                                     { name: 'Date starting', value: dateParser(), inline: true },
-                                    { name: 'Version', value: globalSettings.version, inline: true },
-                                    { name: 'Command bang', value: globalSettings.options.bang, inline: true }
+                                    { name: 'Version', value: version, inline: true },
+                                    { name: 'Command bang', value: options.bang, inline: true }
                                 )
                                 .setTimestamp()
-                                .setFooter({ text: `Version ${globalSettings.version}` });
-        debugChannel.send({ embeds: [bootEmbed] });
-        autoLog('Hello here !');
+                                .setFooter({ text: `Version ${version}` });
+        // channelDebug.send({ embeds: [bootEmbed] });
+        logsBooter(client, channelConsole, channelDebug);
+        logsEmiter('Hello here !');
         
         for(let i = 0;i < clientGuildQuantity;i++) {
             commandRegister(clientGuildIds[i]);
         }
     }
-    catch (error) { autoLog(`An error occured : ${error}`); }
+    catch (error) { logsEmiter(`An error occured : ${error}`); }
 }
 
 client.on(Events.InteractionCreate, async interaction => {
@@ -111,13 +110,13 @@ client.on(Events.InteractionCreate, async interaction => {
     if(commandName === 'staff') {
         try {
             const embed = new EmbedBuilder()
-                                .setColor(`${globalSettings.options.color}`)
+                                .setColor(`${options.color}`)
                                 .setTitle(`Demande de support`)
-                                .setDescription(`Comment pouvons-nous t'aider ? Si tu as des questions ou des demandes clique sur ${globalSettings.options.reaction.ticket} pour contacter le staff`);
+                                .setDescription(`Comment pouvons-nous t'aider ? Si tu as des questions ou des demandes clique sur ${options.reaction.ticket} pour contacter le staff`);
             const message = await interaction.reply({ embeds: [embed], fetchReply: true });
-            message.react(globalSettings.options.reaction.ticket);
+            message.react(options.reaction.ticket);
         }
-        catch(error) { autoLog(`An error occured\r\n ${error}`); }
+        catch(error) { logsEmiter(`An error occured\r\n ${error}`); }
     }
     else if(commandName === 'rule') {
         const rules = JSON.parse(fs.readFileSync('data/addons/rule.json'));
@@ -131,21 +130,21 @@ client.on(Events.InteractionCreate, async interaction => {
                 rulesField.push(ruleField);
             }
             const rulesEmbed = new EmbedBuilder()
-                                    .setColor(`${globalSettings.options.color}`)
+                                    .setColor(`${options.color}`)
                                     .setTitle('Règles du serveur')
                                     .setDescription(`Les règles du serveur sont simples.\r\nEn utilisant ce serveur discord, l'utilisateur accepte d'emblée le réglement.`)
                                     .addFields(rulesField);
             const modosEmbed = new EmbedBuilder()
-                                    .setColor(`${globalSettings.options.color}`)
+                                    .setColor(`${options.color}`)
                                     .setTitle('Modérations')
-                                    .setDescription(`Les décisions des modérateur et de l'équipe du serveur ne sont pas discutable. Si tu pense qu'elle est injuste, utilise le ticket dans <#${globalSettings.channels.help}>. Pour accompagner et faciliter le travail de la modération, un automod est présent sur ce discord.`);
+                                    .setDescription(`Les décisions des modérateur et de l'équipe du serveur ne sont pas discutable. Si tu pense qu'elle est injuste, utilise le ticket dans <#${channels.help}>. Pour accompagner et faciliter le travail de la modération, un automod est présent sur ce discord.`);
             const validateEmbed = new EmbedBuilder()
-                                    .setColor(`${globalSettings.options.color}`)
-                                    .setDescription(`Pour accepter les règles et accéder au serveur clique sur ${globalSettings.options.reaction.rule}`);
+                                    .setColor(`${options.color}`)
+                                    .setDescription(`Pour accepter les règles et accéder au serveur clique sur ${options.reaction.rule}`);
             const message = await interaction.reply({ embeds: [rulesEmbed, modosEmbed, validateEmbed], fetchReply: true });
-            message.react(globalSettings.options.reaction.rule);
+            message.react(options.reaction.rule);
         }
-        catch(error) { autoLog(`An error occured\r\n ${error}`); }
+        catch(error) { logsEmiter(`An error occured\r\n ${error}`); }
     }
     else if(commandName === 'poll') {
         let pollChoices = '';
@@ -153,7 +152,7 @@ client.on(Events.InteractionCreate, async interaction => {
         for(let i = 0;i<22;i++) {
             if(interaction.options.getString(`choice_${alphabetLetters[i].letter}`) === null) {
                 const embed = new EmbedBuilder()
-                                    .setColor(`${globalSettings.options.color}`)
+                                    .setColor(`${options.color}`)
                                     .setTitle(interaction.options.getString('question'))
                                     .setDescription(pollChoices);
                 const message = await interaction.reply({ embeds: [embed], fetchReply: true, content: "Nouveau sondage ! ||@here||" });
@@ -164,7 +163,7 @@ client.on(Events.InteractionCreate, async interaction => {
                     try { await message.react(first); }
                     catch(error) {
                         try { await message.react(letter); }
-                        catch(error) { autoLog(`An error occured\r\n ${error}`); }
+                        catch(error) { logsEmiter(`An error occured\r\n ${error}`); }
                     }
                 }
                 break;
@@ -177,12 +176,12 @@ client.on(Events.InteractionCreate, async interaction => {
     else if(commandName === 'announce') {
         try {
             const embed = new EmbedBuilder()
-                                .setColor(`${globalSettings.options.color}`)
+                                .setColor(`${options.color}`)
                                 .setTitle(interaction.options.getString('title'))
                                 .setDescription(interaction.options.getString('content'));
             const message = await interaction.reply({ embeds: [embed], fetchReply: true, content: "📢 **Annonce** ||@everyone||" });
         }
-        catch(error) { autoLog(`An error occured\r\n ${error}`); }
+        catch(error) { logsEmiter(`An error occured\r\n ${error}`); }
     }
     else if(commandName === 'role') {
         let fields = [];
@@ -195,7 +194,7 @@ client.on(Events.InteractionCreate, async interaction => {
         }
 
         const embed = new EmbedBuilder()
-                            .setColor(`${globalSettings.options.color}`)
+                            .setColor(`${options.color}`)
                             .setTitle(`Pastille autorole`)
                             .setDescription(`Clique sur les réactions en dessous de ce message pour t'ajouter les rôles en fonction de tes centres d'intérêt.`)
                             .addFields(fields);
@@ -203,10 +202,10 @@ client.on(Events.InteractionCreate, async interaction => {
             const message = await interaction.reply({ embeds: [embed], fetchReply: true });
             for(let i = 0;i < roleSettings.length;i++) {
                 try { await message.react(roleSettings[i].emoji); }
-                catch(error) { autoLog(`An error occured\r\n ${error}`); }
+                catch(error) { logsEmiter(`An error occured\r\n ${error}`); }
             }
         }
-        catch(error) { autoLog(`An error occured\r\n ${error}`); }
+        catch(error) { logsEmiter(`An error occured\r\n ${error}`); }
     }
     else if(commandName === 'fils') {
         const channel = client.channels.cache.find(channel => channel.id === interaction.channelId);
@@ -223,12 +222,12 @@ client.on(Events.InteractionCreate, async interaction => {
             await interaction.reply({ content: `Tu as maintenant accès au thread ${thread}`, ephemeral: true });
     
             let embed = new EmbedBuilder()
-                                .setColor(`${globalSettings.options.color}`)
+                                .setColor(`${options.color}`)
                                 .setDescription(`Create a new thread to request MidJourney`);
             const msg = await thread.send({ embeds: [embed] });
         }
         catch(error) {
-            autoLog(`An error occured\r\n ${error}`);
+            logsEmiter(`An error occured\r\n ${error}`);
             await interaction.reply({ content: `Une erreur est survenue. Essayer à nouveau plus tard.`, ephemeral: true });
         }
     }
@@ -239,7 +238,7 @@ client.on(Events.VoiceStateUpdate, async (oldState, newState) => {
     else {
         const guild = client.guilds.cache.find(guild => guild.id === oldState.guild.id) ||
                       client.guilds.cache.find(guild => guild.id === newState.guild.id);
-        let textChannel = guild.channels.cache.find(textChannel => textChannel.name === globalSettings.channels.voiceText);
+        let textChannel = guild.channels.cache.find(textChannel => textChannel.name === channels.voiceText);
         try {
             const user = oldState.member.user.id || newState.member.user.id;
 
@@ -248,7 +247,7 @@ client.on(Events.VoiceStateUpdate, async (oldState, newState) => {
                 const connected = voiceChannel.members.map(x => x).length;
 
                 if(voiceChannel.parentId !== null) {
-                    textChannel = guild.channels.cache.find(textChannel => textChannel.name === globalSettings.channels.voiceText
+                    textChannel = guild.channels.cache.find(textChannel => textChannel.name === channels.voiceText
                                                                         && textChannel.parentId === voiceChannel.parentId);
                 }
 
@@ -260,7 +259,7 @@ client.on(Events.VoiceStateUpdate, async (oldState, newState) => {
                 const connected = voiceChannel.members.map(x => x).length;
 
                 if(voiceChannel.parentId !== null) {
-                    textChannel = guild.channels.cache.find(textChannel => textChannel.name === globalSettings.channels.voiceText
+                    textChannel = guild.channels.cache.find(textChannel => textChannel.name === channels.voiceText
                                                                         && textChannel.parentId === voiceChannel.parentId);
                 }
         
@@ -276,11 +275,11 @@ client.on(Events.VoiceStateUpdate, async (oldState, newState) => {
                 let newTextChannel = textChannel;
 
                 if(oldVoiceChannel.parentId !== null) {
-                    oldTextChannel = guild.channels.cache.find(oldTextChannel => oldTextChannel.name === globalSettings.channels.voiceText
+                    oldTextChannel = guild.channels.cache.find(oldTextChannel => oldTextChannel.name === channels.voiceText
                                                                               && oldTextChannel.parentId === oldVoiceChannel.parentId);
                 }
                 if(newVoiceChannel.parentId !== null) {
-                    newTextChannel = guild.channels.cache.find(newTextChannel => newTextChannel.name === globalSettings.channels.voiceText
+                    newTextChannel = guild.channels.cache.find(newTextChannel => newTextChannel.name === channels.voiceText
                                                                               && newTextChannel.parentId === newVoiceChannel.parentId);
                 }
         
@@ -290,33 +289,33 @@ client.on(Events.VoiceStateUpdate, async (oldState, newState) => {
                 else { joinThreadOnJoin(newVoiceChannel, newTextChannel, consoleChannel, user); }
             }
         }
-        catch(error) { autoLog(`An error occured\r\n ${error}`); return; }
+        catch(error) { logsEmiter(`An error occured\r\n ${error}`); return; }
     }
 });
 
 client.on(Events.MessageReactionAdd, async (reaction, user) => {
     if(user.bot === true) { return; }
     else {
-        const helpZone = client.channels.cache.find(channel => channel.id === globalSettings.channels.help);
+        const helpZone = client.channels.cache.find(channel => channel.id === channels.help);
         if (reaction.partial) {
             try { await reaction.fetch(); }
-            catch (error) { autoLog(`An error occured\r\n ${error}`); return; }
+            catch (error) { logsEmiter(`An error occured\r\n ${error}`); return; }
         }
 
         if(reaction.message.interaction != undefined) {
             if(reaction.message.interaction.commandName === 'rule') {
-                if(reaction.emoji.name === globalSettings.options.reaction.rule) {
+                if(reaction.emoji.name === options.reaction.rule) {
                     const guild = client.guilds.cache.find(guild => guild.id === reaction.message.guildId);
                     const member = guild.members.cache.find(member => member.id === user.id);
-                    const role = guild.roles.cache.find(role => role.id === globalSettings.moderation.rule);
+                    const role = guild.roles.cache.find(role => role.id === moderation.rule);
 
                     try { await member.roles.add(role); }
-                    catch(error) { autoLog(`An error occured\r\n ${error}`); return; }
+                    catch(error) { logsEmiter(`An error occured\r\n ${error}`); return; }
                 }
                 else { reaction.users.remove(user); }
             }
             if(reaction.message.interaction.commandName === 'staff') {
-                if(reaction.emoji.name === globalSettings.options.reaction.ticket) {
+                if(reaction.emoji.name === options.reaction.ticket) {
                     try {
                         reaction.users.remove(user);
                         const thread = await helpZone.threads.create({
@@ -327,13 +326,13 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
                         });
                         await thread.members.add(user);
                         const embed = new EmbedBuilder()
-                                            .setColor(`${globalSettings.options.color}`)
+                                            .setColor(`${options.color}`)
                                             .setTitle(`Requested help from @${user.username}`)
                                             .setDescription(`Pour mettre fin à ta demande d'aide clique sur 🔒`);
                         const message = await thread.send({ embeds: [embed] });
                         message.react('🔒');
                     }
-                    catch(error) { autoLog(`An error occured\r\n ${error}`); return; }
+                    catch(error) { logsEmiter(`An error occured\r\n ${error}`); return; }
                 }
                 else { reaction.users.remove(user); }
             }
@@ -348,7 +347,7 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
                         const role = guild.roles.cache.find(role => role.id === roleSettings[i].role);
 
                         try { await member.roles.add(role); }
-                        catch(error) { autoLog(`An error occured\r\n ${error}`); return; }
+                        catch(error) { logsEmiter(`An error occured\r\n ${error}`); return; }
                     }
                 }
             }
@@ -358,13 +357,13 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
 
                 if(botReactThis === undefined) {
                     try { await reaction.users.remove(user); }
-                    catch(error) { autoLog(`An error occured\r\n ${error}`); }
+                    catch(error) { logsEmiter(`An error occured\r\n ${error}`); }
                 }
                 else {
                     userReactions.map(async (react) => {
                         if(react.emoji.name !== reaction.emoji.name) {
                             try { await react.users.remove(user); }
-                            catch(error) { autoLog(`An error occured\r\n ${error}`); }
+                            catch(error) { logsEmiter(`An error occured\r\n ${error}`); }
                         }
                     });
                 }
@@ -372,13 +371,13 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
         }
         else {
             if(reaction.emoji.name === '🔒') {
-                const channel = client.channels.cache.find(channel => channel.id === globalSettings.channels.help);
+                const channel = client.channels.cache.find(channel => channel.id === channels.help);
                 const thread = channel.threads.cache.find(thread => thread.id === reaction.message.channelId);
 
                 try {
                     thread.setLocked(true);
                     const embed = new EmbedBuilder()
-                                        .setColor(`${globalSettings.options.color}`)
+                                        .setColor(`${options.color}`)
                                         .addFields(
                                             { name: "Supression", value: 'Clique sur 🗑️ pour supprimer ce fil.', inline: true },
                                             { name: "Déverouillage", value: 'Clique sur 🔓 pour débloquer ce fil.', inline: true })
@@ -387,33 +386,33 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
                     message.react('🗑️');
                     message.react('🔓');
                 }
-                catch(error) { autoLog(`An error occured\r\n ${error}`); return; }
+                catch(error) { logsEmiter(`An error occured\r\n ${error}`); return; }
             }
             else if(reaction.emoji.name === '🗑️') {
-                const channel = client.channels.cache.find(channel => channel.id === globalSettings.channels.help);
+                const channel = client.channels.cache.find(channel => channel.id === channels.help);
                 const thread = channel.threads.cache.find(thread => thread.id === reaction.message.channelId);
                 const embed = new EmbedBuilder()
-                                        .setColor(`${globalSettings.options.color}`)
+                                        .setColor(`${options.color}`)
                                         .setDescription(`Ce fil va être supprimer dans quelques secondes`);
                 const message = await thread.send({ embeds: [embed]});
 
-                setTimeout(() => {
-                    try { thread.delete(true); } catch(error) { autoLog(`An error occured\r\n ${error}`); return; }
-                }, 2000);
+                setTimeout(async () => {
+                    try { thread.delete(true); } catch(error) { logsEmiter(`An error occured\r\n ${error}`); return; }
+                }, 30000);
             }
             else if(reaction.emoji.name === '🔓') {
-                const channel = client.channels.cache.find(channel => channel.id === globalSettings.channels.help);
+                const channel = client.channels.cache.find(channel => channel.id === channels.help);
                 const thread = channel.threads.cache.find(thread => thread.id === reaction.message.channelId);
 
                 try {
                     thread.setLocked(false);
                     const embed = new EmbedBuilder()
-                                        .setColor(`${globalSettings.options.color}`)
+                                        .setColor(`${options.color}`)
                                         .setDescription(`Ce fil est de nouveau disponible. Pour mettre fin à ta demande clique sur 🔒`);
                     const message = await thread.send({ embeds: [embed] });
                     message.react('🔒');
                 }
-                catch(error) { autoLog(`An error occured\r\n ${error}`); return; }
+                catch(error) { logsEmiter(`An error occured\r\n ${error}`); return; }
             }
             else if(reaction.emoji.name === '🤓') {
                 const guild = client.guilds.cache.find(guild => guild.id === reaction.message.guildId);
@@ -432,7 +431,7 @@ client.on(Events.MessageReactionRemove, async (reaction, user) => {
     
     if (reaction.partial) {
         try { await reaction.fetch(); }
-        catch (error) { autoLog(`An error occured\r\n ${error}`); return; }
+        catch (error) { logsEmiter(`An error occured\r\n ${error}`); return; }
     }
 
     if(reaction.message.interaction != undefined) {
@@ -444,7 +443,7 @@ client.on(Events.MessageReactionRemove, async (reaction, user) => {
                     const role = guild.roles.cache.find(role => role.id === roleSettings[i].role);
 
                     try { await member.roles.remove(role); }
-                    catch(error) { autoLog(`An error occured\r\n ${error}`); return; }
+                    catch(error) { logsEmiter(`An error occured\r\n ${error}`); return; }
                 }
             }
         }
@@ -475,11 +474,11 @@ client.on(Events.MessageCreate, async (message) => {
     let text = splitedMsg.join(' ');
 
     if(message.author.bot === true) { return; }
-    if(content.startsWith(globalSettings.options.bang)) {
+    if(content.startsWith(options.bang)) {
         if(cmd === 'ip' || cmd === 'bichonwood') {
             message.delete();
             const embed = new EmbedBuilder()
-                                    .setColor(`${globalSettings.options.color}`)
+                                    .setColor(`${options.color}`)
                                     .setTitle('Envie de nous rejoindre sur BichonWood ?')
                                     .setDescription(`Pour rejoindre le serveur créatif de BichonWood, tu doit faire une demande auprès d'un modérateur ou un admin.`)
                                     .addFields(
@@ -487,22 +486,22 @@ client.on(Events.MessageCreate, async (message) => {
                                         { name: 'IP', value: 'minecraft.jeremiemeunier.fr', inline: true }
                                     );
             try { channel.send({ embeds: [embed] }); }
-            catch(error) { autoLog(`An error occured\r\n ${error}`); return; }
+            catch(error) { logsEmiter(`An error occured\r\n ${error}`); return; }
         }
         else if(cmd === 'dailyui') {
             message.delete();
             const embed = new EmbedBuilder()
-                                    .setColor(`${globalSettings.options.color}`)
+                                    .setColor(`${options.color}`)
                                     .setTitle(`Tu souhaite t'exercer à l'UI/UX ?`)
                                     .setDescription(`Pour t'ajouter le rôle des DailyUi clique sur le 🤓`);
             try {
                 const message = await channel.send({ embeds: [embed] });
                 message.react('🤓');
             }
-            catch(error) { autoLog(`An error occured\r\n ${error}`); return; }
+            catch(error) { logsEmiter(`An error occured\r\n ${error}`); return; }
         }
     }
-    else if(channel.name === globalSettings.channels.screenshots) {
+    else if(channel.name === channels.screenshots) {
         try {
             const thread = await message.startThread({
                 name: `${author} (${today.getDay()}/${today.getMonth()}/${today.getFullYear()})`,
