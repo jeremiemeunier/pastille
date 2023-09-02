@@ -3,6 +3,20 @@ const tag = `pastille[${version}] `;
 
 let channelConsole, channelDebug;
 
+const logsTester = async () => {
+    // try {
+    //     const test = await channelConsole.send({ content: 'Testing logger' });
+    //     if (test) {
+    //         await test.delete();
+    //         return true;
+    //     }
+    // }
+    // catch(error) {
+    //     console.log(error);
+    //     return false;
+    // }
+}
+
 const logsEmiter = async (content) => {
     try { console.log(tag + content); }
     catch(error) { console.log(error); }
@@ -37,4 +51,4 @@ const logsBooter = async (client, console, debug) => {
     channelDebug = debug;
 };
 
-module.exports = { logsBooter, logsEmiter };
+module.exports = { logsBooter, logsEmiter, logsTester };
