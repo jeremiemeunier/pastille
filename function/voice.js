@@ -1,5 +1,5 @@
 const { ChannelType, EmbedBuilder } = require('discord.js');
-const { logger } = require('../function/base.js');
+const { logger } = require('./base.js');
 
 const createThreadOnJoin = async (channel, threadChannel, channelConsole, user) => {
     try {
