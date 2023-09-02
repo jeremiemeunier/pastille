@@ -251,8 +251,8 @@ client.on(Events.VoiceStateUpdate, async (oldState, newState) => {
                                                                         && textChannel.parentId === voiceChannel.parentId);
                 }
 
-                if(connected === 0) { deleteThreadOnLeave(voiceChannel, textChannel, console); }
-                else { leaveThreadOnLeave(voiceChannel, textChannel, consoleChannel, user); }
+                if(connected === 0) { deleteThreadOnLeave(voiceChannel, textChannel, channelConsole); }
+                else { leaveThreadOnLeave(voiceChannel, textChannel, channelConsole, user); }
             }
             else if (oldState.channelId === null) {
                 const voiceChannel = guild.channels.cache.find(voiceChannel => voiceChannel.id === newState.channelId);
@@ -263,8 +263,8 @@ client.on(Events.VoiceStateUpdate, async (oldState, newState) => {
                                                                         && textChannel.parentId === voiceChannel.parentId);
                 }
         
-                if(connected === 1) {  createThreadOnJoin(voiceChannel, textChannel, consoleChannel, user); }
-                else { joinThreadOnJoin(voiceChannel, textChannel, consoleChannel, user); }
+                if(connected === 1) {  createThreadOnJoin(voiceChannel, textChannel, channelConsole, user); }
+                else { joinThreadOnJoin(voiceChannel, textChannel, channelConsole, user); }
             }
             else {
                 const oldVoiceChannel = guild.channels.cache.find(oldVoiceChannel => oldVoiceChannel.id === oldState.channelId);
@@ -283,10 +283,10 @@ client.on(Events.VoiceStateUpdate, async (oldState, newState) => {
                                                                               && newTextChannel.parentId === newVoiceChannel.parentId);
                 }
         
-                if(oldNbConnected === 0) { deleteThreadOnLeave(oldVoiceChannel, oldTextChannel, consoleChannel); }
-                else { leaveThreadOnLeave(oldVoiceChannel, oldTextChannel, consoleChannel, user); }
-                if(newNbConnected === 1) { createThreadOnJoin(newVoiceChannel, newTextChannel, consoleChannel, user); }
-                else { joinThreadOnJoin(newVoiceChannel, newTextChannel, consoleChannel, user); }
+                if(oldNbConnected === 0) { deleteThreadOnLeave(oldVoiceChannel, oldTextChannel, channelConsole); }
+                else { leaveThreadOnLeave(oldVoiceChannel, oldTextChannel, channelConsole, user); }
+                if(newNbConnected === 1) { createThreadOnJoin(newVoiceChannel, newTextChannel, channelConsole, user); }
+                else { joinThreadOnJoin(newVoiceChannel, newTextChannel, channelConsole, user); }
             }
         }
         catch(error) { logsEmiter(`An error occured\r\n ${error}`); return; }
