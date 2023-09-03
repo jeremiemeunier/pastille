@@ -68,7 +68,7 @@ const pastilleBooter = async () => {
                     commandRegister(clientGuildIds[i]);
                 }
 
-                // channelDebug.send({ embeds: [bootEmbed] });
+                channelDebug.send({ embeds: [bootEmbed] });
             }
         }, 2000);
     }
