@@ -4,7 +4,7 @@ const roleSettings = JSON.parse(fs.readFileSync('data/addons/role.json'));
 
 const { version, options, channels, moderation, app } = require ('./config/settings.json');
 const { BOT_ID, BOT_TOKEN, BOT_OWNER_ID, GUILD_ID } = require('./config/secret.json');
-const { REST, Routes, ChannelType, Client, Events, EmbedBuilder, GatewayIntentBits, Partials, ShardingManager, messageLink } = require('discord.js');
+const { ChannelType, Client, Events, EmbedBuilder, GatewayIntentBits, Partials } = require('discord.js');
 const client = new Client({
     intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessageReactions, GatewayIntentBits.GuildVoiceStates],
     partials: [Partials.Message, Partials.Channel, Partials.Reaction],
