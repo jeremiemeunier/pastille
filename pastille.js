@@ -2,8 +2,8 @@ const fs = require('node:fs');
 const alphabetLetters = JSON.parse(fs.readFileSync('data/base/alphabet.json'));
 const roleSettings = JSON.parse(fs.readFileSync('data/addons/role.json'));
 
-const { version, options, channels, moderation, app } = require ('./config/settings.json');
-const { BOT_ID, BOT_TOKEN, BOT_OWNER_ID, GUILD_ID } = require('./config/secret.json');
+const { version, options, channels } = require ('./config/settings.json');
+const { BOT_TOKEN } = require('./config/secret.json');
 const { ChannelType, Client, Events, EmbedBuilder, GatewayIntentBits, Partials } = require('discord.js');
 const client = new Client({
     intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessageReactions, GatewayIntentBits.GuildVoiceStates],
@@ -15,6 +15,7 @@ const { logsBooter, logsEmiter, logsTester } = require('./function/logs');
 const { voiceEventInit } = require('./events/voiceEvent');
 const { commandRegister, commandRegisterInit } = require('./function/commandsRegister');
 const { reactionAddEventInit } = require('./events/messageReactionAddEvent');
+const { reactionRemoveEventInit } = require('./events/messageReactionRemoveEvent');
 
 // ##### FIX ##### \\
 
@@ -53,7 +54,6 @@ const pastilleBooter = async () => {
             )
             .setTimestamp()
             .setFooter({ text: `Version ${version}` });
-        // channelDebug.send({ embeds: [bootEmbed] });
         logsBooter(client, channelConsole, channelDebug);
         logsEmiter('Hello here !');
 
@@ -62,10 +62,13 @@ const pastilleBooter = async () => {
                 commandRegisterInit(client);
                 voiceEventInit(client);
                 reactionAddEventInit(client);
+                reactionRemoveEventInit(client);
                 
                 for(let i = 0;i < clientGuildQuantity;i++) {
                     commandRegister(clientGuildIds[i]);
                 }
+
+                // channelDebug.send({ embeds: [bootEmbed] });
             }
         }, 2000);
     }
@@ -198,40 +201,6 @@ client.on(Events.InteractionCreate, async interaction => {
         catch(error) {
             logsEmiter(`An error occured\r\n ${error}`);
             await interaction.reply({ content: `Une erreur est survenue. Essayer à nouveau plus tard.`, ephemeral: true });
-        }
-    }
-});
-
-client.on(Events.MessageReactionRemove, async (reaction, user) => {
-    if(user.bot === true) { return; }
-    
-    if (reaction.partial) {
-        try { await reaction.fetch(); }
-        catch (error) { logsEmiter(`An error occured\r\n ${error}`); return; }
-    }
-
-    if(reaction.message.interaction != undefined) {
-        if(reaction.message.interaction.commandName === 'role') {
-            for(let i = 0;i < roleSettings.length;i++) {
-                if(reaction.emoji.name === roleSettings[i].emoji) {
-                    const guild = client.guilds.cache.find(guild => guild.id === reaction.message.guildId);
-                    const member = guild.members.cache.find(member => member.id === user.id);
-                    const role = guild.roles.cache.find(role => role.id === roleSettings[i].role);
-
-                    try { await member.roles.remove(role); }
-                    catch(error) { logsEmiter(`An error occured\r\n ${error}`); return; }
-                }
-            }
-        }
-    }
-    else {
-        if(reaction.emoji.name === '🤓') {
-            const guild = client.guilds.cache.find(guild => guild.id === reaction.message.guildId);
-            const member = guild.members.cache.find(member => member.id === user.id);
-            const role = guild.roles.cache.find(role => role.id === '1118500573675782235');
-
-            try { await member.roles.remove(role); }
-            catch(error) { console.log(error); }
         }
     }
 });
