@@ -1,9 +1,7 @@
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle, Client, EmbedBuilder, GatewayIntentBits } = require('discord.js');
 const fs = require('fs');
 const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
-const axios = require('axios');
 
-const { BOT_ID, BOT_TOKEN, BOT_OWNER_ID } = require('config/secret.json');
+const { BOT_ID, BOT_TOKEN, BOT_OWNER_ID, GUILD_ID } = require('./config/secret.json');
 const { REST, Routes, ChannelType, Client, Events, EmbedBuilder, GatewayIntentBits, Partials, ShardingManager, messageLink } = require('discord.js');
 const client = new Client({
     intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessageReactions, GatewayIntentBits.GuildVoiceStates],
@@ -145,4 +143,4 @@ const pastilleBooter = () => {
 }
 
 client.on('ready', () => { pastilleBooter(); });
-client.login(settingsSecret.BOT_TOKEN);
+client.login(BOT_TOKEN);
