@@ -1,6 +1,6 @@
 const axios = require('axios');
 const { TWITCH_CLIENT_TOKEN, TWITCH_SECRET_TOKEN } = require('../config/secret.json');
-const { EmbedBuilder } = require('discord.js');
+const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const { options } = require('../config/settings.json');
 const { logsEmiter } = require('../function/logs');
 
@@ -13,7 +13,7 @@ const addonsLoaded = async (clientItem, addonsParamsItem) => {
     const { streamer } = require('../config/addons/streamer.json');
     const clientChannel = client.channels.cache.find(clientChannel => clientChannel.id = channel);
 
-    // setInterval(async () => {
+    setInterval(async () => {
         const authToken = await requestAuthenticator();
 
         streamer.map(async streamer => {
@@ -48,7 +48,7 @@ const addonsLoaded = async (clientItem, addonsParamsItem) => {
                 }
             }
         });
-    // }, options.wait);
+    }, options.wait);
 }
 
 const startAnalyze = (startItem) => {
@@ -98,35 +98,4 @@ const requestStreamerState = async (streamerId, bearerToken) => {
     catch(error) { logsEmiter(error.response); }
 }
 
-module.exports = { addonsLoaded, startAnalyze }
-
-
-//     _XHR_streamerData.onreadystatechange = () => {
-//         if(xhrStateVerifier(_XHR_streamerData)) {
-//             const streamData = JSON.parse(_XHR_streamerData.responseText).data[0];
-
-//             if(streamData !== undefined) {
-//                 if(startStreamVerifier(streamData.started_at)) {
-//                     try {
-//                         let thumbnail = streamData.thumbnail_url;
-//                             thumbnail = thumbnail.replace('{width}', 1920);
-//                             thumbnail = thumbnail.replace('{height}', 1080);
-//                         const liveButton = new ActionRowBuilder()
-//                                                 .addComponents(
-//                                                     new ButtonBuilder()
-//                                                         .setLabel('Rejoindre sur twitch.tv')
-//                                                         .setStyle(ButtonStyle.Link)
-//                                                         .setURL(`https://twitch.tv/${streamer.twitch.name.toString()}`)
-//                                                 );
-//                         const liveEmbed = new EmbedBuilder()
-//                                                 .setColor(`${settingsConfig.options.color}`)
-//                                                 .setTitle(`${streamer.twitch.name.toString()} est actuellement en live !`)
-//                                                 .setDescription(`Il stream : **${streamData.title}** sur **${streamData.game_name}**`)
-//                                                 .setThumbnail(streamData.thumbnail);
-//                         params.announce.send({ content: `${streamer.twitch.name.toString()} est en live ! <@&${params.notifsRole}>`, embeds: [liveEmbed], components: [liveButton] });
-//                     }
-//                     catch(error) { console.log('An error occured', error); }
-//                 }
-//             }
-//         }
-//     }
+module.exports = { addonsLoaded }
