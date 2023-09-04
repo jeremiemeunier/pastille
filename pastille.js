@@ -1,4 +1,4 @@
-const { version, options, channels } = require ('./config/settings.json');
+const { version, options, channels, addons } = require ('./config/settings.json');
 const { BOT_TOKEN } = require('./config/secret.json');
 const { Client, EmbedBuilder, GatewayIntentBits, Partials } = require('discord.js');
 const client = new Client({
@@ -14,6 +14,7 @@ const { reactionAddEventInit } = require('./events/messageReactionAddEvent');
 const { reactionRemoveEventInit } = require('./events/messageReactionRemoveEvent');
 const { InteractionCreateEventInit } = require('./events/interactionCreateEvent');
 const { messageCreateEventInit } = require('./events/messageCreateEvent');
+const { addonsRegisterInit } = require('./function/addonsRegister');
 
 // ##### FIX ##### \\
 
@@ -36,15 +37,12 @@ if (!String.prototype.endsWith) {
 const pastilleBooter = async () => {
     const channelDebug = client.channels.cache.find(channel => channel.name === channels.debug);
     const channelConsole = client.channels.cache.find(channel => channel.name === channels.console);
-    
-    const clientGuildQuantity = client.guilds.cache.map(guild => guild.id).length;
-    const clientGuildIds = client.guilds.cache.map(guild => guild.id);
 
 	try {
         let bootEmbed = new EmbedBuilder()
             .setColor(`${options.color}`)
             .setTitle(`Pastille Launch`)
-            .setDescription(`It's a bot. An explosive bot named Pastille but only for an discord !`)
+            .setDescription(`It's a bot. An explosive bot named Pastille but only for discord !`)
             .addFields(
                 { name: 'Date starting', value: dateParser(), inline: true },
                 { name: 'Version', value: version, inline: true },
@@ -55,22 +53,17 @@ const pastilleBooter = async () => {
         logsBooter(client, channelConsole, channelDebug);
         logsEmiter('Hello here !');
 
-        setTimeout(() => {
-            if(logsTester()) {
-                commandRegisterInit(client);
-                voiceEventInit(client);
-                reactionAddEventInit(client);
-                reactionRemoveEventInit(client);
-                InteractionCreateEventInit(client);
-                messageCreateEventInit(client);
-                
-                for(let i = 0;i < clientGuildQuantity;i++) {
-                    commandRegister(clientGuildIds[i]);
-                }
+        if(logsTester()) {
+            commandRegisterInit(client);
+            voiceEventInit(client);
+            reactionAddEventInit(client);
+            reactionRemoveEventInit(client);
+            InteractionCreateEventInit(client);
+            messageCreateEventInit(client);
 
-                channelDebug.send({ embeds: [bootEmbed] });
-            }
-        }, 2000);
+            addonsRegisterInit(client);
+            channelDebug.send({ embeds: [bootEmbed] });
+        }
     }
     catch (error) { logsEmiter(`An error occured : ${error}`); }
 }
