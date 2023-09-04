@@ -1,7 +1,7 @@
 const fs = require('node:fs');
 const { Events, ChannelType, EmbedBuilder } = require('discord.js');
 const { logsEmiter } = require('../function/logs');
-const { channels, options } = require ('../config/settings.json');
+const { channels, options, moderation } = require ('../config/settings.json');
 
 const roleSettings = JSON.parse(fs.readFileSync('./data/addons/role.json'));
 
@@ -25,7 +25,7 @@ const reactionAddEventInit = (clientItem) => {
                     if(reaction.emoji.name === options.reaction.rule) {
                         const guild = client.guilds.cache.find(guild => guild.id === reaction.message.guildId);
                         const member = guild.members.cache.find(member => member.id === user.id);
-                        const role = guild.roles.cache.find(role => role.id === moderation.rule);
+                        const role = guild.roles.cache.find(role => role.id === moderation.roles.rule);
     
                         try { await member.roles.add(role); }
                         catch(error) { logsEmiter(`An error occured on rule\r\n ${error}`); return; }
