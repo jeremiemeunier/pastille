@@ -1,9 +1,6 @@
 const fs = require('node:fs');
-const path = require('node:path');
-
-const globalSettings = JSON.parse(fs.readFileSync(__dirname + '/config/settings.json'));
-const { BOT_ID, BOT_TOKEN, BOT_OWNER_ID, GUILD_ID } = require(__dirname + '/config/secret.json');
-const { REST, Routes, ChannelType, Client, Events, EmbedBuilder, GatewayIntentBits, Partials, ShardingManager, messageLink } = require('discord.js');
+const { BOT_ID, BOT_TOKEN, BOT_OWNER_ID, GUILD_ID } = require('../config/secret.json');
+const { Client, EmbedBuilder, GatewayIntentBits, Partials } = require('discord.js');
 const client = new Client({
     intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessageReactions, GatewayIntentBits.GuildVoiceStates],
     partials: [Partials.Message, Partials.Channel, Partials.Reaction],
@@ -14,14 +11,14 @@ const client = new Client({
 client.on('ready', () => {
     setInterval(async () => {
         const actualDate = new Date();
-        const dailyUiList = JSON.parse(fs.readFileSync(__dirname + '/data/dailyui.json'));
+        const dailyUiList = JSON.parse(fs.readFileSync('../data/dailyui.json'));
 
         if(actualDate.getHours() === 10 && actualDate.getMinutes() === 23) {
-            let dailyUiAvancement = fs.readFileSync(__dirname + '/bin/dailyui.txt', 'utf8', (err, data) => {
+            let dailyUiAvancement = fs.readFileSync('../bin/dailyui.txt', 'utf8', (err, data) => {
                 if(err) { console.log(err); }
                 else { return data; }
             });
-            let nextDailyUiAdvancement = fs.readFileSync(__dirname + '/bin/dailyui.txt', 'utf8', (err, data) => {
+            let nextDailyUiAdvancement = fs.readFileSync('../bin/dailyui.txt', 'utf8', (err, data) => {
                 if(err) { console.log(err); }
                 else { return data; }
             });
@@ -41,7 +38,7 @@ client.on('ready', () => {
                         autoArchiveDuration: 60,
                         reason: 'Need a separate thread for daily dailyui'
                     });
-                    fs.writeFileSync('./bin/dailyui.txt', nextDailyUiAdvancement.toString());
+                    fs.writeFileSync('../bin/dailyui.txt', nextDailyUiAdvancement.toString());
                 }
                 catch(error) { console.log(error); }
             }

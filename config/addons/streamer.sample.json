@@ -1,0 +1,15 @@
+{
+    "streamer": [
+        {
+            "discord": {
+                "id": "",
+                "name": ""
+            },
+            "twitch": {
+                "id": "",
+                "name": ""
+            },
+            "progress": true
+        }
+    ]
+}
