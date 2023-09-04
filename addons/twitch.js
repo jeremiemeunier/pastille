@@ -1,146 +1,132 @@
-const fs = require('fs');
-const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+const axios = require('axios');
+const { TWITCH_CLIENT_TOKEN, TWITCH_SECRET_TOKEN } = require('../config/secret.json');
+const { EmbedBuilder } = require('discord.js');
+const { options } = require('../config/settings.json');
+const { logsEmiter } = require('../function/logs');
 
-const { BOT_ID, BOT_TOKEN, BOT_OWNER_ID, GUILD_ID } = require('../config/secret.json');
-const { REST, Routes, ChannelType, Client, Events, EmbedBuilder, GatewayIntentBits, Partials, ShardingManager, messageLink } = require('discord.js');
-const client = new Client({
-    intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessageReactions, GatewayIntentBits.GuildVoiceStates],
-    partials: [Partials.Message, Partials.Channel, Partials.Reaction],
-});
+let client;
 
-const settingsConfig = JSON.parse(fs.readFileSync('config/settings.json'));
+const addonsLoaded = async (clientItem, addonsParamsItem) => {
 
-// Basic function to optimal working
+    client = clientItem;
+    const { channel, role } = addonsParamsItem;
+    const { streamer } = require('../config/addons/streamer.json');
+    const clientChannel = client.channels.cache.find(clientChannel => clientChannel.id = channel);
 
-const startStreamVerifier = (startTime, now) => {
-    if(now === undefined) { now = Date.parse(new Date()); }
+    // setInterval(async () => {
+        const authToken = await requestAuthenticator();
 
-        startTime = Date.parse(startTime);
-    let previousTime = now - settingsConfig.app.twitch.delay;
-    let nextTime = now + settingsConfig.app.twitch.delay;
-
-    if(startTime > previousTime && startTime < nextTime) { return true; }
-    else { return false; }
-}
-
-const pastilleHello = (debugChannel, logsChannel) => {
-    const logTag = `pastille_bot[${settingsConfig.app.twitch.name}][${settingsConfig.app.twitch.version}]`;
-    const streamerList = JSON.parse(fs.readFileSync('data/streamer.json'));
-    const streamerLength = Object.keys(streamerList).length;
-    let logTextDebug = "";
-
-    logTextDebug = logTextDebug + `\`\`\`${logTag} Hi here ! I'm pastille_bot 😀\r`;
-    logTextDebug = logTextDebug + `${logTag} You launch the : ${settingsConfig.app.twitch.name} module\r`;
-    logTextDebug = logTextDebug + `${logTag} Now i'm listen all ${settingsConfig.app.twitch.delay/1000}s for all following streamer :\r`;
-
-    for(let i = 0;i < streamerLength;i++) { logTextDebug = logTextDebug + `${logTag}   - ${streamerList[i].twitch.name}\r`; }
-    logTextDebug = logTextDebug + "\`\`\`";
-    logsChannel.send(logTextDebug);
-}
-
-const xhrStateVerifier = (xhr) => {
-    if(xhr.readyState === 4 && xhr.status === 200) { return true; }
-    else { return false; }
-}
-
-const dateReturnFormater = (dat = new Date()) => {
-    let dateFormated = "";
-
-	if(dat.getHours() < 10) { dateFormated += `0${dat.getHours()}:`; } else { dateFormated += `${dat.getHours()}:`; }
-	if(dat.getMinutes() < 10) { dateFormated += `0${dat.getMinutes()}:`; } else { dateFormated += `${dat.getMinutes()}:`; }
-	if(dat.getSeconds() < 10) { dateFormated += `0${dat.getSeconds()}`; } else { dateFormated += `${dat.getSeconds()}`; }
-
-	return dateFormated;
-}
-
-// ########## //
-
-const onliveBotChecked = (params) => {
-    const streamerList = JSON.parse(fs.readFileSync('data/streamer.json'));
-    const streamerLength = Object.keys(streamerList).length;
-
-    const _XHR_authBearer = new XMLHttpRequest();
-    const authBearerAPI = `https://id.twitch.tv/oauth2/token?client_id=${settingsSecret.TWITCH_CLIENT_TOKEN}&client_secret=${settingsSecret.TWITCH_SECRET_TOKEN}&grant_type=client_credentials&scope=viewing_activity_read`;
-
-    _XHR_authBearer.onreadystatechange = () => {
-        if(xhrStateVerifier(_XHR_authBearer) && _XHR_authBearer.responseText !== undefined) {
-            let authBearerToken = JSON.parse(_XHR_authBearer.responseText);
-
-            for(let i = 0;i < streamerLength;i++) {
-                onliveBotSender(authBearerToken, streamerList[i], params);
-            }
-        }
-    }
-
-    _XHR_authBearer.open('POST', authBearerAPI, false);
-    _XHR_authBearer.send();
-}
-
-const onliveBotSender = (token, streamer, params) => {
-    const _XHR_streamerData = new XMLHttpRequest();
-    const streamerDataAPI = `https://api.twitch.tv/helix/streams?user_id=${streamer.twitch.id}`;
-
-    _XHR_streamerData.onreadystatechange = () => {
-        if(xhrStateVerifier(_XHR_streamerData)) {
-            const streamData = JSON.parse(_XHR_streamerData.responseText).data[0];
-
-            if(streamData !== undefined) {
-                if(startStreamVerifier(streamData.started_at)) {
+        streamer.map(async streamer => {
+            let streamerState = await requestStreamerState(streamer.twitch.id, authToken);
+            if(streamerState !== undefined) {
+                if(startAnalyze(streamerState.started_at)) {
                     try {
-                        let thumbnail = streamData.thumbnail_url;
-                            thumbnail = thumbnail.replace('{width}', 1920);
-                            thumbnail = thumbnail.replace('{height}', 1080);
+                        let thumbnail = streamerState.thumbnail_url;
+                        thumbnail = thumbnail.replace('{width}', 1920);
+                        thumbnail = thumbnail.replace('{height}', 1080);
+
                         const liveButton = new ActionRowBuilder()
-                                                .addComponents(
-                                                    new ButtonBuilder()
-                                                        .setLabel('Rejoindre sur twitch.tv')
-                                                        .setStyle(ButtonStyle.Link)
-                                                        .setURL(`https://twitch.tv/${streamer.twitch.name.toString()}`)
-                                                );
+                                .addComponents(
+                                    new ButtonBuilder()
+                                        .setLabel('Rejoindre sur twitch.tv')
+                                        .setStyle(ButtonStyle.Link)
+                                        .setURL(`https://twitch.tv/${streamer.twitch.name.toString()}`)
+                                );
                         const liveEmbed = new EmbedBuilder()
-                                                .setColor(`${settingsConfig.options.color}`)
-                                                .setTitle(`${streamer.twitch.name.toString()} est actuellement en live !`)
-                                                .setDescription(`Il stream : **${streamData.title}** sur **${streamData.game_name}**`)
-                                                .setThumbnail(streamData.thumbnail);
-                        params.announce.send({ content: `${streamer.twitch.name.toString()} est en live ! <@&${params.notifsRole}>`, embeds: [liveEmbed], components: [liveButton] });
+                                .setColor(options.color)
+                                .setTitle(`${streamer.twitch.name.toString()} est actuellement en live !`)
+                                .setDescription(`Il stream : **${streamerState.title}** sur **${streamerState.game_name}**`)
+                                .setThumbnail(thumbnail);
+
+                        clientChannel.send({
+                            content: `${streamer.twitch.name.toString()} est en live ! <@&${role}>`,
+                            embeds: [liveEmbed],
+                            components: [liveButton]
+                        });
                     }
-                    catch(error) { console.log('An error occured', error); }
+                    catch(error) { logsEmiter(error); }
                 }
             }
-        }
-    }
-
-    _XHR_streamerData.open('GET', streamerDataAPI, true);
-    _XHR_streamerData.setRequestHeader('client-id', settingsSecret.TWITCH_CLIENT_TOKEN);
-    _XHR_streamerData.setRequestHeader('Authorization', 'Bearer ' + token['access_token']);
-    _XHR_streamerData.send();
+        });
+    // }, options.wait);
 }
 
-// ########## //
+const startAnalyze = (startItem) => {
+    const now = Date.parse(new Date());
+    const start = Date.parse(startItem);
+    const prev = now - options.wait;
+    const next = now + options.wait;
 
-const pastilleBooter = () => {
-	const channelAnnounce = client.channels.cache.find(channel => channel.id === settingsConfig.app.twitch.channel);
-	const channelDebug = client.channels.cache.find(channel => channel.name === settingsConfig.channels.debug);
-	const channelLogs = client.channels.cache.find(channel => channel.name === settingsConfig.channels.console);
-
-    let bootEmbedMessage = new EmbedBuilder()
-                                .setColor(`${settingsConfig.options.color}`)
-                                .setAuthor({ name: settingsConfig.app.twitch.name, iconURL: 'https://1.images.cdn.pooks.fr/github/pastillebot/pastille_avatar.png' })
-                                .addFields(
-                                    { name: 'Date starting', value: dateReturnFormater(new Date()), inline: true },
-                                    { name: 'Version', value: settingsConfig.version.toString(), inline: true }
-                                )
-                                .setTimestamp()
-                                .setFooter({ text: `Version ${settingsConfig.app.twitch.version}`, });
-    channelDebug.send({ embeds: [bootEmbedMessage] });
-    if(settingsConfig.app.twitch.wait === true) {
-        setInterval(() => {
-            onliveBotChecked({"announce": channelAnnounce, "debug": channelDebug, "notifsRole": settingsConfig.app.twitch.role.toString(), "logs": channelLogs });
-        }, settingsConfig.app.twitch.delay);
-    }
-
-    pastilleHello(channelDebug, channelLogs);
+    if(start > prev && start < next) { return true; }
+    else { return false; }
 }
 
-client.on('ready', () => { pastilleBooter(); });
-client.login(BOT_TOKEN);
+const requestAuthenticator = async () => {
+    try {
+        const requestToken = await axios({
+            method: "post",
+            url: "https://id.twitch.tv/oauth2/token",
+            params: {
+                client_id: TWITCH_CLIENT_TOKEN,
+                client_secret: TWITCH_SECRET_TOKEN,
+                grant_type: "client_credentials",
+                scope: "viewing_activity_read"
+            }
+        });
+
+        return requestToken.data.access_token;
+    }
+    catch(error) { logsEmiter(error.reponse); }
+}
+
+const requestStreamerState = async (streamerId, bearerToken) => {
+    try {
+        const requestState = await axios({
+            url: "https://api.twitch.tv/helix/streams",
+            type: "post",
+            params: {
+                user_id: streamerId
+            },
+            headers: {
+                'client-id': TWITCH_CLIENT_TOKEN,
+                'Authorization': `Bearer ${bearerToken}`
+            }
+        });
+
+        return requestState.data.data[0];
+    }
+    catch(error) { logsEmiter(error.response); }
+}
+
+module.exports = { addonsLoaded, startAnalyze }
+
+
+//     _XHR_streamerData.onreadystatechange = () => {
+//         if(xhrStateVerifier(_XHR_streamerData)) {
+//             const streamData = JSON.parse(_XHR_streamerData.responseText).data[0];
+
+//             if(streamData !== undefined) {
+//                 if(startStreamVerifier(streamData.started_at)) {
+//                     try {
+//                         let thumbnail = streamData.thumbnail_url;
+//                             thumbnail = thumbnail.replace('{width}', 1920);
+//                             thumbnail = thumbnail.replace('{height}', 1080);
+//                         const liveButton = new ActionRowBuilder()
+//                                                 .addComponents(
+//                                                     new ButtonBuilder()
+//                                                         .setLabel('Rejoindre sur twitch.tv')
+//                                                         .setStyle(ButtonStyle.Link)
+//                                                         .setURL(`https://twitch.tv/${streamer.twitch.name.toString()}`)
+//                                                 );
+//                         const liveEmbed = new EmbedBuilder()
+//                                                 .setColor(`${settingsConfig.options.color}`)
+//                                                 .setTitle(`${streamer.twitch.name.toString()} est actuellement en live !`)
+//                                                 .setDescription(`Il stream : **${streamData.title}** sur **${streamData.game_name}**`)
+//                                                 .setThumbnail(streamData.thumbnail);
+//                         params.announce.send({ content: `${streamer.twitch.name.toString()} est en live ! <@&${params.notifsRole}>`, embeds: [liveEmbed], components: [liveButton] });
+//                     }
+//                     catch(error) { console.log('An error occured', error); }
+//                 }
+//             }
+//         }
+//     }
