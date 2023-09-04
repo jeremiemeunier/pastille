@@ -5,7 +5,7 @@ It's a bot. An explosive bot named Pastille but only for discord !
 <div align="center">
 	<br />
 	<p>
-		<img src="https://1.images.cdn.pooks.fr/github/pastillebot/white.png" alt="Pastille" />
+		<img src="https://1.images.cdn.digitalteacompany.fr/github/pastillemd.png" alt="Pastille" />
 	</p>
   <br>
   <p>
