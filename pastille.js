@@ -1,4 +1,4 @@
-const { version, options, channels, addons } = require ('./config/settings.json');
+const { version, options, channels } = require ('./config/settings.json');
 const { BOT_TOKEN } = require('./config/secret.json');
 const { Client, EmbedBuilder, GatewayIntentBits, Partials } = require('discord.js');
 const client = new Client({
