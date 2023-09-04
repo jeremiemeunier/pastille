@@ -1,8 +1,6 @@
 # pastille-bot
 
-📢 A big update is on the way ! Wait a few days and it come
-
-It's a bot. An explosive bot named Pastille but only for an discord !
+It's a bot. An explosive bot named Pastille but only for discord !
 
 <div align="center">
 	<br />
@@ -13,7 +11,7 @@ It's a bot. An explosive bot named Pastille but only for an discord !
   <p>
     Dependencies<br>
     <a href="https://www.npmjs.com/package/discord.js"><img alt="npm" src="https://img.shields.io/npm/v/discord.js?label=discord.js"></a>
-    <a href="https://www.npmjs.com/package/xmlhttprequest"><img alt="npm" src="https://img.shields.io/npm/v/xmlhttprequest?label=xmlhttprequest"></a>
+    <a href="https://www.npmjs.com/package/axios"><img alt="npm" src="https://img.shields.io/npm/v/axios?label=axios"></a>
     <a href="https://www.npmjs.com/package/@discordjs/rest"><img alt="npm" src="https://img.shields.io/npm/v/@discordjs/rest?label=@discordjs/rest"></a>
     <a href="https://www.npmjs.com/package/fs"><img alt="npm" src="https://img.shields.io/npm/v/fs?label=fs"></a>
   </p>
@@ -26,8 +24,8 @@ If you are using category for control and organized your discord server, you mus
 ## Configuration files
 
 For configuration of pastille-bot you must have these files : [data/secret.json](https://github.com/jeremiemeunier/pastille-bot/blob/main/data/config.sample.json),
-[data/config.json](https://github.com/jeremiemeunier/pastille-bot/blob/main/data/config.sample.json), 
-(only for using mod-twitch : [data/streamer.json](https://github.com/jeremiemeunier/pastille-bot/blob/main/data/config.sample.json))
+[data/config.json](https://github.com/jeremiemeunier/pastille-bot/blob/main/data/config.sample.json),
+(only for using addons twitch : [data/addons/streamer.json](https://github.com/jeremiemeunier/pastille-bot/blob/main/data/addons/config.sample.json)).
 
 #### data/secret.json
 
@@ -49,92 +47,72 @@ To create your twitch app : [Twitch Developers](https://dev.twitch.tv/console/ap
 
 ```json
 {
-    "version": "1.2.dev_0.4",
+    "version": "1.3.0",
     "options": {
-        "debug": false,
+        "debug": BOOLEAN,
         "bang": UNIQUE_CHARACTERS,
-        "color": HEXADECIMAL_CODE
+        "color": HEXADECIMAL_CODE,
+        "reaction": {
+            "rule": EMOJI,
+            "ticket": EMOJI,
+            "announce": EMOJI,
+            "warn": EMOJI
+        },
+        "wait": 300000
     },
     "channels": {
-        "console": NAME_OF_CHANNEL_FOR_CONSOLE,
-        "debug": NAME_OF_CHANNEL_FOR_LOGS,
-        "announce": "0000000000000000000",
-        "help": "0000000000000000000",
-        "voiceText": NAME_OF_CHANNEL_FOR_VOCAL_THREADS
+        "console": NAME_OF_CHANNEL,
+        "debug": NAME_OF_CHANNEL,
+        "announce": ID_OF_CHANNEL,
+        "help": ID_OF_CHANNEL,
+        "voiceText": NAME_OF_CHANNEL,
+        "screenshots": NAME_OF_CHANNEL
     },
     "moderation": {
-        "automod": true,
+        "automod": BOOLEAN,
         "limit": {
             "emoji": 8,
             "tags": 4
         },
         "imune": [
-            "0000000000000000000",
-            "0000000000000000000",
-            "0000000000000000000"
+            ROLE_ID
         ],
         "channels": {
-            "alert": "0000000000000000000",
-            "report": "0000000000000000000",
-            "reclamation": "0000000000000000000"
+            "alert": CHANNEL_ID,
+            "report": CHANNEL_ID,
+            "reclamation": CHANNEL_ID,
+            "rule": CHANNEL_ID
         },
-        "rule": "0000000000000000000"
+        "roles": {
+            "muted": ROLE_ID
+        }
+
     },
-    "app": {
-        SPECIFIC_OPTIONS_FOR_MODULE
-    }
+    "addons": [
+        { "name": "", "active": BOOLEAN, "channel": CHANNEL_ID, "role": ROLE_ID }
+    ]
 }
-```
-<hr>
-
-##### Mod twitch options
-
-```json
-"twitch": {
-    "name": "MOD_TWITCH",
-    "version": "1.2.dev_0.2",
-    "role": "0000000000000000000",
-    "wait": true,
-    "delay": WAITING_TIME_IN_MS,
-    "channel": "0000000000000000000"
-}
-```
-
-##### Mod worker options
-
-```json
-"worker": {
-    "name": "CMDS_WORKER",
-    "version": "1.2.dev_0.2"
-},
-```
-
-##### Mod commands options
-
-```json
-"commands": {
-    "name": "CMDS_WORKER",
-    "version": "1.2.dev_0.2"
-},
 ```
 
 <hr>
 
-#### data/streamer.json
+#### data/addons/streamer.json
+
 ```json
 {
-  "0": {
-    "discord": {
-      "id": ID_DISCORD,
-      "name": DISCORD_NAME,
-    },
-    "twitch": {
-      "id": ID_TWITCH,
-      "name": TWITCH_NAME
-    },
-    "progress": BOOLEAN,
-    "notif_line": STRING
-  }
+    "streamer": [
+        {
+            "discord": {
+                "id": DISCORD_ID,
+                "name": DISCORD_PSEUDO
+            },
+            "twitch": {
+                "id": TWITCH_ID,
+                "name": TWITCH_NAME
+            },
+            "progress": BOOLEAN
+        }
+    ]
 }
 ```
 
@@ -148,24 +126,23 @@ You can add commands in subfolder.
 
 ```
 your_bot_folder/
-├── node_modules
+├── addons/
 ├── data/
 |   ├── config.json
 |   └── secret.json
 ├── commands/
 |   └── base/
 |       └── command.js
-└── pastille_worker.js
+└── pastille.js
 ```
 
 ```js
-const commands =
-{
-    name: "NAME_OF_COMMANDS",
-    description: "DESCRIPTION_OF_COMMANDS"
+const commands = {
+  name: "NAME_OF_COMMANDS",
+  description: "DESCRIPTION_OF_COMMANDS",
 };
 
 module.exports = {
-    data: commands
-}
+  data: commands,
+};
 ```
