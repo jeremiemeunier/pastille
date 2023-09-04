@@ -1,4 +1,5 @@
 const { addons } = require ('../config/settings.json');
+const { logsEmiter } = require('../function/logs');
 
 let client;
 
@@ -10,8 +11,17 @@ const addonsRegisterInit = async (clientItem) => {
 
 const addonsRegister = async () => {
     addons.map(addons => {
-        console.log(addons.name, addons.active);
+        logsEmiter(`Addons loader : ${addons.name} → ${addons.active}`);
+
+        if(addons.active) {
+            const { addonsLoaded } = require(`../addons/${addons.name}`);
+            addonsLoaded(client, addons);
+        }
     })
 }
 
-module.exports = { addonsRegisterInit, addonsRegister }
+const addonsLaunch = (addons) => {
+
+}
+
+module.exports = { addonsRegisterInit, addonsRegister, addonsLaunch }
