@@ -1,6 +1,6 @@
 const fs = require('node:fs');
 const { Events, EmbedBuilder } = require('discord.js');
-const roleSettings = JSON.parse(fs.readFileSync('./data/addons/role.json'));
+const roleSettings = JSON.parse(fs.readFileSync('./data/role.json'));
 const { logsEmiter } = require('../../function/logs');
 const { options } = require ('../../config/settings.json');
 
