@@ -10,7 +10,7 @@ const addonsRegisterInit = async (clientItem) => {
 
 const addonsRegister = async () => {
     addons.map(addons => {
-        console.log(addons.name);
+        console.log(addons.name, addons.active);
     })
 }
 
