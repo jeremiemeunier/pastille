@@ -4,3 +4,4 @@ config/automod.json
 config/addons/streamer.json
 node_modules
 package-lock.json
+bin/automod/*.txt
