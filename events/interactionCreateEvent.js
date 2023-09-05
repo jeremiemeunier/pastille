@@ -7,7 +7,7 @@ const { commandThreadInit } = require('./interaction/commandThread');
 
 let client;
 
-const InteractionCreateEventInit = (clientItem) => {
+const interactionCreateEventInit = (clientItem) => {
 
     client = clientItem;
 
@@ -19,4 +19,4 @@ const InteractionCreateEventInit = (clientItem) => {
     commandThreadInit(client);
 }
 
-module.exports = { InteractionCreateEventInit }
+module.exports = { interactionCreateEventInit }
