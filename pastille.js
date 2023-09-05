@@ -9,12 +9,13 @@ const client = new Client({
 const { dateParser } = require('./function/base');
 const { logsBooter, logsEmiter, logsTester } = require('./function/logs');
 const { voiceEventInit } = require('./events/voiceEvent');
-const { commandRegister, commandRegisterInit } = require('./function/commandsRegister');
+const { commandRegisterInit } = require('./function/commandsRegister');
 const { reactionAddEventInit } = require('./events/messageReactionAddEvent');
 const { reactionRemoveEventInit } = require('./events/messageReactionRemoveEvent');
-const { InteractionCreateEventInit } = require('./events/interactionCreateEvent');
+const { interactionCreateEventInit } = require('./events/interactionCreateEvent');
 const { messageCreateEventInit } = require('./events/messageCreateEvent');
 const { addonsRegisterInit } = require('./function/addonsRegister');
+const { automod } = require('./events/messageModerationEvent');
 
 // ##### FIX ##### \\
 
@@ -58,8 +59,10 @@ const pastilleBooter = async () => {
             voiceEventInit(client);
             reactionAddEventInit(client);
             reactionRemoveEventInit(client);
-            InteractionCreateEventInit(client);
+            interactionCreateEventInit(client);
             messageCreateEventInit(client);
+            automod(client);
+
 
             addonsRegisterInit(client);
             channelDebug.send({ embeds: [bootEmbed] });
