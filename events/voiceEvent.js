@@ -62,7 +62,7 @@ const voiceEventInit = (clientItem) => {
                     else { joinThreadOnJoin(newVoiceChannel, newTextChannel, user); }
                 }
             }
-            catch(error) { logsEmiter(`An error occured\r\n ${error}`); return; }
+            catch(error) { logsEmiter(`An error occured [voiceEventInit] : \r\n ${error}`); return; }
         }
     });
 }

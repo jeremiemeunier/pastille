@@ -31,7 +31,7 @@ const commandPollInit = (clientItem) => {
                         try { await message.react(first); }
                         catch(error) {
                             try { await message.react(letter); }
-                            catch(error) { logsEmiter(`An error occured\r\n ${error}`); }
+                            catch(error) { logsEmiter(`An error occured [commandPollInit] : \r\n ${error}`); }
                         }
                     }
                     break;

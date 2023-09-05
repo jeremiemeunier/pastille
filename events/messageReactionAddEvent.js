@@ -28,7 +28,7 @@ const reactionAddEventInit = (clientItem) => {
                         const role = guild.roles.cache.find(role => role.id === moderation.roles.rule);
     
                         try { await member.roles.add(role); }
-                        catch(error) { logsEmiter(`An error occured on rule\r\n ${error}`); return; }
+                        catch(error) { logsEmiter(`An error occured [reactionAddEventInit:rule] : \r\n ${error}`); return; }
                     }
                     else { reaction.users.remove(user); }
                 }
@@ -50,7 +50,7 @@ const reactionAddEventInit = (clientItem) => {
                             const message = await thread.send({ embeds: [embed] });
                             message.react('🔒');
                         }
-                        catch(error) { logsEmiter(`An error occured on staff\r\n ${error}`); return; }
+                        catch(error) { logsEmiter(`An error occured [reactionAddEventInit:staff] : \r\n ${error}`); return; }
                     }
                     else { reaction.users.remove(user); }
                 }
@@ -62,7 +62,7 @@ const reactionAddEventInit = (clientItem) => {
                             const role = guild.roles.cache.find(role => role.id === roleSettings[i].role);
     
                             try { await member.roles.add(role); }
-                            catch(error) { logsEmiter(`An error occured on role\r\n ${error}`); return; }
+                            catch(error) { logsEmiter(`An error occured [reactionAddEventInit:role] : \r\n ${error}`); return; }
                         }
                     }
                 }
@@ -72,13 +72,13 @@ const reactionAddEventInit = (clientItem) => {
     
                     if(botReactThis === undefined) {
                         try { await reaction.users.remove(user); }
-                        catch(error) { logsEmiter(`An error occured on poll\r\n ${error}`); }
+                        catch(error) { logsEmiter(`An error occured [reactionAddEventInit:poll] : \r\n ${error}`); return; }
                     }
                     else {
                         userReactions.map(async (react) => {
                             if(react.emoji.name !== reaction.emoji.name) {
                                 try { await react.users.remove(user); }
-                                catch(error) { logsEmiter(`An error occured on poll 2\r\n ${error}`); }
+                                catch(error) { logsEmiter(`An error occured [reactionAddEventInit:poll2] : \r\n ${error}`); return; }
                             }
                         });
                     }
@@ -101,7 +101,7 @@ const reactionAddEventInit = (clientItem) => {
                         message.react('🗑️');
                         message.react('🔓');
                     }
-                    catch(error) { logsEmiter(`An error occured\r\n ${error}`); return; }
+                    catch(error) { logsEmiter(`An error occured [reactionAddEventInit:staff:thread_close] : \r\n ${error}`); return; }
                 }
                 else if(reaction.emoji.name === '🗑️') {
                     const channel = client.channels.cache.find(channel => channel.id === channels.help);
@@ -112,7 +112,8 @@ const reactionAddEventInit = (clientItem) => {
                     const message = await thread.send({ embeds: [embed]});
     
                     setTimeout(async () => {
-                        try { thread.delete(true); } catch(error) { logsEmiter(`An error occured\r\n ${error}`); return; }
+                        try { thread.delete(true); }
+                        catch(error) { logsEmiter(`An error occured [reactionAddEventInit:staff:thread_delete] : \r\n ${error}`); return; }
                     }, 30000);
                 }
                 else if(reaction.emoji.name === '🔓') {
@@ -127,7 +128,7 @@ const reactionAddEventInit = (clientItem) => {
                         const message = await thread.send({ embeds: [embed] });
                         message.react('🔒');
                     }
-                    catch(error) { logsEmiter(`An error occured\r\n ${error}`); return; }
+                    catch(error) { logsEmiter(`An error occured [reactionAddEventInit:staff:thread_open] : \r\n ${error}`); return; }
                 }
                 else if(reaction.emoji.name === '🤓') {
                     const guild = client.guilds.cache.find(guild => guild.id === reaction.message.guildId);
@@ -135,7 +136,7 @@ const reactionAddEventInit = (clientItem) => {
                     const role = guild.roles.cache.find(role => role.id === '1118500573675782235');
     
                     try { await member.roles.add(role); }
-                    catch(error) { console.log(error); }
+                    catch(error) { logsEmiter(`An error occured [reactionAddEventInit:dailyui] : \r\n ${error}`); return; }
                 }
             }
         }

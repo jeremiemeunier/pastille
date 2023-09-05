@@ -33,7 +33,7 @@ const commandRoleInit = (clientItem) => {
                 const message = await interaction.reply({ embeds: [embed], fetchReply: true });
                 for(let i = 0;i < roleSettings.length;i++) {
                     try { await message.react(roleSettings[i].emoji); }
-                    catch(error) { logsEmiter(`An error occured\r\n ${error}`); }
+                    catch(error) { logsEmiter(`An error occured [commandRoleInit] : \r\n ${error}`); }
                 }
             }
             catch(error) { logsEmiter(`An error occured\r\n ${error}`); }

@@ -33,7 +33,7 @@ const messageCreateEventInit = (clientItem) => {
                                             { name: 'IP', value: 'minecraft.jeremiemeunier.fr', inline: true }
                                         );
                 try { channel.send({ embeds: [embed] }); }
-                catch(error) { logsEmiter(`An error occured\r\n ${error}`); return; }
+                catch(error) { logsEmiter(`An error occured [messageCreateEventInit:ip] : \r\n ${error}`); return; }
             }
             else if(cmd === 'dailyui') {
                 message.delete();
@@ -45,7 +45,7 @@ const messageCreateEventInit = (clientItem) => {
                     const message = await channel.send({ embeds: [embed] });
                     message.react('🤓');
                 }
-                catch(error) { logsEmiter(`An error occured\r\n ${error}`); return; }
+                catch(error) { logsEmiter(`An error occured [messageCreateEventInit:dailyui] : \r\n ${error}`); return; }
             }
         }
         else if(channel.name === channels.screenshots) {
@@ -56,7 +56,7 @@ const messageCreateEventInit = (clientItem) => {
                     reason: 'New screenshots posted'
                 });
             }
-            catch(error) { console.log(error); }
+            catch(error) { logsEmiter(`An error occured [screenshotPost] : \r\n ${error}`); return; }
         }
         else { return; }
     });

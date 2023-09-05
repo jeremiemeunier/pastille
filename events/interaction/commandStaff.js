@@ -21,7 +21,7 @@ const commandStaffInit = (clientItem) => {
                 const message = await interaction.reply({ embeds: [embed], fetchReply: true });
                 message.react(options.reaction.ticket);
             }
-            catch(error) { logsEmiter(`An error occured\r\n ${error}`); }
+            catch(error) { logsEmiter(`An error occured [commandStaffInit] : \r\n ${error}`); }
         }
     });
 }

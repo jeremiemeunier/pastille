@@ -39,7 +39,7 @@ const commandRuleInit = (clientItem) => {
                 const message = await interaction.reply({ embeds: [rulesEmbed, modosEmbed, validateEmbed], fetchReply: true });
                 message.react(options.reaction.rule);
             }
-            catch(error) { logsEmiter(`An error occured\r\n ${error}`); }
+            catch(error) { logsEmiter(`An error occured [commandRuleInit] : \r\n ${error}`); }
         }
     });
 }

@@ -27,7 +27,7 @@ const reactionRemoveEventInit = (clientItem) => {
                         const role = guild.roles.cache.find(role => role.id === roleSettings[i].role);
     
                         try { await member.roles.remove(role); }
-                        catch(error) { logsEmiter(`An error occured\r\n ${error}`); return; }
+                        catch(error) { logsEmiter(`An error occured [reactionRemoveEventInit:role] : \r\n ${error}`); return; }
                     }
                 }
             }
@@ -39,7 +39,7 @@ const reactionRemoveEventInit = (clientItem) => {
                 const role = guild.roles.cache.find(role => role.id === '1118500573675782235');
     
                 try { await member.roles.remove(role); }
-                catch(error) { console.log(error); }
+                catch(error) { logsEmiter(`An error occured [reactionRemoveEventInit:dailyui] : \r\n ${error}`); return; }
             }
         }
     });

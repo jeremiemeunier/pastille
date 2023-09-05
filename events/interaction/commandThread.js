@@ -30,7 +30,7 @@ const commandThreadInit = (clientItem) => {
                 const msg = await thread.send({ embeds: [embed] });
             }
             catch(error) {
-                logsEmiter(`An error occured\r\n ${error}`);
+                logsEmiter(`An error occured [commandThreadInit] : \r\n ${error}`);
                 await interaction.reply({ content: `Une erreur est survenue. Essayer à nouveau plus tard.`, ephemeral: true });
             }
         }

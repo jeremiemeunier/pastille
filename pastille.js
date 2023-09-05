@@ -65,7 +65,7 @@ const pastilleBooter = async () => {
             channelDebug.send({ embeds: [bootEmbed] });
         }
     }
-    catch (error) { logsEmiter(`An error occured : ${error}`); }
+    catch (error) { logsEmiter(`An error occured [pastilleBooter] : ${error}`); }
 }
 
 client.on('ready', () => { pastilleBooter(); });

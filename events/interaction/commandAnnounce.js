@@ -20,7 +20,7 @@ const commandAnnounceInit = (clientItem) => {
                                     .setDescription(interaction.options.getString('content'));
                 const message = await interaction.reply({ embeds: [embed], fetchReply: true, content: "📢 **Annonce** ||@everyone||" });
             }
-            catch(error) { logsEmiter(`An error occured\r\n ${error}`); }
+            catch(error) { logsEmiter(`An error occured [commandAnnounceInit] : \r\n ${error}`); }
         }
     });
 }
