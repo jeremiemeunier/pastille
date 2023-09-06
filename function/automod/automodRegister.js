@@ -1,21 +1,21 @@
 const fs = require('node:fs');
-const { logsEmiter } = require('./logs');
+const { logsEmiter } = require('../logs');
 
 const automodRegister = (user, warn) => {
     const userId = user.user.id;
     const execFolder = __dirname;
-    const binFolder = execFolder.replace('function', 'bin/automod/');
+    const binFolder = execFolder.replace('function/automod', 'bin/automod/');
     const today = new Date();
     const newInfraction = { "warn": warn, "time": today };
 
     try {
         let warnList = JSON.parse(fs.readFileSync(`${binFolder}${userId}.txt`, 'utf8', (error, data) => {
-            if(error) { console.log(error); }
+            if(error) { console.log(`No follow file for this user... Creating him`); }
         }));
         warnList.warns.push(newInfraction);
 
         fs.writeFileSync(`${binFolder}${userId}.txt`, JSON.stringify(warnList), (error) => {
-            if(error) { console.log(error); }
+            if(error) { console.log(`No follow file for this user... Creating him`); }
         });
     }
     catch(error) {
