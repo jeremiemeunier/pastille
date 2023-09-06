@@ -11,9 +11,8 @@ const addonsLoaded = async (clientItem, addonsParamsItem) => {
     client = clientItem;
     const { channel, role } = addonsParamsItem;
     const { streamer } = require('../config/addons/streamer.json');
-    const clientChannel = client.channels.cache.find(clientChannel => clientChannel.name = channel);
 
-    setInterval(async () => {
+    // setInterval(async () => {
         const authToken = await requestAuthenticator();
 
         streamer.map(async streamer => {
@@ -37,11 +36,11 @@ const addonsLoaded = async (clientItem, addonsParamsItem) => {
                                 .setTitle(`${streamer.twitch.name.toString()} est actuellement en live !`)
                                 .setDescription(`Il stream : **${streamerState.title}** sur **${streamerState.game_name}**`)
                                 .setThumbnail(thumbnail);
+                        
+                        client.guilds.cache.map(async guild => {
+                            const sendChannel = guild.channels.cache.find(sendChannel => sendChannel.name === channel);
 
-                        client.guilds.cache.map(guild => {
-                            const clientChannel = guild.channels.cache.find(clientChannel => clientChannel.name = channel);
-
-                            clientChannel.send({
+                            await sendChannel.send({
                                 content: `${streamer.twitch.name.toString()} est en live ! <@&${role}>`,
                                 embeds: [liveEmbed],
                                 components: [liveButton]
@@ -52,7 +51,7 @@ const addonsLoaded = async (clientItem, addonsParamsItem) => {
                 }
             }
         });
-    }, options.wait);
+    // }, options.wait);
 }
 
 const startAnalyze = (startItem) => {
@@ -60,6 +59,8 @@ const startAnalyze = (startItem) => {
     const start = Date.parse(startItem);
     const prev = now - options.wait;
     const next = now + options.wait;
+
+    return true;
 
     if(start > prev && start < next) { return true; }
     else { return false; }
