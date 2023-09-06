@@ -11,7 +11,7 @@ const addonsLoaded = async (clientItem, addonsParamsItem) => {
     client = clientItem;
     const { channel, role } = addonsParamsItem;
     const { streamer } = require('../config/addons/streamer.json');
-    const clientChannel = client.channels.cache.find(clientChannel => clientChannel.id = channel);
+    const clientChannel = client.channels.cache.find(clientChannel => clientChannel.name = channel);
 
     setInterval(async () => {
         const authToken = await requestAuthenticator();
@@ -38,10 +38,14 @@ const addonsLoaded = async (clientItem, addonsParamsItem) => {
                                 .setDescription(`Il stream : **${streamerState.title}** sur **${streamerState.game_name}**`)
                                 .setThumbnail(thumbnail);
 
-                        clientChannel.send({
-                            content: `${streamer.twitch.name.toString()} est en live ! <@&${role}>`,
-                            embeds: [liveEmbed],
-                            components: [liveButton]
+                        client.guilds.cache.map(guild => {
+                            const clientChannel = guild.channels.cache.find(clientChannel => clientChannel.name = channel);
+
+                            clientChannel.send({
+                                content: `${streamer.twitch.name.toString()} est en live ! <@&${role}>`,
+                                embeds: [liveEmbed],
+                                components: [liveButton]
+                            });
                         });
                     }
                     catch(error) { logsEmiter(error); }
