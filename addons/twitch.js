@@ -12,7 +12,7 @@ const addonsLoaded = async (clientItem, addonsParamsItem) => {
     const { channel, role } = addonsParamsItem;
     const { streamer } = require('../config/addons/streamer.json');
 
-    // setInterval(async () => {
+    setInterval(async () => {
         const authToken = await requestAuthenticator();
 
         streamer.map(async streamer => {
@@ -51,7 +51,7 @@ const addonsLoaded = async (clientItem, addonsParamsItem) => {
                 }
             }
         });
-    // }, options.wait);
+    }, options.wait);
 }
 
 const startAnalyze = (startItem) => {
