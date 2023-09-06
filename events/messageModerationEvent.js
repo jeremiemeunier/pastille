@@ -1,7 +1,7 @@
 const { Events, EmbedBuilder } = require('discord.js');
 const { logsEmiter } = require('../function/logs');
 const { channels, options, moderation } = require ('../config/settings.json');
-const { automodRegister } = require('../function/automodRegister');
+const { automodRegister } = require('../function/automod/automodRegister');
 
 let client;
 
@@ -31,7 +31,7 @@ const automod = (clientItem) => {
                                             .setColor(options.color)
                                             .setTitle(`${user.user.username} [${user.user.globalName}] a reçu un avertissement`)
                                             .setDescription('**Raison** : Trop de mentions');
-					await message.delete();
+					message.delete();
 					await alert.send({
                         embeds: [embedSanction, embedProof] });
 					await channel.send({
