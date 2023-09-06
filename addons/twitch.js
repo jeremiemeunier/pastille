@@ -60,8 +60,6 @@ const startAnalyze = (startItem) => {
     const prev = now - options.wait;
     const next = now + options.wait;
 
-    return true;
-
     if(start > prev && start < next) { return true; }
     else { return false; }
 }
