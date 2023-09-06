@@ -40,7 +40,7 @@ const automod = (clientItem) => {
 					await user.send({
                         content: `<@${user.user.id.toString()}> you receive a warn`,
                         embeds: [embedSanction] });
-                    automodRegister(user, 'limitMention');
+                    automodRegister(user, 'limitMention', guild);
 				}
 				catch(error) { logsEmiter(`An error occured [automod:mention]\r\n${error}`); }
                 return;
@@ -63,7 +63,7 @@ const automod = (clientItem) => {
 					await user.send({
                         content: `<@${user.user.id.toString()}> you receive a warn`,
                         embeds: [embedSanction] });
-                    automodRegister(user, 'mentionEveryone');
+                    automodRegister(user, 'mentionEveryone', guild);
 				}
 				catch(error) { logsEmiter(`An error occured [automod:everyone]\r\n${error}`); }
                 return;
