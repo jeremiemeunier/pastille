@@ -1,5 +1,6 @@
 const { ChannelType, Events, EmbedBuilder } = require('discord.js');
 const { logsEmiter } = require('../../function/logs');
+const { options } = require('../../config/settings.json');
 
 let client;
 
@@ -26,7 +27,7 @@ const commandThreadInit = (clientItem) => {
         
                 let embed = new EmbedBuilder()
                                     .setColor(`${options.color}`)
-                                    .setDescription(`Create a new thread to request MidJourney`);
+                                    .setDescription(`Bienvenue sur ton thread dédié`);
                 const msg = await thread.send({ embeds: [embed] });
             }
             catch(error) {
