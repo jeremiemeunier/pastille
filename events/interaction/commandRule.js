@@ -14,7 +14,7 @@ const commandRuleInit = (clientItem) => {
             const { commandName } = interaction;
         
         if(commandName === 'rule') {
-            const rules = JSON.parse(fs.readFileSync('./data/addons/rule.json'));
+            const rules = JSON.parse(fs.readFileSync('./data/rule.json'));
             try {
                 let rulesField = [];
     
