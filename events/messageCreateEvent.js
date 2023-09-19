@@ -13,7 +13,7 @@ const messageCreateEventInit = (clientItem) => {
         const channel = guild.channels.cache.find(channel => channel.id === message.channelId);
         const author = message.author.username;
         const today = new Date();
-        const postedDate = `${today.getDate}/${today.getMonth}/${today.getFullYear}`;
+        const postedDate = `${today.getDay}/${today.getMonth}/${today.getFullYear}`;
         const msg = channel.messages.cache.find(message => message.id === message.id);
     
         let splitedMsg = content.split(' ');
