@@ -43,7 +43,7 @@ const addonsLoaded = async (clientItem, addonsParamsItem) => {
                             if(sendChannel !== undefined) {
                                 try {
                                     await sendChannel.send({
-                                        content: `${streamer.twitch.name.toString()} est en live ! <@&${role}>`,
+                                        content: `${streamer.twitch.name.toString()} est en live ! ${streamer.personal_text ? streamer.personal_text : ''} <@&${role}>`,
                                         embeds: [liveEmbed],
                                         components: [liveButton]
                                     });
