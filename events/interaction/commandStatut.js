@@ -16,7 +16,7 @@ const commandStatutInit = (clientItem) => {
                 activities: [{ name: interaction.options.getString('content'),
                 type: ActivityType.Custom
             }] });
-            await interaction.reply({ content: `Ton nouveau statut a été définis`, ephemeral: true });
+            await interaction.reply({ content: `Le nouveau nouveau statut de ${client.user} a été définis`, ephemeral: true });
         }
     });
 }
