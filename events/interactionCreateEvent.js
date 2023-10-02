@@ -5,7 +5,7 @@ const { commandAnnounceInit } = require('./interaction/commandAnnounce');
 const { commandRoleInit } = require('./interaction/commandRole');
 const { commandThreadInit } = require('./interaction/commandThread');
 const { commandStatutInit } = require('./interaction/commandStatut');
-const { commandClearThreadInit } = require('./interaction/commandClearThread');
+const { commandClearInit } = require('./interaction/commandClear');
 
 let client;
 
@@ -20,7 +20,7 @@ const interactionCreateEventInit = (clientItem) => {
     commandRoleInit(client);
     commandThreadInit(client);
     commandStatutInit(client);
-    commandClearThreadInit(client);
+    commandClearInit(client);
 }
 
 module.exports = { interactionCreateEventInit }
