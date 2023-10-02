@@ -1,6 +1,4 @@
 const { Events } = require('discord.js');
-const { logsEmiter } = require('../../function/logs');
-const { options } = require ('../../config/settings.json');
 
 let client;
 
