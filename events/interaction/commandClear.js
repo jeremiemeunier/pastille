@@ -20,7 +20,7 @@ const commandClearInit = (clientItem) => {
                 thread.delete();
             });
 
-            interaction.reply('Tout les threads ont été supprimés');
+            interaction.reply({ content: `Tout les threads ont été supprimés`, ephemeral: true });
         }
         else if(commandName === 'clearmessages') {
             const interactChannel = client.channels.cache.find(channel => channel.id === interaction.channelId);
@@ -29,7 +29,7 @@ const commandClearInit = (clientItem) => {
                 messages.map(message => { message.delete(); });
             });
 
-            interaction.reply('Tout les messages ont été supprimés');
+            interaction.reply({ content: `Tout les messages ont été supprimés`, ephemeral: true });
         }
     });
 }
