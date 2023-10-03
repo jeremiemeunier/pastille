@@ -32,7 +32,6 @@ const commandThreadInit = (clientItem) => {
             }
             catch(error) {
                 logsEmiter(`An error occured [commandThreadInit] : \r\n ${error}`);
-                await interaction.reply({ content: `Une erreur est survenue. Essayer à nouveau plus tard.`, ephemeral: true });
             }
         }
     });
