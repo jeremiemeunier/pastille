@@ -1,5 +1,5 @@
 const { Events, ActivityType } = require('discord.js');
-const { logsEmiter } = require('../../function/logs');
+const { logsEmiter } = require('../../../function/logs');
 
 let client;
 
