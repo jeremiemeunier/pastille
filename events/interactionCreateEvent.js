@@ -1,11 +1,13 @@
-const { commandPollInit } = require('./interaction/commandPoll');
-const { commandRuleInit } = require('./interaction/commandRule');
-const { commandStaffInit } = require('./interaction/commandStaff');
-const { commandAnnounceInit } = require('./interaction/commandAnnounce');
-const { commandRoleInit } = require('./interaction/commandRole');
-const { commandThreadInit } = require('./interaction/commandThread');
-const { commandStatutInit } = require('./interaction/commandStatut');
-const { commandClearInit } = require('./interaction/commandClear');
+const { commandPollInit } = require('./interaction/command/commandPoll');
+const { commandRuleInit } = require('./interaction/command/commandRule');
+const { commandStaffInit } = require('./interaction/command/commandStaff');
+const { commandAnnounceInit } = require('./interaction/command/commandAnnounce');
+const { commandRoleInit } = require('./interaction/command/commandRole');
+const { commandThreadInit } = require('./interaction/command/commandThread');
+const { commandStatutInit } = require('./interaction/command/commandStatut');
+const { commandClearInit } = require('./interaction/command/commandClear');
+
+const { buttonAcceptRuleInit } = require('./interaction/button/buttonAcceptRule');
 
 let client;
 
@@ -13,6 +15,7 @@ const interactionCreateEventInit = (clientItem) => {
 
     client = clientItem;
 
+    // Commands
     commandPollInit(client);
     commandRuleInit(client);
     commandStaffInit(client);
@@ -21,6 +24,9 @@ const interactionCreateEventInit = (clientItem) => {
     commandThreadInit(client);
     commandStatutInit(client);
     commandClearInit(client);
+
+    //Buttons
+    buttonAcceptRuleInit(client);
 }
 
 module.exports = { interactionCreateEventInit }
