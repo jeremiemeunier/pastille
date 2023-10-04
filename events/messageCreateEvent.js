@@ -49,14 +49,16 @@ const messageCreateEventInit = (clientItem) => {
             }
         }
         else if(channel.name === channels.screenshots) {
-            try {
-                const thread = await message.startThread({
-                    name: `${author} (${today.getDay()}/${today.getMonth()}/${today.getFullYear()})`,
-                    autoArchiveDuration: 60,
-                    reason: 'New screenshots posted'
-                });
+            if(message.attachments.size) {
+                try {
+                    const thread = await message.startThread({
+                        name: `${author} (${today.getDay()}/${today.getMonth() + 1}/${today.getFullYear()})`,
+                        autoArchiveDuration: 60,
+                        reason: 'New screenshots posted'
+                    });
+                }
+                catch(error) { logsEmiter(`An error occured [screenshotPost] : \r\n ${error}`); return; }
             }
-            catch(error) { logsEmiter(`An error occured [screenshotPost] : \r\n ${error}`); return; }
         }
         else { return; }
     });
