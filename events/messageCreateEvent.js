@@ -52,7 +52,7 @@ const messageCreateEventInit = (clientItem) => {
             if(message.attachments.size) {
                 try {
                     const thread = await message.startThread({
-                        name: `${author} (${today.getDay()}/${today.getMonth() + 1}/${today.getFullYear()})`,
+                        name: `${author} (${today.getDay() < 10 ? '0' + today.getDay() : today.getDay()}/${today.getMonth() + 1}/${today.getFullYear()})`,
                         autoArchiveDuration: 60,
                         reason: 'New screenshots posted'
                     });
