@@ -1,4 +1,5 @@
 const { Events } = require('discord.js');
+const { logsEmiter } = require('../../../function/logs');
 
 let client;
 
@@ -14,8 +15,13 @@ const commandClearInit = (clientItem) => {
             const interactChannel = client.channels.cache.find(channel => channel.id === interaction.channelId);
             const threadsMap = interactChannel.threads.cache;
 
-            await threadsMap.map(thread => {
-                thread.delete();
+            threadsMap.map(thread => {
+                try {
+                    thread.delete();
+                }
+                catch(error) {
+                    logsEmiter(error);
+                }
             });
 
             interaction.reply({ content: `Tout les threads ont été supprimés`, ephemeral: true });
@@ -23,8 +29,13 @@ const commandClearInit = (clientItem) => {
         else if(commandName === 'clearmessages') {
             const interactChannel = client.channels.cache.find(channel => channel.id === interaction.channelId);
 
-            await interactChannel.messages.fetch().then(messages => {
-                messages.map(message => { message.delete(); });
+            interactChannel.messages.fetch().then(messages => {
+                messages.map(message => {
+                    try {
+                        message.delete();
+                    }
+                    catch(error) { logsEmiter(error); }
+                });
             });
 
             interaction.reply({ content: `Tout les messages ont été supprimés`, ephemeral: true });
