@@ -22,6 +22,8 @@ It's a bot. An explosive bot named Pastille but only for discord !
 
 If you are using category for control and organized your discord server, you must create an text channel with the name indicate in the settings for `channels > voiceText` in all category with an voice channel.
 
+Pastille implement an auto host api for automoderation.
+
 package.json
 ```json
 {
