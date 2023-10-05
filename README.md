@@ -14,12 +14,29 @@ It's a bot. An explosive bot named Pastille but only for discord !
     <a href="https://www.npmjs.com/package/axios"><img alt="npm" src="https://img.shields.io/npm/v/axios?label=axios"></a>
     <a href="https://www.npmjs.com/package/@discordjs/rest"><img alt="npm" src="https://img.shields.io/npm/v/@discordjs/rest?label=@discordjs/rest"></a>
     <a href="https://www.npmjs.com/package/fs"><img alt="npm" src="https://img.shields.io/npm/v/fs?label=fs"></a>
+    <a href="https://www.npmjs.com/package/express"><img alt="npm" src="https://img.shields.io/npm/v/express?label=express"></a>
   </p>
 </div>
 
 ## Prerequires
 
 If you are using category for control and organized your discord server, you must create an text channel with the name indicate in the settings for `channels > voiceText` in all category with an voice channel.
+
+package.json
+```json
+{
+  "dependencies": {
+    "@discordjs/rest": "^2.0.1",
+    "axios": "^1.5.0",
+    "discord.js": "^14.13.0",
+    "nodemon": "^3.0.1",
+    "cors": "^2.8.5",
+    "mongoose": "^7.2.4",
+    "express": "^4.18.2",
+    "express-rate-limit": "^7.1.0"
+  }
+}
+```
 
 ## Configuration files
 
