@@ -2,49 +2,49 @@ const { moderation } = require('../../config/settings.json');
 const fs = require('node:fs');
 const { logsEmiter } = require('../logs');
 
-const automodSanction = (user, guild) => {
-    const execFolder = __dirname;
-    const binFolder = execFolder.replace('function/automod', 'bin/automod/');
-    const sanctions = moderation.sanctions;
-    const today = Date.parse(new Date());
+const automodSanction = (user, size, guild) => {
+    // const execFolder = __dirname;
+    // const binFolder = execFolder.replace('function/automod', 'bin/automod/');
+    // const sanctions = moderation.sanctions;
+    // const today = Date.parse(new Date());
 
-    try {
-        let warnList = JSON.parse(fs.readFileSync(`${binFolder}${user.user.id}.txt`, 'utf8', (error, data) => {
-            if(error) { logsEmiter(`[automod:sanction] Reading file : ${error}`); }
-        }));
+    // try {
+    //     let warnList = JSON.parse(fs.readFileSync(`${binFolder}${user.user.id}.txt`, 'utf8', (error, data) => {
+    //         if(error) { logsEmiter(`[automod:sanction] Reading file : ${error}`); }
+    //     }));
 
-        const warnSize = warnList.warns.length;
-        const sanctionSize = warnList.sanctions.length;
+    //     const warnSize = warnList.warns.length;
+    //     const sanctionSize = warnList.sanctions.length;
 
-        if(warnSize === 3) {
-            warnList.sanctions.push({
-                "level": "low",
-                "duration": durationInterpreter(sanctions.low),
-                time: today });
-            sanctionApplier(user, durationInterpreter(sanctions.low), guild);
-        }
-        else if (warnSize === 6) {
-            warnList.sanctions.push({
-                "level": "medium",
-                "duration": durationInterpreter(sanctions.medium),
-                time: today });
-            sanctionApplier(user, durationInterpreter(sanctions.medium), guild);
-        }
-        else if (warnSize === 9) {
-            warnList.sanctions.push({
-                "level": "hight",
-                "duration": durationInterpreter(sanctions.hight),
-                time: today });
-            sanctionApplier(user, durationInterpreter(sanctions.hight), guild);
-        }
+    //     if(warnSize === 3) {
+    //         warnList.sanctions.push({
+    //             "level": "low",
+    //             "duration": durationInterpreter(sanctions.low),
+    //             time: today });
+    //         sanctionApplier(user, durationInterpreter(sanctions.low), guild);
+    //     }
+    //     else if (warnSize === 6) {
+    //         warnList.sanctions.push({
+    //             "level": "medium",
+    //             "duration": durationInterpreter(sanctions.medium),
+    //             time: today });
+    //         sanctionApplier(user, durationInterpreter(sanctions.medium), guild);
+    //     }
+    //     else if (warnSize === 9) {
+    //         warnList.sanctions.push({
+    //             "level": "hight",
+    //             "duration": durationInterpreter(sanctions.hight),
+    //             time: today });
+    //         sanctionApplier(user, durationInterpreter(sanctions.hight), guild);
+    //     }
 
-        fs.writeFileSync(`${binFolder}${user.user.id}.txt`, JSON.stringify(warnList), (error) => {
-            if(error) { logsEmiter(`[automod:sanction] Writting file : ${error}`); }
-        });
-    }
-    catch(error) {
-        logsEmiter(`[automod:sanction] No file : ${error}`);
-    }
+    //     fs.writeFileSync(`${binFolder}${user.user.id}.txt`, JSON.stringify(warnList), (error) => {
+    //         if(error) { logsEmiter(`[automod:sanction] Writting file : ${error}`); }
+    //     });
+    // }
+    // catch(error) {
+    //     logsEmiter(`[automod:sanction] No file : ${error}`);
+    // }
 }
 
 const durationInterpreter = (sanctionData) => {
