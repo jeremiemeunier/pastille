@@ -1,5 +1,24 @@
+const { BOT_TOKEN, MONGODB_URL, PORT } = require('./config/secret.json');
+
+// ##### API SETUP ##### \\
+
+const express = require("express");
+const app = express();
+const cors = require("cors");
+require("dotenv").config();
+const morgan = require("morgan");
+const mongoose = require("mongoose");
+
+app.use(express.json());
+app.use(cors());
+
+// BDD
+
+mongoose.connect(MONGODB_URL);
+
+// ##### BOT SETUP ##### \\
+
 const { version, options, channels } = require ('./config/settings.json');
-const { BOT_TOKEN } = require('./config/secret.json');
 const { Client, EmbedBuilder, GatewayIntentBits, Partials } = require('discord.js');
 const client = new Client({
     intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessageReactions, GatewayIntentBits.GuildVoiceStates],
@@ -69,6 +88,25 @@ const pastilleBooter = async () => {
         }
     }
     catch (error) { logsEmiter(`An error occured [pastilleBooter] : ${error}`); }
+
+    try {
+        // API
+        app.get("/", (req, res) => {
+            res.status(200).json({ message: "Bienvenue sur le Backend de Pastille" });
+        });
+
+        // Route 404
+        app.all("*", (req, res) => {
+            res.status(404).json({ message: "This route do not exist" });
+        });
+        
+        app.listen(PORT, () => {
+            logsEmiter(`Server has started on port ${PORT} 🚀`);
+        });
+    }
+    catch(error) {
+        logsEmiter(`An error occured on api : ${error}`);
+    }
 }
 
 client.on('ready', () => { pastilleBooter(); });
