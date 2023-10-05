@@ -58,7 +58,9 @@ To create your twitch app : [Twitch Developers](https://dev.twitch.tv/console/ap
     "GUILD_ID": YOUR_DISCORD_SERVER_ID,
     "BOT_ID": YOUR_BOT_USER_ID,
     "TWITCH_SECRET_TOKEN": YOUR_SECRET_APP_TOKEN,
-    "TWITCH_CLIENT_TOKEN": YOUR_CLIENT_APP_TOKEN
+    "TWITCH_CLIENT_TOKEN": YOUR_CLIENT_APP_TOKEN,
+    "MONGODB_URL": YOUR_SECRET_APP_TOKEN,
+    "PORT": YOUR_PORT
 }
 ```
 
