@@ -3,11 +3,9 @@ const { BOT_TOKEN, MONGODB_URL, PORT } = require('./config/secret.json');
 // ##### API SETUP ##### \\
 
 const express = require("express");
-const RateLimit = require('express-rate-limit');
 const app = express();
+const RateLimit = require('express-rate-limit');
 const cors = require("cors");
-require("dotenv").config();
-const morgan = require("morgan");
 const mongoose = require("mongoose");
 
 const limiter = RateLimit({
@@ -15,10 +13,9 @@ const limiter = RateLimit({
     max: 100,
 })
 
+app.use(limiter);
 app.use(express.json());
 app.use(cors());
-app.use(morgan("dev"));
-app.use(limiter);
 
 // BDD
 
