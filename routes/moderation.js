@@ -3,7 +3,7 @@ const router = express.Router();
 const Moderation = require("../model/Moderation");
 const isPastille = require("../middlewares/isPastille");
 
-router.put("/moderation/", isPastille, async (req, res) => {
+router.put("/moderation", isPastille, async (req, res) => {
     const { user_id, warns, sanctions } = req.body;
 
     if(!user_id || !warns || !sanctions) {
@@ -17,14 +17,18 @@ router.put("/moderation/", isPastille, async (req, res) => {
     }
 
     if(moderationExist) {
-        const moderationUpdate = await Moderation.updateOne({ user_id: user_id }, [
-            { warns: warns },
-            { sanctions: sanctions }
-        ])
+        const moderationUpdate = await Moderation.updateOne({ user_id: user_id }, {
+            $set: {
+                warns: warns,
+                sanctions: sanctions
+            }
+        });
+
+        res.status(201).json({ message: 'Moderation item updated' });
     }
 });
 
-router.post("/moderation/", isPastille, async (req, res) => {
+router.post("/moderation", isPastille, async (req, res) => {
     const { user_id, warns, sanctions } = req.body;
 
     try {
@@ -33,6 +37,7 @@ router.post("/moderation/", isPastille, async (req, res) => {
             warns: warns,
             sanctions: sanctions
         });
+        await newModeration.save();
 
         res.status(200).json({ message: "New moderation items created" });
     }
@@ -41,17 +46,17 @@ router.post("/moderation/", isPastille, async (req, res) => {
     }
 });
 
-router.get("/moderation/user/", isPastille, async (req, res) => {
+router.get("/moderation/user", isPastille, async (req, res) => {
     const { user_id } = req.query;
     
     try {
         const moderationExist = await Moderation.findOne({ user_id: user_id });
 
         if(!moderationExist) {
-            res.status(404).json({ message: "User not exist", user_exist: false });
+            res.status(404).json({ message: "User not exist", userExist: false });
         }
         else {
-            res.status(200).json({ message: "User exist", user_exist: true });
+            res.status(200).json({ message: "User exist", userExist: true, userData: moderationExist });
         }
     }
     catch(error) {
