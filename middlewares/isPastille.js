@@ -1,4 +1,3 @@
-const User = require('../model/User');
 const { BOT_ID } = require("../config/secret.json");
 
 const isPastille = async (req, res, next) => {
