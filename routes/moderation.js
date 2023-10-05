@@ -10,7 +10,7 @@ router.put("/moderation/", isPastille, async (req, res) => {
         return res.status(409).json({ message: "Please complete all input"});
     }
 
-    const moderationExist = await Moderation.find({ user_id: user_id });
+    const moderationExist = await Moderation.findOne({ user_id: user_id });
 
     if(!moderationExist) {
         return res.status(409).json({ message: "This User do not exist !" });
@@ -45,7 +45,7 @@ router.get("/moderation/user/", isPastille, async (req, res) => {
     const { user_id } = req.query;
     
     try {
-        const moderationExist = await Moderation.find({ user_id: user_id });
+        const moderationExist = await Moderation.findOne({ user_id: user_id });
 
         if(!moderationExist) {
             res.status(404).json({ message: "User not exist", user_exist: false });
