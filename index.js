@@ -11,6 +11,7 @@ const mongoose = require("mongoose");
 
 app.use(express.json());
 app.use(cors());
+app.use(morgan("dev"));
 
 // BDD
 
@@ -91,6 +92,10 @@ const pastilleBooter = async () => {
 
     try {
         // API
+        const moderationRoute = require('./routes/moderation');
+
+        app.use(moderationRoute);
+
         app.get("/", (req, res) => {
             res.status(200).json({ message: "Bienvenue sur le Backend de Pastille" });
         });
