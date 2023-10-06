@@ -69,4 +69,26 @@ router.post("/dailyui", isPastille, async (req, res) => {
     }
 });
 
+router.post('/dailyui/mass', isPastille, async (req, res) => {
+    const data = req.body.data
+
+    data.map(async dailychallenge => {
+        try {
+            const newDailyUi = new DailyUi({
+                state: false,
+                title: dailychallenge.title,
+                description: dailychallenge.description
+            })
+            await newDailyUi.save();
+
+            logsEmiter(`API Server : 🟢 | New daily challenge added`);
+        }
+        catch(error) {
+            logsEmiter(`API Server : ⚠️  | ${error}`);
+        }
+    });
+    
+    res.status(200).json({ message: 'New daily challenge added' });
+})
+
 module.exports = router;
