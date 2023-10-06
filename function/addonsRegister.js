@@ -11,7 +11,9 @@ const addonsRegisterInit = async (clientItem) => {
 
 const addonsRegister = async () => {
     addons.map(addons => {
-        logsEmiter(`Addons loader : ${addons.name} → ${addons.active}`);
+        addons.active ?
+        logsEmiter(`Addons loader : 🟢 | ${addons.name} → ${addons.active}`) :
+        logsEmiter(`Addons loader : 🔴 | ${addons.name} → ${addons.active}`)
 
         if(addons.active) {
             const { addonsLoaded } = require(`../addons/${addons.name}`);
