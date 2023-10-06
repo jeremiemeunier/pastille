@@ -97,8 +97,10 @@ const pastilleBooter = async () => {
     try {
         // API
         const moderationRoute = require('./routes/moderation');
+        const dailyuiRoute = require('./routes/dailyui');
 
         app.use(moderationRoute);
+        app.use(dailyuiRoute);
 
         app.get("/", (req, res) => {
             res.status(200).json({ message: "Bienvenue sur le Backend de Pastille" });
@@ -110,11 +112,11 @@ const pastilleBooter = async () => {
         });
         
         app.listen(PORT, () => {
-            logsEmiter(`Server has started on port ${PORT} 🚀`);
+            logsEmiter(`API Server : 🚀 | Started on port ${PORT}`);
         });
     }
     catch(error) {
-        logsEmiter(`An error occured on api : ${error}`);
+        logsEmiter(`API Server : ⚠️  | An error occured on api : ${error}`);
     }
 }
 
