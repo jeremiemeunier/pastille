@@ -1,52 +1,398 @@
 [
-    { "name": "Android Settings Page" },
-    { "name": "App Landing Page" },
-    { "name": "Floating Message" },
-    { "name": "Incoming Call" },
-    { "name": "Meditation App Onboarding" },
-    { "name": "Dropdown Menu" },
-    { "name": "Blog Post" },
-    { "name": "Testimonials" },
-    { "name": "Todo List" },
-    { "name": "Info Card" },
-    { "name": "Job Listing" },
-    { "name": "Confirmation" },
-    { "name": "Shopping Cart" },
-    { "name": "Workout of the Day" },
-    { "name": "Stats" },
-    { "name": "Event Listing" },
-    { "name": "Download App" },
-    { "name": "Pending Invitation" },
-    { "name": "Address Form" },
-    { "name": "Progress Bar" },
-    { "name": "Create New Playlist" },
-    { "name": "News Feed" },
-    { "name": "Creadit Card Checkout" },
-    { "name": "User Profil" },
-    { "name": "Social Share" },
-    { "name": "Time - Stop Watch" },
-    { "name": "Analitycs Chart" },
-    { "name": "Search" },
-    { "name": "Premium Subscription Pricing" },
-    { "name": "Calendar" },
-    { "name": "Workout Tracker" },
-    { "name": "Music Info Card" },
-    { "name": "Android Notifications" },
-    { "name": "Top Navigation Bar" },
-    { "name": "Video Player" },
-    { "name": "Coupon" },
-    { "name": "News Widget" },
-    { "name": "Trending Music" },
-    { "name": "Than You ! Dialog Box" },
-    { "name": "Pagination" },
-    { "name": "Recipe Page" },
-    { "name": "Favorites Movies List" },
-    { "name": "Coming Soon" },
-    { "name": "Nothing Found Page" },
-    { "name": "Breadcrumbs" },
-    { "name": "Colour Picker" },
-    { "name": "Select User Type" },
-    { "name": "Flight Search" },
-    { "name": "Image Carousel" },
-    { "name": "Loading Page of Any Product" }
+    {
+        "title": "Sign-Up Page",
+        "description": "Design a user-friendly sign-up or registration page for an app or website."
+    },
+    {
+        "title": "Credit Card Checkout",
+        "description": "Create a secure and intuitive payment process for online shopping."
+    },
+    {
+        "title": "Music Player",
+        "description": "Design an interface for playing and controlling music on a digital player."
+    },
+    {
+        "title": "Weather App",
+        "description": "Craft a weather forecast app with current conditions and forecasts."
+    },
+    {
+        "title": "Calendar Widget",
+        "description": "Design a compact and functional calendar widget for a website or app."
+    },
+    {
+        "title": "User Profile",
+        "description": "Showcase a user's profile information and profile picture in an appealing way."
+    },
+    {
+        "title": "E-commerce Product Card",
+        "description": "Design a card for showcasing a product in an e-commerce setting."
+    },
+    {
+        "title": "Settings Page",
+        "description": "Create an organized settings menu for an app with various customization options."
+    },
+    {
+        "title": "Social Share",
+        "description": "Design an interface that allows users to share content on social media platforms."
+    },
+    {
+        "title": "Flash Message (Error/Success)",
+        "description": "Create a pop-up message for success or error notifications within an app or website."
+    },
+    {
+        "title": "Chat/Messaging App",
+        "description": "Design a chat interface with message bubbles for a messaging app."
+    },
+    {
+        "title": "Search Bar",
+        "description": "Design a search bar with relevant suggestions for an app or website."
+    },
+    {
+        "title": "Dashboard",
+        "description": "Create a dashboard for monitoring data, statistics, or analytics."
+    },
+    {
+        "title": "On/Off Switch",
+        "description": "Design a switch element for toggling features on and off within an app."
+    },
+    {
+        "title": "Email Receipt",
+        "description": "Design a digital receipt for an email transaction or purchase confirmation."
+    },
+    {
+        "title": "Maps Interface",
+        "description": "Create an interactive map with pins and labels for a location-based app."
+    },
+    {
+        "title": "Contact Us Page",
+        "description": "Design a contact form and information page for a website."
+    },
+    {
+        "title": "Notification Center",
+        "description": "Create a notification hub that displays different types of alerts and notifications."
+    },
+    {
+        "title": "Location Tracker",
+        "description": "Design an interface that tracks and displays user locations on a map."
+    },
+    {
+        "title": "Alarm Clock",
+        "description": "Create a digital or analog alarm clock interface for a mobile app or device."
+    },
+    {
+        "title": "News Article",
+        "description": "Design a layout for reading news articles with text and images."
+    },
+    {
+        "title": "Product Pricing",
+        "description": "Showcase different pricing tiers for a service or product in an attractive way."
+    },
+    {
+        "title": "Car Rental App",
+        "description": "Design an app for renting vehicles with options and details."
+    },
+    {
+        "title": "App Icon",
+        "description": "Create an icon representing an app or brand with a unique design."
+    },
+    {
+        "title": "To-Do List",
+        "description": "Design a simple to-do list with tasks and checkboxes for marking completion."
+    },
+    {
+        "title": "Video Player",
+        "description": "Craft an interface for watching videos, including play, pause, and volume controls."
+    },
+    {
+        "title": "Countdown Timer",
+        "description": "Design a timer interface for events, special occasions, or countdowns."
+    },
+    {
+        "title": "Flight Booking",
+        "description": "Create an interface for booking flights with flight details and options."
+    },
+    {
+        "title": "404 Page",
+        "description": "Design a creative and user-friendly error page for a website."
+    },
+    {
+        "title": "File Upload",
+        "description": "Create a file upload interface with a progress bar for uploading files."
+    },
+    {
+        "title": "Event Calendar",
+        "description": "Design a calendar for displaying events, schedules, and important dates."
+    },
+    {
+        "title": "Food Delivery App",
+        "description": "Design an app for ordering food with menus, categories, and delivery options."
+    },
+    {
+        "title": "Testimonials",
+        "description": "Design a section for customer reviews and testimonials with user photos."
+    },
+    {
+        "title": "Contact List",
+        "description": "Craft a list of contacts with names, profile pictures, and contact details."
+    },
+    {
+        "title": "Weather Widget",
+        "description": "Design a small weather widget that displays current weather conditions on a website or app."
+    },
+    {
+        "title": "Onboarding Tutorial",
+        "description": "Create onboarding screens that guide users through an app's features and functionalities."
+    },
+    {
+        "title": "Notification Badge",
+        "description": "Design badges that indicate the presence of new notifications or messages within an app."
+    },
+    {
+        "title": "Video Call Interface",
+        "description": "Design an interface for video calls, including video feed and call controls."
+    },
+    {
+        "title": "Splash Screen",
+        "description": "Design a loading or splash screen with a captivating visual for an app."
+    },
+    {
+        "title": "Profile Settings",
+        "description": "Create a page where users can edit and customize their profile settings."
+    },
+    {
+        "title": "Calculator",
+        "description": "Design a calculator interface with basic arithmetic functions."
+    },
+    {
+        "title": "Social Media Share",
+        "description": "Design a share feature that allows users to post content to various social media platforms."
+    },
+    {
+        "title": "Payment Confirmation",
+        "description": "Create a confirmation screen with transaction details after a successful payment."
+    },
+    {
+        "title": "Leaderboard",
+        "description": "Design a leaderboard that ranks users based on their performance or scores in a game or app."
+    },
+    {
+        "title": "Chatbot Interface",
+        "description": "Create an interface for interacting with a chatbot, including chat bubbles and responses."
+    },
+    {
+        "title": "Email Subscription",
+        "description": "Design a subscription form where users can sign up to receive email updates."
+    },
+    {
+        "title": "Event Ticket",
+        "description": "Design a digital ticket for events, concerts, or shows with event details and QR code."
+    },
+    {
+        "title": "Virtual Reality",
+        "description": "Create an interface for a virtual reality experience, including VR headset and controls."
+    },
+    {
+        "title": "Music Playlist",
+        "description": "Design a playlist interface with song titles, album artwork, and play controls."
+    },
+    {
+        "title": "Product Review",
+        "description": "Create a layout for writing and reading product reviews with ratings and comments."
+    },
+    {
+        "title": "Movie Booking",
+        "description": "Design an interface for booking movie tickets with movie details and seat selection."
+    },
+    {
+        "title": "Contactless Payment",
+        "description": "Design an interface for making contactless payments using mobile devices or cards."
+    },
+    {
+        "title": "Settings Toggle",
+        "description": "Design toggle switches for various settings options, allowing users to turn features on or off."
+    },
+    {
+        "title": "App Walkthrough",
+        "description": "Create a series of screens that guide new users through the features and functionality of an app."
+    },
+    {
+        "title": "Booking Confirmation",
+        "description": "Design a confirmation screen that appears after a successful booking or reservation."
+    },
+    {
+        "title": "Music Equalizer",
+        "description": "Design an equalizer interface for adjusting audio settings and frequencies."
+    },
+    {
+        "title": "Shopping Cart",
+        "description": "Create a shopping cart interface that displays selected items and allows users to manage their cart."
+    },
+    {
+        "title": "Recipe App",
+        "description": "Design an app for finding and displaying cooking recipes with ingredients and instructions."
+    },
+    {
+        "title": "User Dashboard",
+        "description": "Create a user dashboard with widgets and statistics related to their account or activities."
+    },
+    {
+        "title": "QR Code Scanner",
+        "description": "Design an interface for scanning QR codes using a smartphone or app."
+    },
+    {
+        "title": "Event Registration",
+        "description": "Design a registration form for users to sign up for events or conferences."
+    },
+    {
+        "title": "Social Profile",
+        "description": "Design a user's social media profile page, showcasing their posts and connections."
+    },
+    {
+        "title": "Countdown Timer (2)",
+        "description": "Design a timer interface for countdowns, but with a different visual style from the previous countdown challenge."
+    },
+    {
+        "title": "Food Menu",
+        "description": "Create a menu interface for a restaurant or cafe, displaying dishes and prices."
+    },
+    {
+        "title": "Flight Boarding Pass",
+        "description": "Design a digital boarding pass for flights with passenger and flight details."
+    },
+    {
+        "title": "Contact Card",
+        "description": "Design a digital contact card with a user's contact information and photo."
+    },
+    {
+        "title": "Virtual Assistant",
+        "description": "Design an interface for a virtual assistant like Siri or Alexa, displaying voice interactions."
+    },
+    {
+        "title": "Weather Dashboard",
+        "description": "Create a comprehensive weather dashboard with forecasts, maps, and current conditions."
+    },
+    {
+        "title": "News Headlines",
+        "description": "Design a section for displaying top news headlines with images and summaries."
+    },
+    {
+        "title": "Password Reset",
+        "description": "Design a password reset form and confirmation screen for users who forgot their passwords."
+    },
+    {
+        "title": "Location Pin",
+        "description": "Design a location pin or marker for maps and geolocation interfaces."
+    },
+    {
+        "title": "Analytics Chart",
+        "description": "Create a visual chart or graph for displaying analytics data or statistics."
+    },
+    {
+        "title": "Profile Bio",
+        "description": "Design a section for users to write and display their profile biography or description."
+    },
+    {
+        "title": "Blog Post",
+        "description": "Design a layout for reading blog posts with text, images, and comments."
+    },
+    {
+        "title": "Movie Review",
+        "description": "Create a layout for writing and reading movie reviews with ratings and comments."
+    },
+    {
+        "title": "Notifications Settings",
+        "description": "Design a settings page for managing app notifications and alerts."
+    },
+    {
+        "title": "Photo Gallery",
+        "description": "Create a gallery interface for displaying photos with navigation and thumbnails."
+    },
+    {
+        "title": "Timer Stopwatch",
+        "description": "Design a timer and stopwatch interface with start, stop, and reset controls."
+    },
+    {
+        "title": "Video Streaming",
+        "description": "Craft an interface for streaming videos, including video playback and quality options."
+    },
+    {
+        "title": "Hotel Booking",
+        "description": "Design an interface for booking hotel accommodations with room options and details."
+    },
+    {
+        "title": "Email Inbox",
+        "description": "Create an email inbox interface with messages, folders, and sorting options."
+    },
+    {
+        "title": "Currency Converter",
+        "description": "Design a currency converter interface with input fields and exchange rates."
+    },
+    {
+        "title": "Workout Tracker",
+        "description": "Create an app or interface for tracking workouts, exercises, and fitness progress."
+    },
+    {
+        "title": "Team Members",
+        "description": "Design a section to display team members or staff with names, photos, and roles."
+    },
+    {
+        "title": "Contact Us Form",
+        "description": "Design a contact form for users to send inquiries or messages to a business or organization."
+    },
+    {
+        "title": "Color Picker",
+        "description": "Create a color picker tool for selecting and customizing colors."
+    },
+    {
+        "title": "App Testimonials",
+        "description": "Design a section to showcase testimonials and feedback from satisfied users."
+    },
+    {
+        "title": "Recipe Ingredients",
+        "description": "Design a section that lists the ingredients and quantities needed for a recipe."
+    },
+    {
+        "title": "Profile Stats",
+        "description": "Display statistical information related to a user's profile or achievements."
+    },
+    {
+        "title": "Car Dashboard",
+        "description": "Design a dashboard interface for a car with speedometer, fuel gauge, and controls."
+    },
+    {
+        "title": "Voice Assistant",
+        "description": "Design an interface for a voice-activated virtual assistant, showing voice commands and responses."
+    },
+    {
+        "title": "Fitness App",
+        "description": "Create a fitness app interface for tracking workouts, calories, and progress."
+    },
+    {
+        "title": "Password Strength",
+        "description": "Design an interface that evaluates and displays the strength of a user's password."
+    },
+    {
+        "title": "Travel Itinerary",
+        "description": "Design an itinerary for travelers, showing trip details and schedules."
+    },
+    {
+        "title": "File Manager",
+        "description": "Create a file management interface for organizing and browsing files and folders."
+    },
+    {
+        "title": "Product Catalog",
+        "description": "Design a catalog of products with images, descriptions, and pricing information."
+    },
+    {
+        "title": "Social Share Buttons",
+        "description": "Design share buttons for various social media platforms to enable easy content sharing."
+    },
+    {
+        "title": "Date Picker",
+        "description": "Design a date picker component for selecting dates on a calendar or form."
+    },
+    {
+        "title": "Free Choice",
+        "description": "Choose any UI design concept or element to work on, demonstrating creativity and skill."
+    }
 ]
