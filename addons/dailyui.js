@@ -9,8 +9,8 @@ let client;
 const addonsLoaded = async (clientItem, addonsParamsItem) => {
     
     client = clientItem;
-    const { channel, role, options, name } = addonsParamsItem;
-    const { hours, minutes } = options;
+    const { channel, role, params, name } = addonsParamsItem;
+    const { hours, minutes } = params;
 
     setInterval(async () => {
         const actualDate = new Date();
@@ -65,9 +65,9 @@ const addonsLoaded = async (clientItem, addonsParamsItem) => {
                     }
                     catch(error) { logsEmiter(`Addons [${name}] : ⚠️  | Creating thread and update topic | ${error}`); }
                 }
-                catch(error) { logsEmiter(`Addons [${name}] : ⚠️  | Request challenge | ${error}`); }
+                catch(error) { logsEmiter(`Addons [${name}] : ⚠️  | Send embed | ${error}`); }
             }
-            catch(error) { logsEmiter(`Addons [${name}] : ⚠️  | ${error}`); }
+            catch(error) { logsEmiter(`Addons [${name}] : ⚠️  | Request challenge | ${error}`); }
         }
     }, 60000);
 }
