@@ -3,7 +3,6 @@ const router = express.Router();
 const DailyUi = require("../model/Dailyui");
 const isPastille = require("../middlewares/isPastille");
 const { logsEmiter } = require('../function/logs');
-const { ModalSubmitFields } = require("discord.js");
 
 router.put("/dailyui", isPastille, async (req, res) => {
     try {
