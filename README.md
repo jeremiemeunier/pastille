@@ -113,7 +113,8 @@ To create your twitch app : [Twitch Developers](https://dev.twitch.tv/console/ap
         {
             "name": "", "active": BOOLEAN,
             "channel": CHANNEL_ID,
-            "role": ROLE_ID
+            "role": ROLE_ID,
+            "options": {}
         }
     ]
 }
