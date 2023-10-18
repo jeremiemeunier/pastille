@@ -1,6 +1,7 @@
 const { Events, EmbedBuilder } = require('discord.js');
 const { logsEmiter } = require('../function/logs');
-const { channels, options, moderation } = require ('../config/settings.json');
+const { options, moderation } = require ('../config/settings.json');
+const { imune } = moderation;
 const { automodRegister } = require('../function/automod/automodRegister');
 
 let client;
@@ -25,12 +26,12 @@ const automod = (clientItem) => {
             if(mentions > moderation.limit.mention && mentions > 0) {
                 try {
 					const embedProof = new EmbedBuilder()
-											.setColor(options.color)
-											.setDescription(message.content);
+                        .setColor(options.color)
+                        .setDescription(message.content);
 					const embedSanction = new EmbedBuilder()
-                                            .setColor(options.color)
-                                            .setTitle(`${user.user.username} [${user.user.globalName}] a reçu un avertissement`)
-                                            .setDescription('**Raison** : Trop de mentions');
+                        .setColor(options.color)
+                        .setTitle(`${user.user.username} [${user.user.globalName}] a reçu un avertissement`)
+                        .setDescription('**Raison** : Trop de mentions');
 					message.delete();
 					await alert.send({
                         embeds: [embedSanction, embedProof] });
@@ -48,12 +49,12 @@ const automod = (clientItem) => {
             else if(message.mentions.everyone === true) {
 				try {
 					const embedProof = new EmbedBuilder()
-											.setColor(options.color)
-											.setDescription(message.content);
+                        .setColor(options.color)
+                        .setDescription(message.content);
 					const embedSanction = new EmbedBuilder()
-												.setColor(options.color)
-												.setTitle(`${user.user.username} [${user.user.globalName}] a reçu un avertissement`)
-												.setDescription('**Raison** : Mentionne @everyone');
+                        .setColor(options.color)
+                        .setTitle(`${user.user.username} [${user.user.globalName}] a reçu un avertissement`)
+                        .setDescription('**Raison** : Mentionne @everyone');
 					message.delete();
 					await alert.send({
                         embeds: [embedSanction, embedProof] });
@@ -74,9 +75,16 @@ const automod = (clientItem) => {
 }
 
 const isImune = (user) => {
-    moderation.imune.map(imune => {
-        if(user.roles.cache.has(imune)) { return true; }
+    const userRoles = user.roles.cache;
+
+    let imunised = [];
+
+    userRoles.map(role => {
+        if(imune.indexOf(role.id) !== -1) { imunised.push(role.id); }
     });
+
+    if(imunised.length > 0) { return true; }
+    return false;
 }
 
 module.exports = { automod }
