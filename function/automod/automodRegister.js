@@ -9,9 +9,9 @@ const automodRegister = async (user, warn, guildItem) => {
     const newInfraction = { "warn": warn, "time": today };
 
     try {
-        const requestExistModeration = await axios({
+        const requestExistInfraction = await axios({
             method: "get",
-            url: "/moderation/user",
+            url: "/infraction/user",
             baseURL: `http://localhost:${PORT}`,
             params: {
                 user_id: userId
@@ -21,9 +21,8 @@ const automodRegister = async (user, warn, guildItem) => {
             }
         });
 
-        if(requestExistModeration.data.userExist) {
-            const warnsArray = requestExistModeration.data.userData.warns;
-            const sanctionsArray = requestExistModeration.data.userData.sanctions;
+        if(requestExistInfraction.data.userExist) {
+            const warnsArray = requestExistInfraction.data.userData.warns;
 
             warnsArray.push(newInfraction);
             const warnsSize = warnsArray.length;
@@ -35,17 +34,16 @@ const automodRegister = async (user, warn, guildItem) => {
             }
 
             try {
-                const updateModeration = await axios({
+                const updateInfraction = await axios({
                     method: "put",
-                    url: "/moderation",
+                    url: "/infraction",
                     baseURL: `http://localhost:${PORT}`,
                     headers: {
                         "pastille_botid": BOT_ID
                     },
                     data: {
                         user_id: userId,
-                        warns: warnsArray,
-                        sanctions: sanctionsArray
+                        warns: warnsArray
                     }
                 });
 
@@ -57,15 +55,15 @@ const automodRegister = async (user, warn, guildItem) => {
             }
         }
         else {
-            logsEmiter(`User not exist : ${requestExistModeration.data.userExist}`);
+            logsEmiter(`User not exist : ${requestExistInfraction.data.userExist}`);
         }
     }
     catch(error) {
         // On créer un nouveau register
         try {
-            const addNewModeration = await axios({
+            const addNewInfraction = await axios({
                 method: "post",
-                url: "/moderation",
+                url: "/infraction",
                 baseURL: `http://localhost:${PORT}`,
                 headers: {
                     "pastille_botid": BOT_ID
@@ -74,8 +72,7 @@ const automodRegister = async (user, warn, guildItem) => {
                     user_id: userId,
                     warns: [
                         newInfraction
-                    ],
-                    sanctions: []
+                    ]
                 }
             });
         }
