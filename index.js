@@ -96,10 +96,10 @@ const pastilleBooter = async () => {
 
     try {
         // API
-        const moderationRoute = require('./routes/moderation');
+        const infractionRoute = require('./routes/infraction');
         const dailyuiRoute = require('./routes/dailyui');
 
-        app.use(moderationRoute);
+        app.use(infractionRoute);
         app.use(dailyuiRoute);
 
         app.get("/", (req, res) => {
