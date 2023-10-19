@@ -2,7 +2,10 @@ const mongoose = require("mongoose");
 
 const infraction = mongoose.model("Infraction", {
     user_id: String,
-    warns: Array
+    warn: {
+        reason: String,
+        date: String
+    }
 });
 
 module.exports = infraction;
