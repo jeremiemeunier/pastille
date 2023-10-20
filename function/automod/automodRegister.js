@@ -37,7 +37,7 @@ const automodRegister = async (user, reason, guildItem) => {
                 }
             });
 
-            logsEmiter(totalWarnUser.data.message);
+            automodSanction(user, totalWarnUser, guildItem);
         }
         catch(error) { logsEmiter(error); }
     }
