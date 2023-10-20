@@ -3,15 +3,17 @@ const router = express.Router();
 const Sanction = require("../model/Sanction");
 const isPastille = require("../middlewares/isPastille");
 
-
-
 router.post("/sanction", isPastille, async (req, res) => {
-    const { user_id, warns } = req.body;
+    const { user_id, level, date, end } = req.body;
 
     try {
         const newSanction = new Sanction({
             user_id: user_id,
-            warns: warns
+            sanction: {
+                level: level,
+                date: date,
+                ending: end
+            }
         });
         await newSanction.save();
 
@@ -21,3 +23,9 @@ router.post("/sanction", isPastille, async (req, res) => {
         console.log(error);
     }
 });
+
+router.get("/sanction", isPastille, async (req, res) => {
+    
+})
+
+module.exports = router;
