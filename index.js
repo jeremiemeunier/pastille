@@ -120,5 +120,10 @@ const pastilleBooter = async () => {
     }
 }
 
-client.on('ready', () => { pastilleBooter(); });
-client.login(BOT_TOKEN);
+try {
+    client.on('ready', () => { pastilleBooter(); });
+    client.login(BOT_TOKEN);
+}
+catch(error) {
+    console.log(error);
+}
