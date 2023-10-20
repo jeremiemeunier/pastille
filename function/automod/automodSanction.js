@@ -1,64 +1,88 @@
 const { moderation } = require('../../config/settings.json');
-const fs = require('node:fs');
 const { logsEmiter } = require('../logs');
+const { PORT, BOT_ID } = require('../../config/secret.json');
+const axios = require("axios");
 
 const automodSanction = (user, size, guild) => {
-    // const execFolder = __dirname;
-    // const binFolder = execFolder.replace('function/automod', 'bin/automod/');
-    // const sanctions = moderation.sanctions;
-    // const today = Date.parse(new Date());
+    const { sanctions } = moderation;
+    const today = Date.parse(new Date());
 
-    // try {
-    //     let warnList = JSON.parse(fs.readFileSync(`${binFolder}${user.user.id}.txt`, 'utf8', (error, data) => {
-    //         if(error) { logsEmiter(`[automod:sanction] Reading file : ${error}`); }
-    //     }));
+    if(
+        size === 3 ||
+        size === 6 ||
+        size === 9) {
+        // Sanction temporaire de mute
+        const { low } = sanctions;
+        const duration = durationInterpreter(low)
+        const startTime = new Date();
+        const endTime = new Date(Date.parse(new Date()) + duration);
 
-    //     const warnSize = warnList.warns.length;
-    //     const sanctionSize = warnList.sanctions.length;
+        sanctionApplier(user, duration, guild);
+        sanctionRegister(user.user.id, 'low', startTime, endTime);
+    }
+    else if(
+        size === 12 ||
+        size === 15 ||
+        size === 18
+    ) {
+        // Sanction temporaire de mute
+        const { medium } = sanctions;
+        const duration = durationInterpreter(medium)
+        const startTime = new Date();
+        const endTime = new Date(Date.parse(new Date()) + duration);
 
-    //     if(warnSize === 3) {
-    //         warnList.sanctions.push({
-    //             "level": "low",
-    //             "duration": durationInterpreter(sanctions.low),
-    //             time: today });
-    //         sanctionApplier(user, durationInterpreter(sanctions.low), guild);
-    //     }
-    //     else if (warnSize === 6) {
-    //         warnList.sanctions.push({
-    //             "level": "medium",
-    //             "duration": durationInterpreter(sanctions.medium),
-    //             time: today });
-    //         sanctionApplier(user, durationInterpreter(sanctions.medium), guild);
-    //     }
-    //     else if (warnSize === 9) {
-    //         warnList.sanctions.push({
-    //             "level": "hight",
-    //             "duration": durationInterpreter(sanctions.hight),
-    //             time: today });
-    //         sanctionApplier(user, durationInterpreter(sanctions.hight), guild);
-    //     }
+        sanctionApplier(user, duration, guild);
+        sanctionRegister(user.user.id, 'medium', startTime, endTime);
+    }
+    else if(
+        size === 21 ||
+        size === 24 ||
+        size === 27
+    ) {
+        // Sanction temporaire de mute
+        const { hight } = sanctions;
+        const duration = durationInterpreter(hight)
+        const startTime = new Date();
+        const endTime = new Date(Date.parse(new Date()) + duration);
 
-    //     fs.writeFileSync(`${binFolder}${user.user.id}.txt`, JSON.stringify(warnList), (error) => {
-    //         if(error) { logsEmiter(`[automod:sanction] Writting file : ${error}`); }
-    //     });
-    // }
-    // catch(error) {
-    //     logsEmiter(`[automod:sanction] No file : ${error}`);
-    // }
+        sanctionApplier(user, duration, guild);
+        sanctionRegister(user.user.id, 'hight', startTime, endTime);
+    }
+    else if(size > 27) {
+        
+    }
 }
 
 const durationInterpreter = (sanctionData) => {
-    const duration = sanctionData.duration;
-    const unit = sanctionData.unit;
+    const { duration, unit } = sanctionData;
 
     if (unit === 'm') { return duration * (1000 * 60); }
     else if (unit === 'h') { return duration * (1000 * 3600); }
     else if (unit === 'd') { return duration * (1000 * 3600 * 24); }
 }
 
+const sanctionRegister = async (userId, level, start, end) => {
+    try {
+        const register = await axios({
+            method: "post",
+            url: "/sanction",
+            baseURL: `http://localhost:${PORT}`,
+            headers: {
+                "pastille_botid": BOT_ID
+            },
+            data: {
+                user_id: userId,
+                level: level,
+                date: start,
+                end: end
+            }
+        });
+    }
+    catch(error) { logsEmiter(error); }
+}
+
 const sanctionApplier = (user, duration, guild) => {
     const sanctionRole = guild.roles.cache.find(role => role.id === moderation.roles.muted);
-
     user.roles.add(sanctionRole);
 
     setTimeout(() => {
