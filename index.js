@@ -97,9 +97,11 @@ const pastilleBooter = async () => {
     try {
         // API
         const infractionRoute = require('./routes/infraction');
+        const sanctionRoute = require('./routes/sanction');
         const dailyuiRoute = require('./routes/dailyui');
 
         app.use(infractionRoute);
+        app.use(sanctionRoute);
         app.use(dailyuiRoute);
 
         app.get("/", (req, res) => {
