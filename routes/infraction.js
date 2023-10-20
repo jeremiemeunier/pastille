@@ -26,7 +26,11 @@ router.post("/infraction", isPastille, async (req, res) => {
 router.get("/infraction/all", isPastille, async (req, res) => {
     const { user_id } = req.query;
 
-    res.status(200).json({ message: user_id });
-})
+    try {
+        const allInfractions = await Infraction.countDocuments({ user_id: user_id });
+        res.status(200).json({ message: 'Infractions find', count: allInfractions });
+    }
+    catch(error) { res.status(500).json({ message: error.message }); }
+});
 
 module.exports = router;
