@@ -44,9 +44,9 @@ const reactionAddEventInit = (clientItem) => {
                             });
                             await thread.members.add(user);
                             const embed = new EmbedBuilder()
-                                                .setColor(`${options.color}`)
-                                                .setTitle(`Requested help from @${user.username}`)
-                                                .setDescription(`Pour mettre fin à ta demande d'aide clique sur 🔒`);
+                                .setColor(`${options.color}`)
+                                .setTitle(`Requested help from @${user.username}`)
+                                .setDescription(`Pour mettre fin à ta demande d'aide clique sur 🔒`);
                             const message = await thread.send({ embeds: [embed] });
                             message.react('🔒');
                         }
@@ -88,15 +88,15 @@ const reactionAddEventInit = (clientItem) => {
                 if(reaction.emoji.name === '🔒') {
                     const channel = client.channels.cache.find(channel => channel.id === channels.help);
                     const thread = channel.threads.cache.find(thread => thread.id === reaction.message.channelId);
-    
+
                     try {
                         thread.setLocked(true);
                         const embed = new EmbedBuilder()
-                                            .setColor(`${options.color}`)
-                                            .addFields(
-                                                { name: "Suppression", value: 'Clique sur 🗑️ pour supprimer ce fil.', inline: true },
-                                                { name: "Déverouillage", value: 'Clique sur 🔓 pour débloquer ce fil.', inline: true })
-                                            .setDescription(`Ce fil est maintenant verrouillé.`);
+                            .setColor(`${options.color}`)
+                            .addFields(
+                                { name: "Suppression", value: 'Clique sur 🗑️ pour supprimer ce fil.', inline: true },
+                                { name: "Déverouillage", value: 'Clique sur 🔓 pour débloquer ce fil.', inline: true })
+                            .setDescription(`Ce fil est maintenant verrouillé.`);
                         const message = await thread.send({ embeds: [embed]});
                         message.react('🗑️');
                         message.react('🔓');
@@ -123,8 +123,8 @@ const reactionAddEventInit = (clientItem) => {
                     try {
                         thread.setLocked(false);
                         const embed = new EmbedBuilder()
-                                            .setColor(`${options.color}`)
-                                            .setDescription(`Ce fil est de nouveau disponible. Pour mettre fin à ta demande clique sur 🔒`);
+                            .setColor(`${options.color}`)
+                            .setDescription(`Ce fil est de nouveau disponible. Pour mettre fin à ta demande clique sur 🔒`);
                         const message = await thread.send({ embeds: [embed] });
                         message.react('🔒');
                     }
