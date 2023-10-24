@@ -40,6 +40,7 @@ const { interactionCreateEventInit } = require('./events/interactionCreateEvent'
 const { messageCreateEventInit } = require('./events/messageCreateEvent');
 const { addonsRegisterInit } = require('./function/addonsRegister');
 const { automod } = require('./events/messageModerationEvent');
+const { automodVerifier } = require('./function/automod/automodVerifer');
 
 // ##### FIX ##### \\
 
@@ -85,8 +86,9 @@ const pastilleBooter = async () => {
             reactionRemoveEventInit(client);
             interactionCreateEventInit(client);
             messageCreateEventInit(client);
-            automod(client);
 
+            automod(client);
+            automodVerifier(client);
 
             addonsRegisterInit(client);
             channelDebug.send({ embeds: [bootEmbed] });
