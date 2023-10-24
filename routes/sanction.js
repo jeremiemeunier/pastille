@@ -19,13 +19,15 @@ router.post("/sanction", isPastille, async (req, res) => {
 
         res.status(200).json({ message: "New sanction items created" });
     }
-    catch(error) {
-        console.log(error);
-    }
+    catch(error) { console.log(error); }
 });
 
 router.get("/sanction", isPastille, async (req, res) => {
-    
+    try {
+        const allSanction = await Sanction.find();
+        res.status(200).json({ message: "Sanction find", items: allSanction });
+    }
+    catch(error) { console.log(error); }
 })
 
 module.exports = router;
