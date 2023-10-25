@@ -21,17 +21,25 @@ const automodVerifier = async (clientItem) => {
             const { items } = allSanctions.data;
             
             items.map((item, index) => {
-                const { sanction, user_id } = item;
+                const { sanction, user_id, guild_id } = item;
                 const ending = Date.parse(new Date(sanction.ending));
 
-                if(ending <= now) {  }
-                else {
-                    const newTimer = ending - now;
+                const guild = client.guilds.cache.find(guild => guild.id === guild_id);
+                const user = guild.members.cache.find(user => user.id === user_id);
 
-                    setTimeout(() => {
-                        console.log('finito');
-                    }, newTimer);
+                if(user) {
+                    if(ending <= now) {
+
+                    }
+                    else {
+                        const newTimer = ending - now;
+    
+                        setTimeout(() => {
+                            console.log('finito');
+                        }, newTimer);
+                    }
                 }
+                else { logsEmiter(`User not find [${user_id}]`); }
             })
         }
         else { logsEmiter('No sanction in database'); }
