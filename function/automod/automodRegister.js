@@ -19,7 +19,8 @@ const automodRegister = async (user, reason, guildItem) => {
             data: {
                 user_id: userId,
                 reason: reason,
-                date: today
+                date: today,
+                guild_id: guildItem.id
             }
         });
         
