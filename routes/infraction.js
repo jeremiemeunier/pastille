@@ -4,11 +4,12 @@ const Infraction = require("../model/Infraction");
 const isPastille = require("../middlewares/isPastille");
 
 router.post("/infraction", isPastille, async (req, res) => {
-    const { user_id, reason, date } = req.body;
+    const { user_id, reason, date, guild_id } = req.body;
 
     try {
         const newInfraction = new Infraction({
             user_id: user_id,
+            guild_id: guild_id,
             warn: {
                 reason: reason,
                 date: date
