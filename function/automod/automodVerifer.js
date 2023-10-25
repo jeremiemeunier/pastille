@@ -6,6 +6,9 @@ const axios = require("axios");
 const automodVerifier = async (clientItem) => {
     const client = clientItem;
     const now = Date.parse(new Date());
+    const { muted } = moderation.roles;
+
+    logsEmiter('Start sanctions verifications');
     
     try {
         const allSanctions = await axios({
@@ -20,16 +23,17 @@ const automodVerifier = async (clientItem) => {
         if(allSanctions) {
             const { items } = allSanctions.data;
             
-            items.map((item, index) => {
+            items.map(async (item, index) => {
                 const { sanction, user_id, guild_id } = item;
                 const ending = Date.parse(new Date(sanction.ending));
 
                 const guild = client.guilds.cache.find(guild => guild.id === guild_id);
-                const user = guild.members.cache.find(user => user.id === user_id);
+                const user = await client.users.fetch(user_id);
+                const sanctionRole = guild.roles.cache.find(role => role.id === muted);
 
                 if(user) {
                     if(ending <= now) {
-
+                        
                     }
                     else {
                         const newTimer = ending - now;
@@ -45,6 +49,8 @@ const automodVerifier = async (clientItem) => {
         else { logsEmiter('No sanction in database'); }
     }
     catch(error) { logsEmiter(error); }
+
+    logsEmiter('End sanctions verifications');
 }
 
 module.exports = { automodVerifier }
