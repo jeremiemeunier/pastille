@@ -23,7 +23,8 @@ mongoose.connect(MONGODB_URL);
 
 // ##### BOT SETUP ##### \\
 
-const { version, options, channels } = require ('./config/settings.json');
+const { options, channels } = require ('./config/settings.json');
+const { version } = require('./package.json');
 const { Client, EmbedBuilder, GatewayIntentBits, Partials } = require('discord.js');
 const client = new Client({
     intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessageReactions, GatewayIntentBits.GuildVoiceStates],
