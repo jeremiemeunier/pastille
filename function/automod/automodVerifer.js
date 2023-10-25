@@ -29,7 +29,7 @@ const automodVerifier = async (clientItem) => {
 
                 const guild = client.guilds.cache.find(guild => guild.id === guild_id);
                 const user = await client.users.fetch(user_id);
-                const sanctionRole = guild.roles.cache.find(role => role.id === muted);
+                // const sanctionRole = guild.roles.cache.find(role => role.id === muted);
 
                 if(user) {
                     if(ending <= now) {
