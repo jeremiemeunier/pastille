@@ -6,11 +6,12 @@ const axios = require("axios");
 const automodSanction = (user, size, guild) => {
     const { sanctions } = moderation;
     const today = Date.parse(new Date());
+    const { count } = size.data;
 
     if(
-        size === 3 ||
-        size === 6 ||
-        size === 9) {
+        count === 3 ||
+        count === 6 ||
+        count === 9) {
         // Sanction temporaire de mute
         const { low } = sanctions;
         const duration = durationInterpreter(low)
@@ -18,12 +19,12 @@ const automodSanction = (user, size, guild) => {
         const endTime = new Date(Date.parse(new Date()) + duration);
 
         sanctionApplier(user, duration, guild);
-        sanctionRegister(user.user.id, 'low', startTime, endTime);
+        sanctionRegister(user.user.id, 'low', startTime, endTime, guild);
     }
     else if(
-        size === 12 ||
-        size === 15 ||
-        size === 18
+        count === 12 ||
+        count === 15 ||
+        count === 18
     ) {
         // Sanction temporaire de mute
         const { medium } = sanctions;
@@ -32,12 +33,12 @@ const automodSanction = (user, size, guild) => {
         const endTime = new Date(Date.parse(new Date()) + duration);
 
         sanctionApplier(user, duration, guild);
-        sanctionRegister(user.user.id, 'medium', startTime, endTime);
+        sanctionRegister(user.user.id, 'medium', startTime, endTime, guild);
     }
     else if(
-        size === 21 ||
-        size === 24 ||
-        size === 27
+        count === 21 ||
+        count === 24 ||
+        count === 27
     ) {
         // Sanction temporaire de mute
         const { hight } = sanctions;
@@ -46,9 +47,9 @@ const automodSanction = (user, size, guild) => {
         const endTime = new Date(Date.parse(new Date()) + duration);
 
         sanctionApplier(user, duration, guild);
-        sanctionRegister(user.user.id, 'hight', startTime, endTime);
+        sanctionRegister(user.user.id, 'hight', startTime, endTime, guild);
     }
-    else if(size > 27) {
+    else if(count > 27) {
         
     }
 }
@@ -61,7 +62,7 @@ const durationInterpreter = (sanctionData) => {
     else if (unit === 'd') { return duration * (1000 * 3600 * 24); }
 }
 
-const sanctionRegister = async (userId, level, start, end) => {
+const sanctionRegister = async (userId, level, start, end, guild) => {
     try {
         const register = await axios({
             method: "post",
@@ -72,11 +73,13 @@ const sanctionRegister = async (userId, level, start, end) => {
             },
             data: {
                 user_id: userId,
+                guild_id: guild.id,
                 level: level,
                 date: start,
-                end: end
+                end: end,
             }
         });
+        logsEmiter(`New sanction registred for ${userId}`);
     }
     catch(error) { logsEmiter(error); }
 }
