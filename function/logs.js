@@ -1,4 +1,4 @@
-const { version } = require('../config/settings.json');
+const { version } = require('../package.json');
 const tag = `pastille[${version}] `;
 
 let channelConsole, channelDebug;
