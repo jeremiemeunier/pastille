@@ -1,4 +1,5 @@
-const { moderation } = require('../../config/settings.json');
+const { EmbedBuilder } = require('discord.js');
+const { moderation, options } = require('../../config/settings.json');
 const { logsEmiter } = require('../logs');
 const { PORT, BOT_ID } = require('../../config/secret.json');
 const axios = require("axios");
@@ -62,6 +63,15 @@ const durationInterpreter = (sanctionData) => {
     else if (unit === 'd') { return duration * (1000 * 3600 * 24); }
 }
 
+const durationFormater = (duration) => {
+    const minutes = duration / (1000 * 60);
+
+    if(minutes >= 60) {
+        
+    }
+    else { return `${minutes} minutes`; }
+}
+
 const sanctionRegister = async (userId, level, start, end, guild) => {
     try {
         const register = await axios({
@@ -84,9 +94,19 @@ const sanctionRegister = async (userId, level, start, end, guild) => {
     catch(error) { logsEmiter(error); }
 }
 
-const sanctionApplier = (user, duration, guild) => {
+const sanctionApplier = async (user, duration, guild) => {
     const sanctionRole = guild.roles.cache.find(role => role.id === moderation.roles.muted);
     user.roles.add(sanctionRole);
+
+    const textualDuration = durationFormater(duration);
+
+    const embedSanction = new EmbedBuilder()
+        .setColor(options.color)
+        .setTitle("Nouvelle sanction")
+        .setDescription(`Tu es timeout pour ${textualDuration}, tu ne peux plus envoyer de message ou parler dans les channel vocaux jusqu'à la fin de ta sanction.`);
+    await user.send({
+        content: `<@${user.user.id.toString()}> you receive a sanction`,
+        embeds: [embedSanction] });
 
     setTimeout(() => {
         user.roles.remove(sanctionRole);
