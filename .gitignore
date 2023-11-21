@@ -6,4 +6,3 @@ node_modules
 package-lock.json
 bin/automod/*.txt
 pastille-timer.js
-data/
