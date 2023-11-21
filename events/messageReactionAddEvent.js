@@ -3,7 +3,7 @@ const { Events, ChannelType, EmbedBuilder } = require('discord.js');
 const { logsEmiter } = require('../function/logs');
 const { channels, options, moderation } = require ('../config/settings.json');
 
-const roleSettings = JSON.parse(fs.readFileSync('./data/role.json'));
+const roleSettings = JSON.parse(fs.readFileSync('./config/data/role.json'));
 
 let client;
 

@@ -1,6 +1,6 @@
 const fs = require('node:fs');
 const { Events, EmbedBuilder } = require('discord.js');
-const alphabetLetters = JSON.parse(fs.readFileSync('./data/alphabet.json'));
+const alphabetLetters = JSON.parse(fs.readFileSync('./config/data/alphabet.json'));
 const { logsEmiter } = require('../../../function/logs');
 const { options } = require ('../../../config/settings.json');
 

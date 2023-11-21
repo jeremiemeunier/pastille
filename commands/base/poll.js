@@ -1,5 +1,5 @@
 const fs = require('node:fs');
-const alphabetLetters = JSON.parse(fs.readFileSync('data/alphabet.json'));
+const alphabetLetters = JSON.parse(fs.readFileSync('config/data/alphabet.json'));
 
 const pollOptions = () => {
     let options = [

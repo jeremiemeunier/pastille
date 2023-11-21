@@ -2,7 +2,7 @@ const fs = require('node:fs');
 const { Events } = require('discord.js');
 const { logsEmiter } = require('../function/logs');
 
-const roleSettings = JSON.parse(fs.readFileSync('./data/role.json'));
+const roleSettings = JSON.parse(fs.readFileSync('./config/data/role.json'));
 
 let client;
 
