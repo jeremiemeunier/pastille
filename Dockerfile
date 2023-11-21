@@ -1,4 +1,5 @@
 FROM node:20
+ARG 0.1.1-dev
 
 WORKDIR /app
 COPY package.json ./
