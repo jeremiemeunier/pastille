@@ -102,10 +102,12 @@ const pastilleBooter = async () => {
         const infractionRoute = require('./routes/infraction');
         const sanctionRoute = require('./routes/sanction');
         const dailyuiRoute = require('./routes/dailyui');
+        const twitchpingRoute = require('./routes/twitch');
 
         app.use(infractionRoute);
         app.use(sanctionRoute);
         app.use(dailyuiRoute);
+        app.use(twitchpingRoute);
 
         app.get("/", (req, res) => {
             res.status(200).json({ message: "Bienvenue sur le Backend de Pastille" });
