@@ -25,7 +25,7 @@ mongoose.connect(MONGODB_URL);
 
 const { options, channels } = require ('./config/settings.json');
 const { version } = require('./package.json');
-const { Client, EmbedBuilder, GatewayIntentBits, Partials } = require('discord.js');
+const { Client, EmbedBuilder, GatewayIntentBits, Partials, Events } = require('discord.js');
 const client = new Client({
     intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessageReactions, GatewayIntentBits.GuildVoiceStates],
     partials: [Partials.Message, Partials.Channel, Partials.Reaction],
@@ -125,6 +125,11 @@ const pastilleBooter = async () => {
     catch(error) {
         logsEmiter(`API Server : ⚠️  | An error occured on api : ${error}`);
     }
+
+    client.on(Events.GuildCreate, (guild) => {
+        logsEmiter(`Join a new server : ${guild.id} ${guild.name}`);
+        commandRegisterInit(client, guild.id);
+    });
 }
 
 try {
