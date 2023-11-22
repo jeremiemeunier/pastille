@@ -41,14 +41,19 @@ const commandRegister = async (GUILD_ID) => {
     })();
 }
 
-const commandRegisterInit = async (clientItem) => {
+const commandRegisterInit = async (clientItem, guildId) => {
     client = clientItem;
 
-    const clientGuildQuantity = client.guilds.cache.map(guild => guild.id).length;
-    const clientGuildIds = client.guilds.cache.map(guild => guild.id);
+    if(guildId !== undefined) {
+        await commandRegister(guildId);
+    }
+    else {
+        const clientGuildQuantity = client.guilds.cache.map(guild => guild.id).length;
+        const clientGuildIds = client.guilds.cache.map(guild => guild.id);
 
-    for(let i = 0;i < clientGuildQuantity;i++) {
-        await commandRegister(clientGuildIds[i]);
+        for(let i = 0;i < clientGuildQuantity;i++) {
+            await commandRegister(clientGuildIds[i]);
+        }
     }
 }
 
