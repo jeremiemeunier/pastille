@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const twitch = mongoose.model("Twitch", {
+const twitch = mongoose.model("Twitchping", {
   discord: {
     id: String,
     name: String
