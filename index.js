@@ -27,8 +27,16 @@ const { options, channels } = require ('./config/settings.json');
 const { version } = require('./package.json');
 const { Client, EmbedBuilder, GatewayIntentBits, Partials, Events } = require('discord.js');
 const client = new Client({
-    intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessageReactions, GatewayIntentBits.GuildVoiceStates],
-    partials: [Partials.Message, Partials.Channel, Partials.Reaction],
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent,
+        GatewayIntentBits.GuildMessageReactions,
+        GatewayIntentBits.GuildVoiceStates],
+    partials: [
+        Partials.Message,
+        Partials.Channel,
+        Partials.Reaction],
 });
 
 const { dateParser } = require('./function/base');
