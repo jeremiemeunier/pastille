@@ -21,7 +21,7 @@ const logsEmiter = async (content) => {
     const now = new Date();
     const logDate = `[${now.getDay()}/${now.getMonth()}/${now.getFullYear()} ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}.${now.getMilliseconds()}]`;
 
-    try { console.log(tag + content); }
+    try { console.log(`${logDate} ${tag}${content}`); }
     catch(error) { console.log(error); }
 
     try {
