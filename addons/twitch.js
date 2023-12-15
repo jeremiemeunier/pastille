@@ -25,17 +25,17 @@ const addonsLoaded = async (clientItem, addonsParamsItem) => {
                         thumbnail = thumbnail.replace('{height}', 1080);
 
                         const liveButton = new ActionRowBuilder()
-                                .addComponents(
-                                    new ButtonBuilder()
-                                        .setLabel('Rejoindre sur twitch.tv')
-                                        .setStyle(ButtonStyle.Link)
-                                        .setURL(`https://twitch.tv/${streamer.twitch.name.toString()}`)
-                                );
+                            .addComponents(
+                                new ButtonBuilder()
+                                    .setLabel('Rejoindre sur twitch.tv')
+                                    .setStyle(ButtonStyle.Link)
+                                    .setURL(`https://twitch.tv/${streamer.twitch.name.toString()}`)
+                            );
                         const liveEmbed = new EmbedBuilder()
-                                .setColor(options.color)
-                                .setTitle(`${streamer.twitch.name.toString()} est actuellement en live !`)
-                                .setDescription(`Il stream : **${streamerState.title}** sur **${streamerState.game_name}**`)
-                                .setThumbnail(thumbnail);
+                            .setColor(options.color)
+                            .setTitle(`${streamer.twitch.name.toString()} est actuellement en live !`)
+                            .setDescription(`Il stream : **${streamerState.title}** sur **${streamerState.game_name}**`)
+                            .setThumbnail(thumbnail);
                         
                         client.guilds.cache.map(async guild => {
                             const sendChannel = guild.channels.cache.find(sendChannel => sendChannel.name === channel);
@@ -54,7 +54,7 @@ const addonsLoaded = async (clientItem, addonsParamsItem) => {
                             }
                         });
                     }
-                    catch(error) { logsEmiter(error); }
+                    catch(error) { logsEmiter(`[afterAnalyze:twitch:test] Error : ${error}`); }
                 }
             }
         });
@@ -86,7 +86,7 @@ const requestAuthenticator = async () => {
 
         return requestToken.data.access_token;
     }
-    catch(error) { logsEmiter(error.reponse); }
+    catch(error) { logsEmiter(`[request:auth:twitch] Error : ${error.reponse}`); }
 }
 
 const requestStreamerState = async (streamerId, bearerToken) => {
@@ -105,7 +105,7 @@ const requestStreamerState = async (streamerId, bearerToken) => {
 
         return requestState.data.data[0];
     }
-    catch(error) { logsEmiter(error.response); }
+    catch(error) { logsEmiter(`[request:streamer:state:twitch] Error : ${error.response}`); }
 }
 
 module.exports = { addonsLoaded }
