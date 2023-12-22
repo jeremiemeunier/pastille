@@ -1,6 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
 const { moderation, options } = require('../../config/settings.json');
-const { logsEmiter } = require('../logs');
+const { logs } = require('../logs');
 const { PORT, BOT_ID } = require('../../config/secret.json');
 const axios = require("axios");
 
@@ -89,28 +89,33 @@ const sanctionRegister = async (userId, level, start, end, guild) => {
                 end: end,
             }
         });
-        logsEmiter(`New sanction registred for ${userId}`);
     }
-    catch(error) { logsEmiter(error); }
+    catch(error) { logs("error", "automod:sanction:register", error); }
 }
 
 const sanctionApplier = async (user, duration, guild) => {
-    const sanctionRole = guild.roles.cache.find(role => role.id === moderation.roles.muted);
-    user.roles.add(sanctionRole);
+    try {
+        const sanctionRole = guild.roles.cache.find(role => role.id === moderation.roles.muted);
+        user.roles.add(sanctionRole);
 
-    const textualDuration = durationFormater(duration);
+        const textualDuration = durationFormater(duration);
 
-    const embedSanction = new EmbedBuilder()
-        .setColor(options.color)
-        .setTitle("Nouvelle sanction")
-        .setDescription(`Tu es timeout pour ${textualDuration}, tu ne peux plus envoyer de message ou parler dans les channel vocaux jusqu'à la fin de ta sanction.`);
-    await user.send({
-        content: `<@${user.user.id.toString()}> you receive a sanction`,
-        embeds: [embedSanction] });
+        const embedSanction = new EmbedBuilder()
+            .setColor(options.color)
+            .setTitle("Nouvelle sanction")
+            .setDescription(`Tu es timeout pour ${textualDuration}, tu ne peux plus envoyer de message ou parler dans les channel vocaux jusqu'à la fin de ta sanction.`);
+        await user.send({
+            content: `<@${user.user.id.toString()}> you receive a sanction`,
+            embeds: [embedSanction] });
 
-    setTimeout(() => {
-        user.roles.remove(sanctionRole);
-    }, duration);
+        try {
+            const applySanction = setTimeout(() => {
+                user.roles.remove(sanctionRole);
+            }, duration);
+        }
+        catch(error) { logs("error", "automod:sanction:applier:timer", error); }
+    }
+    catch(error) { logs("error", "automod:sanction:applier:send", error); }
 }
 
 module.exports = { automodSanction }
