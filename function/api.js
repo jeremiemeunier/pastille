@@ -23,6 +23,7 @@ const api = () => {
   const twitchpingRoute = require('../routes/twitch');
   const addonsRoute = require('../routes/addons');
   const rulesRoute = require('../routes/rules');
+  const rolesRoute = require('../routes/roles');
 
   app.use(infractionRoute);
   app.use(sanctionRoute);
@@ -30,6 +31,7 @@ const api = () => {
   app.use(twitchpingRoute);
   app.use(addonsRoute);
   app.use(rulesRoute);
+  app.use(rolesRoute);
 
   app.get("/", (req, res) => { res.status(200).json({ message: "Bienvenue sur le Backend de Pastille" }); });
   app.all("*", (req, res) => { res.status(404).json({ message: "This route do not exist" }); });
