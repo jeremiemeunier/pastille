@@ -3,26 +3,26 @@ const { Events, EmbedBuilder } = require('discord.js');
 const roleSettings = JSON.parse(fs.readFileSync('./config/data/role.json'));
 const { logs } = require('../../../function/logs');
 const { options } = require ('../../../config/settings.json');
+const { getRoles } = require('../../../function/base');
 
 let client;
 
-const commandRoleInit = (clientItem) => {
-
-    client = clientItem;
-
+const commandRoleInit = (client) => {
     client.on(Events.InteractionCreate, async interaction => {
         if (!interaction.isChatInputCommand()) return;
-            const { commandName } = interaction;
+        const { commandName } = interaction;
         
         if(commandName === 'role') {
+            const roles = await getRoles(interaction.guild);
             let fields = [];
     
-            for(let i = 0;i < roleSettings.length;i++) {
-                const field = {
-                    name: `${roleSettings[i].emoji}   ${roleSettings[i].name}`, value: roleSettings[i].description, inline: true
-                }
-                fields.push(field);
-            }
+            roles.map((item, index) => {
+                fields.push({
+                    name: `${item.emote} — ${item.name}`,
+                    value: item.description,
+                    inline: true
+                });
+            })
     
             const embed = new EmbedBuilder()
                 .setColor(`${options.color}`)
@@ -31,12 +31,13 @@ const commandRoleInit = (clientItem) => {
                 .addFields(fields);
             try {
                 const message = await interaction.reply({ embeds: [embed], fetchReply: true });
-                for(let i = 0;i < roleSettings.length;i++) {
-                    try { await message.react(roleSettings[i].emoji); }
-                    catch(error) { logs("error", "command:role:react", error); }
-                }
+
+                roles.map(async (item) => {
+                    try { await message.react(item.emote); }
+                    catch(error) { logs("error", "command:role:react", error, interaction.guild.id); }
+                });
             }
-            catch(error) { logs("error", "command:role:send", error); }
+            catch(error) { logs("error", "command:role:send", error, interaction.guild.id); }
         }
     });
 }
