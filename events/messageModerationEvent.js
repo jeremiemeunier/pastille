@@ -1,5 +1,5 @@
 const { Events, EmbedBuilder } = require('discord.js');
-const { logsEmiter } = require('../function/logs');
+const { logs } = require('../function/logs');
 const { options, moderation } = require ('../config/settings.json');
 const { imune } = moderation;
 const { automodRegister } = require('../function/automod/automodRegister');
@@ -43,7 +43,7 @@ const automod = (clientItem) => {
                         embeds: [embedSanction] });
                     automodRegister(user, 'limitMention', guild);
 				}
-				catch(error) { logsEmiter(`An error occured [automod:mention]\r\n${error}`); }
+				catch(error) { logs("error", "automod:mention", error); }
                 return;
             }
             else if(message.mentions.everyone === true) {
@@ -66,11 +66,11 @@ const automod = (clientItem) => {
                         embeds: [embedSanction] });
                     automodRegister(user, 'mentionEveryone', guild);
 				}
-				catch(error) { logsEmiter(`An error occured [automod:everyone]\r\n${error}`); }
+				catch(error) { logs("error", "automod:everyone", error); }
                 return;
 			}
         }
-        catch(error) { logsEmiter(`An error occured [automod] : \r\n ${error}`); }
+        catch(error) { logs("error", "automod", error); }
     });
 }
 
