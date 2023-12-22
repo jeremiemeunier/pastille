@@ -1,7 +1,6 @@
-const fs = require('node:fs');
 const { Events, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const { logs } = require('../../../function/logs');
-const { channels, options } = require ('../../../config/settings.json');
+const { options } = require ('../../../config/settings.json');
 const { getRules } = require('../../../function/base');
 
 const commandRuleInit = (client) => {
