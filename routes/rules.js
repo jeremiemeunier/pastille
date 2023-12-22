@@ -27,7 +27,7 @@ router.post("/rules/add", isPastille, async (req, res) => {
   else {
     try {
       const newRulesRegistre = new Rule({
-        guid_id: guild,
+        guild_id: guild,
         name: name,
         description: description, 
         active: active
@@ -46,7 +46,7 @@ router.post("/rules/add", isPastille, async (req, res) => {
 router.put("/rules/update", isPastille, async (req, res) => {
   const { guild, name, description, active, id } = req.body;
 
-  if(!guild || !name || !description || !active) {
+  if(!guild || !name || !description || !active || !id) {
     res.status(400).json({ message: "You must provide all input" });
   }
   else {
@@ -54,14 +54,14 @@ router.put("/rules/update", isPastille, async (req, res) => {
       const updatedRulesItem = await Rule.findByIdAndUpdate(
         { _id: id },
         {
-          guild: guild,
+          guild_id: guild,
           name: name,
           description: description,
           active: active
         }
       );
 
-      res.status(200);
+      res.status(200).json({ data: updatedRulesItem });
     }
     catch(error) {
       logs("error", "api:rule:put", error);
