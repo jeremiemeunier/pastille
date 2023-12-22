@@ -5,20 +5,20 @@ const axios = require("axios");
 const { getParams } = require('../base');
 
 const automodRemove = async (guild, user) => {
-    const params = getParams(guild);
+    const params = await getParams(guild);
 
     console.log(params);
 }
 
 const automodApply = async (guild, user, timer) => {
-    const params = getParams(guild);
+    const params = await getParams(guild);
 }
 
 const automodVerifier = async (guild) => {
     const now = Date.parse(new Date());
     const { muted } = moderation.roles;
 
-    logs("infos", "automod:verifier", `Start sanctions verifications for guild : ${guild.id} ${guild.name}`);
+    logs("infos", "automod:verifier", "Start sanctions verifications", guild.id);
     
     try {
         const allSanctions = await axios({
@@ -62,7 +62,7 @@ const automodVerifier = async (guild) => {
     }
     catch(error) { logs("error", "automod:verifier", error); }
 
-    logs("infos", "automod:verifier", `End sanctions verifications for guild : ${guild.id} ${guild.name}`);
+    logs("infos", "automod:verifier", "End sanctions verifications", guild.id);
 }
 
 module.exports = { automodVerifier }
