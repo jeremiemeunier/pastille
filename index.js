@@ -1,20 +1,5 @@
 const { BOT_TOKEN, MONGODB_URL } = require('./config/secret.json');
-
-// ##### API SETUP ##### \\
-const express = require("express");
-const app = express();
-const RateLimit = require('express-rate-limit');
-const cors = require("cors");
 const mongoose = require("mongoose");
-
-const limiter = RateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 100,
-})
-
-app.use(limiter);
-app.use(express.json());
-app.use(cors());
 
 // Setup of axios
 const axios = require('axios');
@@ -41,7 +26,7 @@ const client = new Client({
 
 const { logs } = require('./function/logs');
 const { voiceEventInit } = require('./events/voiceEvent');
-const { commandRegisterInit } = require('./function/commandsRegister');
+const { commandRegisterInit, commandRegister } = require('./function/commandsRegister');
 const { reactionAddEventInit } = require('./events/messageReactionAddEvent');
 const { reactionRemoveEventInit } = require('./events/messageReactionRemoveEvent');
 const { interactionCreateEventInit } = require('./events/interactionCreateEvent');
@@ -49,6 +34,7 @@ const { messageCreateEventInit } = require('./events/messageCreateEvent');
 const { addonsRegisterInit } = require('./function/addonsRegister');
 const { automod } = require('./events/messageModerationEvent');
 const { automodVerifier } = require('./function/automod/automodVerifer');
+const { api } = require('./function/api');
 
 // ##### FIX ##### \\
 if (!String.prototype.endsWith) {
@@ -73,35 +59,24 @@ const pastilleBooter = async () => {
         const allGuilds = client.guilds.cache;
 
         allGuilds.map((guild, index) => {
+            logs("infos", "booter:guild", "Start all functions", guild.id);
             automodVerifier(guild);
+            commandRegister(guild);
+            addonsRegisterInit(guild);
         });
 
-        commandRegisterInit(client);
         voiceEventInit(client);
         reactionAddEventInit(client);
         reactionRemoveEventInit(client);
         interactionCreateEventInit(client);
         messageCreateEventInit(client);
         automod(client);
-        addonsRegisterInit(client);
     }
     catch (error) { logs('error', 'booter', error); }
 
     try {
         // API
-        const infractionRoute = require('./routes/infraction');
-        const sanctionRoute = require('./routes/sanction');
-        const dailyuiRoute = require('./routes/dailyui');
-        const twitchpingRoute = require('./routes/twitch');
-
-        app.use(infractionRoute);
-        app.use(sanctionRoute);
-        app.use(dailyuiRoute);
-        app.use(twitchpingRoute);
-
-        app.get("/", (req, res) => { res.status(200).json({ message: "Bienvenue sur le Backend de Pastille" }); });
-        app.all("*", (req, res) => { res.status(404).json({ message: "This route do not exist" }); });
-        app.listen(3000, () => { logs('start', 'api', `Started on port 3000`); });
+        api();
     }
     catch(error) { logs("error", "api:server:global", error); }
 
