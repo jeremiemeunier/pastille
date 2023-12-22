@@ -1,4 +1,4 @@
-const { BOT_TOKEN, MONGODB_URL, PORT } = require('./config/secret.json');
+const { BOT_TOKEN, MONGODB_URL } = require('./config/secret.json');
 
 // ##### API SETUP ##### \\
 
@@ -7,6 +7,7 @@ const app = express();
 const RateLimit = require('express-rate-limit');
 const cors = require("cors");
 const mongoose = require("mongoose");
+const axios = require('axios');
 
 const limiter = RateLimit({
     windowMs: 15 * 60 * 1000,
@@ -17,15 +18,15 @@ app.use(limiter);
 app.use(express.json());
 app.use(cors());
 
+axios.defaults.baseURL = "http://localhost:3000";
+
 // BDD
 
 mongoose.connect(MONGODB_URL);
 
 // ##### BOT SETUP ##### \\
 
-const { options, channels } = require ('./config/settings.json');
-const { version } = require('./package.json');
-const { Client, EmbedBuilder, GatewayIntentBits, Partials, Events } = require('discord.js');
+const { Client, GatewayIntentBits, Partials, Events } = require('discord.js');
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
@@ -39,8 +40,7 @@ const client = new Client({
         Partials.Reaction],
 });
 
-const { dateParser } = require('./function/base');
-const { logsBooter, logs, logsTester } = require('./function/logs');
+const { logs } = require('./function/logs');
 const { voiceEventInit } = require('./events/voiceEvent');
 const { commandRegisterInit } = require('./function/commandsRegister');
 const { reactionAddEventInit } = require('./events/messageReactionAddEvent');
@@ -70,21 +70,7 @@ if (!String.prototype.endsWith) {
 // ##### APP ##### \\
 
 const pastilleBooter = async () => {
-    const channelDebug = client.channels.cache.find(channel => channel.name === channels.debug);
-    const channelConsole = client.channels.cache.find(channel => channel.name === channels.console);
-
 	try {
-        let bootEmbed = new EmbedBuilder()
-            .setColor(`${options.color}`)
-            .setTitle(`Pastille Launch`)
-            .setDescription(`It's a bot. An explosive bot named Pastille but only for discord !`)
-            .addFields(
-                { name: 'Date starting', value: dateParser(), inline: true },
-                { name: 'Version', value: version, inline: true },
-                { name: 'Command bang', value: options.bang, inline: true }
-            )
-            .setTimestamp()
-            .setFooter({ text: `Version ${version}` });
         logs('start', 'booter', 'Hello here !');
 
         commandRegisterInit(client);
@@ -98,7 +84,6 @@ const pastilleBooter = async () => {
         automodVerifier(client);
 
         addonsRegisterInit(client);
-        channelDebug.send({ embeds: [bootEmbed] });
     }
     catch (error) { logs('error', 'booter', error); }
 
@@ -123,16 +108,16 @@ const pastilleBooter = async () => {
             res.status(404).json({ message: "This route do not exist" });
         });
         
-        app.listen(PORT, () => {
+        app.listen(3000, () => {
             logs('start', 'api', `Started on port 3000`);
         });
     }
     catch(error) {
-        logs(`API Server : ⚠️  | An error occured on api : ${error}`);
+        logs("error", "api:server:start", error);
     }
 
     client.on(Events.GuildCreate, (guild) => {
-        logs('infos', 'events', `Join a new server : ${guild.id} ${guild.name}`);
+        logs('infos', 'events:new_guild', `Join a new server : ${guild.id} ${guild.name}`);
         commandRegisterInit(client, guild.id);
     });
 }
@@ -142,5 +127,5 @@ try {
     client.login(BOT_TOKEN);
 }
 catch(error) {
-    console.log(error);
+    logs("error", "client:connect", error);
 }
