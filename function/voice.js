@@ -2,7 +2,7 @@ const { ChannelType, EmbedBuilder } = require('discord.js');
 const { logs } = require('../function/logs');
 const { options } = require('../config/settings.json');
 
-const createThreadOnJoin = async (channel, threadChannel, user) => {
+const createVoiceThread = async (channel, threadChannel, user) => {
     try {
         const thread = await threadChannel.threads.create({
             name: `Voice : ${channel.name}`,
@@ -20,7 +20,7 @@ const createThreadOnJoin = async (channel, threadChannel, user) => {
     catch(error) { logs("error", "voice:thread:create", error); }
 }
 
-const joinThreadOnJoin = async (channel, threadChannel, user) => {
+const joinVoiceThread = async (channel, threadChannel, user) => {
     try {
         const thread = threadChannel.threads.cache.find(thread => thread.name === `Voice : ${channel.name}`);
         await thread.members.add(user);
@@ -32,7 +32,7 @@ const joinThreadOnJoin = async (channel, threadChannel, user) => {
     catch(error) { logs("error", "voice:thread:join", error); }
 }
 
-const leaveThreadOnLeave = async (channel, threadChannel, user) => {
+const leaveVoiceThread = async (channel, threadChannel, user) => {
     try {
         const thread = threadChannel.threads.cache.find(thread => thread.name === `Voice : ${channel.name}`);
         await thread.members.remove(user);
@@ -44,7 +44,7 @@ const leaveThreadOnLeave = async (channel, threadChannel, user) => {
     catch(error) { logs("error", "voice:thread:leave", error); }
 }
 
-const deleteThreadOnLeave = async (channel, threadChannel) => {
+const deleteVoiceThread = async (channel, threadChannel) => {
     try {
         const thread = threadChannel.threads.cache.find(thread => thread.name === `Voice : ${channel.name}`);
         const embed = new EmbedBuilder()
@@ -67,4 +67,4 @@ const embedExplicative = new EmbedBuilder()
     .setTitle('Ce salon est dédié à votre channel vocal actuel.')
     .setDescription(`- Il sera automatiquement supprimé une fois que tout le monde aura quitter le channel.\r\n- Chaque personne qui rejoint est automatiquement ajoutée au fil.\r\n- Chaque personne qui quitte le channel vocal est retirée du fil automatiquement.\r\n- Tu peux définir le status de ton salon vocal avec la commande **!status** directement depuis ce fil\r\n- L'automodération est toujours présente même ici. Tu doit donc respecter les règles du serveur.\r\n- Pour un rappel des règles tu peux faire **!regles** directement depuis ce fil`);
 
-module.exports = { createThreadOnJoin, joinThreadOnJoin, leaveThreadOnLeave, deleteThreadOnLeave }
+module.exports = { createVoiceThread, joinVoiceThread, leaveVoiceThread, deleteVoiceThread }
