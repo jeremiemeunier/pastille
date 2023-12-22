@@ -1,5 +1,5 @@
 const { Events, EmbedBuilder } = require('discord.js');
-const { logsEmiter } = require('../../../function/logs');
+const { logs } = require('../../../function/logs');
 const { options } = require ('../../../config/settings.json');
 
 let client;
@@ -15,13 +15,13 @@ const commandStaffInit = (clientItem) => {
         if(commandName === 'staff') {
             try {
                 const embed = new EmbedBuilder()
-                                    .setColor(`${options.color}`)
-                                    .setTitle(`Demande de support`)
-                                    .setDescription(`Comment pouvons-nous t'aider ? Si tu as des questions ou des demandes clique sur ${options.reaction.ticket} pour contacter le staff`);
+                    .setColor(`${options.color}`)
+                    .setTitle(`Demande de support`)
+                    .setDescription(`Comment pouvons-nous t'aider ? Si tu as des questions ou des demandes clique sur ${options.reaction.ticket} pour contacter le staff`);
                 const message = await interaction.reply({ embeds: [embed], fetchReply: true });
                 message.react(options.reaction.ticket);
             }
-            catch(error) { logsEmiter(`An error occured [commandStaffInit] : \r\n ${error}`); }
+            catch(error) { logs("error", "command:staff", error); }
         }
     });
 }
