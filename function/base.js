@@ -1,5 +1,27 @@
 const { BOT_ID } = require("../config/secret.json");
 const axios = require("axios");
+const { logs } = require("../function/logs");
+
+const getAddons = async (guild) => {
+	const guildId = guild.id;
+
+	try {
+		const guildAddonsRequest = await axios({
+			method: "get",
+			url: "/addons",
+			params: {
+				guild: guildId
+			},
+			headers: {
+				"pastille_botid": BOT_ID
+			}
+		});
+
+		const guildAddons = guildAddonsRequest.data.data;
+		return guildAddons;
+	}
+	catch(error) { logs("error", "global:get_guild_addons", error); }
+}
 
 const getParams = async (guild) => {
 	const guildId = guild.id;
@@ -19,7 +41,7 @@ const getParams = async (guild) => {
 		const guildParams = guildParamsRequest.data.data;
 		return guildParams;
 	}
-	catch(error) { logs("error", "globa:get_guild_params", error); }
+	catch(error) { logs("error", "global:get_guild_params", error); }
 }
 
 const dateParser = (today) => {
@@ -33,4 +55,4 @@ const dateParser = (today) => {
 	return dateReturn;
 }
 
-module.exports = { dateParser, getParams }
+module.exports = { dateParser, getParams, getAddons }
