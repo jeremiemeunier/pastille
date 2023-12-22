@@ -1,5 +1,5 @@
 const { Events } = require('discord.js');
-const { logsEmiter } = require('../../../function/logs');
+const { logs } = require('../../../function/logs');
 const { moderation } = require("../../../config/settings.json");
 
 let client;
@@ -23,7 +23,7 @@ const buttonAcceptRuleInit = (clientItem) => {
             }
             catch(error) {
                 interaction.reply({ content: 'Une erreur est survenue', ephemeral: true });
-                logsEmiter(`An error occured [reactionAddEventInit:rule] : \r\n ${error}`); return;
+                logs("error", "event:accept_rule", error); return;
             }
         }
             
