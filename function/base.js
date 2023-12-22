@@ -20,7 +20,28 @@ const getAddons = async (guild) => {
 		const guildAddons = guildAddonsRequest.data.data;
 		return guildAddons;
 	}
-	catch(error) { logs("error", "global:get_guild_addons", error); }
+	catch(error) { logs("error", "global:get:guild_addons", error); }
+}
+
+const getRules = async (guild) => {
+	const guildId = guild.id;
+
+	try {
+		const guildRulesRequest = await axios({
+			method: "get",
+			url: "/rules",
+			params: {
+				guild: guildId
+			},
+			headers: {
+				"pastille_botid": BOT_ID
+			}
+		});
+
+		const guildRules = guildRulesRequest.data.data;
+		return guildRules;
+	}
+	catch(error) { logs("error", "global:get:guild_rules", error); }
 }
 
 const getParams = async (guild) => {
@@ -41,7 +62,7 @@ const getParams = async (guild) => {
 		const guildParams = guildParamsRequest.data.data;
 		return guildParams;
 	}
-	catch(error) { logs("error", "global:get_guild_params", error); }
+	catch(error) { logs("error", "global:get:guild_params", error); }
 }
 
 const dateParser = (today) => {
@@ -55,4 +76,4 @@ const dateParser = (today) => {
 	return dateReturn;
 }
 
-module.exports = { dateParser, getParams, getAddons }
+module.exports = { dateParser, getParams, getAddons, getRules }
