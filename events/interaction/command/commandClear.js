@@ -1,5 +1,5 @@
 const { Events } = require('discord.js');
-const { logsEmiter } = require('../../../function/logs');
+const { logs } = require('../../../function/logs');
 
 let client;
 
@@ -19,9 +19,7 @@ const commandClearInit = (clientItem) => {
                 try {
                     thread.delete();
                 }
-                catch(error) {
-                    logsEmiter(error);
-                }
+                catch(error) { logs("error", "command:clear:threads", error); }
             });
 
             interaction.reply({ content: `Tout les threads ont été supprimés`, ephemeral: true });
@@ -34,7 +32,7 @@ const commandClearInit = (clientItem) => {
                     try {
                         message.delete();
                     }
-                    catch(error) { logsEmiter(error); }
+                    catch(error) { logs("error", "command:clear:messages", error); }
                 });
             });
 
