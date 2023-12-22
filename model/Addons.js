@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const addon = mongoose.model("Addon", {
+const addons = mongoose.model("Addons", {
   guid_id: String,
   name: String,
   active: Boolean,
@@ -9,4 +9,4 @@ const addon = mongoose.model("Addon", {
   delay: String
 });
 
-module.exports = addon;
+module.exports = addons;
