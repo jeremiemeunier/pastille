@@ -23,6 +23,27 @@ const getAddons = async (guild) => {
 	catch(error) { logs("error", "global:get:guild_addons", error); }
 }
 
+const getRoles = async (guild) => {
+	const guildId = guild.id;
+
+	try {
+		const guildRolesrequest = await axios({
+			method: "get",
+			url: "/roles",
+			params: {
+				guild: guildId
+			},
+			headers: {
+				"pastille_botid": BOT_ID
+			}
+		});
+
+		const guildRoles = guildRolesrequest.data.data;
+		return guildRoles;
+	}
+	catch(error) { logs("error", "global:get:guild_rules", error); }
+}
+
 const getRules = async (guild) => {
 	const guildId = guild.id;
 
@@ -76,4 +97,4 @@ const dateParser = (today) => {
 	return dateReturn;
 }
 
-module.exports = { dateParser, getParams, getAddons, getRules }
+module.exports = { dateParser, getParams, getAddons, getRules, getRoles }
