@@ -2,30 +2,27 @@ const fs = require('node:fs');
 const { Events, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const { logs } = require('../../../function/logs');
 const { channels, options } = require ('../../../config/settings.json');
+const { getRules } = require('../../../function/base');
 
-let client;
-
-const commandRuleInit = (clientItem) => {
-
-    client = clientItem;
-
+const commandRuleInit = (client) => {
     client.on(Events.InteractionCreate, async interaction => {
         if (!interaction.isChatInputCommand()) return;
-            const { commandName } = interaction;
+        const { commandName } = interaction;
         
         if(commandName === 'rule') {
-            const rules = JSON.parse(fs.readFileSync('./config/data/rule.json'));
+            const rules = await getRules(interaction.guild);
             const channel = interaction.channel;
 
             try {
                 let rulesField = [];
-    
-                for(let i = 0;i < rules.length;i++) {
-                    const ruleField = {
-                        name: `${rules[i].title}`, value: rules[i].value, inline: false
-                    }
-                    rulesField.push(ruleField);
-                }
+
+                rules.map((item, index) => {
+                    rulesField.push({
+                        name: item.name,
+                        value: item.description,
+                        inline: false
+                    });
+                });
 
                 const acceptRuleButton = new ActionRowBuilder()
                     .addComponents(
@@ -34,7 +31,7 @@ const commandRuleInit = (clientItem) => {
                             .setStyle(ButtonStyle.Primary)
                             .setCustomId('acceptedRules')
                     );
-
+                
                 const rulesEmbed = new EmbedBuilder()
                     .setColor(`${options.color}`)
                     .setTitle('Règles du serveur')
@@ -43,14 +40,18 @@ const commandRuleInit = (clientItem) => {
                 const modosEmbed = new EmbedBuilder()
                     .setColor(`${options.color}`)
                     .setTitle('Modérations')
-                    .setDescription(`Les décisions des modérateur et de l'équipe du serveur ne sont pas discutable. Si tu pense qu'elle est injuste, utilise le ticket dans <#${channels.help}>. Pour accompagner et faciliter le travail de la modération, un automod est présent sur ce discord.`);
+                    .setDescription(`Les décisions des modérateur et de l'équipe du serveur ne sont pas discutable. Pour accompagner et faciliter le travail de la modération, un automod est présent sur ce discord.`);
                 const updateEmbed = new EmbedBuilder()
                     .setColor(`${options.color}`)
                     .setDescription(`Les modérateurs ou les admins du serveur peuvent à tout moment et sans communication supplémentaire faire évoluer le réglement.`);
-                const message = await channel.send({ embeds: [rulesEmbed, modosEmbed, updateEmbed], components: [acceptRuleButton] });
+                const message = await channel.send({
+                    embeds: [rulesEmbed, modosEmbed, updateEmbed],
+                    components: [acceptRuleButton] });
                 interaction.reply({ content: 'Les règles ont bien été envoyé', ephemeral: true });
             }
-            catch(error) { logs("error", "command:rule:init", error); }
+            catch(error) {
+                logs("error", "rule:embed", error, interaction.guild.id);
+            }
         }
     });
 }
