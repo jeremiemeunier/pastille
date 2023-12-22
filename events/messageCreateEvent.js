@@ -1,5 +1,5 @@
 const { Events, EmbedBuilder } = require('discord.js');
-const { logsEmiter } = require('../function/logs');
+const { logs } = require('../function/logs');
 const { channels, options } = require ('../config/settings.json');
 
 let client;
@@ -25,27 +25,27 @@ const messageCreateEventInit = (clientItem) => {
             if(cmd === 'ip' || cmd === 'bichonwood') {
                 message.delete();
                 const embed = new EmbedBuilder()
-                                        .setColor(`${options.color}`)
-                                        .setTitle('Envie de nous rejoindre sur BichonWood ?')
-                                        .setDescription(`Pour rejoindre le serveur créatif de BichonWood, tu doit faire une demande auprès d'un modérateur ou un admin.`)
-                                        .addFields(
-                                            { name: 'Version', value: '1.20.1', inline: true },
-                                            { name: 'IP', value: 'minecraft.jeremiemeunier.fr', inline: true }
-                                        );
+                    .setColor(`${options.color}`)
+                    .setTitle('Envie de nous rejoindre sur BichonWood ?')
+                    .setDescription(`Pour rejoindre le serveur créatif de BichonWood, tu doit faire une demande auprès d'un modérateur ou un admin.`)
+                    .addFields(
+                        { name: 'Version', value: '1.20.1', inline: true },
+                        { name: 'IP', value: 'minecraft.jeremiemeunier.fr', inline: true }
+                    );
                 try { channel.send({ embeds: [embed] }); }
-                catch(error) { logsEmiter(`An error occured [messageCreateEventInit:ip] : \r\n ${error}`); return; }
+                catch(error) { logs("error", "command:ip", error); return; }
             }
             else if(cmd === 'dailyui') {
                 message.delete();
                 const embed = new EmbedBuilder()
-                                        .setColor(`${options.color}`)
-                                        .setTitle(`Tu souhaite t'exercer à l'UI/UX ?`)
-                                        .setDescription(`Pour t'ajouter le rôle des DailyUi clique sur le 🤓`);
+                    .setColor(`${options.color}`)
+                    .setTitle(`Tu souhaite t'exercer à l'UI/UX ?`)
+                    .setDescription(`Pour t'ajouter le rôle des DailyUi clique sur le 🤓`);
                 try {
                     const message = await channel.send({ embeds: [embed] });
                     message.react('🤓');
                 }
-                catch(error) { logsEmiter(`An error occured [messageCreateEventInit:dailyui] : \r\n ${error}`); return; }
+                catch(error) { logs("error", "reaction:role:dailyui", error); return; }
             }
         }
         else if(channel.name === channels.screenshots) {
@@ -57,7 +57,7 @@ const messageCreateEventInit = (clientItem) => {
                         reason: 'New screenshots posted'
                     });
                 }
-                catch(error) { logsEmiter(`An error occured [screenshotPost] : \r\n ${error}`); return; }
+                catch(error) { logs("error", "thread:screenshots", error); return; }
             }
         }
         else { return; }
