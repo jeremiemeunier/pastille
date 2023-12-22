@@ -1,6 +1,6 @@
 const fs = require('node:fs');
 const { Events } = require('discord.js');
-const { logsEmiter } = require('../function/logs');
+const { logs } = require('../function/logs');
 
 const roleSettings = JSON.parse(fs.readFileSync('./config/data/role.json'));
 
@@ -15,7 +15,7 @@ const reactionRemoveEventInit = (clientItem) => {
         
         if (reaction.partial) {
             try { await reaction.fetch(); }
-            catch (error) { logsEmiter(`An error occured\r\n ${error}`); return; }
+            catch (error) { logs("error", "reaction:remove:fetch", error); return; }
         }
     
         if(reaction.message.interaction != undefined) {
@@ -27,7 +27,7 @@ const reactionRemoveEventInit = (clientItem) => {
                         const role = guild.roles.cache.find(role => role.id === roleSettings[i].role);
     
                         try { await member.roles.remove(role); }
-                        catch(error) { logsEmiter(`An error occured [reactionRemoveEventInit:role] : \r\n ${error}`); return; }
+                        catch(error) { logs("error", "reaction:remove:rule", error); return; }
                     }
                 }
             }
@@ -39,7 +39,7 @@ const reactionRemoveEventInit = (clientItem) => {
                 const role = guild.roles.cache.find(role => role.id === '1118500573675782235');
     
                 try { await member.roles.remove(role); }
-                catch(error) { logsEmiter(`An error occured [reactionRemoveEventInit:dailyui] : \r\n ${error}`); return; }
+                catch(error) { logs("error", "reaction:remove:dailyui", error); return; }
             }
         }
     });
