@@ -40,7 +40,7 @@ const client = new Client({
 });
 
 const { dateParser } = require('./function/base');
-const { logsBooter, logsEmiter, logsTester } = require('./function/logs');
+const { logsBooter, logs, logsTester } = require('./function/logs');
 const { voiceEventInit } = require('./events/voiceEvent');
 const { commandRegisterInit } = require('./function/commandsRegister');
 const { reactionAddEventInit } = require('./events/messageReactionAddEvent');
@@ -85,25 +85,22 @@ const pastilleBooter = async () => {
             )
             .setTimestamp()
             .setFooter({ text: `Version ${version}` });
-        logsBooter(client, channelConsole, channelDebug);
-        logsEmiter('Hello here !');
+        logs('start', 'booter', 'Hello here !');
 
-        if(logsTester()) {
-            commandRegisterInit(client);
-            voiceEventInit(client);
-            reactionAddEventInit(client);
-            reactionRemoveEventInit(client);
-            interactionCreateEventInit(client);
-            messageCreateEventInit(client);
+        commandRegisterInit(client);
+        voiceEventInit(client);
+        reactionAddEventInit(client);
+        reactionRemoveEventInit(client);
+        interactionCreateEventInit(client);
+        messageCreateEventInit(client);
 
-            automod(client);
-            automodVerifier(client);
+        automod(client);
+        automodVerifier(client);
 
-            addonsRegisterInit(client);
-            channelDebug.send({ embeds: [bootEmbed] });
-        }
+        addonsRegisterInit(client);
+        channelDebug.send({ embeds: [bootEmbed] });
     }
-    catch (error) { logsEmiter(`An error occured [pastilleBooter] : ${error}`); }
+    catch (error) { logs('error', 'booter', error); }
 
     try {
         // API
@@ -127,15 +124,15 @@ const pastilleBooter = async () => {
         });
         
         app.listen(PORT, () => {
-            logsEmiter(`API Server : 🚀 | Started on port ${PORT}`);
+            logs('start', 'api', `Started on port 3000`);
         });
     }
     catch(error) {
-        logsEmiter(`API Server : ⚠️  | An error occured on api : ${error}`);
+        logs(`API Server : ⚠️  | An error occured on api : ${error}`);
     }
 
     client.on(Events.GuildCreate, (guild) => {
-        logsEmiter(`Join a new server : ${guild.id} ${guild.name}`);
+        logs('infos', 'events', `Join a new server : ${guild.id} ${guild.name}`);
         commandRegisterInit(client, guild.id);
     });
 }
