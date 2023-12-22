@@ -2,18 +2,31 @@ const { moderation } = require('../../config/settings.json');
 const { logs } = require('../logs');
 const { BOT_ID } = require('../../config/secret.json');
 const axios = require("axios");
+const { getParams } = require('../base');
 
-const automodVerifier = async (clientItem) => {
-    const client = clientItem;
+const automodRemove = async (guild, user) => {
+    const params = getParams(guild);
+
+    console.log(params);
+}
+
+const automodApply = async (guild, user, timer) => {
+    const params = getParams(guild);
+}
+
+const automodVerifier = async (guild) => {
     const now = Date.parse(new Date());
     const { muted } = moderation.roles;
 
-    logs("infos", "automod:verifier", 'Start sanctions verifications');
+    logs("infos", "automod:verifier", `Start sanctions verifications for guild : ${guild.id} ${guild.name}`);
     
     try {
         const allSanctions = await axios({
             method: "get",
             url: "/sanction",
+            params: {
+                guild: guild.id
+            },
             headers: {
                 "pastille_botid": BOT_ID
             }
@@ -32,24 +45,24 @@ const automodVerifier = async (clientItem) => {
 
                 if(user) {
                     if(ending <= now) {
-                        
+                        console.log("C'est déjà good on enlève le rôle")
                     }
                     else {
                         const newTimer = ending - now;
     
                         setTimeout(() => {
-                            console.log('finito');
+                            console.log("Sanction fini on enlève le rôle");
                         }, newTimer);
                     }
                 }
-                else { logs(`User not find [${user_id}]`); }
+                else { logs("warning", "automod:verifier:rebind", `User not find : ${user_id}`); }
             })
         }
-        else { logs('No sanction in database'); }
+        else { logs("infos", "automod:verifier", "No sanction in database"); }
     }
-    catch(error) { logs(error); }
+    catch(error) { logs("error", "automod:verifier", error); }
 
-    logs("infos", "automod:verifier", 'End sanctions verifications');
+    logs("infos", "automod:verifier", `End sanctions verifications for guild : ${guild.id} ${guild.name}`);
 }
 
 module.exports = { automodVerifier }
