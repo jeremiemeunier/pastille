@@ -1,11 +1,9 @@
 const { Events } = require('discord.js');
 const { logs } = require('../function/logs');
-const { createThreadOnJoin, joinThreadOnJoin, leaveThreadOnLeave, deleteThreadOnLeave } = require('../function/voice');
+const { createVoiceThread, joinVoiceThread, leaveVoiceThread, deleteVoiceThread } = require('../function/voice');
 const { channels } = require ('../config/settings.json');
 
-const voiceEventInit = (clientItem) => {
-    const client = clientItem;
-
+const voiceEventInit = (client) => {
     client.on(Events.VoiceStateUpdate, async (oldState, newState) => {
         if(newState.channelId === oldState.channelId) { return; }
         else {
@@ -20,24 +18,26 @@ const voiceEventInit = (clientItem) => {
                     const connected = voiceChannel.members.map(x => x).length;
     
                     if(voiceChannel.parentId !== null) {
-                        textChannel = guild.channels.cache.find(textChannel => textChannel.name === channels.voiceText
-                                                                            && textChannel.parentId === voiceChannel.parentId);
+                        textChannel = guild.channels.cache.find(
+                            textChannel => textChannel.name === channels.voiceText
+                            && textChannel.parentId === voiceChannel.parentId);
                     }
     
-                    if(connected === 0) { deleteThreadOnLeave(voiceChannel, textChannel); }
-                    else { leaveThreadOnLeave(voiceChannel, textChannel, user); }
+                    if(connected === 0) { deleteVoiceThread(voiceChannel, textChannel); }
+                    else { leaveVoiceThread(voiceChannel, textChannel, user); }
                 }
                 else if (oldState.channelId === null) {
                     const voiceChannel = guild.channels.cache.find(voiceChannel => voiceChannel.id === newState.channelId);
                     const connected = voiceChannel.members.map(x => x).length;
     
                     if(voiceChannel.parentId !== null) {
-                        textChannel = guild.channels.cache.find(textChannel => textChannel.name === channels.voiceText
-                                                                            && textChannel.parentId === voiceChannel.parentId);
+                        textChannel = guild.channels.cache.find(
+                            textChannel => textChannel.name === channels.voiceText
+                            && textChannel.parentId === voiceChannel.parentId);
                     }
             
-                    if(connected === 1) {  createThreadOnJoin(voiceChannel, textChannel, user); }
-                    else { joinThreadOnJoin(voiceChannel, textChannel, user); }
+                    if(connected === 1) {  createVoiceThread(voiceChannel, textChannel, user); }
+                    else { joinVoiceThread(voiceChannel, textChannel, user); }
                 }
                 else {
                     const oldVoiceChannel = guild.channels.cache.find(oldVoiceChannel => oldVoiceChannel.id === oldState.channelId);
@@ -48,18 +48,20 @@ const voiceEventInit = (clientItem) => {
                     let newTextChannel = textChannel;
     
                     if(oldVoiceChannel.parentId !== null) {
-                        oldTextChannel = guild.channels.cache.find(oldTextChannel => oldTextChannel.name === channels.voiceText
-                                                                                  && oldTextChannel.parentId === oldVoiceChannel.parentId);
+                        oldTextChannel = guild.channels.cache.find(
+                            oldTextChannel => oldTextChannel.name === channels.voiceText
+                            && oldTextChannel.parentId === oldVoiceChannel.parentId);
                     }
                     if(newVoiceChannel.parentId !== null) {
-                        newTextChannel = guild.channels.cache.find(newTextChannel => newTextChannel.name === channels.voiceText
-                                                                                  && newTextChannel.parentId === newVoiceChannel.parentId);
+                        newTextChannel = guild.channels.cache.find(
+                            newTextChannel => newTextChannel.name === channels.voiceText
+                            && newTextChannel.parentId === newVoiceChannel.parentId);
                     }
             
-                    if(oldNbConnected === 0) { deleteThreadOnLeave(oldVoiceChannel, oldTextChannel); }
-                    else { leaveThreadOnLeave(oldVoiceChannel, oldTextChannel, user); }
-                    if(newNbConnected === 1) { createThreadOnJoin(newVoiceChannel, newTextChannel, user); }
-                    else { joinThreadOnJoin(newVoiceChannel, newTextChannel, user); }
+                    if(oldNbConnected === 0) { deleteVoiceThread(oldVoiceChannel, oldTextChannel); }
+                    else { leaveVoiceThread(oldVoiceChannel, oldTextChannel, user); }
+                    if(newNbConnected === 1) { createVoiceThread(newVoiceChannel, newTextChannel, user); }
+                    else { joinVoiceThread(newVoiceChannel, newTextChannel, user); }
                 }
             }
             catch(error) { logs('error', 'voice', error); return; }
