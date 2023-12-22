@@ -1,5 +1,5 @@
 const { ChannelType, Events, EmbedBuilder } = require('discord.js');
-const { logsEmiter } = require('../../../function/logs');
+const { logs } = require('../../../function/logs');
 const { options } = require('../../../config/settings.json');
 
 let client;
@@ -30,9 +30,7 @@ const commandThreadInit = (clientItem) => {
                                     .setDescription(`Bienvenue sur ton thread dédié`);
                 const msg = await thread.send({ embeds: [embed] });
             }
-            catch(error) {
-                logsEmiter(`An error occured [commandThreadInit] : \r\n ${error}`);
-            }
+            catch(error) { logs("error", "command:thread", error); }
         }
     });
 }
