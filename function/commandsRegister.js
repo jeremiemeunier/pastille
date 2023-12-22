@@ -25,36 +25,19 @@ for(const folder of commandFolders) {
     }
 }
 
-const commandRegister = async (GUILD_ID) => {
+const commandRegister = async (guild) => {
     const rest = new REST().setToken(BOT_TOKEN);
-    const guildName = client.guilds.cache.find(guild => guild.id === GUILD_ID).name;
     (async () => {
         try {
-            logs('infos', 'command:register', `Started refreshing ${commands.length} application (/) commands for ${guildName}.`);
+            logs('infos', 'command:register', `Started refreshing ${commands.length} application (/) commands`, guild.id);
             const data = await rest.put(
-                Routes.applicationGuildCommands(BOT_ID, GUILD_ID),
+                Routes.applicationGuildCommands(BOT_ID, guild.id),
                 { body: commands },
             );
-            logs('infos', 'command:register', `Successfully reloaded ${data.length} application (/) commands for ${guildName}.`);
+            logs('infos', 'command:register', `Successfully reloaded ${data.length} application (/) commands`, guild.id);
         }
-        catch (error) { logs('error', 'command:register', error); }
+        catch (error) { logs('error', 'command:register', error, guild.id); }
     })();
 }
 
-const commandRegisterInit = async (clientItem, guildId) => {
-    client = clientItem;
-
-    if(guildId !== undefined) {
-        await commandRegister(guildId);
-    }
-    else {
-        const clientGuildQuantity = client.guilds.cache.map(guild => guild.id).length;
-        const clientGuildIds = client.guilds.cache.map(guild => guild.id);
-
-        for(let i = 0;i < clientGuildQuantity;i++) {
-            await commandRegister(clientGuildIds[i]);
-        }
-    }
-}
-
-module.exports = { commandRegister, commandRegisterInit };
+module.exports = { commandRegister };
