@@ -51,8 +51,7 @@ const setting = mongoose.model("Setting", {
           unit: String
         }
       }
-    },
-    addons: Array
+    }
 });
 
 module.exports = setting;
