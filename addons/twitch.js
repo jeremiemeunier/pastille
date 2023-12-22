@@ -2,7 +2,7 @@ const axios = require('axios');
 const { TWITCH_CLIENT_TOKEN, TWITCH_SECRET_TOKEN } = require('../config/secret.json');
 const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const { options } = require('../config/settings.json');
-const { logsEmiter } = require('../function/logs');
+const { logs } = require('../function/logs');
 
 let client;
 
@@ -48,13 +48,11 @@ const addonsLoaded = async (clientItem, addonsParamsItem) => {
                                         components: [liveButton]
                                     });
                                 }
-                                catch(error) {
-                                    logsEmiter(`[addons:twitch:send] Error : ${error}`);
-                                }
+                                catch(error) { logs("error", "twitch:send", error); }
                             }
                         });
                     }
-                    catch(error) { logsEmiter(`[afterAnalyze:twitch:test] Error : ${error}`); }
+                    catch(error) { logs("error", "twitch:construct", error); }
                 }
             }
         });
@@ -86,7 +84,7 @@ const requestAuthenticator = async () => {
 
         return requestToken.data.access_token;
     }
-    catch(error) { logsEmiter(`[request:auth:twitch] Error : ${error.reponse}`); }
+    catch(error) { logs("error", "twitch:auth", error); }
 }
 
 const requestStreamerState = async (streamerId, bearerToken) => {
@@ -105,7 +103,7 @@ const requestStreamerState = async (streamerId, bearerToken) => {
 
         return requestState.data.data[0];
     }
-    catch(error) { logsEmiter(`[request:streamer:state:twitch] Error : ${error.response}`); }
+    catch(error) { logs("error", "twitch:request:state", error); }
 }
 
 module.exports = { addonsLoaded }
