@@ -1,5 +1,5 @@
-const { logsEmiter } = require('../logs');
-const { PORT, BOT_ID } = require('../../config/secret.json');
+const { logs } = require('../logs');
+const { BOT_ID } = require('../../config/secret.json');
 const axios = require('axios');
 const { automodSanction } = require('./automodSanction');
 
@@ -12,7 +12,6 @@ const automodRegister = async (user, reason, guildItem) => {
         const addNewInfraction = await axios({
             method: "post",
             url: "/infraction",
-            baseURL: `http://localhost:${PORT}`,
             headers: {
                 "pastille_botid": BOT_ID
             },
@@ -29,7 +28,6 @@ const automodRegister = async (user, reason, guildItem) => {
             const totalWarnUser = await axios({
                 method: "get",
                 url: "/infraction/all",
-                baseURL: `http://localhost:${PORT}`,
                 headers: {
                     "pastille_botid": BOT_ID
                 },
@@ -40,9 +38,9 @@ const automodRegister = async (user, reason, guildItem) => {
 
             automodSanction(user, totalWarnUser, guildItem);
         }
-        catch(error) { logsEmiter(error); }
+        catch(error) { logs("error", "automod:get:infractions", error); }
     }
-    catch(error) { logsEmiter(error); }
+    catch(error) { logs("error", "automod:register", error); }
 }
 
 module.exports = { automodRegister }
