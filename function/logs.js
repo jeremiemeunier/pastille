@@ -49,9 +49,14 @@ const composeState = (data) => {
     }
 }
 
-const logs = async (state, service, content) => {
+const logs = async (state, service, content, guild) => {
 
-    console.log(`${composeTime()} ${tag} ${composeState(state)} [${composeService(service)}] ${content}`);
+    if(guild) {
+        console.log(`${composeTime()} ${tag} ${composeState(state)} [${composeService(service)}] [${guild}] ${content}`);
+    }
+    else {
+        console.log(`${composeTime()} ${tag} ${composeState(state)} [${composeService(service)}] ${content}`);
+    }
 }
 
 module.exports = { logs };
