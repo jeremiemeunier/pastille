@@ -59,4 +59,10 @@ const logs = async (state, service, content, guild) => {
     }
 }
 
-module.exports = { logs };
+
+const latestLogs = async (state, service, content, client) => {
+
+    await client.users.send('165806292840087552', `\`\`\`${composeTime()}[${tag}]${composeState(state)}[${composeService(service)}] » ${content}\`\`\``);
+}
+
+module.exports = { logs, latestLogs };
