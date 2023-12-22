@@ -1,13 +1,11 @@
 const { BOT_TOKEN, MONGODB_URL } = require('./config/secret.json');
 
 // ##### API SETUP ##### \\
-
 const express = require("express");
 const app = express();
 const RateLimit = require('express-rate-limit');
 const cors = require("cors");
 const mongoose = require("mongoose");
-const axios = require('axios');
 
 const limiter = RateLimit({
     windowMs: 15 * 60 * 1000,
@@ -18,10 +16,11 @@ app.use(limiter);
 app.use(express.json());
 app.use(cors());
 
+// Setup of axios
+const axios = require('axios');
 axios.defaults.baseURL = "http://localhost:3000";
 
 // BDD
-
 mongoose.connect(MONGODB_URL);
 
 // ##### BOT SETUP ##### \\
@@ -52,7 +51,6 @@ const { automod } = require('./events/messageModerationEvent');
 const { automodVerifier } = require('./function/automod/automodVerifer');
 
 // ##### FIX ##### \\
-
 if (!String.prototype.endsWith) {
     Object.defineProperty(String.prototype, 'endsWith', {
         enumerable: false,
@@ -68,10 +66,15 @@ if (!String.prototype.endsWith) {
 }
 
 // ##### APP ##### \\
-
 const pastilleBooter = async () => {
+    logs('start', 'booter', 'Pastille has started successfully');
+
 	try {
-        logs('start', 'booter', 'Hello here !');
+        const allGuilds = client.guilds.cache;
+
+        allGuilds.map((guild, index) => {
+            automodVerifier(guild);
+        });
 
         commandRegisterInit(client);
         voiceEventInit(client);
@@ -79,10 +82,7 @@ const pastilleBooter = async () => {
         reactionRemoveEventInit(client);
         interactionCreateEventInit(client);
         messageCreateEventInit(client);
-
         automod(client);
-        automodVerifier(client);
-
         addonsRegisterInit(client);
     }
     catch (error) { logs('error', 'booter', error); }
@@ -99,22 +99,11 @@ const pastilleBooter = async () => {
         app.use(dailyuiRoute);
         app.use(twitchpingRoute);
 
-        app.get("/", (req, res) => {
-            res.status(200).json({ message: "Bienvenue sur le Backend de Pastille" });
-        });
-
-        // Route 404
-        app.all("*", (req, res) => {
-            res.status(404).json({ message: "This route do not exist" });
-        });
-        
-        app.listen(3000, () => {
-            logs('start', 'api', `Started on port 3000`);
-        });
+        app.get("/", (req, res) => { res.status(200).json({ message: "Bienvenue sur le Backend de Pastille" }); });
+        app.all("*", (req, res) => { res.status(404).json({ message: "This route do not exist" }); });
+        app.listen(3000, () => { logs('start', 'api', `Started on port 3000`); });
     }
-    catch(error) {
-        logs("error", "api:server:start", error);
-    }
+    catch(error) { logs("error", "api:server:global", error); }
 
     client.on(Events.GuildCreate, (guild) => {
         logs('infos', 'events:new_guild', `Join a new server : ${guild.id} ${guild.name}`);
