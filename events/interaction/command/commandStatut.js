@@ -1,5 +1,5 @@
 const { Events, ActivityType } = require('discord.js');
-const { logsEmiter } = require('../../../function/logs');
+const { logs } = require('../../../function/logs');
 
 let client;
 
@@ -12,11 +12,14 @@ const commandStatutInit = (clientItem) => {
             const { commandName } = interaction;
         
         if(commandName === 'statut') {
-            client.user.setPresence({
-                activities: [{ name: interaction.options.getString('content'),
-                type: ActivityType.Custom
-            }] });
-            await interaction.reply({ content: `Le nouveau nouveau statut de ${client.user} a été définis`, ephemeral: true });
+            try {
+                client.user.setPresence({
+                    activities: [{ name: interaction.options.getString('content'),
+                    type: ActivityType.Custom
+                }] });
+                await interaction.reply({ content: `Le nouveau nouveau statut de ${client.user} a été définis`, ephemeral: true });
+            }
+            catch(error) { logs("error", "command:status", error); }
         }
     });
 }
