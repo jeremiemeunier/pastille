@@ -1,4 +1,5 @@
 const { BOT_TOKEN, MONGODB_URL } = require('./config/secret.json');
+const process = require('process');
 const mongoose = require("mongoose");
 
 // Setup of axios
@@ -24,9 +25,9 @@ const client = new Client({
         Partials.Reaction],
 });
 
-const { logs } = require('./function/logs');
+const { logs, latestLogs } = require('./function/logs');
 const { voiceEventInit } = require('./events/voiceEvent');
-const { commandRegisterInit, commandRegister } = require('./function/commandsRegister');
+const { commandRegister } = require('./function/commandsRegister');
 const { reactionAddEventInit } = require('./events/messageReactionAddEvent');
 const { reactionRemoveEventInit } = require('./events/messageReactionRemoveEvent');
 const { interactionCreateEventInit } = require('./events/interactionCreateEvent');
@@ -85,6 +86,12 @@ const pastilleBooter = async () => {
         commandRegister(guild);
     });
 }
+
+process.on('SIGINT', async () => {
+    logs('infos', 'docker:stop', "Process has request to stop");
+    await latestLogs('infos', 'docker:stop', "Process has request to stop", client);
+    process.exit(99);
+});
 
 try {
     client.on('ready', () => { pastilleBooter(); });
