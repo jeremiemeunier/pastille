@@ -52,10 +52,10 @@ const composeState = (data) => {
 const logs = async (state, service, content, guild) => {
 
     if(guild) {
-        console.log(`${composeTime()} ${tag} ${composeState(state)} [${composeService(service)}] [${guild}] ${content}`);
+        console.log(`${composeTime()}[${tag}]${composeState(state)}[${composeService(service)}][${guild}] » ${content}`);
     }
     else {
-        console.log(`${composeTime()} ${tag} ${composeState(state)} [${composeService(service)}] ${content}`);
+        console.log(`${composeTime()}[${tag}]${composeState(state)}[${composeService(service)}] » ${content}`);
     }
 }
 
