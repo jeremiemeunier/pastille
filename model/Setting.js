@@ -21,6 +21,7 @@ const setting = mongoose.model("Setting", {
       }
     },
     moderation: {
+      sharing: Boolean,
       automod: Boolean,
       limit: {
         emoji: Number,
