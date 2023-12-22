@@ -1,6 +1,6 @@
 const fs = require('node:fs');
 const { Events, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
-const { logsEmiter } = require('../../../function/logs');
+const { logs } = require('../../../function/logs');
 const { channels, options } = require ('../../../config/settings.json');
 
 let client;
@@ -50,7 +50,7 @@ const commandRuleInit = (clientItem) => {
                 const message = await channel.send({ embeds: [rulesEmbed, modosEmbed, updateEmbed], components: [acceptRuleButton] });
                 interaction.reply({ content: 'Les règles ont bien été envoyé', ephemeral: true });
             }
-            catch(error) { logsEmiter(`An error occured [commandRuleInit] : \r\n ${error}`); }
+            catch(error) { logs("error", "command:rule:init", error); }
         }
     });
 }
