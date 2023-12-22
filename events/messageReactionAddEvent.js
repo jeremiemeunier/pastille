@@ -5,12 +5,7 @@ const { channels, options, moderation } = require ('../config/settings.json');
 
 const roleSettings = JSON.parse(fs.readFileSync('./config/data/role.json'));
 
-let client;
-
-const reactionAddEventInit = (clientItem) => {
-
-    client = clientItem;
-
+const reactionAddEventInit = (client) => {
     client.on(Events.MessageReactionAdd, async (reaction, user) => {
         if(user.bot === true) { return; }
         else {
