@@ -49,9 +49,9 @@ const composeState = (data) => {
     }
 }
 
-const logsEmiter = async (state, service, content) => {
+const logs = async (state, service, content) => {
 
     console.log(`${composeTime()} ${tag} ${composeState(state)} [${composeService(service)}] ${content}`);
 }
 
-module.exports = { logsEmiter };
+module.exports = { logs };
