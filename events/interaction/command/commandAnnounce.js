@@ -1,5 +1,5 @@
 const { Events, EmbedBuilder } = require('discord.js');
-const { logsEmiter } = require('../../../function/logs');
+const { logs } = require('../../../function/logs');
 const { options } = require("../../../config/settings.json");
 
 let client;
@@ -20,7 +20,7 @@ const commandAnnounceInit = (clientItem) => {
                                     .setDescription(interaction.options.getString('content'));
                 const message = await interaction.reply({ embeds: [embed], fetchReply: true, content: "📢 **Annonce** ||@everyone||" });
             }
-            catch(error) { logsEmiter(`An error occured [commandAnnounceInit] : \r\n ${error}`); }
+            catch(error) { logs("error", "command:announce", error); }
         }
     });
 }
