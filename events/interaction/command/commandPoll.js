@@ -1,7 +1,7 @@
 const fs = require('node:fs');
 const { Events, EmbedBuilder } = require('discord.js');
 const alphabetLetters = JSON.parse(fs.readFileSync('./config/data/alphabet.json'));
-const { logsEmiter } = require('../../../function/logs');
+const { logs } = require('../../../function/logs');
 const { options } = require ('../../../config/settings.json');
 
 let client;
@@ -31,7 +31,7 @@ const commandPollInit = (clientItem) => {
                         try { await message.react(first); }
                         catch(error) {
                             try { await message.react(letter); }
-                            catch(error) { logsEmiter(`An error occured [commandPollInit] : \r\n ${error}`); }
+                            catch(error) { logs("error", "command:poll", error); }
                         }
                     }
                     break;
