@@ -1,6 +1,26 @@
-const fs = require('fs');
-const { version } = require('../config/settings.json');
-const tag = `pastille[${version}] `;
+const { BOT_ID } = require("../config/secret.json");
+const axios = require("axios");
+
+const getParams = async (guild) => {
+	const guildId = guild.id;
+
+	try {
+		const guildParamsRequest = await axios({
+			method: "get",
+			url: "/params",
+			params: {
+				guild: guildId
+			},
+			headers: {
+				"pastille_botid": BOT_ID
+			}
+		});
+
+		const guildParams = guildParamsRequest.data.data;
+		return guildParams;
+	}
+	catch(error) { logs("error", "globa:get_guild_params", error); }
+}
 
 const dateParser = (today) => {
     let dateReturn = '';
@@ -13,4 +33,4 @@ const dateParser = (today) => {
 	return dateReturn;
 }
 
-module.exports = { dateParser }
+module.exports = { dateParser, getParams }
