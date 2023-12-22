@@ -2,16 +2,14 @@ const express = require("express");
 const router = express.Router();
 const Twitch = require("../model/Twitch");
 const isPastille = require("../middlewares/isPastille");
-const { logsEmiter } = require('../function/logs');
+const { logs } = require('../function/logs');
 
 router.post("/twitchping/add", isPastille, async (req, res) => {
   const { twitch_id, twitch_name, discord_id, discord_name, progress } = req.body;
 
   if(!twitch_id || !twitch_name) {
-    res.status(400).json({
-      message: "Must provide a id and name for twitch"
-    });
-    logsEmiter(`API Server : ⚠️  | Need to complete all inputs before request`);
+    res.status(400).json({ message: "Must provide a id and name for twitch" });
+    logs("error", "api:twitch:add", "Need to complete all inputs before request");
   }
   else {
     try {
@@ -27,13 +25,9 @@ router.post("/twitchping/add", isPastille, async (req, res) => {
         progress: progress || false
       });
       await newAddPing.save();
-
       res.status(200).json({ message: 'New streamer added to ping list' });
-      logsEmiter(`API Server : 🟢 | New streamer added to ping list`);
     }
-    catch(error) {
-      logsEmiter(`API Server : ⚠️  | ${error}`);
-    }
+    catch(error) { logs("error", "api:twitch:add", error); }
   }
 });
 
@@ -52,13 +46,9 @@ router.get("/twitchping/list", isPastille, async (req, res) => {
         data: allTwitchPings
       })
     }
-    else {
-      res.status(404).json({ message: "Empty pings" });
-    }
+    else { res.status(404).json({ message: "Empty pings" }); }
   }
-  catch(error) {
-    res.status(400).json({ message: "An error occured" });
-  }
+  catch(error) { logs("error", "api:twitch:get", error); }
 });
 
 module.exports = router;
