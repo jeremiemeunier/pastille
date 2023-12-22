@@ -81,8 +81,8 @@ const pastilleBooter = async () => {
     catch(error) { logs("error", "api:server:global", error); }
 
     client.on(Events.GuildCreate, (guild) => {
-        logs('infos', 'events:new_guild', `Join a new server : ${guild.id} ${guild.name}`);
-        commandRegisterInit(client, guild.id);
+        logs('infos', 'events:new_guild', "Join a new guild", guild.id);
+        commandRegister(guild);
     });
 }
 
