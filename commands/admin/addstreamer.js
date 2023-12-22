@@ -1,6 +1,6 @@
 const commands =
 {
-    name: "twitchping",
+    name: "twitch",
     description: "Toutes les commandes liée aux pings des streamers",
     default_member_permissions: 0,
     options: [
@@ -38,19 +38,11 @@ const commands =
         {
             "name": "remove",
             "description": "Supprimer un streamer des pings",
-            "type": 1,
-            "options": [
-                {
-                    "name": "twitch_name",
-                    "description": "Le pseudo twitch du streamer",
-                    "type": 3,
-                    "required": true
-                }
-            ]
+            "type": 1
         },
         {
             "name": "list",
-            "description": "Liste les streamer qui sont ping",
+            "description": "Liste les streamers qui sont ping",
             "type": 1
         }
     ]
