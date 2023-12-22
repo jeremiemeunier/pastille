@@ -1,5 +1,5 @@
 const { Events } = require('discord.js');
-const { logsEmiter } = require('../function/logs');
+const { logs } = require('../function/logs');
 const { createThreadOnJoin, joinThreadOnJoin, leaveThreadOnLeave, deleteThreadOnLeave } = require('../function/voice');
 const { channels } = require ('../config/settings.json');
 
@@ -62,7 +62,7 @@ const voiceEventInit = (clientItem) => {
                     else { joinThreadOnJoin(newVoiceChannel, newTextChannel, user); }
                 }
             }
-            catch(error) { logsEmiter(`An error occured [voiceEventInit] : \r\n ${error}`); return; }
+            catch(error) { logs('error', 'voice', error); return; }
         }
     });
 }
