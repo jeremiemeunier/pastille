@@ -4,12 +4,7 @@ const { logs } = require('../function/logs');
 
 const roleSettings = JSON.parse(fs.readFileSync('./config/data/role.json'));
 
-let client;
-
-const reactionRemoveEventInit = (clientItem) => {
-
-    client = clientItem;
-
+const reactionRemoveEventInit = (client) => {
     client.on(Events.MessageReactionRemove, async (reaction, user) => {
         if(user.bot === true) { return; }
         
