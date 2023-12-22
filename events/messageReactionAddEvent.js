@@ -2,6 +2,8 @@ const fs = require('node:fs');
 const { Events, ChannelType, EmbedBuilder } = require('discord.js');
 const { logs } = require('../function/logs');
 const { channels, options, moderation } = require ('../config/settings.json');
+const { addRole } = require('./interaction/reaction/reactionRole');
+const { pollReactions } = require('./interaction/reaction/reactionPoll');
 
 const roleSettings = JSON.parse(fs.readFileSync('./config/data/role.json'));
 
@@ -16,67 +18,33 @@ const reactionAddEventInit = (client) => {
             }
     
             if(reaction.message.interaction != undefined) {
-                if(reaction.message.interaction.commandName === 'rule') {
-                    if(reaction.emoji.name === options.reaction.rule) {
-                        const guild = client.guilds.cache.find(guild => guild.id === reaction.message.guildId);
-                        const member = guild.members.cache.find(member => member.id === user.id);
-                        const role = guild.roles.cache.find(role => role.id === moderation.roles.rule);
-    
-                        try { await member.roles.add(role); }
-                        catch(error) { logs("error", "reaction:rule", error); return; }
-                    }
-                    else { reaction.users.remove(user); }
-                }
-                if(reaction.message.interaction.commandName === 'staff') {
-                    if(reaction.emoji.name === options.reaction.ticket) {
-                        try {
-                            reaction.users.remove(user);
-                            const thread = await helpZone.threads.create({
-                                name: `@${user.username} request help`,
-                                autoArchiveDuration: 60,
-                                reason: `Requested help form @${user.username}`,
-                                type: ChannelType.PrivateThread,
-                            });
-                            await thread.members.add(user);
-                            const embed = new EmbedBuilder()
-                                .setColor(`${options.color}`)
-                                .setTitle(`Requested help from @${user.username}`)
-                                .setDescription(`Pour mettre fin à ta demande d'aide clique sur 🔒`);
-                            const message = await thread.send({ embeds: [embed] });
-                            message.react('🔒');
-                        }
-                        catch(error) { logs("error", "reaction:staff", error); return; }
-                    }
-                    else { reaction.users.remove(user); }
-                }
+                // if(reaction.message.interaction.commandName === 'staff') {
+                //     if(reaction.emoji.name === options.reaction.ticket) {
+                //         try {
+                //             reaction.users.remove(user);
+                //             const thread = await helpZone.threads.create({
+                //                 name: `@${user.username} request help`,
+                //                 autoArchiveDuration: 60,
+                //                 reason: `Requested help form @${user.username}`,
+                //                 type: ChannelType.PrivateThread,
+                //             });
+                //             await thread.members.add(user);
+                //             const embed = new EmbedBuilder()
+                //                 .setColor(`${options.color}`)
+                //                 .setTitle(`Requested help from @${user.username}`)
+                //                 .setDescription(`Pour mettre fin à ta demande d'aide clique sur 🔒`);
+                //             const message = await thread.send({ embeds: [embed] });
+                //             message.react('🔒');
+                //         }
+                //         catch(error) { logs("error", "reaction:staff", error, reaction.guildId); return; }
+                //     }
+                //     else { reaction.users.remove(user); }
+                // }
                 if(reaction.message.interaction.commandName === 'role') {
-                    for(let i = 0;i < roleSettings.length;i++) {
-                        if(reaction.emoji.name === roleSettings[i].emoji) {
-                            const guild = client.guilds.cache.find(guild => guild.id === reaction.message.guildId);
-                            const member = guild.members.cache.find(member => member.id === user.id);
-                            const role = guild.roles.cache.find(role => role.id === roleSettings[i].role);
-    
-                            try { await member.roles.add(role); }
-                            catch(error) { logs("error", "reaction:role", error); return; }
-                        }
-                    }
+                    addRole(client, reaction, user);
                 }
                 if(reaction.message.interaction.commandName === 'poll') {
-                    const userReactions = reaction.message.reactions.cache.filter(reaction => reaction.users.cache.has(user.id));
-                    const botReactThis = reaction.users.cache.find(user => user.bot === true);
-    
-                    if(botReactThis === undefined) {
-                        try { await reaction.users.remove(user); }
-                        catch(error) { logs("error", "reaction:poll:remove", error); return; }
-                    }
-                    else {
-                        userReactions.map(async (react) => {
-                            if(react.emoji.name !== reaction.emoji.name) {
-                                try { await react.users.remove(user); }
-                                catch(error) { logs("error", "reaction:poll:remove_2", error); return; }
-                            }
-                        });
-                    }
+                    pollReactions(client, reaction, user);
                 }
             }
             else {
