@@ -3,6 +3,7 @@ const { getParams, hoursParser, dateParser, getCommands } = require('../function
 const { bangRule } = require('./interaction/bang/bangRule');
 const { bangStatus } = require('./interaction/bang/bangStatus');
 const { logs } = require('../function/logs');
+const { bangExecute } = require('./interaction/bang/bangExecute');
 
 const messageCreateEventInit = (client) => {
   client.on(Events.MessageCreate, async (message) => {
@@ -23,10 +24,10 @@ const messageCreateEventInit = (client) => {
       if(cmd === 'status') { bangStatus(message, guild); }
 
       if(guildCommands) {
-        guildCommands.map((item) => {
+        guildCommands.map(async (item) => {
           const { _id, terms } = item;
-          if(cmd === terms) { bangExecute(message, guild, _id) }
-        })
+          if(cmd === terms) { await bangExecute(message, guild, _id); }
+        });
       }
     }
 
