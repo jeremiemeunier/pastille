@@ -1,4 +1,3 @@
-const { addons } = require ('../config/settings.json');
 const { logs } = require('../function/logs');
 const { getAddons } = require('./base');
 
