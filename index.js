@@ -54,10 +54,13 @@ if (!String.prototype.endsWith) {
 
 // ##### APP ##### \\
 const guildStarter = (guild) => {
-  logs("infos", "booter:guild", "Start all functions", guild.id);
-  automodVerifier(guild);
-  commandRegister(guild);
-  addonsRegisterInit(guild);
+  try {
+    logs("infos", "booter:guild", "Start all functions", guild.id);
+    automodVerifier(guild);
+    commandRegister(guild);
+    addonsRegisterInit(guild);
+  }
+  catch(error) { logs("error", "guild_starter", error, guild.id); }
 }
 
 const pastilleBooter = async () => {
