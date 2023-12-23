@@ -2,18 +2,12 @@ const mongoose = require("mongoose");
 
 const setting = mongoose.model("Setting", {
     guild_id: String,
+    premium: Boolean,
+    premium_end: String,
     options: {
       bang: String,
       color: String,
-      reaction: {
-        rule: String,
-        ticket: String,
-        announce: String,
-        warn: String
-      },
       channels: {
-        console: String,
-        debug: String,
         announce: String,
         help: String,
         voiceText: String,
@@ -22,7 +16,6 @@ const setting = mongoose.model("Setting", {
     },
     moderation: {
       sharing: Boolean,
-      automod: Boolean,
       limit: {
         emoji: Number,
         mention: Number,
