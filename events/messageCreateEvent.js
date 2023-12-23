@@ -1,67 +1,42 @@
-const { Events, EmbedBuilder } = require('discord.js');
+const { Events } = require('discord.js');
+const { getParams, hoursParser, dateParser } = require('../function/base');
+const { bangRule } = require('./interaction/bang/bangRule');
+const { bangStatus } = require('./interaction/bang/bangStatus');
 const { logs } = require('../function/logs');
-const { channels, options } = require ('../config/settings.json');
 
-let client;
+const messageCreateEventInit = (client) => {
+  client.on(Events.MessageCreate, async (message) => {
+    const content = message.content;
+    const guild = client.guilds.cache.find(guild => guild.id === message.guildId);
+    const channel = guild.channels.cache.find(channel => channel.id === message.channelId);
 
-const messageCreateEventInit = (clientItem) => {
-    client = clientItem;
+    const guildParams = await getParams(guild);
+    const { options } = guildParams;
 
-    client.on(Events.MessageCreate, async (message) => {
-        const content = message.content;
-        const guild = client.guilds.cache.find(guild => guild.id === message.guildId);
-        const channel = guild.channels.cache.find(channel => channel.id === message.channelId);
-        const author = message.author.username;
-        const today = new Date();
-        const postedDate = `${today.getDay}/${today.getMonth}/${today.getFullYear}`;
-        const msg = channel.messages.cache.find(message => message.id === message.id);
-    
-        let splitedMsg = content.split(' ');
-        let cmd = splitedMsg.shift().slice(1);
-        let text = splitedMsg.join(' ');
-    
-        if(message.author.bot === true) { return; }
-        if(content.startsWith(options.bang)) {
-            if(cmd === 'ip' || cmd === 'bichonwood') {
-                message.delete();
-                const embed = new EmbedBuilder()
-                    .setColor(`${options.color}`)
-                    .setTitle('Envie de nous rejoindre sur BichonWood ?')
-                    .setDescription(`Pour rejoindre le serveur créatif de BichonWood, tu doit faire une demande auprès d'un modérateur ou un admin.`)
-                    .addFields(
-                        { name: 'Version', value: '1.20.1', inline: true },
-                        { name: 'IP', value: 'minecraft.jeremiemeunier.fr', inline: true }
-                    );
-                try { channel.send({ embeds: [embed] }); }
-                catch(error) { logs("error", "command:ip", error); return; }
-            }
-            else if(cmd === 'dailyui') {
-                message.delete();
-                const embed = new EmbedBuilder()
-                    .setColor(`${options.color}`)
-                    .setTitle(`Tu souhaite t'exercer à l'UI/UX ?`)
-                    .setDescription(`Pour t'ajouter le rôle des DailyUi clique sur le 🤓`);
-                try {
-                    const message = await channel.send({ embeds: [embed] });
-                    message.react('🤓');
-                }
-                catch(error) { logs("error", "reaction:role:dailyui", error); return; }
-            }
-        }
-        else if(channel.name === channels.screenshots) {
-            if(message.attachments.size) {
-                try {
-                    const thread = await message.startThread({
-                        name: `${author} (${today.getDay() < 10 ? '0' + today.getDay() : today.getDay()}/${today.getMonth() + 1}/${today.getFullYear()})`,
-                        autoArchiveDuration: 60,
-                        reason: 'New screenshots posted'
-                    });
-                }
-                catch(error) { logs("error", "thread:screenshots", error); return; }
-            }
-        }
-        else { return; }
-    });
+    const splitedMsg = content.split(' ');
+    const cmd = splitedMsg.shift().slice(1);
+
+    if(message.author.bot === true) { return; }
+    if(content.startsWith(options.bang)) {
+      if(cmd === 'regles') { bangRule(message, guild); }
+      if(cmd === 'status') { bangStatus(message, guild); }
+    }
+
+    if(channel.name === options.channels.screenshots) {
+      if(message.attachments.size) {
+        try {
+          const title = `${message.author.globalName} (${await hoursParser()} ${await dateParser()})`
+          const thread = await message.startThread({
+            name: title,
+            autoArchiveDuration: 4320,
+            reason: 'New screenshots posted'
+          });
+        } catch(error) { logs("error", "thread:screenshots", error); return; }
+      }
+    }
+
+    return;
+  });
 }
 
 module.exports = { messageCreateEventInit }
