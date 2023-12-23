@@ -65,25 +65,45 @@ const getRules = async (guild) => {
 	catch(error) { logs("error", "global:get:guild_rules", error, guild.id); }
 }
 
-const getCommands = async (guild) => {
+const getCommands = async (guild, id) => {
 	const guildId = guild.id;
 
-	try {
-		const guildCommandsRequest = await axios({
-			method: "get",
-			url: "/commands",
-			params: {
-				guild_id: guildId
-			},
-			headers: {
-				"pastille_botid": BOT_ID
-			}
-		});
-
-		const guildCommands = guildCommandsRequest.data.data;
-		return guildCommands;
-	}
-	catch(error) { logs("error", "global:get:guild_commands", error, guild.id); }
+	if(id) {
+    try {
+      const guildCommandsRequest = await axios({
+        method: "get",
+        url: "/commands/id",
+        params: {
+          id: id
+        },
+        headers: {
+          "pastille_botid": BOT_ID
+        }
+      });
+  
+      const guildCommands = guildCommandsRequest.data.data;
+      return guildCommands;
+    }
+    catch(error) { logs("error", "global:get:guild_commands:id", error, guild.id); }
+  }
+  else {
+    try {
+      const guildCommandsRequest = await axios({
+        method: "get",
+        url: "/commands",
+        params: {
+          guild_id: guildId
+        },
+        headers: {
+          "pastille_botid": BOT_ID
+        }
+      });
+  
+      const guildCommands = guildCommandsRequest.data.data;
+      return guildCommands;
+    }
+    catch(error) { logs("error", "global:get:guild_commands", error, guild.id); }
+  }
 }
 
 const getParams = async (guild) => {
