@@ -9,24 +9,19 @@ const { commandClearInit } = require('./interaction/command/commandClear');
 
 const { buttonAcceptRuleInit } = require('./interaction/button/buttonAcceptRule');
 
-let client;
+const interactionCreateEventInit = (client) => {
+  // Commands
+  commandPollInit(client);
+  commandRuleInit(client);
+  commandStaffInit(client);
+  commandAnnounceInit(client);
+  commandRoleInit(client);
+  commandThreadInit(client);
+  commandStatutInit(client);
+  commandClearInit(client);
 
-const interactionCreateEventInit = (clientItem) => {
-
-    client = clientItem;
-
-    // Commands
-    commandPollInit(client);
-    commandRuleInit(client);
-    commandStaffInit(client);
-    commandAnnounceInit(client);
-    commandRoleInit(client);
-    commandThreadInit(client);
-    commandStatutInit(client);
-    commandClearInit(client);
-
-    //Buttons
-    buttonAcceptRuleInit(client);
+  //Buttons
+  buttonAcceptRuleInit(client);
 }
 
 module.exports = { interactionCreateEventInit }
