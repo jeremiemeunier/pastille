@@ -25,7 +25,7 @@ const messageCreateEventInit = (client) => {
     if(channel.name === options.channels.screenshots) {
       if(message.attachments.size) {
         try {
-          const title = `${message.author.globalName} (${await hoursParser()} ${await dateParser()})`
+          const title = `${message.author.globalName} (${await dateParser()} ${await hoursParser()})`
           const thread = await message.startThread({
             name: title,
             autoArchiveDuration: 4320,
