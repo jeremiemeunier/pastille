@@ -19,15 +19,15 @@ router.get("/rules", isPastille, async (req, res) => {
 });
 
 router.post("/rules/add", isPastille, async (req, res) => {
-  const { guild, name, description, active } = req.body;
+  const { guild_id, name, description, active } = req.body;
 
-  if(!guild || !name || !description || !active) {
+  if(!guild_id || !name || !description || !active) {
     res.status(400).json({ message: "You must provide all input" });
   }
   else {
     try {
       const newRulesRegistre = new Rule({
-        guild_id: guild,
+        guild_id: guild_id,
         name: name,
         description: description, 
         active: active
