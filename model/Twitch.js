@@ -1,15 +1,12 @@
 const mongoose = require("mongoose");
 
-const twitch = mongoose.model("Twitchping", {
-  discord: {
-    id: String,
-    name: String
-  },
+const streamer = mongoose.model("Streamer", {
   twitch: {
     id: String,
     name: String
   },
+  message: String,
   progress: Boolean
 });
 
-module.exports = twitch;
+module.exports = streamer;
