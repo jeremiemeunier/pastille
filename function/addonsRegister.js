@@ -8,7 +8,7 @@ const addonsRegisterInit = async (guild) => {
 }
 
 const addonsRegister = async (addons, guild) => {
-  if(addons.length > 0) {
+  if(addons) {
     try {
       addons.map(addons => {
         addons.active ?
