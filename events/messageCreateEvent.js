@@ -1,5 +1,5 @@
 const { Events } = require('discord.js');
-const { getParams, hoursParser, dateParser } = require('../function/base');
+const { getParams, hoursParser, dateParser, getCommands } = require('../function/base');
 const { bangRule } = require('./interaction/bang/bangRule');
 const { bangStatus } = require('./interaction/bang/bangStatus');
 const { logs } = require('../function/logs');
@@ -11,6 +11,7 @@ const messageCreateEventInit = (client) => {
     const channel = guild.channels.cache.find(channel => channel.id === message.channelId);
 
     const guildParams = await getParams(guild);
+    const guildCommands = await getCommands(guild);
     const { options } = guildParams;
 
     const splitedMsg = content.split(' ');
@@ -20,6 +21,13 @@ const messageCreateEventInit = (client) => {
     if(content.startsWith(options.bang)) {
       if(cmd === 'regles') { bangRule(message, guild); }
       if(cmd === 'status') { bangStatus(message, guild); }
+
+      if(guildCommands) {
+        guildCommands.map((item) => {
+          const { _id, terms } = item;
+          if(cmd === terms) { bangExecute(message, guild, _id) }
+        })
+      }
     }
 
     if(channel.name === options.channels.screenshots) {
