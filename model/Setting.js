@@ -16,6 +16,10 @@ const setting = mongoose.model("Setting", {
     },
     moderation: {
       sharing: Boolean,
+      channels: {
+        alert: String,
+        report: String,
+      },
       limit: {
         emoji: Number,
         mention: Number,

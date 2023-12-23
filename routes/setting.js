@@ -6,7 +6,6 @@ const { logs } = require("../function/logs");
 
 router.post("/settings/add", isPastille, async (req, res) => {
   const { guild_id, premium, premium_end, options, moderation } = req.body;
-  const { channels } = options;
   const { sharing, limit, immune, roles, sanctions } = moderation;
   const { low, medium, hight, critical } = sanctions;
 
@@ -19,14 +18,18 @@ router.post("/settings/add", isPastille, async (req, res) => {
         bang: options.bang || "!",
         color: options.color || "#57CC99",
         channels: {
-          announce: channels.announce || "annonce",
-          help: channels.help || "support",
-          voiceText: channels.voiceText || "voix-avec-les-mains",
-          screenshots: channels.screenshots || "screenshots"
+          announce: options.channels.announce || "annonce",
+          help: options.channels.help || "support",
+          voiceText: options.channels.voiceText || "voix-avec-les-mains",
+          screenshots: options.channels.screenshots || "screenshots"
         }
       },
       moderation: {
         sharing: sharing || false,
+        channels: {
+          alert: moderation.channels.alert || null,
+          report: moderation.channels.report || null
+        },
         limit: {
           emoji: limit.emoji || -1,
           mention: limit.mention || -1,
