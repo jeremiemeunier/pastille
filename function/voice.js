@@ -63,6 +63,6 @@ const deleteVoiceThread = async (channel, threadChannel) => {
 const embedExplicative = new EmbedBuilder()
   .setColor(options.color)
   .setTitle('Ce salon est dédié à votre channel vocal actuel.')
-  .setDescription(`- Il sera automatiquement supprimé une fois que tout le monde aura quitter le channel.\r\n- Chaque personne qui rejoint est automatiquement ajoutée au fil.\r\n- Chaque personne qui quitte le channel vocal est retirée du fil automatiquement.\r\n- Tu peux définir le status de ton salon vocal avec la commande **/status** directement depuis ce fil\r\n- L'automodération est toujours présente même ici. Tu doit donc respecter les règles du serveur.\r\n- Pour un rappel des règles tu peux faire **/regles** directement depuis ce fil`);
+  .setDescription(`- Il sera automatiquement supprimé une fois que tout le monde aura quitter le channel.\r\n- Chaque personne qui rejoint est automatiquement ajoutée au fil.\r\n- Chaque personne qui quitte le channel vocal est retirée du fil automatiquement.\r\n- Tu peux définir le status de ton salon vocal avec la commande **!status** directement depuis ce fil\r\n- L'automodération est toujours présente même ici. Tu doit donc respecter les règles du serveur.\r\n- Pour un rappel des règles tu peux faire **!regles** directement depuis ce fil`);
 
 module.exports = { createVoiceThread, joinVoiceThread, leaveVoiceThread, deleteVoiceThread }
