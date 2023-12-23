@@ -25,7 +25,7 @@ const client = new Client({
     Partials.Reaction],
 });
 
-const { logs, latestLogs } = require('./function/logs');
+const { logs } = require('./function/logs');
 const { voiceEventInit } = require('./events/voiceEvent');
 const { commandRegister } = require('./function/commandsRegister');
 const { reactionAddEventInit } = require('./events/messageReactionAddEvent');
