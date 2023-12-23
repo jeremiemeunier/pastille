@@ -1,11 +1,14 @@
 const { Events, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const { logs } = require('../../../function/logs');
-const { options } = require ('../../../config/settings.json');
+const { getParams } = require('../../../function/base');
 
-const commandStaffInit = (client) => {
+const commandStaffInit = async (client) => {
   client.on(Events.InteractionCreate, async interaction => {
     if (!interaction.isChatInputCommand()) return;
     const { commandName } = interaction;
+
+    const guildParams = await getParams(interaction.guild);
+    const { options } = guildParams;
     
     if(commandName === 'staff') {
       try {

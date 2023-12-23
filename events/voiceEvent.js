@@ -56,16 +56,16 @@ const voiceEventInit = (client) => {
         const connected = await countMembers(voiceChannel, guild);
         const textual = await getTextualChannel(voiceChannel, guild);
 
-        if(connected === 0) { deleteVoiceThread(voiceChannel, textual); }
-        else { leaveVoiceThread(voiceChannel, textual, user); }
+        if(connected === 0) { deleteVoiceThread(guild, voiceChannel, textual); }
+        else { leaveVoiceThread(guild, voiceChannel, textual, user); }
       }
       else if (oldState.channelId === null) {
         const voiceChannel = guild.channels.cache.find(voiceChannel => voiceChannel.id === newState.channelId);
         const connected = await countMembers(voiceChannel, guild);
         const textual = await getTextualChannel(voiceChannel, guild);
 
-        if(connected === 1) {  createVoiceThread(voiceChannel, textual, user); }
-        else { joinVoiceThread(voiceChannel, textual, user); }
+        if(connected === 1) {  createVoiceThread(guild, voiceChannel, textual, user); }
+        else { joinVoiceThread(guild, voiceChannel, textual, user); }
       }
       else {
         const oldVoiceChannel = guild.channels.cache.find(oldVoiceChannel => oldVoiceChannel.id === oldState.channelId);
@@ -75,10 +75,10 @@ const voiceEventInit = (client) => {
         const oldTextual = await getTextualChannel(oldVoiceChannel, guild);
         const newTextual = await getTextualChannel(newVoiceChannel, guild);
 
-        if(oldConnected === 0) { deleteVoiceThread(oldVoiceChannel, oldTextual); }
-        else { leaveVoiceThread(oldVoiceChannel, oldTextual, user); }
-        if(newConnected === 1) { createVoiceThread(newVoiceChannel, newTextual, user); }
-        else { joinVoiceThread(newVoiceChannel, newTextual, user); }
+        if(oldConnected === 0) { deleteVoiceThread(guild, oldVoiceChannel, oldTextual); }
+        else { leaveVoiceThread(guild, oldVoiceChannel, oldTextual, user); }
+        if(newConnected === 1) { createVoiceThread(guild, newVoiceChannel, newTextual, user); }
+        else { joinVoiceThread(guild, newVoiceChannel, newTextual, user); }
       }
     }
     catch(error) { logs('error', 'voice', error); return; }

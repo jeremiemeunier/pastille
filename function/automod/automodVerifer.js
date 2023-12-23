@@ -1,4 +1,3 @@
-const { moderation } = require('../../config/settings.json');
 const { logs } = require('../logs');
 const { BOT_ID } = require('../../config/secret.json');
 const axios = require("axios");
@@ -15,6 +14,8 @@ const automodApply = async (guild, user, timer) => {
 }
 
 const automodVerifier = async (guild) => {
+  const guildParams = await getParams(guild);
+  const { moderation } = guildParams;
   const now = Date.parse(new Date());
   const { muted } = moderation.roles;
 

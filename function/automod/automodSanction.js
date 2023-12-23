@@ -1,10 +1,12 @@
 const { EmbedBuilder } = require('discord.js');
-const { moderation, options } = require('../../config/settings.json');
 const { logs } = require('../logs');
 const { PORT, BOT_ID } = require('../../config/secret.json');
 const axios = require("axios");
+const { getParams } = require('../base');
 
-const automodSanction = (user, size, guild) => {
+const automodSanction = async (user, size, guild) => {
+  const guildParams = await getParams(guild);
+  const { moderation } = guildParams;
   const { sanctions } = moderation;
   const { count } = size.data;
 
@@ -104,6 +106,9 @@ const sanctionRegister = async (userId, level, start, end, guild) => {
 }
 
 const sanctionApplier = async (user, duration, guild) => {
+  const guildParams = await getParams(guild);
+  const { options, moderation } = guildParams;
+
   try {
     const sanctionRole = guild.roles.cache.find(role => role.id === moderation.roles.muted);
 
