@@ -86,15 +86,24 @@ const getParams = async (guild) => {
 	catch(error) { logs("error", "global:get:guild_params", error, guild.id); }
 }
 
-const dateParser = (today) => {
-    let dateReturn = '';
+const hoursParser = async (date) => {
+  if(date === undefined) { date = new Date(); }
 
-	if(today == undefined) { today = new Date(); }
-	if(today.getHours() < 10) { dateReturn += `0${today.getHours()}:`; } else { dateReturn += `${today.getHours()}:`; }
-	if(today.getMinutes() < 10) { dateReturn += `0${today.getMinutes()}:`; } else { dateReturn += `${today.getMinutes()}:`; }
-	if(today.getSeconds() < 10) { dateReturn += `0${today.getSeconds()}`; } else { dateReturn += `${today.getSeconds()}`; }
+  const hours = date.getHours() < 10 ? `0${date.getHours() < 10}` : date.getHours();
+  const minutes = date.getMinutes() < 10 ? `0${date.getMinutes() < 10}` : date.getMinutes();
+  const seconds = date.getSeconds() < 10 ? `0${date.getSeconds() < 10}` : date.getSeconds();
 
-	return dateReturn;
+	return `${hours}:${minutes}:${seconds}`;
 }
 
-module.exports = { dateParser, getParams, getAddons, getRules, getRoles }
+const dateParser = async (date) => {
+  if(date === undefined) { date = new Date(); }
+
+  const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
+  const month = date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : date.getMonth();
+  const year = date.getFullYear();
+
+	return `${day}/${month}/${year}`;
+}
+
+module.exports = { hoursParser, dateParser, getParams, getAddons, getRules, getRoles }
