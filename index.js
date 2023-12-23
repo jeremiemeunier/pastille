@@ -13,16 +13,16 @@ mongoose.connect(MONGODB_URL);
 
 const { Client, GatewayIntentBits, Partials, Events } = require('discord.js');
 const client = new Client({
-    intents: [
-        GatewayIntentBits.Guilds,
-        GatewayIntentBits.GuildMessages,
-        GatewayIntentBits.MessageContent,
-        GatewayIntentBits.GuildMessageReactions,
-        GatewayIntentBits.GuildVoiceStates],
-    partials: [
-        Partials.Message,
-        Partials.Channel,
-        Partials.Reaction],
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildMessageReactions,
+    GatewayIntentBits.GuildVoiceStates],
+  partials: [
+    Partials.Message,
+    Partials.Channel,
+    Partials.Reaction],
 });
 
 const { logs, latestLogs } = require('./function/logs');
@@ -53,50 +53,53 @@ if (!String.prototype.endsWith) {
 }
 
 // ##### APP ##### \\
+const guildStarter = (guild) => {
+  logs("infos", "booter:guild", "Start all functions", guild.id);
+  automodVerifier(guild);
+  commandRegister(guild);
+  addonsRegisterInit(guild);
+}
+
 const pastilleBooter = async () => {
-    logs('start', 'booter', 'Pastille has started successfully');
+  logs('start', 'booter', 'Pastille has started successfully');
 
 	try {
-        const allGuilds = client.guilds.cache;
+    const allGuilds = client.guilds.cache;
 
-        allGuilds.map((guild, index) => {
-            logs("infos", "booter:guild", "Start all functions", guild.id);
-            automodVerifier(guild);
-            commandRegister(guild);
-            addonsRegisterInit(guild);
-        });
-
-        voiceEventInit(client);
-        reactionAddEventInit(client);
-        reactionRemoveEventInit(client);
-        interactionCreateEventInit(client);
-        messageCreateEventInit(client);
-        automod(client);
-    }
-    catch (error) { logs('error', 'booter', error); }
-
-    try {
-        // API
-        api();
-    }
-    catch(error) { logs("error", "api:server:global", error); }
-
-    client.on(Events.GuildCreate, (guild) => {
-        logs('infos', 'events:new_guild', "Join a new guild", guild.id);
-        commandRegister(guild);
+    allGuilds.map((guild) => {
+      guildStarter(guild);
     });
+
+    voiceEventInit(client);
+    reactionAddEventInit(client);
+    reactionRemoveEventInit(client);
+    interactionCreateEventInit(client);
+    messageCreateEventInit(client);
+    automod(client);
+  }
+  catch (error) { logs('error', 'booter', error); }
+
+  try {
+    // API
+    api();
+  }
+  catch(error) { logs("error", "api:server:global", error); }
+
+  client.on(Events.GuildCreate, (guild) => {
+    logs('infos', 'events:new_guild', "Join a new guild", guild.id);
+    guildStarter(guild);
+  });
 }
 
 process.on('SIGINT', async () => {
-    logs('infos', 'docker:stop', "Process has request to stop");
-    await latestLogs('infos', 'docker:stop', "Process has request to stop", client);
-    process.exit(99);
+  logs('infos', 'docker:stop', "Process has request to stop");
+  process.exit(300);
 });
 
 try {
-    client.on('ready', () => { pastilleBooter(); });
-    client.login(BOT_TOKEN);
+  client.on('ready', () => { pastilleBooter(); });
+  client.login(BOT_TOKEN);
 }
 catch(error) {
-    logs("error", "client:connect", error);
+  logs("error", "client:connect", error);
 }

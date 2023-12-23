@@ -15,54 +15,54 @@ const automodApply = async (guild, user, timer) => {
 }
 
 const automodVerifier = async (guild) => {
-    const now = Date.parse(new Date());
-    const { muted } = moderation.roles;
+  const now = Date.parse(new Date());
+  const { muted } = moderation.roles;
 
-    logs("infos", "automod:verifier", "Start sanctions verifications", guild.id);
-    
-    try {
-        const allSanctions = await axios({
-            method: "get",
-            url: "/sanction",
-            params: {
-                guild: guild.id
-            },
-            headers: {
-                "pastille_botid": BOT_ID
-            }
-        });
+  logs("infos", "automod:verifier", "Start sanctions verifications", guild.id);
+  
+  try {
+    const allSanctions = await axios({
+      method: "get",
+      url: "/sanction",
+      params: {
+        guild: guild.id
+      },
+      headers: {
+        "pastille_botid": BOT_ID
+      }
+    });
 
-        if(allSanctions) {
-            const { items } = allSanctions.data;
-            
-            items.map(async (item, index) => {
-                const { sanction, user_id, guild_id } = item;
-                const ending = Date.parse(new Date(sanction.ending));
+    if(allSanctions) {
+      const { items } = allSanctions.data;
+      
+      items.map(async (item, index) => {
+        const { sanction, user_id, guild_id } = item;
+        const ending = Date.parse(new Date(sanction.ending));
 
-                const guild = client.guilds.cache.find(guild => guild.id === guild_id);
-                const user = await client.users.fetch(user_id);
-                // const sanctionRole = guild.roles.cache.find(role => role.id === muted);
+        const guild = client.guilds.cache.find(guild => guild.id === guild_id);
+        const user = await client.users.fetch(user_id);
+        // const sanctionRole = guild.roles.cache.find(role => role.id === muted);
 
-                if(user) {
-                    if(ending <= now) {
-                        console.log("C'est déjà good on enlève le rôle")
-                    }
-                    else {
-                        const newTimer = ending - now;
-    
-                        setTimeout(() => {
-                            console.log("Sanction fini on enlève le rôle");
-                        }, newTimer);
-                    }
-                }
-                else { logs("warning", "automod:verifier:rebind", `User not find : ${user_id}`); }
-            })
+        if(user) {
+          if(ending <= now) {
+            console.log("C'est déjà good on enlève le rôle")
+          }
+          else {
+            const newTimer = ending - now;
+
+            setTimeout(() => {
+              console.log("Sanction fini on enlève le rôle");
+            }, newTimer);
+          }
         }
-        else { logs("infos", "automod:verifier", "No sanction in database"); }
+        else { logs("warning", "automod:verifier:rebind", `User not find : ${user_id}`); }
+      })
     }
-    catch(error) { logs("error", "automod:verifier", error); }
+    else { logs("infos", "automod:verifier", "No sanction in database"); }
+  }
+  catch(error) { logs("error", "automod:verifier", error); }
 
-    logs("infos", "automod:verifier", "End sanctions verifications", guild.id);
+  logs("infos", "automod:verifier", "End sanctions verifications", guild.id);
 }
 
 module.exports = { automodVerifier }

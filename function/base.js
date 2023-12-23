@@ -20,7 +20,7 @@ const getAddons = async (guild) => {
 		const guildAddons = guildAddonsRequest.data.data;
 		return guildAddons;
 	}
-	catch(error) { logs("error", "global:get:guild_addons", error); }
+	catch(error) { logs("error", "global:get:guild_addons", error, guild.id); }
 }
 
 const getRoles = async (guild) => {
@@ -41,7 +41,7 @@ const getRoles = async (guild) => {
 		const guildRoles = guildRolesrequest.data.data;
 		return guildRoles;
 	}
-	catch(error) { logs("error", "global:get:guild_rules", error); }
+	catch(error) { logs("error", "global:get:guild_rules", error, guild.id); }
 }
 
 const getRules = async (guild) => {
@@ -62,7 +62,7 @@ const getRules = async (guild) => {
 		const guildRules = guildRulesRequest.data.data;
 		return guildRules;
 	}
-	catch(error) { logs("error", "global:get:guild_rules", error); }
+	catch(error) { logs("error", "global:get:guild_rules", error, guild.id); }
 }
 
 const getParams = async (guild) => {
@@ -71,9 +71,9 @@ const getParams = async (guild) => {
 	try {
 		const guildParamsRequest = await axios({
 			method: "get",
-			url: "/params",
+			url: "/settings",
 			params: {
-				guild: guildId
+				guild_id: guildId
 			},
 			headers: {
 				"pastille_botid": BOT_ID
@@ -83,7 +83,7 @@ const getParams = async (guild) => {
 		const guildParams = guildParamsRequest.data.data;
 		return guildParams;
 	}
-	catch(error) { logs("error", "global:get:guild_params", error); }
+	catch(error) { logs("error", "global:get:guild_params", error, guild.id); }
 }
 
 const dateParser = (today) => {
