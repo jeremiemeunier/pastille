@@ -2,10 +2,6 @@ const { BOT_TOKEN, MONGODB_URL } = require('./config/secret.json');
 const process = require('process');
 const mongoose = require("mongoose");
 
-// Setup of axios
-const axios = require('axios');
-axios.defaults.baseURL = "http://localhost:3000";
-
 // BDD
 mongoose.connect(MONGODB_URL);
 
@@ -29,7 +25,6 @@ const client = new Client({
 
 const { logs } = require('./function/logs');
 const { voiceEventInit } = require('./events/voiceEvent');
-const { commandRegister } = require('./function/commandsRegister');
 const { reactionAddEventInit } = require('./events/messageReactionAddEvent');
 const { reactionRemoveEventInit } = require('./events/messageReactionRemoveEvent');
 const { interactionCreateEventInit } = require('./events/interactionCreateEvent');
@@ -37,7 +32,7 @@ const { messageCreateEventInit } = require('./events/messageCreateEvent');
 const { addonsRegisterInit } = require('./function/addonsRegister');
 const { automod } = require('./events/messageModerationEvent');
 const { automodVerifier } = require('./function/automod/automodVerifer');
-const { api } = require('./function/api');
+const { api, apiVerifier } = require('./function/api');
 
 // ##### FIX ##### \\
 if (!String.prototype.endsWith) {
@@ -56,37 +51,41 @@ if (!String.prototype.endsWith) {
 
 // ##### APP ##### \\
 const guildStarter = (guild) => {
-  try {
-    logs("infos", "booter:guild", "Start all functions", guild.id);
-    automodVerifier(guild);
-    commandRegister(guild);
-    addonsRegisterInit(guild);
+  if(apiVerifier()) {
+    const { commandRegister } = require('./function/commandsRegister');
+
+    try {
+      logs("infos", "booter:guild", "Start all functions", guild.id);
+      automodVerifier(guild);
+      commandRegister(guild);
+      addonsRegisterInit(guild);
+    }
+    catch(error) { logs("error", "guild_starter", error, guild.id); }
   }
-  catch(error) { logs("error", "guild_starter", error, guild.id); }
 }
 
 const pastilleBooter = async () => {
   logs('start', 'booter', 'Pastille has started successfully');
 
-	try {
-    const allGuilds = client.guilds.cache;
-
-    allGuilds.map((guild) => {
-      guildStarter(guild);
-    });
-
-    voiceEventInit(client);
-    reactionAddEventInit(client);
-    reactionRemoveEventInit(client);
-    interactionCreateEventInit(client);
-    messageCreateEventInit(client);
-    automod(client);
-  }
-  catch (error) { logs('error', 'booter', error); }
-
   try {
     // API
     api();
+
+    try {
+      const allGuilds = client.guilds.cache;
+  
+      allGuilds.map((guild) => {
+        guildStarter(guild);
+      });
+  
+      voiceEventInit(client);
+      reactionAddEventInit(client);
+      reactionRemoveEventInit(client);
+      interactionCreateEventInit(client);
+      messageCreateEventInit(client);
+      automod(client);
+    }
+    catch (error) { logs('error', 'booter', error); }
   }
   catch(error) { logs("error", "api:server:global", error); }
 
