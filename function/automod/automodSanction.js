@@ -75,13 +75,24 @@ const durationInterpreter = (sanctionData) => {
   else if (unit === 'd') { return duration * (1000 * 3600 * 24); }
 }
 
-const durationFormater = (duration) => {
-  const minutes = duration / (1000 * 60);
+const durationFormater = (time) => {
+  const duration = time / 1000;
+  const days = Math.floor(duration / (24 * 3600));
 
-  if(minutes >= 60) {
-      
+  const calcHours = (days, duration) => {
+    const response = Math.floor(duration - (days * (24 * 3600)) / 3600);
+    return response;
   }
-  else { return `${minutes} minutes`; }
+
+  const calcMinutes = (days, hours, duration) => {
+    const response = Math.floor(duration - (days * (24 * 3600)) - (hours * 3600) / 60);
+    return response;
+  }
+
+  const hours = calcHours(days, duration);
+  const minutes = calcMinutes(days, hours, duration);
+
+  return `${days} jour${days > 1 && "s"}, ${hours} heure${hours > 1 && "s"}, ${minutes} minute${minutes > 1 && "s"}`;
 }
 
 const sanctionRegister = async (userId, level, start, end, guild) => {
