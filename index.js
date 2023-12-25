@@ -96,14 +96,12 @@ const pastilleBooter = async () => {
 }
 
 process.on('SIGINT', async () => {
-  logs('infos', 'docker:stop', "Process has request to stop");
+  logs('infos', 'process:stop', "Process has request to stop");
   process.exit(300);
 });
 
 try {
-  client.on('ready', () => { pastilleBooter(); });
+  client.on("ready", () => { pastilleBooter(); });
   client.login(BOT_TOKEN);
 }
-catch(error) {
-  logs("error", "client:connect", error);
-}
+catch(error) { logs("error", "client:connect", error); }
