@@ -18,11 +18,13 @@ const client = new Client({
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
     GatewayIntentBits.GuildMessageReactions,
-    GatewayIntentBits.GuildVoiceStates],
+    GatewayIntentBits.GuildVoiceStates,
+  ],
   partials: [
     Partials.Message,
     Partials.Channel,
-    Partials.Reaction],
+    Partials.Reaction,
+  ],
 });
 
 const { logs } = require('./function/logs');
