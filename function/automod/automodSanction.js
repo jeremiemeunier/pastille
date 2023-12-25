@@ -92,7 +92,9 @@ const durationFormater = (time) => {
   const hours = calcHours(days, duration);
   const minutes = calcMinutes(days, hours, duration);
 
-  return `${days > 0 ? "jour(s)," : ""} ${hours > 0 ? "heure(s) et" : ""} ${minutes} minute${minutes > 1 ? "s" : ""}`;
+  if(days > 0) { return `${days} jour(s)`; }
+  if(hours > 0) { return `${hours} heure(s)`; }
+  if(minutes > 0) { return `${minutes} minute(s)`; }
 }
 
 const sanctionRegister = async (userId, level, start, end, guild) => {
