@@ -32,7 +32,7 @@ const { messageCreateEventInit } = require('./events/messageCreateEvent');
 const { addonsRegisterInit } = require('./function/addonsRegister');
 const { automod } = require('./events/messageModerationEvent');
 const { automodVerifier } = require('./function/automod/automodVerifer');
-const { api, apiVerifier } = require('./function/api');
+const { api } = require('./function/api');
 
 // ##### FIX ##### \\
 if (!String.prototype.endsWith) {
@@ -51,17 +51,24 @@ if (!String.prototype.endsWith) {
 
 // ##### APP ##### \\
 const guildStarter = (guild) => {
-  if(apiVerifier()) {
-    const { commandRegister } = require('./function/commandsRegister');
+  const { commandRegister } = require('./function/commandsRegister');
 
-    try {
-      logs("infos", "booter:guild", "Start all functions", guild.id);
-      automodVerifier(guild);
-      commandRegister(guild);
-      addonsRegisterInit(guild);
-    }
-    catch(error) { logs("error", "guild_starter", error, guild.id); }
+  try {
+    logs("infos", "booter:guild", "Start all functions", guild.id);
+    automodVerifier(guild);
+    commandRegister(guild);
+    addonsRegisterInit(guild);
   }
+  catch(error) { logs("error", "guild_starter", error, guild.id); }
+}
+
+const guildExit = async () => {
+  const { commandDelete } = require("./function/commandsRegister");
+
+  const allGuilds = client.guilds.cache;
+  allGuilds.map(async (guild) => {
+    await commandDelete(guild);
+  });
 }
 
 const pastilleBooter = async () => {
@@ -97,6 +104,7 @@ const pastilleBooter = async () => {
 
 process.on('SIGINT', async () => {
   logs('infos', 'process:stop', "Process has request to stop");
+  await guildExit();
   process.exit(300);
 });
 
