@@ -92,7 +92,7 @@ const durationFormater = (time) => {
   const hours = calcHours(days, duration);
   const minutes = calcMinutes(days, hours, duration);
 
-  return `${days} jour${days > 1 ? "s" : ""}, ${hours} heure${hours > 1 ? "s" : ""}, ${minutes} minute${minutes > 1 ? "s" : ""}`;
+  return `${days > 0 ? "jour(s)," : ""} ${hours > 0 ? "heure(s) et" : ""} ${minutes} minute${minutes > 1 ? "s" : ""}`;
 }
 
 const sanctionRegister = async (userId, level, start, end, guild) => {
@@ -129,18 +129,27 @@ const sanctionApplier = async (user, duration, guild) => {
     const embedSanction = new EmbedBuilder()
       .setColor(options.color)
       .setTitle("Nouvelle sanction")
-      .setDescription(`Tu es timeout pour ${textualDuration}, tu ne peux plus envoyer de message ou parler dans les channels vocaux jusqu'à la fin de ta sanction.`);
+      .setDescription(`Tu es timeout pour ${textualDuration}.\r\n**Tu ne peux plus :**\r\n- Envoyer de message\r\n- Parler dans les channels vocaux\r\n- Réagir aux posts des autres membres\r\n- Participer ou rejoindre de nouveaux fils.\r\n\r\n 
+      **Ces interdictions sont valables jusqu'à la fin de ta sanction.**`);
     
     try {
       await user.send({
-        content: `<@${user.user.id.toString()}> you receive a sanction`,
+        content: `<@${user.user.id.toString()}> tu as été sanctionné(e) sur **__${guild.name}__**`,
         embeds: [embedSanction] });
     }
     catch(error) { logs("error", "automod:sanction:notice", error, guild.id); }
 
     try {
-      const applySanction = setTimeout(() => {
-        user.roles.remove(sanctionRole);
+      const applySanction = setTimeout(async () => {
+        const embedSanction = new EmbedBuilder()
+          .setColor(options.color)
+          .setTitle("Sanction terminée")
+          .setDescription(`Ta sanction vient de prendre fin. Tu peux à nouveau profiter pleinement du serveur.`);
+        await user.roles.remove(sanctionRole);
+        await user.send({
+          content: `Ta sanction sur **__${guild.name}__** vient de prend fin`,
+          embeds: [embedSanction]
+        });
       }, duration);
     }
     catch(error) { logs("error", "automod:sanction:remove:timer", error, guild.id); }
