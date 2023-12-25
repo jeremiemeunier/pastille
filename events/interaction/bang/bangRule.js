@@ -24,8 +24,7 @@ const bangRule = async (message, guild) => {
         .setColor(`${options.color}`)
         .setTitle('Règles du serveur')
         .addFields(rulesField);
-      await message.delete();
-      await channel.send({ content: "Rappel des règles du serveur", embeds: [rulesEmbed] });
+      await message.reply({ content: "Rappel des règles du serveur", embeds: [rulesEmbed] });
     }
   }
   catch(error) { logs("error", "rule:thread_voice", error, guild.id); }
