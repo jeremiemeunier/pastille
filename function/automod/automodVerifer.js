@@ -2,6 +2,7 @@ const { logs } = require('../logs');
 const { BOT_ID } = require('../../config/secret.json');
 const axios = require("axios");
 const { getParams } = require('../base');
+const { durationFormater } = require('./automodSanction');
 
 const automodRemove = async (guild, user) => {
     const params = await getParams(guild);
@@ -49,13 +50,19 @@ const automodVerifier = async (guild) => {
         if(!sanctionRole) {
           logs("warning", "automod:verifier:rebind", `Role not find : ${moderation.roles.muted}`, guild.id); return; }
 
-            try {
-              const sanctionApply = setTimeout(async () => {
-                await user.roles.remove(sanctionRole);
-              }, newTimer);
-            }
-            catch(error) { logs("error", "sanction:verifier:remove:timer", error, guild.id); }
+        if(ending <= now) {
+          try { await user.roles.remove(sanctionRole); }
+          catch(error) { logs("error", "sanction:verifier:remove", error, guild.id); }
+        }
+        else {
+          const newTimer = ending - now;
+
+          try {
+            const sanctionApply = setTimeout(async () => {
+              await user.roles.remove(sanctionRole);
+            }, newTimer);
           }
+          catch(error) { logs("error", "sanction:verifier:remove:timer", error, guild.id); }
         }
       });
     }
