@@ -19,14 +19,7 @@ const createVoiceThread = async (guild, channel, threadChannel, user) => {
     const embedExplicative = new EmbedBuilder()
       .setColor(options.color)
       .setTitle('Ce salon est dédié à votre channel vocal actuel.')
-      .setDescription(`
-        - Il sera automatiquement supprimé une fois que tout le monde aura quitté le channel.\r\n
-        - Chaque personne qui rejoint est automatiquement ajoutée au fil.\r\n
-        - Chaque personne qui quitte le channel vocal est retirée du fil automatiquement.\r\n
-        - L'automodération est toujours présente même ici. Tu **doit** donc respecter les règles du serveur.\r\n
-        **Les commandes**\r\n
-        - Tu peux définir le status de ton salon vocal avec la commande **!status __ton status__ ** directement depuis ce fil\r\n
-        - Pour un rappel des règles tu peux faire **!regles** directement depuis ce fil`);
+      .setDescription(`- Il sera automatiquement supprimé une fois que tout le monde aura quitté le channel.\n- Chaque personne qui rejoint est automatiquement ajoutée au fil.\n- Chaque personne qui quitte le channel vocal est retirée du fil automatiquement.\n- L'automodération est toujours présente même ici. Tu **doit** donc respecter les règles du serveur.\n**Les commandes**\n- Pour un rappel des règles tu peux faire **!regles** directement depuis ce fil`);
     const embed = new EmbedBuilder()
       .setColor(options.color)
       .setDescription(`<@${user}> tu as rejoint un salon vocal 🎙️`);
