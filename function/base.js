@@ -65,6 +65,40 @@ const getRules = async (guild) => {
 	catch(error) { logs("error", "global:get:guild_rules", error, guild.id); }
 }
 
+const getLetters = async (letter, limit = -1) => {
+
+  if(letter) {
+    try {
+      const appLetterRequest = await axios({
+        method: "get",
+        url: "/emotes",
+        params: {
+          letter: letter,
+        }
+      });
+
+      const appLetter = appLetterRequest.data.data;
+      return appLetter;
+    }
+    catch(error) { logs("error", "global:get:letter", error); }
+  }
+  else {
+    try {
+      const appLettersRequest = await axios({
+        method: "get",
+        url: "/emotes/all",
+        params: {
+          limit: limit
+        }
+      });
+
+      const appLetters = appLettersRequest.data.data;
+      return appLetters;
+    }
+    catch(error) { logs("error", "global:get:letters", error); }
+  }
+}
+
 const getCommands = async (guild, id) => {
 	const guildId = guild.id;
 
@@ -147,4 +181,4 @@ const dateParser = async (date) => {
 	return `${day}/${month}/${year}`;
 }
 
-module.exports = { hoursParser, dateParser, getParams, getAddons, getRules, getRoles, getCommands }
+module.exports = { hoursParser, dateParser, getParams, getAddons, getRules, getRoles, getCommands, getLetters }
