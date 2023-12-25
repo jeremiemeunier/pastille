@@ -13,8 +13,9 @@ const automod = (client) => {
 
     const mentions = message.mentions.roles.map(x => x).length + message.mentions.users.map(x => x).length;
     const user = guild.members.cache.find(user => user.id === message.author.id);
-    const channel = guild.channels.cache.find(channel => channel.id === message.channelId);
-    const alert = guild.channels.cache.find(alert => alert.id === moderation.channels.alert);
+    const infractionChannel = guild.channels.cache.find(channel => channel.id === message.channelId);
+    const alert = guild.channels.cache.find(channel => channel.id === moderation.channels.alert);
+    const report = guild.channels.cache.find(channel => channel.id === moderation.channels.report);
 
     if(user === undefined) { return; }
 
@@ -35,9 +36,9 @@ const automod = (client) => {
             .setDescription('**Raison** : Trop de mentions');
           message.delete();
 
-          await alert.send({
+          await report.send({
             embeds: [embedSanction, embedProof] });
-          await channel.send({
+          await infractionChannel.send({
             content: `<@${user.user.id.toString()}> you receive a warn`,
             embeds: [embedSanction] });
           await user.send({
@@ -58,9 +59,9 @@ const automod = (client) => {
             .setTitle(`${user.user.username} [${user.user.globalName}] a reçu un avertissement`)
             .setDescription('**Raison** : Mentionne @everyone');
           message.delete();
-          await alert.send({ embeds: [embedSanction, embedProof] });
-          await channel.send({
-            content: `<@${user.user.id.toString()}> you receive a warn`,
+          await report.send({ embeds: [embedSanction, embedProof] });
+          await infractionChannel.send({
+            content: `<@${user.user.id.toString()}> receive a warn`,
             embeds: [embedSanction] });
           await user.send({
             content: `<@${user.user.id.toString()}> you receive a warn`,
