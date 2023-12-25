@@ -56,14 +56,14 @@ const automodSanction = async (user, size, guild) => {
     count === 30 ||
     count === 33
   ) {
-    // Sanction de ban temporaire de 1 heure du serveur
-
+    // Sanction de ban temporaire de 10 minutes du serveur
+    user.timeout(600_000);
   }
   else if(
     count > 33
   ) {
     // Ban définitifs du serveur
-
+    guild.members.ban(user);
   }
 }
 
