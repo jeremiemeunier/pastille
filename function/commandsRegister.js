@@ -29,8 +29,8 @@ const commandRegister = async (guild) => {
     try {
       logs('infos', 'command:register', `Started refreshing ${commands.length} application (/) commands`, guild.id);
       const data = await rest.put(
-          Routes.applicationGuildCommands(BOT_ID, guild.id),
-          { body: commands },
+        Routes.applicationGuildCommands(BOT_ID, guild.id),
+        { body: commands },
       );
       logs('infos', 'command:register', `Successfully reloaded ${data.length} application (/) commands`, guild.id);
     }
