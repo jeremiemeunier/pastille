@@ -25,17 +25,34 @@ for(const folder of commandFolders) {
 
 const commandRegister = async (guild) => {
   const rest = new REST().setToken(BOT_TOKEN);
-  (async () => {
+  await (async () => {
     try {
-      logs('infos', 'command:register', `Started refreshing ${commands.length} application (/) commands`, guild.id);
+      logs('infos', 'command:register', `Refreshing ${commands.length} (/) commands`, guild.id);
       const data = await rest.put(
         Routes.applicationGuildCommands(BOT_ID, guild.id),
         { body: commands },
       );
-      logs('infos', 'command:register', `Successfully reloaded ${data.length} application (/) commands`, guild.id);
+      logs('infos', 'command:register', `Reloaded ${data.length} (/) commands`, guild.id);
     }
     catch (error) { logs('error', 'command:register', error, guild.id); }
   })();
 }
 
-module.exports = { commandRegister };
+const commandDelete = async (guild) => {
+  const rest = new REST().setToken(BOT_TOKEN);
+  await (async () => {
+    try {
+      logs('infos', 'command:register', `Deleting ${commands.length} (/) commands`, guild.id);
+      await rest.put(
+        Routes.applicationGuildCommands(BOT_ID, guild.id),
+        { body: [] },
+      )
+      .then(() => { logs('infos', 'command:deleting', `Deleted ${data.length} (/) commands`, guild.id) })
+      .catch((error) => { logs('error', 'command:deleting', error, guild.id) });
+      
+    }
+    catch (error) { logs('error', 'command:register', error, guild.id); }
+  })();
+}
+
+module.exports = { commandRegister, commandDelete };
