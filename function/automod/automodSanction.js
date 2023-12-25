@@ -111,8 +111,6 @@ const sanctionRegister = async (userId, level, start, end, guild) => {
         end: end,
       }
     });
-
-    console.log(register.data.data);
   }
   catch(error) { logs("error", "automod:sanction:register:api", error, guild); }
 }
@@ -131,7 +129,7 @@ const sanctionApplier = async (user, duration, guild) => {
     const embedSanction = new EmbedBuilder()
       .setColor(options.color)
       .setTitle("Nouvelle sanction")
-      .setDescription(`Tu es timeout pour ${textualDuration}, tu ne peux plus envoyer de message ou parler dans les channel vocaux jusqu'à la fin de ta sanction.`);
+      .setDescription(`Tu es timeout pour ${textualDuration}, tu ne peux plus envoyer de message ou parler dans les channels vocaux jusqu'à la fin de ta sanction.`);
     
     try {
       await user.send({
@@ -150,4 +148,4 @@ const sanctionApplier = async (user, duration, guild) => {
   catch(error) { logs("error", "automod:sanction:applier:send", error, guild.id); }
 }
 
-module.exports = { automodSanction }
+module.exports = { automodSanction, durationFormater }
