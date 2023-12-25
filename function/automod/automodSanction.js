@@ -80,27 +80,26 @@ const durationFormater = (time) => {
   const days = Math.floor(duration / (24 * 3600));
 
   const calcHours = (days, duration) => {
-    const response = Math.floor(duration - (days * (24 * 3600)) / 3600);
+    const response = Math.floor((duration - (days * (24 * 3600))) / 3600);
     return response;
   }
 
   const calcMinutes = (days, hours, duration) => {
-    const response = Math.floor(duration - (days * (24 * 3600)) - (hours * 3600) / 60);
+    const response = Math.floor((duration - (days * (24 * 3600)) - (hours * 3600)) / 60);
     return response;
   }
 
   const hours = calcHours(days, duration);
   const minutes = calcMinutes(days, hours, duration);
 
-  return `${days} jour${days > 1 && "s"}, ${hours} heure${hours > 1 && "s"}, ${minutes} minute${minutes > 1 && "s"}`;
+  return `${days} jour${days > 1 ? "s" : ""}, ${hours} heure${hours > 1 ? "s" : ""}, ${minutes} minute${minutes > 1 ? "s" : ""}`;
 }
 
 const sanctionRegister = async (userId, level, start, end, guild) => {
   try {
     const register = await axios({
       method: "post",
-      url: "/sanction",
-      baseURL: `http://localhost:${PORT}`,
+      url: "/sanction/add",
       headers: {
         "pastille_botid": BOT_ID
       },
@@ -112,8 +111,10 @@ const sanctionRegister = async (userId, level, start, end, guild) => {
         end: end,
       }
     });
+
+    console.log(register.data.data);
   }
-  catch(error) { logs("error", "automod:sanction:register", error); }
+  catch(error) { logs("error", "automod:sanction:register:api", error, guild); }
 }
 
 const sanctionApplier = async (user, duration, guild) => {
