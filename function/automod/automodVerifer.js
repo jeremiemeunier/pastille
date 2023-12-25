@@ -22,42 +22,48 @@ const automodVerifier = async (guild) => {
   logs("infos", "automod:verifier", "Start sanctions verifications", guild.id);
   
   try {
-    const allSanctions = await axios({
+    const allGuildSanctionsRequest = await axios({
       method: "get",
       url: "/sanction",
       params: {
-        guild: guild.id
+        guild_id: guild.id
       },
       headers: {
         "pastille_botid": BOT_ID
       }
     });
 
-    if(allSanctions) {
-      const { items } = allSanctions.data;
-      
-      items.map(async (item, index) => {
-        const { sanction, user_id, guild_id } = item;
-        const ending = Date.parse(new Date(sanction.ending));
+    const allGuildSanctions = allGuildSanctionsRequest.data.data;
+    const guildParams = await getParams(guild);
+    const { moderation } = guildParams;
 
-        const guild = client.guilds.cache.find(guild => guild.id === guild_id);
-        const user = await client.users.fetch(user_id);
-        // const sanctionRole = guild.roles.cache.find(role => role.id === muted);
+    if(allGuildSanctions && allGuildSanctions.length > 0) {
+      allGuildSanctions.map(async (item) => {
+        const { sanction, user_id } = item;
+        const ending = Date.parse(new Date(sanction.ending));
+        const user = await guild.members.fetch(user_id);
+        const sanctionRole = guild.roles.cache.find(role => role.id === moderation.roles.muted);
 
         if(user) {
           if(ending <= now) {
-            console.log("C'est déjà good on enlève le rôle")
+            try {
+              await user.roles.remove(sanctionRole);
+            }
+            catch(error) { logs("error", "sanction:verifier:remove", error, guild.id); }
           }
           else {
             const newTimer = ending - now;
 
-            setTimeout(() => {
-              console.log("Sanction fini on enlève le rôle");
-            }, newTimer);
+            try {
+              const sanctionApply = setTimeout(async () => {
+                await user.roles.remove(sanctionRole);
+              }, newTimer);
+            }
+            catch(error) { logs("error", "sanction:verifier:remove:timer", error, guild.id); }
           }
         }
         else { logs("warning", "automod:verifier:rebind", `User not find : ${user_id}`); }
-      })
+      });
     }
     else { logs("infos", "automod:verifier", "No sanction in database"); }
   }
