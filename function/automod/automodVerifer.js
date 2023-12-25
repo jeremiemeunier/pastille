@@ -3,16 +3,72 @@ const { logs } = require('../logs');
 const { BOT_ID } = require('../../config/secret.json');
 const axios = require("axios");
 const { getParams } = require('../base');
-const { durationFormater } = require('./automodSanction');
+
+const durationFormater = (time) => {
+  const duration = time / 1000;
+  const days = Math.floor(duration / (24 * 3600));
+
+  const calcHours = (days, duration) => {
+    const response = Math.floor((duration - (days * (24 * 3600))) / 3600);
+    return response;
+  }
+
+  const calcMinutes = (days, hours, duration) => {
+    const response = Math.floor((duration - (days * (24 * 3600)) - (hours * 3600)) / 60);
+    return response;
+  }
+
+  const hours = calcHours(days, duration);
+  const minutes = calcMinutes(days, hours, duration);
+
+  if(days > 0) { return `${days} jour(s)`; }
+  if(hours > 0) { return `${hours} heure(s)`; }
+  if(minutes > 0) { return `${minutes} minute(s)`; }
+}
 
 const automodRemove = async (guild, user) => {
-    const params = await getParams(guild);
+  const guildParams = await getParams(guild);
+  const { options, moderation } = guildParams;
 
-    console.log(params);
+  const sanctionRole = guild.roles.cache.find(role => role.id === moderation.roles.muted);
+  const embedSanction = new EmbedBuilder()
+    .setColor(options.color)
+    .setTitle("Sanction terminée")
+    .setDescription(`Ta sanction vient de prendre fin. Tu peux à nouveau profiter pleinement du serveur.`);
+
+  try {
+    await user.roles.remove(sanctionRole);
+    await user.send({
+      content: `Ta sanction sur **__${guild.name}__** vient de prend fin`,
+      embeds: [embedSanction]
+    });
+  }
+  catch(error) { logs("error", "automod:remove", error, guild.id); }
 }
 
 const automodApply = async (guild, user, timer) => {
-    const params = await getParams(guild);
+  const guildParams = await getParams(guild);
+  const { options, moderation } = guildParams;
+
+  const textualDuration = durationFormater(timer);
+  const sanctionRole = guild.roles.cache.find(role => role.id === moderation.roles.muted);
+  const embedSanction = new EmbedBuilder()
+    .setColor(options.color)
+    .setTitle("Nouvelle sanction")
+    .setDescription(`Tu es timeout pour ${textualDuration}.\r\n**Tu ne peux plus :**\r\n- Envoyer de message\r\n- Parler dans les channels vocaux\r\n- Réagir aux posts des autres membres\r\n- Participer ou rejoindre de nouveaux fils.\r\n\r\n 
+    **Ces interdictions sont valables jusqu'à la fin de ta sanction.**`);
+
+  try {
+    await user.send({
+      content: `<@${user.id.toString()}> tu as été sanctionné(e) sur **__${guild.name}__**`,
+      embeds: [embedSanction] });
+    await user.roles.add(sanctionRole);
+  }
+  catch(error) { logs("error", "automod:sanction:notice", error, guild.id); }
+
+  const applySanction = setTimeout(async () => {
+    automodRemove(guild, user);
+  }, timer);
 }
 
 const automodVerifier = async (guild) => {
@@ -60,15 +116,7 @@ const automodVerifier = async (guild) => {
 
           try {
             const sanctionApply = setTimeout(async () => {
-              const embedSanction = new EmbedBuilder()
-                .setColor(options.color)
-                .setTitle("Sanction terminée")
-                .setDescription(`Ta sanction vient de prendre fin. Tu peux à nouveau profiter pleinement du serveur.`);
-              await user.roles.remove(sanctionRole);
-              await user.send({
-                content: `Ta sanction sur **__${guild.name}__** vient de prend fin`,
-                embeds: [embedSanction]
-              });
+              automodRemove(guild, user);
             }, newTimer);
           }
           catch(error) { logs("error", "sanction:verifier:remove:timer", error, guild.id); }
@@ -81,4 +129,4 @@ const automodVerifier = async (guild) => {
   logs("infos", "automod:verifier", "End sanctions verifications", guild.id);
 }
 
-module.exports = { automodVerifier }
+module.exports = { automodVerifier, automodApply, automodRemove }
