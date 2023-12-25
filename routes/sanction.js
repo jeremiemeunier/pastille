@@ -25,9 +25,11 @@ router.post("/sanction/add", isPastille, async (req, res) => {
 });
 
 router.get("/sanction", isPastille, async (req, res) => {
+  const { guild_id } = req.query;
+
   try {
-    const allSanction = await Sanction.find();
-    res.status(200).json({ message: "Sanction find", items: allSanction });
+    const allSanction = await Sanction.find({ guild_id: guild_id });
+    res.status(200).json({ message: "Sanction find", data: allSanction });
   }
   catch(error) { logs("error", "api:sanction:get:all", error); }
 })
