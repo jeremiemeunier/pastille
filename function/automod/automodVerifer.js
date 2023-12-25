@@ -1,3 +1,4 @@
+const { EmbedBuilder } = require('discord.js');
 const { logs } = require('../logs');
 const { BOT_ID } = require('../../config/secret.json');
 const axios = require("axios");
