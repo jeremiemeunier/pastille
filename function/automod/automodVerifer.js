@@ -57,10 +57,8 @@ const automodVerifier = async (guild) => {
             catch(error) { logs("error", "sanction:verifier:remove:timer", error, guild.id); }
           }
         }
-        else { logs("warning", "automod:verifier:rebind", `User not find : ${user_id}`); }
       });
     }
-    else { logs("infos", "automod:verifier", "No sanction in database"); }
   }
   catch(error) { logs("error", "automod:verifier", error); }
 
