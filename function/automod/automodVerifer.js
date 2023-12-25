@@ -59,7 +59,15 @@ const automodVerifier = async (guild) => {
 
           try {
             const sanctionApply = setTimeout(async () => {
+              const embedSanction = new EmbedBuilder()
+                .setColor(options.color)
+                .setTitle("Sanction terminée")
+                .setDescription(`Ta sanction vient de prendre fin. Tu peux à nouveau profiter pleinement du serveur.`);
               await user.roles.remove(sanctionRole);
+              await user.send({
+                content: `Ta sanction sur **__${guild.name}__** vient de prend fin`,
+                embeds: [embedSanction]
+              });
             }, newTimer);
           }
           catch(error) { logs("error", "sanction:verifier:remove:timer", error, guild.id); }
