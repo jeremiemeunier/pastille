@@ -3,6 +3,7 @@ const { logs } = require('../logs');
 const { PORT, BOT_ID } = require('../../config/secret.json');
 const axios = require("axios");
 const { getParams } = require('../base');
+const { automodApply } = require('./automodVerifer');
 
 const automodSanction = async (user, size, guild) => {
   const guildParams = await getParams(guild);
@@ -20,7 +21,7 @@ const automodSanction = async (user, size, guild) => {
     const startTime = new Date();
     const endTime = new Date(Date.parse(new Date()) + duration);
 
-    sanctionApplier(user, duration, guild);
+    automodApply(guild, user, duration);
     sanctionRegister(user.user.id, 'low', startTime, endTime, guild);
   }
   else if(
@@ -34,7 +35,7 @@ const automodSanction = async (user, size, guild) => {
     const startTime = new Date();
     const endTime = new Date(Date.parse(new Date()) + duration);
 
-    sanctionApplier(user, duration, guild);
+    automodApply(guild, user, duration);
     sanctionRegister(user.user.id, 'medium', startTime, endTime, guild);
   }
   else if(
@@ -48,7 +49,7 @@ const automodSanction = async (user, size, guild) => {
     const startTime = new Date();
     const endTime = new Date(Date.parse(new Date()) + duration);
 
-    sanctionApplier(user, duration, guild);
+    automodApply(guild, user, duration);
     sanctionRegister(user.user.id, 'hight', startTime, endTime, guild);
   }
   else if(
@@ -75,28 +76,6 @@ const durationInterpreter = (sanctionData) => {
   else if (unit === 'd') { return duration * (1000 * 3600 * 24); }
 }
 
-const durationFormater = (time) => {
-  const duration = time / 1000;
-  const days = Math.floor(duration / (24 * 3600));
-
-  const calcHours = (days, duration) => {
-    const response = Math.floor((duration - (days * (24 * 3600))) / 3600);
-    return response;
-  }
-
-  const calcMinutes = (days, hours, duration) => {
-    const response = Math.floor((duration - (days * (24 * 3600)) - (hours * 3600)) / 60);
-    return response;
-  }
-
-  const hours = calcHours(days, duration);
-  const minutes = calcMinutes(days, hours, duration);
-
-  if(days > 0) { return `${days} jour(s)`; }
-  if(hours > 0) { return `${hours} heure(s)`; }
-  if(minutes > 0) { return `${minutes} minute(s)`; }
-}
-
 const sanctionRegister = async (userId, level, start, end, guild) => {
   try {
     const register = await axios({
@@ -117,46 +96,4 @@ const sanctionRegister = async (userId, level, start, end, guild) => {
   catch(error) { logs("error", "automod:sanction:register:api", error, guild); }
 }
 
-const sanctionApplier = async (user, duration, guild) => {
-  const guildParams = await getParams(guild);
-  const { options, moderation } = guildParams;
-
-  try {
-    const sanctionRole = guild.roles.cache.find(role => role.id === moderation.roles.muted);
-
-    try { await user.roles.add(sanctionRole); }
-    catch(error) { logs("error", "automod:sanction:add:role", error, guild.id); }
-
-    const textualDuration = durationFormater(duration);
-    const embedSanction = new EmbedBuilder()
-      .setColor(options.color)
-      .setTitle("Nouvelle sanction")
-      .setDescription(`Tu es timeout pour ${textualDuration}.\r\n**Tu ne peux plus :**\r\n- Envoyer de message\r\n- Parler dans les channels vocaux\r\n- Réagir aux posts des autres membres\r\n- Participer ou rejoindre de nouveaux fils.\r\n\r\n 
-      **Ces interdictions sont valables jusqu'à la fin de ta sanction.**`);
-    
-    try {
-      await user.send({
-        content: `<@${user.user.id.toString()}> tu as été sanctionné(e) sur **__${guild.name}__**`,
-        embeds: [embedSanction] });
-    }
-    catch(error) { logs("error", "automod:sanction:notice", error, guild.id); }
-
-    try {
-      const applySanction = setTimeout(async () => {
-        const embedSanction = new EmbedBuilder()
-          .setColor(options.color)
-          .setTitle("Sanction terminée")
-          .setDescription(`Ta sanction vient de prendre fin. Tu peux à nouveau profiter pleinement du serveur.`);
-        await user.roles.remove(sanctionRole);
-        await user.send({
-          content: `Ta sanction sur **__${guild.name}__** vient de prend fin`,
-          embeds: [embedSanction]
-        });
-      }, duration);
-    }
-    catch(error) { logs("error", "automod:sanction:remove:timer", error, guild.id); }
-  }
-  catch(error) { logs("error", "automod:sanction:applier:send", error, guild.id); }
-}
-
-module.exports = { automodSanction, durationFormater }
+module.exports = { automodSanction }
