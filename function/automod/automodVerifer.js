@@ -44,15 +44,10 @@ const automodVerifier = async (guild) => {
         const user = await guild.members.fetch(user_id);
         const sanctionRole = guild.roles.cache.find(role => role.id === moderation.roles.muted);
 
-        if(user) {
-          if(ending <= now) {
-            try {
-              await user.roles.remove(sanctionRole);
-            }
-            catch(error) { logs("error", "sanction:verifier:remove", error, guild.id); }
-          }
-          else {
-            const newTimer = ending - now;
+        if(!user) {
+          logs("warning", "automod:verifier:rebind", `User not find : ${user_id}`, guild.id); return; }
+        if(!sanctionRole) {
+          logs("warning", "automod:verifier:rebind", `Role not find : ${moderation.roles.muted}`, guild.id); return; }
 
             try {
               const sanctionApply = setTimeout(async () => {
