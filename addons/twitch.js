@@ -13,8 +13,6 @@ const addonsLoaded = async (guild, params) => {
   const pingStreamer = setInterval(async () => {
     const authToken = await requestAuthenticator();
 
-    console.log("agou");
-
     if(authToken) {
       streamerList.map(async (item) => {
         const { twitch } = item;
@@ -98,7 +96,6 @@ const requestStreamerState = async (streamerId, bearerToken) => {
         'Authorization': `Bearer ${bearerToken}`
       }
     });
-    console.log(requestState.data.data);
     return requestState.data.data[0];
   }
   catch(error) { logs("error", "twitch:request:state", error); }
