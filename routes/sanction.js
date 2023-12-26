@@ -16,7 +16,7 @@ router.put("/sanction/update", isPastille, async (req, res) => {
   }
   catch(error) {
     res.status(400).json({ error: error, message: "An error occured" });
-    logs("error", "api:sanction:put", error, guild_id);
+    logs("error", "api:sanction:put", error);
   }
 });
 
