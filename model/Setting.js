@@ -29,7 +29,8 @@ const setting = mongoose.model("Setting", {
       imune: Array,
       roles: {
         muted: String,
-        rule: String
+        rule: String,
+        staff: String,
       },
       sanctions: {
         low: {
