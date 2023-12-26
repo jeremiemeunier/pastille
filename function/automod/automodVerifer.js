@@ -1,6 +1,5 @@
 const { EmbedBuilder } = require('discord.js');
 const { logs } = require('../logs');
-const { BOT_ID } = require('../../config/secret.json');
 const axios = require("axios");
 const { getParams } = require('../base');
 
@@ -30,13 +29,15 @@ const automodFinalNotify = async (guild, user) => {
   const guildParams = await getParams(guild);
   const { options } = guildParams;
 
-  const embedSanction = new EmbedBuilder()
-    .setColor(options.color)
-    .setTitle("Banissement définitif du serveur")
-    .setDescription(`Tu as été banni de manière définitive du serveur suite à de multiple infraction aux règle de ce serveur : **__${guild.name}__**`);
+  const embedSanction = new EmbedBuilder({
+    color: parseInt(options.color),
+    title: "Banissement définitif du serveur",
+    description: `Tu as été banni de manière définitive du serveur suite à de multiple infraction aux règle de ce serveur : **__${guild.name}__**`
+  });
+
   try {
     await user.send({
-      content: `Tu es banni(e) définitevement de **__${guild.name}__**`,
+      content: `Tu es banni(e) définitivement de **__${guild.name}__**`,
       embeds: [embedSanction]
     });
   }
@@ -45,13 +46,14 @@ const automodFinalNotify = async (guild, user) => {
 
 const automodRemove = async (guild, user) => {
   const guildParams = await getParams(guild);
-  const { options, moderation } = guildParams;
+  const { moderation } = guildParams;
 
   const sanctionRole = guild.roles.cache.find(role => role.id === moderation.roles.muted);
-  const embedSanction = new EmbedBuilder()
-    .setColor(options.color)
-    .setTitle("Sanction terminée")
-    .setDescription(`Ta sanction vient de prendre fin. Tu peux à nouveau profiter pleinement du serveur.`);
+  const embedSanction = new EmbedBuilder({
+    color: 32768,
+    title: "Sanction terminée",
+    description: `Ta sanction sur **__${guild.name}__** vient de prendre fin. Tu peux à nouveau profiter pleinement du serveur.`,
+  });
 
   try {
     await user.roles.remove(sanctionRole);
@@ -65,21 +67,29 @@ const automodRemove = async (guild, user) => {
 
 const automodApply = async (guild, user, timer) => {
   const guildParams = await getParams(guild);
-  const { options, moderation } = guildParams;
+  const { moderation } = guildParams;
 
+  const alertChannel = guild.channels.cache.find(channel => channel.id === moderation.channels.alert);
   const textualDuration = durationFormater(timer);
   const sanctionRole = guild.roles.cache.find(role => role.id === moderation.roles.muted);
-  const embedSanction = new EmbedBuilder()
-    .setColor(options.color)
-    .setTitle("Nouvelle sanction")
-    .setDescription(`Tu es timeout pour ${textualDuration}.\r\n**Tu ne peux plus :**\r\n- Envoyer de message\r\n- Parler dans les channels vocaux\r\n- Réagir aux posts des autres membres\r\n- Participer ou rejoindre de nouveaux fils.\r\n\r\n 
-    **Ces interdictions sont valables jusqu'à la fin de ta sanction.**`);
+  const embedSanction = new EmbedBuilder({
+    color: 16711680,
+    title: "Nouvelle sanction",
+    description: `Tu es timeout pour ${textualDuration}.\r\n**Tu ne peux plus :**\r\n- Envoyer de message\r\n- Parler dans les channels vocaux\r\n- Réagir aux posts des autres membres\r\n- Participer ou rejoindre de nouveaux fils.\r\n\r\n 
+    **Ces interdictions sont valables jusqu'à la fin de ta sanction.**`,
+  });
+  const embedDecision = new EmbedBuilder({
+    color: 16711680,
+    title: "Nouvelle sanction",
+    description: `Nouvelle sanction contre **__${user.globalName}__** pour ${textualDuration}`,
+  });
 
   try {
     await user.send({
       content: `<@${user.id.toString()}> tu as été sanctionné(e) sur **__${guild.name}__**`,
       embeds: [embedSanction] });
     await user.roles.add(sanctionRole);
+    await alertChannel.send({ embeds: [embedDecision] });
   }
   catch(error) { logs("error", "automod:sanction:notice", error, guild.id); }
 
@@ -89,24 +99,12 @@ const automodApply = async (guild, user, timer) => {
 }
 
 const automodVerifier = async (guild) => {
-  const guildParams = await getParams(guild);
-  const { moderation } = guildParams;
   const now = Date.parse(new Date());
-  const { muted } = moderation.roles;
 
   logs("infos", "automod:verifier", "Start sanctions verifications", guild.id);
   
   try {
-    const allGuildSanctionsRequest = await axios({
-      method: "get",
-      url: "/sanction",
-      params: {
-        guild_id: guild.id
-      },
-      headers: {
-        "pastille_botid": BOT_ID
-      }
-    });
+    const allGuildSanctionsRequest = await axios.get("/sanction", { params: { guild_id: guild.id }});
 
     const allGuildSanctions = allGuildSanctionsRequest.data.data;
     const guildParams = await getParams(guild);
@@ -117,19 +115,15 @@ const automodVerifier = async (guild) => {
         allGuildSanctions.map(async (item) => {
           const { sanction, user_id, _id } = item;
           const ending = Date.parse(new Date(sanction.ending));
-          const user = guild.members.cache.find(user => user.id === user_id);
+          const userFetch = async () => {
+            try { return await guild.members.fetch(user_id); }
+            catch(error) { logs("error", "automode:verifier:fetch_user", error, guild.id); }
+          }
+          const user = await userFetch();
           const sanctionRole = guild.roles.cache.find(role => role.id === moderation.roles.muted);
 
           if(!user) {
-            try {
-              await axios({
-                method: "put",
-                url: "/sanction/update",
-                params: {
-                  id: _id
-                }
-              });
-            }
+            try { await axios.put("/sanction/update", {}, { params: { id: _id } }); }
             catch(error) { logs("error", "automod:rebind:update", error, guild.id); }
             logs("warning", "automod:verifier:rebind", `User not find : ${user_id}`, guild.id); return; }
           if(!sanctionRole) {
