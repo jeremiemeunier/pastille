@@ -55,12 +55,12 @@ const guildStarter = (guild) => {
   const { commandRegister } = require('./function/commandsRegister');
 
   try {
-    logs("start", "booter:guild", "Start all functions", guild.id);
+    logs("start", "booter:guild_starter", "Start all functions", guild.id);
     automodVerifier(guild);
     commandRegister(guild);
     addonsRegisterInit(guild);
   }
-  catch(error) { logs("error", "guild_starter", error, guild.id); }
+  catch(error) { logs("error", "booter:guild_starter", error, guild.id); }
 }
 
 const guildExit = async () => {
@@ -96,7 +96,7 @@ const pastilleBooter = async () => {
     }
     catch (error) { logs('error', 'booter', error); }
   }
-  catch(error) { logs("error", "api:server:global", error); }
+  catch(error) { logs("error", "api:server", error); }
 
   client.on(Events.GuildCreate, (guild) => {
     logs('infos', 'events:new_guild', "Join a new guild", guild.id);
