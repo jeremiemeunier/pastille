@@ -9,14 +9,14 @@ const addonsRegisterInit = async (guild) => {
 const addonsRegister = async (addons, guild) => {
   if(addons) {
     try {
-      addons.map(addons => {
-        addons.active ?
-        logs('infos', 'addons:register', `[ ACTIVE ] ${addons.name}`) :
-        logs('infos', 'addons:register', `[INACTIVE] ${addons.name}`)
+      addons.map(item => {
+        item.active ?
+        logs('infos', 'addons:register', `[ ACTIVE ] ${item.name}`, guild.id) :
+        logs('infos', 'addons:register', `[INACTIVE] ${item.name}`, guild.id)
 
-        if(addons.active) {
-          const { addonsLoaded } = require(`../addons/${addons.name}`);
-          addonsLoaded(guild, addons);
+        if(item.active) {
+          const { addonsLoaded } = require(`../addons/${item.name}`);
+          addonsLoaded(guild, item);
         }
       });
     }
