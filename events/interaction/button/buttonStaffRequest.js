@@ -27,7 +27,7 @@ const buttonStaffRequest = (client) => {
         const staffThread = await channel.threads.create({
           name: `Ticket pour ${member.user.username}`,
           autoArchiveDuration: 60,
-          reason: `Create thread for contact staff for  ${member.user.username}`,
+          reason: `Create thread contact staff for ${member.user.username}`,
           type: ChannelType.PrivateThread,
         });
 
@@ -40,7 +40,7 @@ const buttonStaffRequest = (client) => {
         await staffThread.send({ embeds: [staffCall] });
         await staffThread.members.add(member.id);
         await interaction.reply({
-          content: `Ta demande de contact à été créée. Tu as maintenant accès au fils ${staffThread}`, ephemeral: true });
+          content: `Ta demande de contact à été créée. Tu as maintenant accès au fil ${staffThread}`, ephemeral: true });
       }
       catch(error) {
         logs("error", "staff:button:thread", error, guild.id);
