@@ -1,3 +1,5 @@
+const { Events } = require('discord.js');
+
 const { commandPollInit } = require('./interaction/command/commandPoll');
 const { commandRuleInit } = require('./interaction/command/commandRule');
 const { commandStaffInit } = require('./interaction/command/commandStaff');
@@ -9,21 +11,33 @@ const { commandClearInit } = require('./interaction/command/commandClear');
 
 const { buttonAcceptRuleInit } = require('./interaction/button/buttonAcceptRule');
 const { buttonStaffRequest } = require('./interaction/button/buttonStaffRequest');
+const { buttonOpenTicketInit } = require('./interaction/button/buttonOpenCloseTicket');
 
 const interactionCreateEventInit = (client) => {
-  // Commands
-  commandPollInit(client);
-  commandRuleInit(client);
-  commandStaffInit(client);
-  commandAnnounceInit(client);
-  commandRoleInit(client);
-  commandThreadInit(client);
-  commandStatutInit(client);
-  commandClearInit(client);
 
-  //Buttons
-  buttonAcceptRuleInit(client);
-  buttonStaffRequest(client);
+  client.on(Events.InteractionCreate, async interaction => {
+
+    if (interaction.isButton()) {
+      //Buttons
+      buttonAcceptRuleInit(client, interaction);
+      buttonStaffRequest(client, interaction);
+      buttonOpenTicketInit(client, interaction);
+    }
+
+    if(interaction.isChatInputCommand()) {
+      // Commands
+      commandPollInit(client, interaction);
+      commandRuleInit(client, interaction);
+      commandStaffInit(client, interaction);
+      commandAnnounceInit(client, interaction);
+      commandRoleInit(client, interaction);
+      commandThreadInit(client, interaction);
+      commandStatutInit(client, interaction);
+      commandClearInit(client, interaction);
+    }
+
+    return;
+  });
 }
 
 module.exports = { interactionCreateEventInit }
