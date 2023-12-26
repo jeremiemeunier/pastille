@@ -16,7 +16,7 @@ router.post("/settings/add", isPastille, async (req, res) => {
       premium_end: premium_end || null,
       options: {
         bang: options.bang || "!",
-        color: options.color || "#57CC99",
+        color: options.color || "E7BB41",
         channels: {
           announce: options.channels.announce || "annonce",
           help: options.channels.help || "support",
