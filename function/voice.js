@@ -17,37 +17,31 @@ const createVoiceThread = async (guild, channel, threadChannel, user) => {
     await thread.members.add(user);
 
     const embedExplicative = new EmbedBuilder({
-      color: parseInt(options.color),
+      color: parseInt(options.color, 16),
       title: "Ce salon est dédié à votre channel vocal actuel.",
       description: `- Il sera automatiquement supprimé une fois que tout le monde aura quitté le channel.\n- Chaque personne qui rejoint est automatiquement ajoutée au fil.\n- Chaque personne qui quitte le channel vocal est retirée du fil automatiquement.\n- L'automodération est toujours présente même ici. Tu **doit** donc respecter les règles du serveur.\n**Les commandes**\n- Pour un rappel des règles tu peux faire **!regles** directement depuis ce fil`,
     });
-    const embed = new EmbedBuilder({ color: parseInt("008000"), description:`<@${user}> tu as rejoint un salon vocal 🎙️` });
+    const embed = new EmbedBuilder({ color: 32768, description:`<@${user}> tu as rejoint un salon vocal 🎙️` });
     const message = await thread.send({ embeds: [embed, embedExplicative] });
   }
   catch(error) { logs("error", "voice:thread:create", error); }
 }
 
 const joinVoiceThread = async (guild, channel, threadChannel, user) => {
-  const guildParams = getParams(guild);
-  const { options } = guildParams;
-
   try {
     const thread = threadChannel.threads.cache.find(thread => thread.name === `Voice : ${channel.name}`);
     await thread.members.add(user);
-    const embed = new EmbedBuilder({ color: parseInt("008000"), description:`<@${user}> tu as rejoint le salon vocal 🎙️` });
+    const embed = new EmbedBuilder({ color: 32768, description:`<@${user}> tu as rejoint le salon vocal 🎙️` });
     const message = await thread.send({ embeds: [embed] });
   }
   catch(error) { logs("error", "voice:thread:join", error); }
 }
 
 const leaveVoiceThread = async (guild, channel, threadChannel, user) => {
-  const guildParams = await getParams(guild);
-  const { options } = guildParams;
-
   try {
     const thread = threadChannel.threads.cache.find(thread => thread.name === `Voice : ${channel.name}`);
     await thread.members.remove(user);
-    const embed = new EmbedBuilder({ color: parseInt("FF0000"), description: `<@${user}> a quitté ce salon vocal 💨` });
+    const embed = new EmbedBuilder({ color: 16711680, description: `<@${user}> a quitté ce salon vocal 💨` });
     const message = await thread.send({ embeds: [embed] });
   }
   catch(error) { logs("error", "voice:thread:leave", error); }
@@ -60,7 +54,7 @@ const deleteVoiceThread = async (guild, channel, threadChannel) => {
   try {
     const thread = threadChannel.threads.cache.find(thread => thread.name === `Voice : ${channel.name}`);
     const embed = new EmbedBuilder({
-      color: parseInt(options.color),
+      color: parseInt(options.color, 16),
       description: "Il n'y a plus personne dans ce channel, il va être supprimé dans quelques secondes.",
     });
     const message = await thread.send({ embeds: [embed] });
