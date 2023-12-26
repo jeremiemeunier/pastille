@@ -20,7 +20,7 @@ const api = () => {
 
   // Setup of axios
   axios.defaults.baseURL = "http://localhost:3000";
-  axios.defaults.headers.common['pastille_botid'] = BOT_ID;
+  // axios.defaults.headers.common['pastille_botid'] = BOT_ID;
 
   // API
   const infractionRoute = require('../routes/infraction');
