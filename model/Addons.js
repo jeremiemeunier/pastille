@@ -5,8 +5,7 @@ const addons = mongoose.model("Addons", {
   name: String,
   active: Boolean,
   channel: String,
-  role: String,
-  delay: String
+  role: String
 });
 
 module.exports = addons;
