@@ -5,8 +5,6 @@ const bangStatus = async (message, guild) => {
   const voiceChannelUser = guild.channels.cache.find(channel => channel.id === user.voice.channelId);
   const statusText = message.content.substring(8);
 
-  console.log(voiceChannelUser);
-
   try {
     await voiceChannelUser.setTopic(statusText);
   }
