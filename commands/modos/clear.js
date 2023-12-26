@@ -2,7 +2,7 @@ const commands =
 {
   name: "clear",
   description: "Clear all of this channel",
-  default_member_permissions: 0,
+  default_member_permissions: 17179877376,
   options: [
     {
       name: "thread",
@@ -18,5 +18,5 @@ const commands =
 };
 
 module.exports = {
-    data: commands
+  data: commands
 }
