@@ -26,6 +26,23 @@ const durationFormater = (time) => {
   if(minutes > 0) { return `${minutes} minute(s)`; }
 }
 
+const automodFinalNotify = async (guild, user) => {
+  const guildParams = await getParams(guild);
+  const { options } = guildParams;
+
+  const embedSanction = new EmbedBuilder()
+    .setColor(options.color)
+    .setTitle("Banissement définitif du serveur")
+    .setDescription(`Tu as été banni de manière définitive du serveur suite à de multiple infraction aux règle de ce serveur : **__${guild.name}__**`);
+  try {
+    await user.send({
+      content: `Tu es banni(e) définitevement de **__${guild.name}__**`,
+      embeds: [embedSanction]
+    });
+  }
+  catch(error) { logs("error", "automod:remove", error, guild.id); }
+}
+
 const automodRemove = async (guild, user) => {
   const guildParams = await getParams(guild);
   const { options, moderation } = guildParams;
@@ -96,32 +113,45 @@ const automodVerifier = async (guild) => {
     const { moderation } = guildParams;
 
     if(allGuildSanctions && allGuildSanctions.length > 0) {
-      allGuildSanctions.map(async (item) => {
-        const { sanction, user_id } = item;
-        const ending = Date.parse(new Date(sanction.ending));
-        const user = await guild.members.fetch(user_id);
-        const sanctionRole = guild.roles.cache.find(role => role.id === moderation.roles.muted);
+      try {
+        allGuildSanctions.map(async (item) => {
+          const { sanction, user_id, _id } = item;
+          const ending = Date.parse(new Date(sanction.ending));
+          const user = guild.members.cache.find(user => user.id === user_id);
+          const sanctionRole = guild.roles.cache.find(role => role.id === moderation.roles.muted);
 
-        if(!user) {
-          logs("warning", "automod:verifier:rebind", `User not find : ${user_id}`, guild.id); return; }
-        if(!sanctionRole) {
-          logs("warning", "automod:verifier:rebind", `Role not find : ${moderation.roles.muted}`, guild.id); return; }
-
-        if(ending <= now) {
-          try { await user.roles.remove(sanctionRole); }
-          catch(error) { logs("error", "sanction:verifier:remove", error, guild.id); }
-        }
-        else {
-          const newTimer = ending - now;
-
-          try {
-            const sanctionApply = setTimeout(async () => {
-              automodRemove(guild, user);
-            }, newTimer);
+          if(!user) {
+            try {
+              await axios({
+                method: "put",
+                url: "/sanction/update",
+                params: {
+                  id: _id
+                }
+              });
+            }
+            catch(error) { logs("error", "automod:rebind:update", error, guild.id); }
+            logs("warning", "automod:verifier:rebind", `User not find : ${user_id}`, guild.id); return; }
+          if(!sanctionRole) {
+            logs("warning", "automod:verifier:rebind", `Role not find : ${moderation.roles.muted}`, guild.id); return; }
+  
+          if(ending <= now) {
+            try { await user.roles.remove(sanctionRole); }
+            catch(error) { logs("error", "sanction:verifier:remove", error, guild.id); }
           }
-          catch(error) { logs("error", "sanction:verifier:remove:timer", error, guild.id); }
-        }
-      });
+          else {
+            const newTimer = ending - now;
+  
+            try {
+              const sanctionApply = setTimeout(async () => {
+                automodRemove(guild, user);
+              }, newTimer);
+            }
+            catch(error) { logs("error", "sanction:verifier:remove:timer", error, guild.id); }
+          }
+        });
+      }
+      catch(error) { logs("error", "automod:verifier", error, guild.id); }
     }
   }
   catch(error) { logs("error", "automod:verifier", error); }
@@ -129,4 +159,4 @@ const automodVerifier = async (guild) => {
   logs("infos", "automod:verifier", "End sanctions verifications", guild.id);
 }
 
-module.exports = { automodVerifier, automodApply, automodRemove }
+module.exports = { automodVerifier, automodApply, automodRemove, automodFinalNotify }
