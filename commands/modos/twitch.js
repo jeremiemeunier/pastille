@@ -2,7 +2,7 @@ const commands =
 {
   name: "twitch",
   description: "Toutes les commandes liée aux pings des streamers",
-  default_member_permissions: 0,
+  default_member_permissions: 2147483648,
   options: [
     {
       "name": "add",
