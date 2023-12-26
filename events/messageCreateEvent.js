@@ -12,7 +12,6 @@ const messageCreateEventInit = (client) => {
     const channel = guild.channels.cache.find(channel => channel.id === message.channelId);
 
     const guildParams = await getParams(guild);
-    const guildCommands = await getCommands(guild);
     const { options } = guildParams;
 
     const splitedMsg = content.split(' ');
@@ -20,6 +19,8 @@ const messageCreateEventInit = (client) => {
 
     if(message.author.bot === true) { return; }
     if(content.startsWith(options.bang)) {
+      const guildCommands = await getCommands(guild);
+      
       if(cmd === 'regles') { bangRule(message, guild); }
       if(cmd === 'status') { bangStatus(message, guild); }
 
