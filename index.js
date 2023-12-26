@@ -54,7 +54,7 @@ const guildStarter = (guild) => {
   const { commandRegister } = require('./function/commandsRegister');
 
   try {
-    logs("infos", "booter:guild", "Start all functions", guild.id);
+    logs("start", "booter:guild", "Start all functions", guild.id);
     automodVerifier(guild);
     commandRegister(guild);
     addonsRegisterInit(guild);
