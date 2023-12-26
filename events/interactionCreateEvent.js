@@ -8,6 +8,7 @@ const { commandStatutInit } = require('./interaction/command/commandStatut');
 const { commandClearInit } = require('./interaction/command/commandClear');
 
 const { buttonAcceptRuleInit } = require('./interaction/button/buttonAcceptRule');
+const { buttonStaffRequest } = require('./interaction/button/buttonStaffRequest');
 
 const interactionCreateEventInit = (client) => {
   // Commands
@@ -22,6 +23,7 @@ const interactionCreateEventInit = (client) => {
 
   //Buttons
   buttonAcceptRuleInit(client);
+  buttonStaffRequest(client);
 }
 
 module.exports = { interactionCreateEventInit }
