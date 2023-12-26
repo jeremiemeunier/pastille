@@ -33,6 +33,7 @@ const { addonsRegisterInit } = require('./function/addonsRegister');
 const { automod } = require('./events/messageModerationEvent');
 const { automodVerifier } = require('./function/automod/automodVerifer');
 const { api } = require('./function/api');
+const { messageEditInit } = require('./events/messageEditEvent');
 
 // ##### FIX ##### \\
 if (!String.prototype.endsWith) {
@@ -90,6 +91,7 @@ const pastilleBooter = async () => {
       reactionRemoveEventInit(client);
       interactionCreateEventInit(client);
       messageCreateEventInit(client);
+      messageEditInit(client);
       automod(client);
     }
     catch (error) { logs('error', 'booter', error); }
