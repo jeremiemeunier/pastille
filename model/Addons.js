@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const addons = mongoose.model("Addons", {
-  guid_id: String,
+  guild_id: String,
   name: String,
   active: Boolean,
   channel: String,
