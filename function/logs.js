@@ -26,7 +26,7 @@ const composeTime = () => {
 
 const composeService = (data) => {
   const size = data.length;
-  const max = 32;
+  const max = 24;
 
   if(size < max) {
     for(let i = 0;i < max - size; i++) { data = `${data}_`; }
