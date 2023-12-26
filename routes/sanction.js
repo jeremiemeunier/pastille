@@ -8,14 +8,11 @@ router.put("/sanction/update", isPastille, async (req, res) => {
   const { id } = req.query;
 
   try {
-    const updateSanction = await Sanction.findByIdAndUpdate(
-      { _id: id },
-      { checkable: false });
-    
+    const updateSanction = await Sanction.findByIdAndUpdate({ _id: id }, { checkable: false });
     res.status(200).json({ data: updateSanction });
   }
   catch(error) {
-    res.status(400).json({ error: error, message: "An error occured" });
+    res.status(400).json({ message: "An error occured", error: error });
     logs("error", "api:sanction:put", error);
   }
 });
@@ -38,7 +35,10 @@ router.post("/sanction/add", isPastille, async (req, res) => {
 
     res.status(200).json({ message: "New sanction items created", data: newSanction });
   }
-  catch(error) { logs("error", "api:sanction:register:post", error); }
+  catch(error) {
+    res.status(400).json({ message: "An error occured", error: error });
+    logs("error", "api:sanction:register:post", error, guild_id);
+  }
 });
 
 router.get("/sanction", isPastille, async (req, res) => {
@@ -48,7 +48,10 @@ router.get("/sanction", isPastille, async (req, res) => {
     const allSanction = await Sanction.find({ guild_id: guild_id, checkable: true });
     res.status(200).json({ message: "Sanction find", data: allSanction });
   }
-  catch(error) { logs("error", "api:sanction:get:all", error); }
+  catch(error) {
+    res.status(400).json({ message: "An error occured", error: error });
+    logs("error", "api:sanction:get:all", error, guild_id);
+  }
 })
 
 module.exports = router;

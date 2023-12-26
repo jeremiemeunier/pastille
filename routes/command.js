@@ -16,8 +16,8 @@ router.get("/commands", isPastille, async (req, res) => {
     }
   }
   catch(error) {
+    res.status(400).json({ message: "An error occured", error: error });
     logs("error", "api:commands:get", error);
-    res.status(400).json({ message: "Something went wrong", error: error });
   }
 });
 
@@ -31,8 +31,8 @@ router.get("/commands/id", isPastille, async (req, res) => {
     else { res.status(200).json({ data: commandRequest }); }
   }
   catch(error) {
-    logs("error", "api:commands:get", error);
-    res.status(400).json({ message: "Something went wrong", error: error });
+    res.status(400).json({ message: "An error occured", error: error });
+    logs("error", "api:commands:get", error, guild_id);
   }
 });
 
@@ -54,8 +54,8 @@ router.post('/commands/add', isPastille, async (req, res) => {
       res.status(200).json({ message: "New command added", data: newCommandsRegister });
     }
     catch(error) {
+      res.status(400).json({ message: "An error occured", error: error });
       logs("error", "api:commands:add", error, guild_id);
-      res.status(400).json({ message: "Something went wrong" });
     }
   }
 });

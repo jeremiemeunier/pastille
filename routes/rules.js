@@ -5,17 +5,20 @@ const isPastille = require("../middlewares/isPastille");
 const { logs } = require('../function/logs');
 
 router.get("/rules", isPastille, async (req, res) => {
-  const { guild } = req.query;
+  const { guild_id } = req.query;
 
   try {
-    const allRulesRequest = await Rule.find({ guild_id: guild });
+    const allRulesRequest = await Rule.find({ guild_id: guild_id });
     
     if(allRulesRequest.length === 0) { res.status(404).json({ message: "No rules" }); }
     else {
       res.status(200).json({ data: allRulesRequest });
     }
   }
-  catch(error) { logs("error", "api:rules:get", error); }
+  catch(error) {
+    res.status(400).json({ message: "An error occured", error: error });
+    logs("error", "api:rules:get", error);
+  }
 });
 
 router.post("/rules/add", isPastille, async (req, res) => {
@@ -37,16 +40,16 @@ router.post("/rules/add", isPastille, async (req, res) => {
       res.status(201).json({ data: newRulesRegistre });
     }
     catch(error) {
-      logs("error", "api:rule:post", error);
-      res.status(400).json({ message: error });
+      res.status(400).json({ message: "An error occured", error: error });
+      logs("error", "api:rules:post", error, guild_id);
     }
   }
 });
 
 router.put("/rules/update", isPastille, async (req, res) => {
-  const { guild, name, description, active, id } = req.body;
+  const { guild_id, name, description, active, id } = req.body;
 
-  if(!guild || !name || !description || !active || !id) {
+  if(!guild_id || !name || !description || !active || !id) {
     res.status(400).json({ message: "You must provide all input" });
   }
   else {
@@ -54,7 +57,7 @@ router.put("/rules/update", isPastille, async (req, res) => {
       const updatedRulesItem = await Rule.findByIdAndUpdate(
         { _id: id },
         {
-          guild_id: guild,
+          guild_id: guild_id,
           name: name,
           description: description,
           active: active
@@ -64,8 +67,8 @@ router.put("/rules/update", isPastille, async (req, res) => {
       res.status(200).json({ data: updatedRulesItem });
     }
     catch(error) {
-      logs("error", "api:rule:put", error);
-      res.status(400).json({ message: error });
+      res.status(400).json({ message: "An error occured", error: error });
+      logs("error", "api:rules:put", error, guild_id);
     }
   }
 });

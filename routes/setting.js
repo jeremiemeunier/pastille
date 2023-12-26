@@ -39,7 +39,8 @@ router.post("/settings/add", isPastille, async (req, res) => {
         imune: immune || [],
         roles: {
           muted: roles.muted || null,
-          rule: roles.rule || null
+          rule: roles.rule || null,
+          staff: roles.staff || null,
         },
         sanctions: {
           low: {
@@ -66,8 +67,8 @@ router.post("/settings/add", isPastille, async (req, res) => {
     res.status(200).json({ message: "New settings registred", data: newSettingsRegistre });
   }
   catch(error) {
-    logs("error", "api:guild_settings:post", error);
-    res.status(400).json({ error: error });
+    res.status(400).json({ message: "An error occured", error: error });
+    logs("error", "api:settings:post", error, guild_id);
   }
 });
 
@@ -81,8 +82,8 @@ router.get("/settings", isPastille, async (req, res) => {
     else { res.status(200).json({ message: "Settings found", data: guildSettings }); }
   }
   catch(error) {
-    logs("error", "api:guild_settings:get", error);
-    res.status(400).json({ error: error });
+    res.status(400).json({ message: "An error occured", error: error });
+    logs("error", "api:settings:get", error, guild_id);
   }
 });
 

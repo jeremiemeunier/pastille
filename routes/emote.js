@@ -15,7 +15,10 @@ router.get("/emotes", isPastille, async (req, res) => {
       res.status(200).json({ data: letterRequest });
     }
   }
-  catch(error) { logs("error", "api:emotes:get", error); }
+  catch(error) {
+    res.status(400).json({ message: "An error occured", error: error });
+    logs("error", "api:emotes:get", error);
+  }
 });
 
 router.get("/emotes/all", isPastille, async (req, res) => {
@@ -49,11 +52,11 @@ router.post("/emotes/mass", isPastille, async (req, res) => {
       try {
         await emoteRegister.save();
       }
-      catch(error) { logs("error", "api:emotes:post:save", error); }
+      catch(error) {logs("error", "api:emotes:post:save", error); }
     });
   }
   catch(error) {
-    res.status(400).json({ error: error });
+    res.status(400).json({ message: "An error occured", error: error });
     logs("error", "api:emotes:post:mass", error);
   }
 });

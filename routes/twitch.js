@@ -1,44 +1,53 @@
 const express = require("express");
 const router = express.Router();
-const Twitch = require("../model/Twitch");
+const Streamer = require("../model/Twitch");
 const isPastille = require("../middlewares/isPastille");
 const { logs } = require('../function/logs');
 
-router.post("/twitchping/add", isPastille, async (req, res) => {
-  const { twitch_id, twitch_name, discord_id, discord_name, progress } = req.body;
+router.post("/twitch/add", isPastille, async (req, res) => {
+  const { guild_id, twitch_id, twitch_name, message, progress } = req.body;
 
-  if(!twitch_id || !twitch_name) {
-    res.status(400).json({ message: "Must provide a id and name for twitch" });
-    logs("error", "api:twitch:add", "Need to complete all inputs before request");
-  }
+  if(!twitch_id || !twitch_name || !guild_id) {
+    res.status(400).json({ message: "Must provide a id and name for twitch" }); }
   else {
     try {
-      const newAddPing = new Twitch({
-        discord: {
-          id: discord_id || "",
-          name: discord_name || ""
-        },
+      const newAddPing = new Streamer({
+        guild_id: guild_id,
         twitch: {
           id: twitch_id,
           name: twitch_name
         },
+        message: message || null,
         progress: progress || false
       });
       await newAddPing.save();
-      res.status(200).json({ message: 'New streamer added to ping list' });
+      res.status(200).json({ message: "Streamer added to the list", data: newAddPing });
     }
-    catch(error) { logs("error", "api:twitch:add", error); }
+    catch(error) {
+      res.status(400).json({ message: "An error occured", error: error });
+      logs("error", "api:twitch:add", error, guild_id);
+    }
   }
 });
 
-router.delete("/twitchping/remove", isPastille, async (req, res) => {
-  const { twitch_name } = req.body;
+router.delete("/twitch/remove", isPastille, async (req, res) => {
+  const { id } = req.query;
 
+  try {
+    await Streamer.findByIdAndDelete({ _id: id });
+    res.status(200).json({ message: "Item deleted" });
+  }
+  catch(error) {
+    res.status(400).json({ message: "An error occured", error: error });
+    logs("error", "api:twitch:delete", error);
+  }
 });
 
-router.get("/twitchping/list", isPastille, async (req, res) => {
+router.get("/twitch/list", isPastille, async (req, res) => {
+  const { guild_id } = req.query;
+
   try {
-    const allTwitchPings = await Twitch.find();
+    const allTwitchPings = await Streamer.find({ guild_id: guild_id });
 
     if(allTwitchPings.length > 0) {
       res.status(200).json({
@@ -48,7 +57,10 @@ router.get("/twitchping/list", isPastille, async (req, res) => {
     }
     else { res.status(404).json({ message: "Empty pings" }); }
   }
-  catch(error) { logs("error", "api:twitch:get", error); }
+  catch(error) {
+    res.status(400).json({ message: "An error occured", error: error });
+    logs("error", "api:twitch:get", error, guild_id);
+  }
 });
 
 module.exports = router;

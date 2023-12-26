@@ -29,10 +29,7 @@ router.post("/dailyui", isPastille, async (req, res) => {
   const { state, title, description } = req.body;
 
   if(!title || !description) {
-    res.status(400).json({
-      message: 'Complete all input',
-      data: req.body });
-    logs("warning", "api:dailyui:add", "Need to complete all inputs");
+    res.status(400).json({ message: 'Complete all input', data: req.body });
   }
   else {
     try {
