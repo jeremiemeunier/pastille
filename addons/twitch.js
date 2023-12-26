@@ -32,21 +32,21 @@ const addonsLoaded = async (guild, params) => {
                     url: `https://twitch.tv/${twitch.name.toString()}`
                   })
                 );
-                const liveEmbed = new EmbedBuilder({
-                  color: parseInt("6441a5"),
-                  title: `${streamer.twitch.name.toString()} est actuellement en live !`,
-                  description: `Il stream : **${streamerState.title}** sur **${streamerState.game_name}**`,
-                  thumbnail: thumbnail
+              const liveEmbed = new EmbedBuilder({
+                color: parseInt("6441a5"),
+                title: `${streamer.twitch.name.toString()} est actuellement en live !`,
+                description: `Il stream : **__${streamerState.title}__** sur **__${streamerState.game_name}__**`,
+                thumbnail: thumbnail
+              });
+
+              try {
+                await notificationChannel.send({
+                  content: `${twitch.name.toString()} est en live ! ${item.message ? item.message : ''} <@&${notificationRole}>`,
+                  embeds: [liveEmbed],
+                  components: [liveButton]
                 });
-  
-                try {
-                  await notificationChannel.send({
-                    content: `${twitch.name.toString()} est en live ! ${item.message ? item.message : ''} <@&${notificationRole}>`,
-                    embeds: [liveEmbed],
-                    components: [liveButton]
-                  });
-                }
-                catch(error) { logs("error", "addons:twitch:send", error, guild.id); }
+              }
+              catch(error) { logs("error", "addons:twitch:send", error, guild.id); }
             }
             catch(error) { logs("error", "addons:twitch:ping", error, guild.id); }
           }
