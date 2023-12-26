@@ -65,7 +65,7 @@ const buttonStaffRequest = async (client, interaction) => {
     const staffCall = new EmbedBuilder({
       color: parseInt(options.color, 16),
       title: "Nouvelle demande de contact",
-      description: `<@&${moderation.roles.staff}> nouvelle demande de **__${member.user.username}__**`
+      description: `Nouvelle demande de **__${member.user.username}__**`
     });
     const lockButton = new ActionRowBuilder()
     .addComponents(
@@ -75,7 +75,8 @@ const buttonStaffRequest = async (client, interaction) => {
         custom_id: "closeTicket"
       }));
 
-    await staffThread.send({ embeds: [staffCall], components: [lockButton] });
+    await staffThread.send({
+      content: `<@&${moderation.roles.staff}> nouvelle demande de contact`, embeds: [staffCall], components: [lockButton] });
     if(await lockableThread(staffThread, guild)) {
       await staffThread.members.add(member.id);
       await interaction.reply({
