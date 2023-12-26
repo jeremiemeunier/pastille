@@ -3,7 +3,7 @@ const { logs } = require('../logs');
 const { PORT, BOT_ID } = require('../../config/secret.json');
 const axios = require("axios");
 const { getParams } = require('../base');
-const { automodApply } = require('./automodVerifer');
+const { automodApply, automodFinalNotify } = require('./automodVerifer');
 
 const automodSanction = async (user, size, guild) => {
   const guildParams = await getParams(guild);
@@ -53,17 +53,10 @@ const automodSanction = async (user, size, guild) => {
     sanctionRegister(user.user.id, 'hight', startTime, endTime, guild);
   }
   else if(
-    count === 27 ||
-    count === 30 ||
-    count === 33
-  ) {
-    // Sanction de ban temporaire de 10 minutes du serveur
-    user.timeout(600_000);
-  }
-  else if(
-    count > 33
+    count > 27
   ) {
     // Ban définitifs du serveur
+    await automodFinalNotify(guild, user);
     guild.members.ban(user);
   }
 }
