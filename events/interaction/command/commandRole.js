@@ -22,11 +22,12 @@ const commandRoleInit = async (client) => {
         });
       });
 
-      const embed = new EmbedBuilder()
-        .setColor(`${options.color}`)
-        .setTitle(`Pastille autorole`)
-        .setDescription(`Clique sur les réactions en dessous de ce message pour t'ajouter les rôles en fonction de tes centres d'intérêt.`)
-        .addFields(fields);
+      const embed = new EmbedBuilder({
+        color: parseInt(options.color, 16),
+        title: "Pastille autorole",
+        description: "Clique sur les réactions en dessous de ce message pour t'ajouter les rôles en fonction de tes centres d'intérêt.",
+        fields: fields
+      });
       try {
         const message = await interaction.reply({ embeds: [embed], fetchReply: true });
 

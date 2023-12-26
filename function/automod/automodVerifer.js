@@ -30,7 +30,7 @@ const automodFinalNotify = async (guild, user) => {
   const { options } = guildParams;
 
   const embedSanction = new EmbedBuilder({
-    color: parseInt(options.color),
+    color: parseInt(options.color, 16),
     title: "Banissement définitif du serveur",
     description: `Tu as été banni de manière définitive du serveur suite à de multiple infraction aux règle de ce serveur : **__${guild.name}__**`
   });

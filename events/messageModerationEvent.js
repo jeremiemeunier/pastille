@@ -27,13 +27,15 @@ const automod = (client) => {
 
       if(mentions > limit.mention && mentions > 0 && limit.mention > -1) {
         try {
-          const embedProof = new EmbedBuilder()
-            .setColor(options.color)
-            .setDescription(message.content);
-          const embedSanction = new EmbedBuilder()
-            .setColor(options.color)
-            .setTitle(`${user.user.username} [${user.user.globalName}] a reçu un avertissement`)
-            .setDescription('**Raison** : Trop de mentions');
+          const embedProof = new EmbedBuilder({
+            color: parseInt(options.color, 16),
+            description: message.content
+          });
+          const embedSanction = new EmbedBuilder({
+            color: parseInt(options.color, 16),
+            title: `${user.user.username} [${user.user.globalName}] a reçu un avertissement`,
+            description: "**Raison** : Trop de mentions"
+          });
           message.delete();
 
           await report.send({
@@ -51,13 +53,15 @@ const automod = (client) => {
       }
       else if(message.mentions.everyone === true) {
         try {
-          const embedProof = new EmbedBuilder()
-            .setColor(options.color)
-            .setDescription(message.content);
-          const embedSanction = new EmbedBuilder()
-            .setColor(options.color)
-            .setTitle(`${user.user.username} [${user.user.globalName}] a reçu un avertissement`)
-            .setDescription('**Raison** : Mentionne @everyone');
+          const embedProof = new EmbedBuilder({
+            color: parseInt(options.color, 16),
+            description: message.content
+          });
+          const embedSanction = new EmbedBuilder({
+            color: parseInt(options.color, 16),
+            title: `${user.user.username} [${user.user.globalName}] a reçu un avertissement`,
+            description: "**Raison** : Mentionne @everyone"
+          });
           message.delete();
           await report.send({ embeds: [embedSanction, embedProof] });
           await infractionChannel.send({

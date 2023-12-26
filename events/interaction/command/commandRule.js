@@ -32,18 +32,21 @@ const commandRuleInit = async (client) => {
             })
           );
         
-        const rulesEmbed = new EmbedBuilder()
-          .setColor(`${options.color}`)
-          .setTitle('Règles du serveur')
-          .setDescription(`Les règles du serveur sont simples.\r\nEn utilisant ce serveur discord, l'utilisateur accepte d'emblée le réglement.`)
-          .addFields(rulesField);
-        const modosEmbed = new EmbedBuilder()
-          .setColor(`${options.color}`)
-          .setTitle('Modérations')
-          .setDescription(`Les décisions des modérateur et de l'équipe du serveur ne sont pas discutable. Pour accompagner et faciliter le travail de la modération, un automod est présent sur ce discord.`);
-        const updateEmbed = new EmbedBuilder()
-          .setColor(`${options.color}`)
-          .setDescription(`Les modérateurs ou les admins du serveur peuvent à tout moment et sans communication supplémentaire faire évoluer le réglement.`);
+        const rulesEmbed = new EmbedBuilder({
+          color: parseInt(options.color, 16),
+          title: "Règles du serveur",
+          description: "Les règles du serveur sont simples.\r\nEn utilisant ce serveur discord, l'utilisateur accepte d'emblée le réglement.",
+          fields: rulesField
+        });
+        const modosEmbed = new EmbedBuilder({
+          color: parseInt(options.color, 16),
+          title: "Modérations",
+          description: "Les décisions des modérateur et de l'équipe du serveur ne sont pas discutable. Pour accompagner et faciliter le travail de la modération, un automod est présent sur ce discord."
+        });
+        const updateEmbed = new EmbedBuilder({
+          color: parseInt(options.color, 16),
+          description: "Les modérateurs ou les admins du serveur peuvent à tout moment et sans communication supplémentaire faire évoluer le réglement."
+        });
         const message = await channel.send({
           embeds: [rulesEmbed, modosEmbed, updateEmbed],
           components: [acceptRuleButton] });

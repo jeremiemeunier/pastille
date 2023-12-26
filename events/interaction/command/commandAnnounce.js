@@ -12,11 +12,13 @@ const commandAnnounceInit = async (client) => {
     
     if(commandName === 'announce') {
       try {
-        const embed = new EmbedBuilder()
-          .setColor(`${options.color}`)
-          .setTitle(interaction.options.getString('title'))
-          .setDescription(interaction.options.getString('content'));
-        const message = await interaction.reply({ embeds: [embed], fetchReply: true, content: "📢 **Annonce** ||@everyone||" });
+        const embed = new EmbedBuilder({
+          color: parseInt(options.color, 16),
+          title: interaction.options.getString('title'),
+          description: interaction.options.getString('content'),
+        });
+        const message = await interaction.reply({
+          embeds: [embed], fetchReply: true, content: "📢 **Annonce** ||@everyone||" });
       }
       catch(error) { logs("error", "command:announce", error); }
     }

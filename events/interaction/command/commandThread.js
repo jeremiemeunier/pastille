@@ -23,9 +23,10 @@ const commandThreadInit = (client) => {
         await thread.members.add(interaction.user.id);
         await interaction.reply({ content: `Tu as maintenant accès au thread ${thread}`, ephemeral: true });
 
-        let embed = new EmbedBuilder()
-          .setColor(`${options.color}`)
-          .setDescription(`Bienvenue sur ton thread dédié`);
+        let embed = new EmbedBuilder({
+          color: parseInt(options.color, 16),
+          description: "Bienvenue sur ton thread dédié"
+        });
         const msg = await thread.send({ embeds: [embed] });
       }
       catch(error) { logs("error", "command:thread", error); }

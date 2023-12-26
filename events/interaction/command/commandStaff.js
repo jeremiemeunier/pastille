@@ -19,10 +19,11 @@ const commandStaffInit = async (client) => {
             custom_id: "requestStaff"
           })
         );
-        const embed = new EmbedBuilder()
-          .setColor(`${options.color}`)
-          .setTitle(`Demande de support`)
-          .setDescription(`Comment pouvons-nous t'aider ? Si tu as des questions ou des demandes clique sur le bouton pour contacter le staff`);
+        const embed = new EmbedBuilder({
+          color: parseInt(options.color, 16),
+          title: "Demande de support",
+          description: "Comment pouvons-nous t'aider ? Si tu as des questions ou des demandes clique sur le bouton pour contacter le staff"
+        });
         const message = await interaction.reply({
           embeds: [embed],
           components: [requestStaffButton],

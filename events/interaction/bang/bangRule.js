@@ -20,10 +20,11 @@ const bangRule = async (message, guild) => {
         });
       });
 
-      const rulesEmbed = new EmbedBuilder()
-        .setColor(`${options.color}`)
-        .setTitle('Règles du serveur')
-        .addFields(rulesField);
+      const rulesEmbed = new EmbedBuilder({
+        color: parseInt(options.color, 16),
+        title: "Règles du serveur",
+        fields: rulesField
+      });
       await message.reply({ content: "Rappel des règles du serveur", embeds: [rulesEmbed] });
     }
   }
