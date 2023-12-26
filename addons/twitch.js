@@ -5,12 +5,15 @@ const { logs } = require('../function/logs');
 const { getStreamers } = require('../function/base');
 
 const addonsLoaded = async (guild, params) => {
+  logs("start", "addons:twitch:start", "Starting twitch addons", guild.id);
   const streamerList = await getStreamers(guild);
   const notificationChannel = guild.channels.cache.find(channel => channel.id === params.channel);
   const notificationRole = guild.roles.cache.find(role => role.id === params.role);
 
   const pingStreamer = setInterval(async () => {
     const authToken = await requestAuthenticator();
+
+    console.log("agou");
 
     if(authToken) {
       streamerList.map(async (item) => {
@@ -20,7 +23,9 @@ const addonsLoaded = async (guild, params) => {
         if(streamerState !== undefined) {
           if(startAnalyze(streamerState.started_at)) {
             try {
-              const thumbnail = streamerState.thumbnail_url.replace('{width}', 1920).replace('{height}', 1080);
+              let thumbnail = streamerState.thumbnail_url;
+                  thumbnail.replace('{width}', 1920);
+                  thumbnail.replace('{height}', 1080);
               const liveButton = new ActionRowBuilder()
                 .addComponents(
                   new ButtonBuilder({
@@ -84,15 +89,16 @@ const requestAuthenticator = async () => {
 
 const requestStreamerState = async (streamerId, bearerToken) => {
   try {
-      const requestState = await axios({
-        method: "get",
-        baseURL: "https://api.twitch.tv/helix/streams",
-        params: { user_id: streamerId },
-        headers: {
-          'client-id': TWITCH_CLIENT_TOKEN,
-          'Authorization': `Bearer ${bearerToken}`
-        }
+    const requestState = await axios({
+      method: "get",
+      baseURL: "https://api.twitch.tv/helix/streams",
+      params: { user_id: streamerId },
+      headers: {
+        'client-id': TWITCH_CLIENT_TOKEN,
+        'Authorization': `Bearer ${bearerToken}`
+      }
     });
+    console.log(requestState.data.data);
     return requestState.data.data[0];
   }
   catch(error) { logs("error", "twitch:request:state", error); }
