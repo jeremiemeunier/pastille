@@ -7,7 +7,7 @@ mongoose.connect(MONGODB_URL);
 
 // ##### BOT SETUP ##### \\
 
-const { Client, GatewayIntentBits, Partials, Events } = require('discord.js');
+const { Client, GatewayIntentBits, Partials, Events, ActivityType } = require('discord.js');
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -72,8 +72,19 @@ const guildExit = async () => {
   });
 }
 
+const setStatus = async () => {
+  const allGuilds = client.guilds.cache;
+  const guildLength = allGuilds.map(x => x).length;
+
+  client.user.setPresence({
+    activities: [{ name: `Prend soins de ${guildLength > 1 ? `${guildLength} serveurs` : `${guildLength} serveur`}`,
+    type: ActivityType.Custom
+  }]});
+}
+
 const pastilleBooter = async () => {
   logs('start', 'booter', 'Pastille has started successfully');
+  setStatus();
 
   try {
     // API
@@ -101,6 +112,7 @@ const pastilleBooter = async () => {
   client.on(Events.GuildCreate, (guild) => {
     logs('infos', 'events:new_guild', "Join a new guild", guild.id);
     guildStarter(guild);
+    setStatus();
   });
 }
 
