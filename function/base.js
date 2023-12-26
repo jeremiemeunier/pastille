@@ -3,7 +3,7 @@ const { logs } = require("../function/logs");
 
 const getAddons = async (guild) => {
 	try {
-		const guildAddonsRequest = await axios.get("/addons", { params: { guild: guild.id }});
+		const guildAddonsRequest = await axios.get("/addons", { params: { guild_id: guild.id }});
 		const guildAddons = guildAddonsRequest.data.data;
 		return guildAddons;
 	}
@@ -21,7 +21,7 @@ const getBanWord = async (guild) => {
 
 const getRoles = async (guild) => {
 	try {
-		const guildRolesrequest = await axios.get("/roles", { params: { guild: guild.id }});
+		const guildRolesrequest = await axios.get("/roles", { params: { guild_id: guild.id }});
 		const guildRoles = guildRolesrequest.data.data;
 		return guildRoles;
 	}
@@ -67,7 +67,7 @@ const getCommands = async (guild, id) => {
   }
   else {
     try {
-      const guildCommandsRequest = axios.get("/commands", { params: { guild: guild.id }});
+      const guildCommandsRequest = axios.get("/commands", { params: { guild_id: guild.id }});
       const guildCommands = guildCommandsRequest.data.data;
       return guildCommands;
     }
