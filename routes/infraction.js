@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Infraction = require("../model/Infraction");
 const isPastille = require("../middlewares/isPastille");
+const { logs } = require("../function/logs");
 
 router.post("/infraction", isPastille, async (req, res) => {
   const { user_id, reason, date, guild_id } = req.body;
@@ -19,7 +20,8 @@ router.post("/infraction", isPastille, async (req, res) => {
 
     res.status(200).json({ message: "New infraction items created" });
   } catch(error) {
-    console.log(error);
+    res.status(400).json({ message: "An error occured", error: error });
+    logs("error", "api:infraction:register", error, guild_id);
   }
 });
 
