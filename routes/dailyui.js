@@ -8,7 +8,7 @@ router.put("/dailyui", isPastille, async (req, res) => {
   try {
     const updateDailyUi = await DailyUi.findByIdAndUpdate(
       { _id: req.query.id },
-      { state: true }
+      { available: false }
     );
     res.status(201).json({ message: 'State updated for DailyUi', data: updateDailyUi });
   }
@@ -16,25 +16,28 @@ router.put("/dailyui", isPastille, async (req, res) => {
 });
 
 router.get("/dailyui", isPastille, async (req, res) => {
+  const { guild_id } = req.query;
+
   try {
-    const dailyuiNotSend = await DailyUi.findOne({ state: false });
+    const dailyuiNotSend = await DailyUi.findOne({ available: true, guild_id: guild_id });
 
     if(!dailyuiNotSend) { res.status(404).json({ message: "No dailyui available" }); }
     else { res.status(200).json({ message: "DailyUi available", data: dailyuiNotSend }); }
   }
-  catch(error) { logs("error", "api:dailyui:get", error); }
+  catch(error) { logs("error", "api:dailyui:get", error, guild_id); }
 })
 
 router.post("/dailyui", isPastille, async (req, res) => {
-  const { state, title, description } = req.body;
+  const { guild_id, state, title, description } = req.body;
 
-  if(!title || !description) {
+  if(!guild_id || !title || !description) {
     res.status(400).json({ message: 'Complete all input', data: req.body });
   }
   else {
     try {
       const newDailyUi = new DailyUi({
-        state: state,
+        guild_id: guild_id,
+        available: state || true,
         title: title,
         description: description
       })
@@ -42,7 +45,7 @@ router.post("/dailyui", isPastille, async (req, res) => {
 
       res.status(200).json({ message: 'New daily challenge added', data: newDailyUi });
     }
-    catch(error) { logs("error", "api:dailyui:add", error); }
+    catch(error) { logs("error", "api:dailyui:add", error, guild_id); }
   }
 });
 
@@ -52,7 +55,8 @@ router.post('/dailyui/mass', isPastille, async (req, res) => {
   data.map(async dailychallenge => {
     try {
       const newDailyUi = new DailyUi({
-        state: false,
+        available: true,
+        guild_id: dailychallenge.guild_id,
         title: dailychallenge.title,
         description: dailychallenge.description
       })
