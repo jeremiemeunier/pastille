@@ -1,66 +1,64 @@
 const axios = require('axios');
 const { TWITCH_CLIENT_TOKEN, TWITCH_SECRET_TOKEN } = require('../config/secret.json');
 const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
-const { options } = require('../config/settings.json');
 const { logs } = require('../function/logs');
+const { getStreamers } = require('../function/base');
 
-const addonsLoaded = async (client, addonsParamsItem) => {
-  const { channel, role } = addonsParamsItem;
-  const { streamer } = require('../config/addons/streamer.json');
-    
-  setInterval(async () => {
+const addonsLoaded = async (guild, params) => {
+  const streamerList = await getStreamers(guild);
+  const notificationChannel = guild.channels.cache.find(channel => channel.id === params.channel);
+  const notificationRole = guild.roles.cache.find(role => role.id === params.role);
+
+  const pingStreamer = setInterval(async () => {
     const authToken = await requestAuthenticator();
-    streamer.map(async streamer => {
-      let streamerState = await requestStreamerState(streamer.twitch.id, authToken);
-      if(streamerState !== undefined) {
-        if(startAnalyze(streamerState.started_at)) {
-          try {
-            let thumbnail = streamerState.thumbnail_url;
-            thumbnail = thumbnail.replace('{width}', 1920);
-            thumbnail = thumbnail.replace('{height}', 1080);
 
-            const liveButton = new ActionRowBuilder()
-              .addComponents(
+    if(authToken) {
+      streamerList.map(async (item) => {
+        const { twitch } = item;
+        const streamerState = await requestStreamerState(twitch.id, authToken);
+  
+        if(streamerState !== undefined) {
+          if(startAnalyze(streamerState.started_at)) {
+            try {
+              const thumbnail = streamerState.thumbnail_url.replace('{width}', 1920).replace('{height}', 1080);
+              const liveButton = new ActionRowBuilder()
+                .addComponents(
                   new ButtonBuilder({
                     label: "Rejoindre sur twitch.tv",
                     style: ButtonStyle.Link,
-                    url: `https://twitch.tv/${streamer.twitch.name.toString()}`
+                    url: `https://twitch.tv/${twitch.name.toString()}`
                   })
-              );
-            const liveEmbed = new EmbedBuilder({
-              color: parseInt("6441a5"),
-              title: `${streamer.twitch.name.toString()} est actuellement en live !`,
-              description: `Il stream : **${streamerState.title}** sur **${streamerState.game_name}**`,
-              thumbnail: thumbnail
-            });
-            
-            client.guilds.cache.map(async guild => {
-              const sendChannel = guild.channels.cache.find(sendChannel => sendChannel.name === channel);
-
-              if(sendChannel !== undefined) {
+                );
+                const liveEmbed = new EmbedBuilder({
+                  color: parseInt("6441a5"),
+                  title: `${streamer.twitch.name.toString()} est actuellement en live !`,
+                  description: `Il stream : **${streamerState.title}** sur **${streamerState.game_name}**`,
+                  thumbnail: thumbnail
+                });
+  
                 try {
-                  await sendChannel.send({
-                    content: `${streamer.twitch.name.toString()} est en live ! ${streamer.personal_text ? streamer.personal_text : ''} <@&${role}>`,
+                  await notificationChannel.send({
+                    content: `${twitch.name.toString()} est en live ! ${item.message ? item.message : ''} <@&${notificationRole}>`,
                     embeds: [liveEmbed],
                     components: [liveButton]
                   });
                 }
-                catch(error) { logs("error", "twitch:send", error); }
-              }
-            });
+                catch(error) { logs("error", "addons:twitch:send", error, guild.id); }
+            }
+            catch(error) { logs("error", "addons:twitch:ping", error, guild.id); }
           }
-          catch(error) { logs("error", "twitch:construct", error); }
         }
-      }
-    });
-  }, options.wait);
+      });
+    }
+    else { logs("error", "twitch:auth:global", "Cannot auth to twitch"); }
+  }, 300000);
 }
 
 const startAnalyze = (startItem) => {
   const now = Date.parse(new Date());
   const start = Date.parse(startItem);
-  const prev = now - options.wait;
-  const next = now + options.wait;
+  const prev = now - 300000;
+  const next = now + 300000;
 
   if(start > prev && start < next) { return true; }
   else { return false; }
@@ -68,12 +66,16 @@ const startAnalyze = (startItem) => {
 
 const requestAuthenticator = async () => {
   try {
-    const requestToken = await axios.post("https://id.twitch.tv/oauth2/token", {}, { params: {
-      client_id: TWITCH_CLIENT_TOKEN,
-      client_secret: TWITCH_SECRET_TOKEN,
-      grant_type: "client_credentials",
-      scope: "viewing_activity_read"
-    }});
+    const requestToken = await axios({
+      method: "post",
+      baseURL: "https://id.twitch.tv/oauth2/token",
+      params: {
+        client_id: TWITCH_CLIENT_TOKEN,
+        client_secret: TWITCH_SECRET_TOKEN,
+        grant_type: "client_credentials",
+        scope: "viewing_activity_read"
+      }
+    });
 
     return requestToken.data.access_token;
   }
@@ -82,7 +84,9 @@ const requestAuthenticator = async () => {
 
 const requestStreamerState = async (streamerId, bearerToken) => {
   try {
-      const requestState = await axios.post("https://api.twitch.tv/helix/streams", {}, {
+      const requestState = await axios({
+        method: "get",
+        baseURL: "https://api.twitch.tv/helix/streams",
         params: { user_id: streamerId },
         headers: {
           'client-id': TWITCH_CLIENT_TOKEN,
