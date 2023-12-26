@@ -29,9 +29,7 @@ const composeService = (data) => {
   const max = 32;
 
   if(size < max) {
-    for(let i = 0;i < max - size; i++) {
-      data = `${data} `;
-    }
+    for(let i = 0;i < max - size; i++) { data = `${data} `; }
     return data;
   }
   return data;
