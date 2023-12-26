@@ -2,6 +2,7 @@ const { EmbedBuilder } = require('discord.js');
 const { logs } = require('../logs');
 const axios = require("axios");
 const { getParams } = require('../base');
+const { BOT_ID } = require("../../config/secret.json");
 
 const durationFormater = (time) => {
   const duration = time / 1000;
@@ -104,7 +105,9 @@ const automodVerifier = async (guild) => {
   logs("infos", "automod:verifier", "Start sanctions verifications", guild.id);
   
   try {
-    const allGuildSanctionsRequest = await axios.get("/sanction", { params: { guild_id: guild.id }});
+    const allGuildSanctionsRequest = await axios.get("/sanction", {
+      params: { guild_id: guild.id },
+      headers: { "pastille_botid": BOT_ID }});
 
     const allGuildSanctions = allGuildSanctionsRequest.data.data;
     const guildParams = await getParams(guild);
@@ -123,7 +126,11 @@ const automodVerifier = async (guild) => {
           const sanctionRole = guild.roles.cache.find(role => role.id === moderation.roles.muted);
 
           if(!user) {
-            try { await axios.put("/sanction/update", {}, { params: { id: _id } }); }
+            try {
+              await axios.put("/sanction/update", {}, {
+                params: { id: _id },
+                headers: { "pastille_botid": BOT_ID }});
+              }
             catch(error) { logs("error", "automod:rebind:update", error, guild.id); }
             logs("warning", "automod:verifier:rebind", `User not find : ${user_id}`, guild.id); return; }
           if(!sanctionRole) {
