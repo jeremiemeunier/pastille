@@ -34,7 +34,7 @@ const addonsLoaded = async (guild, params) => {
                 );
               const liveEmbed = new EmbedBuilder({
                 color: parseInt("6441a5"),
-                title: `${streamer.twitch.name.toString()} est actuellement en live !`,
+                title: `${twitch.name.toString()} est actuellement en live !`,
                 description: `Il stream : **__${streamerState.title}__** sur **__${streamerState.game_name}__**`,
                 thumbnail: thumbnail
               });
