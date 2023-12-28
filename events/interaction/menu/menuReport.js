@@ -1,37 +1,47 @@
-const { Events, EmbedBuilder } = require('discord.js');
+const { ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder } = require('discord.js');
 const { logs } = require('../../../function/logs');
-const { getParams } = require('../../../function/base');
 
 const contextReportUser = async (client, interaction) => {
   const { commandName } = interaction;
   if(commandName !== "Signaler l'utilisateur") { return; }
 
   const guild = client.guilds.cache.find(guild => guild.id === interaction.commandGuildId);
-  const guildParams = await getParams(guild);
-  const { moderation } = guildParams;
 
-  const targetUser = guild.members.cache.find(member => member.id === interaction.targetId);
-  const reportUser = guild.members.cache.find(member => member.id === interaction.user.id);
-  const reportChannel = guild.channels.cache.find(channel => channel.id === moderation.channels.report);
+  const reportModal = new ModalBuilder({
+    custom_id: "modalReportUser",
+    title: "Signalement d'un utilisateur"
+  });
+
+  const reportField = new TextInputBuilder({
+    custom_id: "reportedUser",
+    style: TextInputStyle.Short,
+    label: "Id de l'utilisateur",
+    required: true
+  });
+  const reportFieldComponents = new ActionRowBuilder().addComponents(reportField);
+
+  const reasonField = new TextInputBuilder({
+    custom_id: "shortReportReason",
+    style: TextInputStyle.Short,
+    label: "Une courte explication",
+    required: true
+  });
+  const reasonFieldComponents = new ActionRowBuilder().addComponents(reasonField);
+
+  const descriptionField = new TextInputBuilder({
+    custom_id: "largeReportReason",
+    style: TextInputStyle.Paragraph,
+    label: "Un peu plus de détails",
+    max_length: 2000,
+    required: false
+  });
+  const descriptionFieldComponents = new ActionRowBuilder().addComponents(descriptionField);
 
   try {
-    const reportEmbed = new EmbedBuilder({
-      color: parseInt("FF0000", 16),
-      description: "Signalement d'un utilisateur",
-      fields: [
-        { name: "Signalement par", value: `<@${reportUser.id}>`, inline: true },
-        { name: "Signalement de", value: `<@${targetUser.id}>`, inline: true },
-      ]
-    });
-    await reportChannel.send({
-      content: `<@&${moderation.roles.staff}> nouveau signalement d'un utilisateur`,
-      embeds: [reportEmbed] });
-    await interaction.reply({ content: "Votre signalement à bien été transmis à la modération" });
+    reportModal.addComponents(reportFieldComponents, reasonFieldComponents, descriptionFieldComponents);
+    await interaction.showModal(reportModal);
   }
-  catch(error) {
-    await interaction.reply({ content: "Une erreur est survenue lors du signalement veuillez réessayer plus tard." });
-    logs("error", "context:report_user", error, guild.id);
-  }
+  catch(error) { logs("error", "command:report:showmodal", error, guild.id); }
 }
 
 module.exports = { contextReportUser }
