@@ -12,7 +12,7 @@ const { commandClearInit } = require('./interaction/command/commandClear');
 const { buttonAcceptRuleInit } = require('./interaction/button/buttonAcceptRule');
 const { buttonStaffRequest } = require('./interaction/button/buttonStaffRequest');
 const { buttonOpenTicketInit } = require('./interaction/button/buttonOpenCloseTicket');
-const { contextReportUser } = require('./interaction/menu/menuReport');
+const { contextReportUser } = require('./interaction/menu/menuReportUser');
 const { modalReportUser } = require('./interaction/modal/modalReportUser');
 const { logs } = require('../function/logs');
 
