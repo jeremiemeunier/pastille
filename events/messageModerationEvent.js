@@ -14,8 +14,7 @@ const automod = (client) => {
     const mentions = message.mentions.roles.map(x => x).length + message.mentions.users.map(x => x).length;
     const user = guild.members.cache.find(user => user.id === message.author.id);
     const infractionChannel = guild.channels.cache.find(channel => channel.id === message.channelId);
-    const alert = guild.channels.cache.find(channel => channel.id === moderation.channels.alert);
-    const report = guild.channels.cache.find(channel => channel.id === moderation.channels.report);
+    const automod = guild.channels.cache.find(channel => channel.id === moderation.channels.automod);
 
     if(user === undefined) { return; }
 
@@ -38,7 +37,7 @@ const automod = (client) => {
           });
           message.delete();
 
-          await report.send({
+          await automod.send({
             embeds: [embedSanction, embedProof] });
           await infractionChannel.send({
             content: `<@${user.user.id.toString()}> you receive a warn`,
@@ -63,7 +62,7 @@ const automod = (client) => {
             description: "**Raison** : Mentionne @everyone"
           });
           message.delete();
-          await report.send({ embeds: [embedSanction, embedProof] });
+          await automod.send({ embeds: [embedSanction, embedProof] });
           await infractionChannel.send({
             content: `<@${user.user.id.toString()}> receive a warn`,
             embeds: [embedSanction] });
