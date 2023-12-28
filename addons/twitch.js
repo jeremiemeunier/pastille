@@ -3,6 +3,7 @@ const { TWITCH_CLIENT_TOKEN, TWITCH_SECRET_TOKEN } = require('../config/secret.j
 const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const { logs } = require('../function/logs');
 const { getStreamers } = require('../function/base');
+const waitingTime = 60000;
 
 const addonsLoaded = async (guild, params) => {
   logs("start", "addons:twitch:start", "Starting twitch addons", guild.id);
@@ -21,9 +22,7 @@ const addonsLoaded = async (guild, params) => {
         if(streamerState !== undefined) {
           if(startAnalyze(streamerState.started_at)) {
             try {
-              let thumbnail = streamerState.thumbnail_url;
-                  thumbnail.replace('{width}', 1920);
-                  thumbnail.replace('{height}', 1080);
+              const thumbnail = streamerState.thumbnail_url.replace('{width}', 1920).replace('{height}', 1080);
               const liveButton = new ActionRowBuilder()
                 .addComponents(
                   new ButtonBuilder({
@@ -33,15 +32,15 @@ const addonsLoaded = async (guild, params) => {
                   })
                 );
               const liveEmbed = new EmbedBuilder({
-                color: parseInt("6441a5"),
+                color: parseInt("6441a5", 16),
                 title: `${twitch.name.toString()} est actuellement en live !`,
                 description: `Il stream : **__${streamerState.title}__** sur **__${streamerState.game_name}__**`,
-                thumbnail: thumbnail
+                thumbnail: { url: thumbnail.toString() }
               });
 
               try {
                 await notificationChannel.send({
-                  content: `${twitch.name.toString()} est en live ! ${item.message ? item.message : ''} <@&${notificationRole}>`,
+                  content: `${twitch.name.toString()} est en live ! ${item.message ? item.message : ''} ${notificationRole}`,
                   embeds: [liveEmbed],
                   components: [liveButton]
                 });
@@ -54,14 +53,14 @@ const addonsLoaded = async (guild, params) => {
       });
     }
     else { logs("error", "twitch:auth:global", "Cannot auth to twitch"); }
-  }, 300000);
+  }, waitingTime);
 }
 
 const startAnalyze = (startItem) => {
   const now = Date.parse(new Date());
   const start = Date.parse(startItem);
-  const prev = now - 300000;
-  const next = now + 300000;
+  const prev = now - waitingTime;
+  const next = now + waitingTime;
 
   if(start > prev && start < next) { return true; }
   else { return false; }
