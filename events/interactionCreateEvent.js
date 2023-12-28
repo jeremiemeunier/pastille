@@ -15,11 +15,11 @@ const { buttonOpenTicketInit } = require('./interaction/button/buttonOpenCloseTi
 const { contextReportUser } = require('./interaction/menu/menuReportUser');
 const { modalReportUser } = require('./interaction/modal/modalReportUser');
 const { logs } = require('../function/logs');
+const { contextReportMessage } = require('./interaction/menu/menuReportMessage');
 
 const interactionCreateEventInit = (client) => {
 
   client.on(Events.InteractionCreate, async interaction => {
-
     if(interaction.isButton()) {
       //Buttons
       try {
@@ -46,15 +46,24 @@ const interactionCreateEventInit = (client) => {
     }
 
     if(interaction.isUserContextMenuCommand()) {
-      // Context commands
+      // Context user
       try {
         contextReportUser(client, interaction);
+        contextReportMessage(client, interaction);
       }
-      catch(error) { logs("error", "interaction:context", error); }
+      catch(error) { logs("error", "interaction:context_user", error); }
+    }
+
+    if(interaction.isMessageContextMenuCommand()) {
+      // Context message
+      try {
+        contextReportMessage(client, interaction);
+      }
+      catch(error) { logs("error", "interaction:context_message", error); }
     }
 
     if(interaction.isModalSubmit()) {
-      // Modal commands
+      // Modal
       try {
         modalReportUser(client, interaction);
       }
