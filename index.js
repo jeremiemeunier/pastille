@@ -63,15 +63,6 @@ const guildStarter = (guild) => {
   catch(error) { logs("error", "booter:guild_starter", error, guild.id); }
 }
 
-const guildExit = async () => {
-  const { commandDelete } = require("./function/commandsRegister");
-
-  const allGuilds = client.guilds.cache;
-  allGuilds.map(async (guild) => {
-    await commandDelete(guild);
-  });
-}
-
 const setStatus = async () => {
   const allGuilds = client.guilds.cache;
   const guildLength = allGuilds.map(x => x).length;
@@ -118,7 +109,6 @@ const pastilleBooter = async () => {
 
 process.on('SIGINT', async () => {
   logs('infos', 'process:stop', "Process has request to stop");
-  await guildExit();
   process.exit(300);
 });
 
