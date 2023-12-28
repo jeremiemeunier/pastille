@@ -1,6 +1,6 @@
 const commands =
 {
-  name: "Signaler le message",
+  name: "Signaler",
   default_member_permissions: 68608,
   type: 3
 };
