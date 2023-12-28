@@ -12,12 +12,13 @@ const { commandClearInit } = require('./interaction/command/commandClear');
 const { buttonAcceptRuleInit } = require('./interaction/button/buttonAcceptRule');
 const { buttonStaffRequest } = require('./interaction/button/buttonStaffRequest');
 const { buttonOpenTicketInit } = require('./interaction/button/buttonOpenCloseTicket');
+const { contextReportUser } = require('./interaction/menu/menuReport');
 
 const interactionCreateEventInit = (client) => {
 
   client.on(Events.InteractionCreate, async interaction => {
 
-    if (interaction.isButton()) {
+    if(interaction.isButton()) {
       //Buttons
       buttonAcceptRuleInit(client, interaction);
       buttonStaffRequest(client, interaction);
@@ -34,6 +35,11 @@ const interactionCreateEventInit = (client) => {
       commandThreadInit(client, interaction);
       commandStatutInit(client, interaction);
       commandClearInit(client, interaction);
+    }
+
+    if(interaction.isUserContextMenuCommand()) {
+      // context commands
+      contextReportUser(client, interaction);
     }
 
     return;
