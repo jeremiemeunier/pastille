@@ -19,6 +19,7 @@ const setting = mongoose.model("Setting", {
       channels: {
         alert: String,
         report: String,
+        automod: String,
       },
       limit: {
         emoji: Number,
