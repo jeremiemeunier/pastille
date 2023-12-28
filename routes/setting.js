@@ -28,7 +28,8 @@ router.post("/settings/add", isPastille, async (req, res) => {
         sharing: sharing || false,
         channels: {
           alert: moderation.channels.alert || null,
-          report: moderation.channels.report || null
+          report: moderation.channels.report || null,
+          automod: moderation.channels.automod || null
         },
         limit: {
           emoji: limit.emoji || -1,
