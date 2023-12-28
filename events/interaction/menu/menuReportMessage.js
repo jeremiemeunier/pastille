@@ -18,29 +18,25 @@ const contextReportMessage = async (client, interaction) => {
   try {
     const reportEmbed = new EmbedBuilder({
       color: parseInt("FF0000", 16),
-      description: `**Message** :\r\n\`\`\`${reportedMessage.content}`,
+      description: `**Message** :\r\n\`\`\`${reportedMessage.content}\`\`\``,
       fields: [
-        { name: "Auteur", value: `<@${reportedMessage.author.id}>` },
-        { name: "Signalement par", value: `<@${reporterUser.id}>` }
+        { name: "Auteur", value: `<@${reportedMessage.author.id}>`, inline: true },
+        { name: "Signalement par", value: `<@${reporterUser.id}>`, inline: true },
+        { name: "Message id", value: reportedMessage.id, inline: true },
+        { name: "Channel id", value: reportedMessage.channelId, inline: true }
       ]
     });
     const buttonDelete = new ActionRowBuilder().addComponents(
       new ButtonBuilder({
-        label: "Supprimer le message",
+        label: "Supprimer le message et ajouter un warn",
         style: ButtonStyle.Danger,
         custom_id: "deleteReportedMessage"
-    }));
-    const warnUser = new ActionRowBuilder().addComponents(
-      new ButtonBuilder({
-        label: "Ajouter un warn à l'auteur",
-        style: ButtonStyle.Secondary,
-        custom_id: "warnReportedMessageUser"
     }));
 
     await reportChannel.send({
       content: `<@&${moderation.roles.staff}> nouveau signalement d'un message :`,
       embeds: [reportEmbed],
-      components: [buttonDelete, warnUser]
+      components: [buttonDelete]
     });
     await interaction.reply({ content: "Le signalement à bien été transmis à l'équipe de modération", ephemeral: true });
   }
