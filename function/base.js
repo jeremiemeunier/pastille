@@ -50,7 +50,7 @@ const getRoles = async (guild) => {
 const getRules = async (guild) => {
 	try {
 		const guildRulesRequest = await axios.get("/rules", {
-      params: { guild: guild.id },
+      params: { guild_id: guild.id },
       headers: { "pastille_botid": BOT_ID }});
 		const guildRules = guildRulesRequest.data.data;
 		return guildRules;
