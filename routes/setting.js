@@ -6,7 +6,7 @@ const { logs } = require("../function/logs");
 
 router.post("/settings/add", isPastille, async (req, res) => {
   const { guild_id, premium, premium_end, options, moderation } = req.body;
-  const { sharing, limit, immune, roles, sanctions } = moderation;
+  const { sharing, limit, imune, roles, sanctions } = moderation;
   const { low, medium, hight, critical } = sanctions;
 
   try {
@@ -37,7 +37,7 @@ router.post("/settings/add", isPastille, async (req, res) => {
           link: limit.link || -1,
           invite: limit.invite || -1
         },
-        imune: immune || [],
+        imune: imune || [],
         roles: {
           muted: roles.muted || null,
           rule: roles.rule || null,
@@ -55,10 +55,6 @@ router.post("/settings/add", isPastille, async (req, res) => {
           hight: {
             duration: hight.duration || 1,
             unit: hight.unit || "h"
-          },
-          critical: {
-            duration: critical.duration || 1,
-            unit: critical.unit || "d"
           }
         }
       }
