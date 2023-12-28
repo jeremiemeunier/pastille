@@ -16,6 +16,7 @@ const { contextReportUser } = require('./interaction/menu/menuReportUser');
 const { modalReportUser } = require('./interaction/modal/modalReportUser');
 const { logs } = require('../function/logs');
 const { contextReportMessage } = require('./interaction/menu/menuReportMessage');
+const { buttonDeleteMessage } = require('./interaction/button/buttonDeleteMessage');
 
 const interactionCreateEventInit = (client) => {
 
@@ -26,6 +27,7 @@ const interactionCreateEventInit = (client) => {
         buttonAcceptRuleInit(client, interaction);
         buttonStaffRequest(client, interaction);
         buttonOpenTicketInit(client, interaction);
+        buttonDeleteMessage(client, interaction);
       }
       catch(error) { logs("error", "interaction:button", error); }
     }
