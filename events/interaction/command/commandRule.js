@@ -33,7 +33,7 @@ const commandRuleInit = async (client, interaction) => {
     const rulesEmbed = new EmbedBuilder({
       color: parseInt(options.color, 16),
       title: "Règles du serveur",
-      description: "Les règles du serveur sont simples.\r\nEn utilisant ce serveur discord, l'utilisateur accepte d'emblée le réglement.\r\n\r\nIl est possible pour n'importe quel membres de signalé, un message ou utilisateur en faisant un clic droit sur celui-ci puis Application » Signaler",
+      description: "Les règles du serveur sont simples.\r\nEn utilisant ce serveur discord, l'utilisateur accepte d'emblée le réglement.\r\n\r\nIl est possible pour n'importe quel membres de signaler, un message ou utilisateur en faisant un clic droit sur celui-ci puis __Applications » Signaler__",
       fields: rulesField
     });
     const modosEmbed = new EmbedBuilder({
