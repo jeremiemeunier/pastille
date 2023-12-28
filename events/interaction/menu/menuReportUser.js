@@ -16,6 +16,7 @@ const contextReportUser = async (client, interaction) => {
     custom_id: "reportedUser",
     style: TextInputStyle.Short,
     label: "Id de l'utilisateur",
+    value: interaction.targetId,
     required: true
   });
   const reportFieldComponents = new ActionRowBuilder().addComponents(reportField);
