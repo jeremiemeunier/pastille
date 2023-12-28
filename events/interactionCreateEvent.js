@@ -13,6 +13,8 @@ const { buttonAcceptRuleInit } = require('./interaction/button/buttonAcceptRule'
 const { buttonStaffRequest } = require('./interaction/button/buttonStaffRequest');
 const { buttonOpenTicketInit } = require('./interaction/button/buttonOpenCloseTicket');
 const { contextReportUser } = require('./interaction/menu/menuReport');
+const { modalReportUser } = require('./interaction/modal/modalReportUser');
+const { logs } = require('../function/logs');
 
 const interactionCreateEventInit = (client) => {
 
@@ -20,26 +22,43 @@ const interactionCreateEventInit = (client) => {
 
     if(interaction.isButton()) {
       //Buttons
-      buttonAcceptRuleInit(client, interaction);
-      buttonStaffRequest(client, interaction);
-      buttonOpenTicketInit(client, interaction);
+      try {
+        buttonAcceptRuleInit(client, interaction);
+        buttonStaffRequest(client, interaction);
+        buttonOpenTicketInit(client, interaction);
+      }
+      catch(error) { logs("error", "interaction:button", error); }
     }
 
     if(interaction.isChatInputCommand()) {
       // Commands
-      commandPollInit(client, interaction);
-      commandRuleInit(client, interaction);
-      commandStaffInit(client, interaction);
-      commandAnnounceInit(client, interaction);
-      commandRoleInit(client, interaction);
-      commandThreadInit(client, interaction);
-      commandStatutInit(client, interaction);
-      commandClearInit(client, interaction);
+      try {
+        commandPollInit(client, interaction);
+        commandRuleInit(client, interaction);
+        commandStaffInit(client, interaction);
+        commandAnnounceInit(client, interaction);
+        commandRoleInit(client, interaction);
+        commandThreadInit(client, interaction);
+        commandStatutInit(client, interaction);
+        commandClearInit(client, interaction);
+      }
+      catch(error) { logs("error", "interaction:slash_command", error); }
     }
 
     if(interaction.isUserContextMenuCommand()) {
-      // context commands
-      contextReportUser(client, interaction);
+      // Context commands
+      try {
+        contextReportUser(client, interaction);
+      }
+      catch(error) { logs("error", "interaction:context", error); }
+    }
+
+    if(interaction.isModalSubmit()) {
+      // Modal commands
+      try {
+        modalReportUser(client, interaction);
+      }
+      catch(error) { logs("error", "interaction:modal", error); }
     }
 
     return;
