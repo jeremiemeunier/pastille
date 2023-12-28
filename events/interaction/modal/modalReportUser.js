@@ -27,7 +27,7 @@ const modalReportUser = async (client, interaction) => {
     await reportChannel.send({
       content: `<@&${moderation.roles.staff}> nouveau signalement d'un utilisateur`,
       embeds: [reportEmbed] });
-    await interaction.reply({ content: "Votre signalement à bien été transmis à la modération" });
+    await interaction.reply({ content: "Votre signalement à bien été transmis à la modération", ephemeral: true });
   }
   catch(error) {
     await interaction.reply({ content: "Une erreur est survenue lors du signalement veuillez réessayer plus tard." });
