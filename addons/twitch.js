@@ -3,7 +3,7 @@ const { TWITCH_CLIENT_TOKEN, TWITCH_SECRET_TOKEN } = require('../config/secret.j
 const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const { logs } = require('../function/logs');
 const { getStreamers } = require('../function/base');
-const waitingTime = 60000;
+const waitingTime = 300000;
 
 const addonsLoaded = async (guild, params) => {
   logs("start", "addons:twitch:start", "Starting twitch addons", guild.id);
