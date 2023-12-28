@@ -22,20 +22,17 @@ const addonsLoaded = async (guild, params) => {
         if(streamerState !== undefined) {
           if(startAnalyze(streamerState.started_at)) {
             try {
-              const thumbnail = streamerState.thumbnail_url.replace('{width}', 1920).replace('{height}', 1080);
-              const liveButton = new ActionRowBuilder()
-                .addComponents(
-                  new ButtonBuilder({
-                    label: "Rejoindre sur twitch.tv",
-                    style: ButtonStyle.Link,
-                    url: `https://twitch.tv/${twitch.name.toString()}`
-                  })
-                );
+              const liveButton = new ActionRowBuilder().addComponents(
+                new ButtonBuilder({
+                  label: "Rejoindre sur twitch.tv",
+                  style: ButtonStyle.Link,
+                  url: `https://twitch.tv/${twitch.name.toString()}`
+                })
+              );
               const liveEmbed = new EmbedBuilder({
                 color: parseInt("6441a5", 16),
                 title: `${twitch.name.toString()} est actuellement en live !`,
-                description: `Il stream : **__${streamerState.title}__** sur **__${streamerState.game_name}__**`,
-                thumbnail: { url: thumbnail.toString() }
+                description: `Il stream : **__${streamerState.title}__** sur **__${streamerState.game_name}__**`
               });
 
               try {
