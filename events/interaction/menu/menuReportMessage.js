@@ -4,7 +4,7 @@ const { getParams } = require('../../../function/base');
 
 const contextReportMessage = async (client, interaction) => {
   const { commandName } = interaction;
-  if(commandName !== "Signaler le message") { return; }
+  if(commandName !== "Signaler") { return; }
 
   const guild = client.guilds.cache.find(guild => guild.id === interaction.guildId);
   const guildParams = await getParams(guild);
