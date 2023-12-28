@@ -115,6 +115,20 @@ const getParams = async (guild) => {
 	catch(error) { logs("error", "global:get:guild_params", error, guild.id); }
 }
 
+const postWarnUser = async (guild, data) => {
+  try {
+    const warnUserRequest = axios.post("/infraction", {
+      user_id: data.user_id,
+      reason: data.reason,
+      date: new Date(),
+      guild_id: guild.id
+    }, { headers: { "pastille_botid": BOT_ID }});
+
+    return warnUserRequest.data.data;
+  }
+  catch(error) { logs("error", "global:post:infraction", error, guild.id); }
+}
+
 const hoursParser = async (date) => {
   if(date === undefined) { date = new Date(); }
 
@@ -136,4 +150,4 @@ const dateParser = async (date) => {
 }
 
 module.exports = {
-  hoursParser, dateParser, getParams, getAddons, getRules, getRoles, getCommands, getLetters, getBanWord, getStreamers }
+  hoursParser, dateParser, getParams, getAddons, getRules, getRoles, getCommands, getLetters, getBanWord, getStreamers, postWarnUser }
