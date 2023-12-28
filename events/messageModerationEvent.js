@@ -16,6 +16,8 @@ const automod = (client) => {
     const infractionChannel = guild.channels.cache.find(channel => channel.id === message.channelId);
     const automod = guild.channels.cache.find(channel => channel.id === moderation.channels.automod);
 
+    const regexDiscordInvitation = new RegExp(/https:\/\/discord.gg/gm);
+
     if(user === undefined) { return; }
 
     try {
@@ -50,7 +52,8 @@ const automod = (client) => {
         catch(error) { logs("error", "automod:mention", error); }
         return;
       }
-      else if(message.mentions.everyone === true) {
+      
+      if(message.mentions.everyone === true) {
         try {
           const embedProof = new EmbedBuilder({
             color: parseInt(options.color, 16),
@@ -72,6 +75,34 @@ const automod = (client) => {
           automodRegister(user, 'mentionEveryone', guild);
         }
         catch(error) { logs("error", "automod:everyone", error); }
+        return;
+      }
+
+      if(regexDiscordInvitation.test(message.content) && limit.invite === 1) {
+        try {
+          const embedProof = new EmbedBuilder({
+            color: parseInt(options.color, 16),
+            description: message.content
+          });
+          const embedSanction = new EmbedBuilder({
+            color: parseInt(options.color, 16),
+            title: `${user.user.username} [${user.user.globalName}] a reçu un avertissement`,
+            description: "**Raison** : Envoie d'une invitation de serveur"
+          });
+
+          message.delete();
+          await automod.send({ embeds: [embedSanction, embedProof] });
+          await infractionChannel.send({
+            content: `<@${user.user.id.toString()}> receive a warn`,
+            embeds: [embedSanction]
+          });
+          await user.send({
+            content: `<@${user.user.id.toString()}> you receive a warn`,
+            embeds: [embedSanction]
+          });
+          automodRegister(user, "sendInvite", guild);
+        }
+        catch(error) { logs("error", "automod:send_invite", error); }
         return;
       }
     }
