@@ -45,10 +45,6 @@ const setting = mongoose.model("Setting", {
         hight: {
           duration: Number,
           unit: String
-        },
-        critical: {
-          duration: Number,
-          unit: String
         }
       }
     }
