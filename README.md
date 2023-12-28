@@ -14,12 +14,31 @@ It's a bot. An explosive bot named Pastille but only for discord !
     <a href="https://www.npmjs.com/package/axios"><img alt="npm" src="https://img.shields.io/npm/v/axios?label=axios"></a>
     <a href="https://www.npmjs.com/package/@discordjs/rest"><img alt="npm" src="https://img.shields.io/npm/v/@discordjs/rest?label=@discordjs/rest"></a>
     <a href="https://www.npmjs.com/package/fs"><img alt="npm" src="https://img.shields.io/npm/v/fs?label=fs"></a>
+    <a href="https://www.npmjs.com/package/express"><img alt="npm" src="https://img.shields.io/npm/v/express?label=express"></a>
   </p>
 </div>
 
 ## Prerequires
 
 If you are using category for control and organized your discord server, you must create an text channel with the name indicate in the settings for `channels > voiceText` in all category with an voice channel.
+
+Pastille implement an auto host api for automoderation.
+
+package.json
+```json
+{
+  "dependencies": {
+    "@discordjs/rest": "^2.0.1",
+    "axios": "^1.5.0",
+    "discord.js": "^14.13.0",
+    "nodemon": "^3.0.1",
+    "cors": "^2.8.5",
+    "mongoose": "^7.2.4",
+    "express": "^4.18.2",
+    "express-rate-limit": "^7.1.0"
+  }
+}
+```
 
 ## Configuration files
 
@@ -39,7 +58,9 @@ To create your twitch app : [Twitch Developers](https://dev.twitch.tv/console/ap
     "GUILD_ID": YOUR_DISCORD_SERVER_ID,
     "BOT_ID": YOUR_BOT_USER_ID,
     "TWITCH_SECRET_TOKEN": YOUR_SECRET_APP_TOKEN,
-    "TWITCH_CLIENT_TOKEN": YOUR_CLIENT_APP_TOKEN
+    "TWITCH_CLIENT_TOKEN": YOUR_CLIENT_APP_TOKEN,
+    "MONGODB_URL": YOUR_SECRET_APP_TOKEN,
+    "PORT": YOUR_PORT
 }
 ```
 
@@ -92,7 +113,8 @@ To create your twitch app : [Twitch Developers](https://dev.twitch.tv/console/ap
         {
             "name": "", "active": BOOLEAN,
             "channel": CHANNEL_ID,
-            "role": ROLE_ID
+            "role": ROLE_ID,
+            "params": {}
         }
     ]
 }

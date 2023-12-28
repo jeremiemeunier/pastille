@@ -1,0 +1,11 @@
+const mongoose = require("mongoose");
+
+const addons = mongoose.model("Addons", {
+  guild_id: String,
+  name: String,
+  active: Boolean,
+  channel: String,
+  role: String
+});
+
+module.exports = addons;

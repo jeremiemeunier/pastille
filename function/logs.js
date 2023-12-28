@@ -1,54 +1,57 @@
-const { version } = require('../config/settings.json');
-const tag = `pastille[${version}] `;
+const tag = `pastille`;
 
-let channelConsole, channelDebug;
+const composeTime = () => {
+  const now = new Date();
 
-const logsTester = async () => {
-    // try {
-    //     const test = await channelConsole.send({ content: 'Testing logger' });
-    //     if (test) {
-    //         await test.delete();
-    //         return true;
-    //     }
-    // }
-    // catch(error) {
-    //     console.log(error);
-    //     return false;
-    // }
+  const day = now.getDate().toString().length < 2 ? `0${now.getDate()}` : now.getDate();
+  const month = now.getMonth().toString().length < 2 ? `0${now.getMonth() + 1}` : now.getMonth() + 1;
+  const year = now.getFullYear();
+
+  const hours = now.getHours().toString().length < 2 ? `0${now.getHours()}` : now.getHours();
+  const minutes = now.getMinutes().toString().length < 2 ? `0${now.getMinutes()}` : now.getMinutes();
+  const seconds = now.getSeconds().toString().length < 2 ? `0${now.getSeconds()}` : now.getSeconds();
+  const miliseconds = () => {
+    if(now.getMilliseconds().toString().length === 2) {
+      return `0${now.getMilliseconds()}`;
+    }
+    else if(now.getMilliseconds().toString().length === 1) {
+      return `00${now.getMilliseconds()}`;
+    }
+
+    return now.getMilliseconds();
+  }
+
+  return `[${day}/${month}/${year} ${hours}:${minutes}:${seconds}.${miliseconds()}]`;
 }
 
-const logsEmiter = async (content) => {
-    try { console.log(tag + content); }
-    catch(error) { console.log(error); }
+const composeService = (data) => {
+  const size = data.length;
+  const max = 32;
 
-    try {
-        channelConsole.messages.fetch().then(async (messages) => {
-            const lastLogMessage = messages.first();
-
-            if(lastLogMessage !== undefined) {
-                let lastLogContent = lastLogMessage.content.slice(0, -3);
-                let newLogContent = `${lastLogContent}\r\n${tag + content + '```'}`;
-
-                if(newLogContent.length >= 2000) {
-                    try { await channelConsole.send({ content: '```' + tag + content + '```' }); }
-                    catch(error) { console.log(error); }
-                }
-                else {
-                    try { await lastLogMessage.edit(newLogContent); }
-                    catch(error) { console.log(error); }
-                }
-            }
-            else { await channelConsole.send({ content: '```' + tag + content + '```' }); }
-        });
-    }
-    catch(error) {
-        console.log(error);
-    }
+  if(size < max) {
+    for(let i = 0;i < max - size; i++) { data = `${data}_`; }
+    return data;
+  }
+  return data;
 }
 
-const logsBooter = async (client, console, debug) => {
-    channelConsole = console;
-    channelDebug = debug;
-};
+const composeState = (data) => {
+  switch(data) {
+    case "error": return "[ ERROR ]";
+    case "success": return "[SUCCESS]";
+    case "warning": return "[WARNING]";
+    case "start": return "[ START ]";
+    default: return "[ INFOS ]";
+  }
+}
 
-module.exports = { logsBooter, logsEmiter, logsTester };
+const logs = async (state, service, content, guild) => {
+  if(guild) {
+    console.log(`${composeTime()}[${tag}]${composeState(state)}[${composeService(service)}][${guild}] » ${content}`);
+  }
+  else {
+    console.log(`${composeTime()}[${tag}]${composeState(state)}[${composeService(service)}] » ${content}`);
+  }
+}
+
+module.exports = { logs };

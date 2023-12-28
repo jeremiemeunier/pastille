@@ -1,60 +1,68 @@
 const { ChannelType, EmbedBuilder } = require('discord.js');
-const { logsEmiter } = require('../function/logs');
-const { options } = require('../config/settings.json');
+const { logs } = require('../function/logs');
+const { getParams } = require('./base');
 
-const createThreadOnJoin = async (channel, threadChannel, user) => {
-    try {
-        const thread = await threadChannel.threads.create({
-            name: `Voice : ${channel.name}`,
-            autoArchiveDuration: 60,
-            reason: `Dedicated text channel for the voice channel ${channel.name}`,
-            type: ChannelType.PrivateThread,
-        });
-        await thread.members.add(user);
-        const embed = new EmbedBuilder()
-                            .setColor(options.color)
-                            .setDescription(`<@${user}> tu as rejoint un salon vocal 🎙️`);
-        const message = await thread.send({ embeds: [embed, embedExplicative] });
-    }
-    catch(error) { logsEmiter(`An error occured\r\n ${error}`); }
+const createVoiceThread = async (guild, channel, threadChannel, user) => {
+  const guildParams = await getParams(guild);
+  const { options } = guildParams;
+
+  try {
+    const thread = await threadChannel.threads.create({
+      name: `Voice : ${channel.name}`,
+      autoArchiveDuration: 4320,
+      reason: `Dedicated text channel for the voice channel ${channel.name}`,
+      type: ChannelType.PrivateThread,
+      invitable: false
+    });
+    await thread.members.add(user);
+
+    const embedExplicative = new EmbedBuilder({
+      color: parseInt(options.color, 16),
+      title: "Ce salon est dédié à votre channel vocal actuel.",
+      description: `- Il sera automatiquement supprimé une fois que tout le monde aura quitté le channel.\n- Chaque personne qui rejoint est automatiquement ajoutée au fil.\n- Chaque personne qui quitte le channel vocal est retirée du fil automatiquement.\n- L'automodération est toujours présente même ici. Tu **doit** donc respecter les règles du serveur.\n**Les commandes**\n- Pour un rappel des règles tu peux faire **!regles** directement depuis ce fil`,
+    });
+    const embed = new EmbedBuilder({ color: 32768, description:`<@${user}> tu as rejoint un salon vocal 🎙️` });
+    const message = await thread.send({ embeds: [embed, embedExplicative] });
+  }
+  catch(error) { logs("error", "voice:thread:create", error); }
 }
 
-const joinThreadOnJoin = async (channel, threadChannel, user) => {
-    try {
-        const thread = threadChannel.threads.cache.find(thread => thread.name === `Voice : ${channel.name}`);
-        await thread.members.add(user);
-        const embed = new EmbedBuilder()
-                            .setColor(options.color)
-                            .setDescription(`<@${user}> a rejoint le salon vocal 🎙️`);
-        const message = await thread.send({ embeds: [embed] });
-    }
-    catch(error) { logsEmiter(`An error occured\r\n ${error}`); }
+const joinVoiceThread = async (guild, channel, threadChannel, user) => {
+  try {
+    const thread = threadChannel.threads.cache.find(thread => thread.name === `Voice : ${channel.name}`);
+    await thread.members.add(user);
+    const embed = new EmbedBuilder({ color: 32768, description:`<@${user}> tu as rejoint le salon vocal 🎙️` });
+    const message = await thread.send({ embeds: [embed] });
+  }
+  catch(error) { logs("error", "voice:thread:join", error); }
 }
 
-const leaveThreadOnLeave = async (channel, threadChannel, user) => {
-    try {
-        const thread = threadChannel.threads.cache.find(thread => thread.name === `Voice : ${channel.name}`);
-        await thread.members.remove(user);
-        const embed = new EmbedBuilder()
-                            .setColor(options.color)
-                            .setDescription(`<@${user}> a quitter ce salon vocal 💨`);
-        const message = await thread.send({ embeds: [embed] });
-    }
-    catch(error) { logsEmiter(`An error occured\r\n ${error}`); }
+const leaveVoiceThread = async (guild, channel, threadChannel, user) => {
+  try {
+    const thread = threadChannel.threads.cache.find(thread => thread.name === `Voice : ${channel.name}`);
+    await thread.members.remove(user);
+    const embed = new EmbedBuilder({ color: 16711680, description: `<@${user}> a quitté ce salon vocal 💨` });
+    const message = await thread.send({ embeds: [embed] });
+  }
+  catch(error) { logs("error", "voice:thread:leave", error); }
 }
 
-const deleteThreadOnLeave = async (channel, threadChannel) => {
-    try {
-        const thread = threadChannel.threads.cache.find(thread => thread.name === `Voice : ${channel.name}`);
-        await thread.delete();
-    }
-    catch(error) { logsEmiter(`An error occured\r\n ${error}`); }
+const deleteVoiceThread = async (guild, channel, threadChannel) => {
+  const guildParams = await getParams(guild);
+  const { options } = guildParams;
+
+  try {
+    const thread = threadChannel.threads.cache.find(thread => thread.name === `Voice : ${channel.name}`);
+    const embed = new EmbedBuilder({
+      color: parseInt(options.color, 16),
+      description: "Il n'y a plus personne dans ce channel, il va être supprimé dans quelques secondes.",
+    });
+    const message = await thread.send({ embeds: [embed] });
+    
+    try { await thread.delete(); }
+    catch(error) { logs("error", "voice:thread:delete:timeout", error); }
+  }
+  catch(error) { logs("error", "voice:thread:delete", error); }
 }
 
-const embedExplicative = new EmbedBuilder()
-                                .setColor(options.color)
-                                .setTitle('Channel vocal dédié')
-                                .setDescription(`Ce salon dédié à votre vocal sera supprimé une fois tout le monde partie.
-                                                Toutes les personnes qui quittent le salon vocal sont automatiquement kick de ce salon dédié`);
-
-module.exports = { createThreadOnJoin, joinThreadOnJoin, leaveThreadOnLeave, deleteThreadOnLeave }
+module.exports = { createVoiceThread, joinVoiceThread, leaveVoiceThread, deleteVoiceThread }

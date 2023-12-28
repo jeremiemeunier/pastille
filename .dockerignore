@@ -1,0 +1,6 @@
+node_modules/
+*.md
+.github
+data
+LICENSE
+*lock.json

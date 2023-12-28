@@ -1,49 +1,55 @@
-const fs = require('node:fs');
-const { BOT_ID, BOT_TOKEN, BOT_OWNER_ID, GUILD_ID } = require('../config/secret.json');
-const { Client, EmbedBuilder, GatewayIntentBits, Partials } = require('discord.js');
-const client = new Client({
-    intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessageReactions, GatewayIntentBits.GuildVoiceStates],
-    partials: [Partials.Message, Partials.Channel, Partials.Reaction],
-});
+const { EmbedBuilder } = require('discord.js');
+const { options } = require('../config/settings.json');
+const { logs } = require('../function/logs');
+const { GUILD_ID } = require('../config/secret.json');
+const axios = require('axios');
+const addonsLoaded = async (client, addonsParamsItem) => {
+  const { channel, role, params } = addonsParamsItem;
+  const { hours, minutes } = params;
 
-// Base function for optimal working
+  setInterval(async () => {
+    const actualDate = new Date();
 
-client.on('ready', () => {
-    setInterval(async () => {
-        const actualDate = new Date();
-        const dailyUiList = JSON.parse(fs.readFileSync('../data/dailyui.json'));
+    if(
+      actualDate.getHours().toString() === hours && 
+      actualDate.getMinutes().toString() === minutes) {
+      try {
+        const dailyUiChallenge = await axios.get("/dailyui");
+        const { _id, title, description } = dailyUiChallenge.data.data;
+        const guild = client.guilds.cache.find(guild => guild.id === GUILD_ID);
+        const addonsChannel = guild.channels.cache.find(addonsChannel => addonsChannel.name === channel);
 
-        if(actualDate.getHours() === 10 && actualDate.getMinutes() === 23) {
-            let dailyUiAvancement = fs.readFileSync('../bin/dailyui.txt', 'utf8', (err, data) => {
-                if(err) { console.log(err); }
-                else { return data; }
+        try {
+          const embed = new EmbedBuilder({
+            color: parseInt(options.color, 16),
+            title: `**${title}**`,
+            description: description
+          });
+          const message = await addonsChannel.send({
+            content: `<@&${role}> c'est l'heure du DailyUi ! N'hésitez pas à partager vos créations dans le fils`,
+            embeds: [embed]
+          });
+
+          // On crée le thread lié au message
+          // On change aussi le topic du channel
+          try {
+            addonsChannel.setTopic(`**DailyUi → ${title}** | ${description}`);
+            const thread = await message.startThread({
+              name: `${title}`,
+              autoArchiveDuration: 60,
+              reason: 'Need a separate thread for daily dailyui'
             });
-            let nextDailyUiAdvancement = fs.readFileSync('../bin/dailyui.txt', 'utf8', (err, data) => {
-                if(err) { console.log(err); }
-                else { return data; }
-            });
-                nextDailyUiAdvancement++;
 
-            try {
-                const guild = client.guilds.cache.find(guild => guild.id === GUILD_ID);
-                const channel = guild.channels.cache.find(channel => channel.name === 'daily-ui');
-                const embed = new EmbedBuilder()
-                                    .setColor(options.color)
-                                    .setTitle(`C'est l'heure de ton dailyUi !`)
-                                    .setDescription(`Pour aujourd'hui : **${dailyUiList[dailyUiAvancement].name}**`);
-                const message = await channel.send({ content: `<@&1118500573675782235> c'est l'heure du DailyUi ! N'hésitez pas à partager vos créations dans le fils`, embeds: [embed] });
-                try {
-                    const thread = await message.startThread({
-                        name: `DailyUi : ${dailyUiList[dailyUiAvancement].name}`,
-                        autoArchiveDuration: 60,
-                        reason: 'Need a separate thread for daily dailyui'
-                    });
-                    fs.writeFileSync('../bin/dailyui.txt', nextDailyUiAdvancement.toString());
-                }
-                catch(error) { console.log(error); }
-            }
-            catch(error) { console.log(error); }
+            try { const dailyUiChallenge = await axios.put("/dailyui", {}, { params: { id: _id }}); }
+            catch(error) { logs("error", "dailyui:update", error); }
+          }
+          catch(error) { logs("error", "dailyui:topics", error); }
         }
-    }, 60000);
-});
-client.login(BOT_TOKEN);
+        catch(error) { logs("error", "dailyui:embed", error); }
+      }
+      catch(error) { logs("error", "dailyui:request", error); }
+    }
+  }, 60000);
+}
+
+module.exports = { addonsLoaded }

@@ -1,8 +1,25 @@
 {
+  "name": "pastille-bot",
+  "version": "2.0.0",
+  "description": "A discord bot for automoderation, twitch alert and more",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremiemeunier/pastille-bot.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jeremiemeunier/pastille-bot/issues"
+  },
+  "homepage": "https://github.com/jeremiemeunier/pastille-bot#readme",
+  "author": "jeremiemeunier",
   "dependencies": {
-    "@discordjs/rest": "^2.0.1",
-    "axios": "^1.5.0",
-    "discord.js": "^14.13.0",
-    "nodemon": "^3.0.1"
+    "@discordjs/rest": "^2.2.0",
+    "axios": "^1.6.2",
+    "cors": "^2.8.5",
+    "discord.js": "^14.14.1",
+    "express": "^4.18.2",
+    "express-rate-limit": "^7.1.5",
+    "mongoose": "^8.0.3",
+    "nodemon": "^3.0.2"
   }
 }
