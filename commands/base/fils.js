@@ -2,7 +2,7 @@ const commands =
 {
     name: "fils",
     description: "Créer un thread",
-    default_member_permissions: 0,
+    default_member_permissions: 68608,
     options: [
         {
             "name": "title",
