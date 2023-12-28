@@ -18,7 +18,7 @@ router.post("/infraction", isPastille, async (req, res) => {
     });
     await newInfraction.save();
 
-    res.status(200).json({ message: "New infraction items created" });
+    res.status(200).json({ message: "New infraction items created", data: newInfraction });
   } catch(error) {
     res.status(400).json({ message: "An error occured", error: error });
     logs("error", "api:infraction:post", error, guild_id);
