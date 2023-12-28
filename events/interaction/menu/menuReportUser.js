@@ -3,7 +3,7 @@ const { logs } = require('../../../function/logs');
 
 const contextReportUser = async (client, interaction) => {
   const { commandName } = interaction;
-  if(commandName !== "Signaler l'utilisateur") { return; }
+  if(commandName !== "Signaler") { return; }
 
   const guild = client.guilds.cache.find(guild => guild.id === interaction.commandGuildId);
 
