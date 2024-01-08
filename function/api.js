@@ -1,20 +1,11 @@
 const express = require("express");
 const app = express();
-const RateLimit = require('express-rate-limit');
 const cors = require("cors");
 const { logs } = require('../function/logs');
 const axios = require("axios");
   
 const api = () => {
-  const { BOT_ID } = require('../config/secret.json');
-
   // ##### API SETUP ##### \\
-  const limiter = RateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 100,
-  });
-
-  app.use(limiter);
   app.use(express.json());
   app.use(cors());
 
