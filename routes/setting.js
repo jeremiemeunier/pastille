@@ -7,7 +7,7 @@ const { logs } = require("../function/logs");
 router.post("/settings/add", isPastille, async (req, res) => {
   const { guild_id, premium, premium_end, options, moderation } = req.body;
   const { sharing, limit, imune, roles, sanctions } = moderation;
-  const { low, medium, hight, critical } = sanctions;
+  const { low, medium, hight } = sanctions;
 
   try {
     const newSettingsRegistre = new Setting({
