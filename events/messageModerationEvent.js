@@ -22,7 +22,7 @@ const automod = (client) => {
 
     try {
       if (
-        isImune(user, moderation.immune) ||
+        isImune(user, moderation.imune) ||
         message.author.bot === true ||
         message.author.system === true) { return; }
 
