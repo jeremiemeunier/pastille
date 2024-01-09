@@ -5,6 +5,7 @@ const addons = mongoose.model("Addons", {
   name: String,
   active: Boolean,
   channel: String,
+  params: {},
   role: String
 });
 
