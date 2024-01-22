@@ -84,7 +84,7 @@ const getLetters = async (letter, limit = -1) => {
 const getCommands = async (guild, id) => {
 	if(id) {
     try {
-      const guildCommandsRequest = axios.get("/commands/id", {
+      const guildCommandsRequest = await axios.get("/commands/id", {
         params: { id: id },
         headers: { "pastille_botid": BOT_ID }});
       const guildCommands = guildCommandsRequest.data.data;
@@ -94,7 +94,7 @@ const getCommands = async (guild, id) => {
   }
   else {
     try {
-      const guildCommandsRequest = axios.get("/commands", {
+      const guildCommandsRequest = await axios.get("/commands", {
         params: { guild_id: guild.id },
         headers: { "pastille_botid": BOT_ID }});
       const guildCommands = guildCommandsRequest.data.data;

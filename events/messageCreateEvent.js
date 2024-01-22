@@ -21,8 +21,8 @@ const messageCreateEventInit = (client) => {
     if(content.startsWith(options.bang)) {
       const guildCommands = await getCommands(guild);
       
-      if(cmd === 'regles') { bangRule(message, guild); }
-      if(cmd === 'status') { bangStatus(message, guild); }
+      if(cmd === 'regles') { bangRule(message, guild); return; }
+      if(cmd === 'status') { bangStatus(message, guild); return; }
 
       if(guildCommands) {
         guildCommands.map(async (item) => {
