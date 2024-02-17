@@ -7,8 +7,9 @@ const bangExecute = async (message, guild, command) => {
 
   try {
     await message.reply({ content: response });
+  } catch (error) {
+    logs("error", "bang:personal_command:send", error, guild.id);
   }
-  catch(error) { logs("error", "bang:personal_command:send", error, guild.id); }
-}
+};
 
-module.exports = { bangExecute }
+module.exports = { bangExecute };

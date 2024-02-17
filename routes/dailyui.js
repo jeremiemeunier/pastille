@@ -2,70 +2,87 @@ const express = require("express");
 const router = express.Router();
 const DailyUi = require("../model/Dailyui");
 const isPastille = require("../middlewares/isPastille");
-const { logs } = require('../function/logs');
+const { logs } = require("../function/logs");
 
 router.put("/dailyui", isPastille, async (req, res) => {
+  const { id } = req.query;
+
   try {
     const updateDailyUi = await DailyUi.findByIdAndUpdate(
-      { _id: req.query.id },
+      { _id: { $eq: id } },
       { available: false }
     );
-    res.status(201).json({ message: 'State updated for DailyUi', data: updateDailyUi });
+    res
+      .status(201)
+      .json({ message: "State updated for DailyUi", data: updateDailyUi });
+  } catch (error) {
+    logs("error", "api:dailyui:put", error);
   }
-  catch(error) { logs("error", "api:dailyui:put", error); }
 });
 
 router.get("/dailyui", isPastille, async (req, res) => {
   const { guild_id } = req.query;
 
   try {
-    const dailyuiNotSend = await DailyUi.findOne({ available: true, guild_id: guild_id });
+    const dailyuiNotSend = await DailyUi.findOne({
+      available: true,
+      guild_id: { $eq: guild_id },
+    });
 
-    if(!dailyuiNotSend) { res.status(404).json({ message: "No dailyui available" }); }
-    else { res.status(200).json({ message: "DailyUi available", data: dailyuiNotSend }); }
+    if (!dailyuiNotSend) {
+      res.status(404).json({ message: "No dailyui available" });
+    } else {
+      res
+        .status(200)
+        .json({ message: "DailyUi available", data: dailyuiNotSend });
+    }
+  } catch (error) {
+    logs("error", "api:dailyui:get", error, guild_id);
   }
-  catch(error) { logs("error", "api:dailyui:get", error, guild_id); }
-})
+});
 
 router.post("/dailyui", isPastille, async (req, res) => {
   const { guild_id, state, title, description } = req.body;
 
-  if(!guild_id || !title || !description) {
-    res.status(400).json({ message: 'Complete all input', data: req.body });
-  }
-  else {
+  if (!guild_id || !title || !description) {
+    res.status(400).json({ message: "Complete all input", data: req.body });
+  } else {
     try {
       const newDailyUi = new DailyUi({
         guild_id: guild_id,
         available: state || true,
         title: title,
-        description: description
-      })
+        description: description,
+      });
       await newDailyUi.save();
 
-      res.status(200).json({ message: 'New daily challenge added', data: newDailyUi });
+      res
+        .status(200)
+        .json({ message: "New daily challenge added", data: newDailyUi });
+    } catch (error) {
+      logs("error", "api:dailyui:add", error, guild_id);
     }
-    catch(error) { logs("error", "api:dailyui:add", error, guild_id); }
   }
 });
 
-router.post('/dailyui/mass', isPastille, async (req, res) => {
-  const data = req.body.data
+router.post("/dailyui/mass", isPastille, async (req, res) => {
+  const data = req.body.data;
 
-  data.map(async dailychallenge => {
+  data.map(async (dailychallenge) => {
     try {
       const newDailyUi = new DailyUi({
         available: true,
         guild_id: dailychallenge.guild_id,
         title: dailychallenge.title,
-        description: dailychallenge.description
-      })
+        description: dailychallenge.description,
+      });
       await newDailyUi.save();
+    } catch (error) {
+      logs("error", "api:dailyui:mass", error);
     }
-    catch(error) { logs("error", "api:dailyui:mass", error); }
   });
-  
-  res.status(200).json({ message: 'New daily challenge added' });
-})
+
+  res.status(200).json({ message: "New daily challenge added" });
+});
 
 module.exports = router;
