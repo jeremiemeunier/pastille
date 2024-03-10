@@ -1,6 +1,12 @@
 const axios = require("axios");
 const { logs } = require("../function/logs");
 
+/**
+ * Return a json object with addons registred for this guild
+ *
+ * @param {object} guild Discord guild item
+ * @returns {boolean|object} false on error | A json object with all registred addons for guild on success
+ */
 const getAddons = async (guild) => {
   try {
     const guildAddonsRequest = await axios.get("/addons", {
@@ -11,9 +17,16 @@ const getAddons = async (guild) => {
     return guildAddons;
   } catch (error) {
     logs("error", "global:get:guild_addons", error, guild.id);
+    return false;
   }
 };
 
+/**
+ * Return a json object with banned words registred for this guild
+ *
+ * @param {object} guild Discord guild item
+ * @returns {boolean|object} false on error | A json object with all registred banned word for guild on success
+ */
 const getBanWord = async (guild) => {
   try {
     const guildBanWordsRequest = await axios.get("/banwords", {
@@ -24,9 +37,16 @@ const getBanWord = async (guild) => {
     return guildBanWords;
   } catch (error) {
     logs("error", "global:get:guild_ban_word", error, guild.id);
+    return false;
   }
 };
 
+/**
+ * Return a json object with streamer registred for this guild
+ *
+ * @param {object} guild Discord guild item
+ * @returns {boolean|object} false on error | A json object with all registred streamer for guild on success
+ */
 const getStreamers = async (guild) => {
   try {
     const guildStreamersRequest = await axios.get("/twitch", {
@@ -38,9 +58,16 @@ const getStreamers = async (guild) => {
     return guildStreamersList;
   } catch (error) {
     logs("error", "global:get:streamer_list", error, guild.id);
+    return false;
   }
 };
 
+/**
+ * Return a json object with roles registred for this guild
+ *
+ * @param {object} guild Discord guild item
+ * @returns {boolean|object} false on error | A json object with all registred roles for guild on success
+ */
 const getRoles = async (guild) => {
   try {
     const guildRolesrequest = await axios.get("/roles", {
@@ -51,9 +78,16 @@ const getRoles = async (guild) => {
     return guildRoles;
   } catch (error) {
     logs("error", "global:get:guild_rules", error, guild.id);
+    return false;
   }
 };
 
+/**
+ * Return a json object with rules registred for this guild
+ *
+ * @param {object} guild Discord guild item
+ * @returns {boolean|object} false on error | A json object with all registred rules for guild on success
+ */
 const getRules = async (guild) => {
   try {
     const guildRulesRequest = await axios.get("/rules", {
@@ -64,6 +98,7 @@ const getRules = async (guild) => {
     return guildRules;
   } catch (error) {
     logs("error", "global:get:guild_rules", error, guild.id);
+    return false;
   }
 };
 
@@ -78,6 +113,7 @@ const getLetters = async (letter, limit = -1) => {
       return appLetter;
     } catch (error) {
       logs("error", "global:get:letter", error);
+      return false;
     }
   } else {
     try {
@@ -89,6 +125,7 @@ const getLetters = async (letter, limit = -1) => {
       return appLetters;
     } catch (error) {
       logs("error", "global:get:letters", error);
+      return false;
     }
   }
 };
@@ -104,6 +141,7 @@ const getCommands = async (guild, id) => {
       return guildCommands;
     } catch (error) {
       logs("error", "global:get:guild_commands:id", error, guild.id);
+      return false;
     }
   } else {
     try {
@@ -115,10 +153,17 @@ const getCommands = async (guild, id) => {
       return guildCommands;
     } catch (error) {
       logs("error", "global:get:guild_commands", error, guild.id);
+      return false;
     }
   }
 };
 
+/**
+ * Return a json object with settings registred for this guild
+ *
+ * @param {object} guild Discord guild item
+ * @returns {boolean|object} false on error | A json object with settings for guild on success
+ */
 const getParams = async (guild) => {
   try {
     const guildParamsRequest = await axios.get("/settings", {
@@ -129,9 +174,17 @@ const getParams = async (guild) => {
     return guildParams;
   } catch (error) {
     logs("error", "global:get:guild_params", error, guild.id);
+    return false;
   }
 };
 
+/**
+ * Add a warn on user for reason pass in parameters
+ *
+ * @param {object} guild Discord guild item
+ * @param {object} data A json object with user_id and reason
+ * @returns {boolean|object} false on error | A json object with new registred warn for user on success
+ */
 const postWarnUser = async (guild, data) => {
   try {
     const warnUserRequest = axios.post(
@@ -148,9 +201,16 @@ const postWarnUser = async (guild, data) => {
     return warnUserRequest.data.data;
   } catch (error) {
     logs("error", "global:post:infraction", error, guild.id);
+    return false;
   }
 };
 
+/**
+ * Return formated hours
+ *
+ * @param {undefined|Date} date
+ * @returns {string}
+ */
 const hoursParser = async (date) => {
   if (date === undefined) {
     date = new Date();
@@ -165,6 +225,12 @@ const hoursParser = async (date) => {
   return `${hours}:${minutes}:${seconds}`;
 };
 
+/**
+ * Return formated date
+ *
+ * @param {undefined|Date} date
+ * @returns {string}
+ */
 const dateParser = async (date) => {
   if (date === undefined) {
     date = new Date();
