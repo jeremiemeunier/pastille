@@ -116,6 +116,11 @@ const automodApply = async (guild, user, timer) => {
   }, timer);
 };
 
+/**
+ * Check if user must be banned or relaxed
+ *
+ * @param {*} guild A discord guild item
+ */
 const automodVerifier = async (guild) => {
   const now = Date.parse(new Date());
 
