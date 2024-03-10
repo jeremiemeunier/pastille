@@ -1,7 +1,6 @@
 const { EmbedBuilder } = require("discord.js");
 const { options } = require("../config/settings.json");
 const { logs } = require("../function/logs");
-const { GUILD_ID, BOT_ID } = require("../config/secret.json");
 const axios = require("axios");
 const addonsLoaded = async (client, addonsParamsItem) => {
   const { channel, role, params } = addonsParamsItem;
@@ -16,11 +15,11 @@ const addonsLoaded = async (client, addonsParamsItem) => {
     ) {
       try {
         const dailyUiChallenge = await axios.get("/dailyui", {
-          headers: { pastille_botid: BOT_ID },
+          headers: { pastille_botid: process.env.BOT_ID },
         });
         const { _id, title, description } = dailyUiChallenge.data.data;
         const guild = client.guilds.cache.find(
-          (guild) => guild.id === GUILD_ID
+          (guild) => guild.id === process.env.GUILD_ID
         );
         const addonsChannel = guild.channels.cache.find(
           (addonsChannel) => addonsChannel.name === channel
@@ -51,7 +50,10 @@ const addonsLoaded = async (client, addonsParamsItem) => {
               const dailyUiChallenge = await axios.put(
                 "/dailyui",
                 {},
-                { params: { id: _id }, headers: { pastille_botid: BOT_ID } }
+                {
+                  params: { id: _id },
+                  headers: { pastille_botid: process.env.BOT_ID },
+                }
               );
             } catch (error) {
               logs("error", "dailyui:update", error);
