@@ -1,9 +1,8 @@
-const { BOT_TOKEN, MONGODB_URL } = require("./config/secret.json");
 const process = require("process");
 const mongoose = require("mongoose");
 
 // BDD
-mongoose.connect(MONGODB_URL);
+mongoose.connect(process.env.MONGODB_URL);
 
 // ##### BOT SETUP ##### \\
 
@@ -129,7 +128,7 @@ try {
   client.on("ready", () => {
     pastilleBooter();
   });
-  client.login(BOT_TOKEN);
+  client.login(process.env.BOT_TOKEN);
 } catch (error) {
   logs("error", "client:connect", error);
 }
