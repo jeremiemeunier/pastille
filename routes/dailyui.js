@@ -26,7 +26,7 @@ router.get("/dailyui", isPastille, async (req, res) => {
   try {
     const dailyuiNotSend = await DailyUi.findOne({
       available: true,
-      guild_id: { $eq: guild_id },
+      guild_id: guild_id,
     });
 
     if (!dailyuiNotSend) {
