@@ -29,7 +29,7 @@ for (const folder of commandFolders) {
 }
 
 const commandRegister = async (guild) => {
-  const rest = new REST().setToken(BOT_TOKEN);
+  const rest = new REST().setToken(process.env.BOT_TOKEN);
   await (async () => {
     try {
       logs(
@@ -55,7 +55,7 @@ const commandRegister = async (guild) => {
 };
 
 const commandDelete = async (guild) => {
-  const rest = new REST().setToken(BOT_TOKEN);
+  const rest = new REST().setToken(process.env.BOT_TOKEN);
   await (async () => {
     try {
       logs(
