@@ -1,9 +1,5 @@
 const axios = require("axios");
 const {
-  TWITCH_CLIENT_TOKEN,
-  TWITCH_SECRET_TOKEN,
-} = require("../config/secret.json");
-const {
   EmbedBuilder,
   ActionRowBuilder,
   ButtonBuilder,
@@ -87,8 +83,8 @@ const requestAuthenticator = async () => {
       method: "post",
       baseURL: "https://id.twitch.tv/oauth2/token",
       params: {
-        client_id: TWITCH_CLIENT_TOKEN,
-        client_secret: TWITCH_SECRET_TOKEN,
+        client_id: process.env.TWITCH_CLIENT_TOKEN,
+        client_secret: process.env.TWITCH_SECRET_TOKEN,
         grant_type: "client_credentials",
         scope: "viewing_activity_read",
       },
@@ -107,7 +103,7 @@ const requestStreamerState = async (streamerId, bearerToken) => {
       baseURL: "https://api.twitch.tv/helix/streams",
       params: { user_id: streamerId },
       headers: {
-        "client-id": TWITCH_CLIENT_TOKEN,
+        "client-id": process.env.TWITCH_CLIENT_TOKEN,
         Authorization: `Bearer ${bearerToken}`,
       },
     });
