@@ -1,7 +1,6 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const { REST, Routes } = require("discord.js");
-const { BOT_ID, BOT_TOKEN } = require("../config/secret.json");
 const { logs } = require("../function/logs");
 
 const commands = [];
@@ -40,7 +39,7 @@ const commandRegister = async (guild) => {
         guild.id
       );
       const data = await rest.put(
-        Routes.applicationGuildCommands(BOT_ID, guild.id),
+        Routes.applicationGuildCommands(process.env.BOT_ID, guild.id),
         { body: commands }
       );
       logs(
@@ -66,7 +65,9 @@ const commandDelete = async (guild) => {
         guild.id
       );
       await rest
-        .put(Routes.applicationGuildCommands(BOT_ID, guild.id), { body: [] })
+        .put(Routes.applicationGuildCommands(process.env.BOT_ID, guild.id), {
+          body: [],
+        })
         .then(() => {
           logs(
             "infos",
