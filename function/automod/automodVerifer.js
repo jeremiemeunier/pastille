@@ -2,7 +2,6 @@ const { EmbedBuilder } = require("discord.js");
 const { logs } = require("../logs");
 const axios = require("axios");
 const { getParams } = require("../base");
-const { BOT_ID } = require("../../config/secret.json");
 
 const durationFormater = (time) => {
   const duration = time / 1000;
@@ -125,7 +124,7 @@ const automodVerifier = async (guild) => {
   try {
     const allGuildSanctionsRequest = await axios.get("/sanction", {
       params: { guild_id: guild.id },
-      headers: { pastille_botid: BOT_ID },
+      headers: { pastille_botid: process.env.BOT_ID },
     });
 
     const allGuildSanctions = allGuildSanctionsRequest.data.data;
@@ -156,7 +155,7 @@ const automodVerifier = async (guild) => {
                 {},
                 {
                   params: { id: _id },
-                  headers: { pastille_botid: BOT_ID },
+                  headers: { pastille_botid: process.env.BOT_ID },
                 }
               );
             } catch (error) {
