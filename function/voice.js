@@ -2,6 +2,14 @@ const { ChannelType, EmbedBuilder } = require("discord.js");
 const { logs } = require("../function/logs");
 const { getParams } = require("./base");
 
+/**
+ * Create a new thread on first join on voice channel
+ *
+ * @param {*} guild Discord guild item
+ * @param {*} channel Discord channel item
+ * @param {*} threadChannel Discord thread channel item
+ * @param {*} user Discord user item
+ */
 const createVoiceThread = async (guild, channel, threadChannel, user) => {
   const guildParams = await getParams(guild);
   const { options } = guildParams;
@@ -31,6 +39,14 @@ const createVoiceThread = async (guild, channel, threadChannel, user) => {
   }
 };
 
+/**
+ * Add user to thread on join voice channel
+ *
+ * @param {*} guild Discord guild item
+ * @param {*} channel Discord channel item
+ * @param {*} threadChannel Discord thread channel item
+ * @param {*} user Discord user item
+ */
 const joinVoiceThread = async (guild, channel, threadChannel, user) => {
   try {
     const thread = threadChannel.threads.cache.find(
@@ -46,6 +62,15 @@ const joinVoiceThread = async (guild, channel, threadChannel, user) => {
     logs("error", "voice:thread:join", error);
   }
 };
+
+/**
+ * Remove user to thread on join voice channel
+ *
+ * @param {*} guild Discord guild item
+ * @param {*} channel Discord channel item
+ * @param {*} threadChannel Discord thread channel item
+ * @param {*} user Discord user item
+ */
 
 const leaveVoiceThread = async (guild, channel, threadChannel, user) => {
   try {
@@ -63,6 +88,13 @@ const leaveVoiceThread = async (guild, channel, threadChannel, user) => {
   }
 };
 
+/**
+ * Deleting thread on last user leave voice channel
+ *
+ * @param {*} guild Discord guild item
+ * @param {*} channel Discord channel item
+ * @param {*} threadChannel Discord thread channel item
+ */
 const deleteVoiceThread = async (guild, channel, threadChannel) => {
   const guildParams = await getParams(guild);
   const { options } = guildParams;
