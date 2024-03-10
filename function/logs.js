@@ -64,6 +64,14 @@ const composeState = (data) => {
   }
 };
 
+/**
+ * Log in console the message with specific format
+ *
+ * @param {string} state error|success|warning|start or infos by default
+ * @param {string} service Name of service or section
+ * @param {string} content Error message content
+ * @param {string} guild Id of current guild
+ */
 const logs = async (state, service, content, guild) => {
   if (guild) {
     console.log(
