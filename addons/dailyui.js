@@ -1,7 +1,7 @@
 const { EmbedBuilder } = require("discord.js");
 const { options } = require("../config/settings.json");
 const { logs } = require("../function/logs");
-const { GUILD_ID } = require("../config/secret.json");
+const { GUILD_ID, BOT_ID } = require("../config/secret.json");
 const axios = require("axios");
 const addonsLoaded = async (client, addonsParamsItem) => {
   const { channel, role, params } = addonsParamsItem;
@@ -15,7 +15,9 @@ const addonsLoaded = async (client, addonsParamsItem) => {
       actualDate.getMinutes().toString() === minutes
     ) {
       try {
-        const dailyUiChallenge = await axios.get("/dailyui");
+        const dailyUiChallenge = await axios.get("/dailyui", {
+          headers: { pastille_botid: BOT_ID },
+        });
         const { _id, title, description } = dailyUiChallenge.data.data;
         const guild = client.guilds.cache.find(
           (guild) => guild.id === GUILD_ID
@@ -49,7 +51,7 @@ const addonsLoaded = async (client, addonsParamsItem) => {
               const dailyUiChallenge = await axios.put(
                 "/dailyui",
                 {},
-                { params: { id: _id } }
+                { params: { id: _id }, headers: { pastille_botid: BOT_ID } }
               );
             } catch (error) {
               logs("error", "dailyui:update", error);
