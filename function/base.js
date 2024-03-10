@@ -1,12 +1,11 @@
 const axios = require("axios");
 const { logs } = require("../function/logs");
-const { BOT_ID } = require("../config/secret.json");
 
 const getAddons = async (guild) => {
   try {
     const guildAddonsRequest = await axios.get("/addons", {
       params: { guild_id: guild.id },
-      headers: { pastille_botid: BOT_ID },
+      headers: { pastille_botid: process.env.BOT_ID },
     });
     const guildAddons = guildAddonsRequest.data.data;
     return guildAddons;
@@ -19,7 +18,7 @@ const getBanWord = async (guild) => {
   try {
     const guildBanWordsRequest = await axios.get("/banwords", {
       params: { guild_id: guild.id },
-      headers: { pastille_botid: BOT_ID },
+      headers: { pastille_botid: process.env.BOT_ID },
     });
     const guildBanWords = guildBanWordsRequest.data.data;
     return guildBanWords;
@@ -32,7 +31,7 @@ const getStreamers = async (guild) => {
   try {
     const guildStreamersRequest = await axios.get("/twitch", {
       params: { guild_id: guild.id },
-      headers: { pastille_botid: BOT_ID },
+      headers: { pastille_botid: process.env.BOT_ID },
     });
     const guildStreamersList = guildStreamersRequest.data.data;
 
@@ -46,7 +45,7 @@ const getRoles = async (guild) => {
   try {
     const guildRolesrequest = await axios.get("/roles", {
       params: { guild_id: guild.id },
-      headers: { pastille_botid: BOT_ID },
+      headers: { pastille_botid: process.env.BOT_ID },
     });
     const guildRoles = guildRolesrequest.data.data;
     return guildRoles;
@@ -59,7 +58,7 @@ const getRules = async (guild) => {
   try {
     const guildRulesRequest = await axios.get("/rules", {
       params: { guild_id: guild.id },
-      headers: { pastille_botid: BOT_ID },
+      headers: { pastille_botid: process.env.BOT_ID },
     });
     const guildRules = guildRulesRequest.data.data;
     return guildRules;
@@ -73,7 +72,7 @@ const getLetters = async (letter, limit = -1) => {
     try {
       const appLetterRequest = await axios.get("/emotes", {
         params: { letter: letter },
-        headers: { pastille_botid: BOT_ID },
+        headers: { pastille_botid: process.env.BOT_ID },
       });
       const appLetter = appLetterRequest.data.data;
       return appLetter;
@@ -84,7 +83,7 @@ const getLetters = async (letter, limit = -1) => {
     try {
       const appLettersRequest = await axios.get("/emotes/all", {
         params: { limit: limit },
-        headers: { pastille_botid: BOT_ID },
+        headers: { pastille_botid: process.env.BOT_ID },
       });
       const appLetters = appLettersRequest.data.data;
       return appLetters;
@@ -99,7 +98,7 @@ const getCommands = async (guild, id) => {
     try {
       const guildCommandsRequest = await axios.get("/commands/id", {
         params: { id: id },
-        headers: { pastille_botid: BOT_ID },
+        headers: { pastille_botid: process.env.BOT_ID },
       });
       const guildCommands = guildCommandsRequest.data.data;
       return guildCommands;
@@ -110,7 +109,7 @@ const getCommands = async (guild, id) => {
     try {
       const guildCommandsRequest = await axios.get("/commands", {
         params: { guild_id: guild.id },
-        headers: { pastille_botid: BOT_ID },
+        headers: { pastille_botid: process.env.BOT_ID },
       });
       const guildCommands = guildCommandsRequest.data.data;
       return guildCommands;
@@ -124,7 +123,7 @@ const getParams = async (guild) => {
   try {
     const guildParamsRequest = await axios.get("/settings", {
       params: { guild_id: guild.id },
-      headers: { pastille_botid: BOT_ID },
+      headers: { pastille_botid: process.env.BOT_ID },
     });
     const guildParams = guildParamsRequest.data.data;
     return guildParams;
@@ -143,7 +142,7 @@ const postWarnUser = async (guild, data) => {
         date: new Date(),
         guild_id: guild.id,
       },
-      { headers: { pastille_botid: BOT_ID } }
+      { headers: { pastille_botid: process.env.BOT_ID } }
     );
 
     return warnUserRequest.data.data;
