@@ -64,6 +64,12 @@ const addonsLoaded = async (guild, params) => {
   }, waitingTime);
 };
 
+/**
+ * Return true or false to indicate if livestream was started within range
+ *
+ * @param {*} startItem
+ * @returns {boolean} Return true if live was started within range of settings
+ */
 const startAnalyze = (startItem) => {
   const now = Date.parse(new Date());
   const start = Date.parse(startItem);
@@ -77,6 +83,11 @@ const startAnalyze = (startItem) => {
   }
 };
 
+/**
+ * Make auth and return twitch access_token granted
+ *
+ * @returns Access token
+ */
 const requestAuthenticator = async () => {
   try {
     const requestToken = await axios({
@@ -96,6 +107,13 @@ const requestAuthenticator = async () => {
   }
 };
 
+/**
+ * Return streamer data
+ *
+ * @param {*} streamerId
+ * @param {*} bearerToken
+ * @returns A json object with streamer data
+ */
 const requestStreamerState = async (streamerId, bearerToken) => {
   try {
     const requestState = await axios({
