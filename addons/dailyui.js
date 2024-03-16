@@ -2,8 +2,9 @@ const { EmbedBuilder } = require("discord.js");
 const { options } = require("../config/settings.json");
 const { logs } = require("../function/logs");
 const axios = require("axios");
+
 const addonsLoaded = async (client, addonsParamsItem) => {
-  const { channel, role, params } = addonsParamsItem;
+  const { channel, role, params, guild_id } = addonsParamsItem;
   const { hours, minutes } = params;
 
   setInterval(async () => {
@@ -16,10 +17,11 @@ const addonsLoaded = async (client, addonsParamsItem) => {
       try {
         const dailyUiChallenge = await axios.get("/dailyui", {
           headers: { pastille_botid: process.env.BOT_ID },
+          params: { guild_id: guild_id },
         });
         const { _id, title, description } = dailyUiChallenge.data.data;
         const guild = client.guilds.cache.find(
-          (guild) => guild.id === process.env.GUILD_ID
+          (guild) => guild.id === guild_id
         );
         const addonsChannel = guild.channels.cache.find(
           (addonsChannel) => addonsChannel.name === channel
