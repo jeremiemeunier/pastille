@@ -3,7 +3,7 @@ const { options } = require("../config/settings.json");
 const { logs } = require("../function/logs");
 const axios = require("axios");
 
-const addonsLoaded = async (client, addonsParamsItem) => {
+const addonsLoaded = async (guild, addonsParamsItem) => {
   const { channel, role, params, guild_id } = addonsParamsItem;
   const { hours, minutes } = params;
 
@@ -20,9 +20,6 @@ const addonsLoaded = async (client, addonsParamsItem) => {
           params: { guild_id: guild_id },
         });
         const { _id, title, description } = dailyUiChallenge.data.data;
-        const guild = client.guilds.cache.find(
-          (guild) => guild.id === guild_id
-        );
         const addonsChannel = guild.channels.cache.find(
           (addonsChannel) => addonsChannel.name === channel
         );
