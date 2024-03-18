@@ -4,7 +4,7 @@ const { logs } = require("../function/logs");
 const axios = require("axios");
 
 const addonsLoaded = async (guild, addonsParamsItem) => {
-  const { channel, role, params, guild_id } = addonsParamsItem;
+  const { role, params, guild_id } = addonsParamsItem;
   const { hours, minutes } = params;
 
   setInterval(async () => {
@@ -21,12 +21,12 @@ const addonsLoaded = async (guild, addonsParamsItem) => {
         });
         const { _id, title, description } = dailyUiChallenge.data.data;
         const addonsChannel = guild.channels.cache.find(
-          (addonsChannel) => addonsChannel.name === channel
+          (channel) => channel.id === addonsParamsItem.channel
         );
 
         try {
           const embed = new EmbedBuilder({
-            color: parseInt(options.color, 16),
+            color: parseInt("50F8B1", 16),
             title: `**${title}**`,
             description: description,
           });
