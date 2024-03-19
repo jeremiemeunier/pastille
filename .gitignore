@@ -1,8 +1,5 @@
-config/settings.json
-config/secret.json
-config/automod.json
-config/addons/streamer.json
+*.json
+*.sh
+*.env
+
 node_modules
-package-lock.json
-bin/automod/*.txt
-pastille-timer.js

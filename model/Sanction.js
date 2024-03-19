@@ -6,7 +6,7 @@ const sanction = mongoose.model("Sanction", {
   sanction: {
     level: String,
     date: String,
-    ending: String
+    ending: String,
   },
   checkable: Boolean,
 });

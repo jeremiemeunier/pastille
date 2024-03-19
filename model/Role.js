@@ -5,7 +5,7 @@ const role = mongoose.model("Role", {
   name: String,
   emote: String,
   role: String,
-  description: String
+  description: String,
 });
 
 module.exports = role;
