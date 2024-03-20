@@ -1,11 +1,11 @@
-const {
+import {
   EmbedBuilder,
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
-} = require("discord.js");
-const { logs } = require("../../../function/logs");
-const { getParams } = require("../../../function/base");
+} from "discord.js";
+import { logs } from "../../../function/logs";
+import { getParams } from "../../../function/base";
 
 const commandStaffInit = async (client, interaction) => {
   const { commandName } = interaction;
@@ -40,4 +40,4 @@ const commandStaffInit = async (client, interaction) => {
   }
 };
 
-module.exports = { commandStaffInit };
+export default { commandStaffInit };

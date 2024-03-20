@@ -1,10 +1,10 @@
-const {
+import {
   ModalBuilder,
   TextInputBuilder,
   TextInputStyle,
   ActionRowBuilder,
-} = require("discord.js");
-const { logs } = require("../../../function/logs");
+} from "discord.js";
+import { logs } from "../../../function/logs";
 
 const contextReportUser = async (client, interaction) => {
   const { commandName } = interaction;
@@ -65,4 +65,4 @@ const contextReportUser = async (client, interaction) => {
   }
 };
 
-module.exports = { contextReportUser };
+export default { contextReportUser };

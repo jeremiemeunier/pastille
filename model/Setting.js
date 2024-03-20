@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
+import { model } from "mongoose";
 
-const setting = mongoose.model("Setting", {
+const setting = model("Setting", {
   guild_id: String,
   premium: Boolean,
   premium_end: String,
@@ -50,4 +50,4 @@ const setting = mongoose.model("Setting", {
   },
 });
 
-module.exports = setting;
+export default setting;

@@ -1,10 +1,8 @@
-const fs = require("node:fs");
-const { Events, EmbedBuilder } = require("discord.js");
-const alphabetLetters = JSON.parse(
-  fs.readFileSync("./config/data/alphabet.json")
-);
-const { logs } = require("../../../function/logs");
-const { getParams } = require("../../../function/base");
+import { readFileSync } from "node:fs";
+import { Events, EmbedBuilder } from "discord.js";
+const alphabetLetters = JSON.parse(readFileSync("./config/data/alphabet.json"));
+import { logs } from "../../../function/logs";
+import { getParams } from "../../../function/base";
 
 const commandPollInit = async (client, interaction) => {
   const { commandName } = interaction;
@@ -57,4 +55,4 @@ const commandPollInit = async (client, interaction) => {
   }
 };
 
-module.exports = { commandPollInit };
+export default { commandPollInit };

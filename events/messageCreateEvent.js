@@ -1,14 +1,14 @@
-const { Events } = require("discord.js");
-const {
+import { Events } from "discord.js";
+import {
   getParams,
   hoursParser,
   dateParser,
   getCommands,
-} = require("../function/base");
-const { bangRule } = require("./interaction/bang/bangRule");
-const { bangStatus } = require("./interaction/bang/bangStatus");
-const { logs } = require("../function/logs");
-const { bangExecute } = require("./interaction/bang/bangExecute");
+} from "../function/base";
+import { bangRule } from "./interaction/bang/bangRule";
+import { bangStatus } from "./interaction/bang/bangStatus";
+import { logs } from "../function/logs";
+import { bangExecute } from "./interaction/bang/bangExecute";
 
 const messageCreateEventInit = (client) => {
   client.on(Events.MessageCreate, async (message) => {
@@ -71,4 +71,4 @@ const messageCreateEventInit = (client) => {
   });
 };
 
-module.exports = { messageCreateEventInit };
+export default { messageCreateEventInit };

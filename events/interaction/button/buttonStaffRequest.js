@@ -1,12 +1,12 @@
-const {
+import {
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
   ChannelType,
   EmbedBuilder,
-} = require("discord.js");
-const { logs } = require("../../../function/logs");
-const { getParams } = require("../../../function/base");
+} from "discord.js";
+import { logs } from "../../../function/logs";
+import { getParams } from "../../../function/base";
 
 const lockableThread = async (thread, guild) => {
   const guildParams = await getParams(guild);
@@ -125,4 +125,4 @@ const buttonStaffRequest = async (client, interaction) => {
   }
 };
 
-module.exports = { buttonStaffRequest };
+export default { buttonStaffRequest };

@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
+import { model } from "mongoose";
 
-const sanction = mongoose.model("Sanction", {
+const sanction = model("Sanction", {
   user_id: String,
   guild_id: String,
   sanction: {
@@ -11,4 +11,4 @@ const sanction = mongoose.model("Sanction", {
   checkable: Boolean,
 });
 
-module.exports = sanction;
+export default sanction;

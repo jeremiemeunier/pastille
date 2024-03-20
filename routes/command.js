@@ -1,14 +1,14 @@
-const express = require("express");
-const router = express.Router();
-const Command = require("../model/Command");
-const isPastille = require("../middlewares/isPastille");
-const { logs } = require("../function/logs");
+import { Router } from "express";
+const router = Router();
+import Command, { find, findById } from "../model/Command";
+import isPastille from "../middlewares/isPastille";
+import { logs } from "../function/logs";
 
 router.get("/commands", isPastille, async (req, res) => {
   const { guild_id } = req.query;
 
   try {
-    const allCommandsRequest = await Command.find({
+    const allCommandsRequest = await find({
       guild_id: { $eq: guild_id },
     });
 
@@ -27,7 +27,7 @@ router.get("/commands/id", isPastille, async (req, res) => {
   const { id } = req.query;
 
   try {
-    const commandRequest = await Command.findById({ _id: { $eq: id } });
+    const commandRequest = await findById({ _id: { $eq: id } });
 
     if (!commandRequest) {
       res.status(404).json({ message: "No command with this _id" });
@@ -64,4 +64,4 @@ router.post("/commands/add", isPastille, async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

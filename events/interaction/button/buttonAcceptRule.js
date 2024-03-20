@@ -1,6 +1,5 @@
-const { Events } = require("discord.js");
-const { logs } = require("../../../function/logs");
-const { getParams } = require("../../../function/base");
+import { logs } from "../../../function/logs";
+import { getParams } from "../../../function/base";
 
 const buttonAcceptRuleInit = async (client, interaction) => {
   const { customId } = interaction;
@@ -34,4 +33,4 @@ const buttonAcceptRuleInit = async (client, interaction) => {
   }
 };
 
-module.exports = { buttonAcceptRuleInit };
+export default { buttonAcceptRuleInit };

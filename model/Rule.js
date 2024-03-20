@@ -1,10 +1,10 @@
-const mongoose = require("mongoose");
+import { model } from "mongoose";
 
-const rule = mongoose.model("Rule", {
+const rule = model("Rule", {
   guild_id: String,
   name: String,
   description: String,
   active: Boolean,
 });
 
-module.exports = rule;
+export default rule;

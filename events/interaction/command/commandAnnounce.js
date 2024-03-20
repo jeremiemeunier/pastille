@@ -1,6 +1,6 @@
-const { Events, EmbedBuilder } = require("discord.js");
-const { logs } = require("../../../function/logs");
-const { getParams } = require("../../../function/base");
+import { Events, EmbedBuilder } from "discord.js";
+import { logs } from "../../../function/logs";
+import { getParams } from "../../../function/base";
 
 const commandAnnounceInit = async (client, interaction) => {
   const { commandName } = interaction;
@@ -27,4 +27,4 @@ const commandAnnounceInit = async (client, interaction) => {
   }
 };
 
-module.exports = { commandAnnounceInit };
+export default { commandAnnounceInit };

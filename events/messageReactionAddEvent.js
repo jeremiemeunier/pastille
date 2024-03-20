@@ -1,8 +1,8 @@
-const fs = require("node:fs");
-const { Events, EmbedBuilder } = require("discord.js");
-const { logs } = require("../function/logs");
-const { addRole } = require("./interaction/reaction/reactionRole");
-const { pollReactions } = require("./interaction/reaction/reactionPoll");
+import fs from "node:fs";
+import { Events, EmbedBuilder } from "discord.js";
+import { logs } from "../function/logs";
+import { addRole } from "./interaction/reaction/reactionRole";
+import { pollReactions } from "./interaction/reaction/reactionPoll";
 
 const reactionAddEventInit = (client) => {
   client.on(Events.MessageReactionAdd, async (reaction, user) => {
@@ -29,4 +29,4 @@ const reactionAddEventInit = (client) => {
   });
 };
 
-module.exports = { reactionAddEventInit };
+export default { reactionAddEventInit };

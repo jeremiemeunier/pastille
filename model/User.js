@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
+import { model } from "mongoose";
 
-const user = mongoose.model("User", {
+const user = model("User", {
   discord_id: String,
   password: String,
   mail_adress: String,
@@ -8,4 +8,4 @@ const user = mongoose.model("User", {
   sign_date: String,
 });
 
-module.exports = user;
+export default user;

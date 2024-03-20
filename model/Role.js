@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
+import { model } from "mongoose";
 
-const role = mongoose.model("Role", {
+const role = model("Role", {
   guild_id: String,
   name: String,
   emote: String,
@@ -8,4 +8,4 @@ const role = mongoose.model("Role", {
   description: String,
 });
 
-module.exports = role;
+export default role;

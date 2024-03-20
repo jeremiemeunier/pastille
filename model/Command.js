@@ -1,9 +1,9 @@
-const mongoose = require("mongoose");
+import { model } from "mongoose";
 
-const command = mongoose.model("Command", {
+const command = model("Command", {
   guild_id: String,
   terms: String,
   response: String,
 });
 
-module.exports = command;
+export default command;

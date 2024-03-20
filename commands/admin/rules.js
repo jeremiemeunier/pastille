@@ -4,6 +4,4 @@ const commands = {
   default_member_permissions: 0,
 };
 
-module.exports = {
-  data: commands,
-};
+export const data = commands;

@@ -6,4 +6,4 @@ const isPastille = async (req, res, next) => {
   }
 };
 
-module.exports = isPastille;
+export default isPastille;

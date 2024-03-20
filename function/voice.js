@@ -1,6 +1,6 @@
-const { ChannelType, EmbedBuilder } = require("discord.js");
-const { logs } = require("../function/logs");
-const { getParams } = require("./base");
+import { ChannelType, EmbedBuilder } from "discord.js";
+import { logs } from "../function/logs";
+import { getParams } from "./base";
 
 /**
  * Create a new thread on first join on voice channel
@@ -120,7 +120,7 @@ const deleteVoiceThread = async (guild, channel, threadChannel) => {
   }
 };
 
-module.exports = {
+export default {
   createVoiceThread,
   joinVoiceThread,
   leaveVoiceThread,

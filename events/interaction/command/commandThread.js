@@ -1,6 +1,6 @@
-const { ChannelType, Events, EmbedBuilder } = require("discord.js");
-const { logs } = require("../../../function/logs");
-const { getParams } = require("../../../function/base");
+import { ChannelType, Events, EmbedBuilder } from "discord.js";
+import { logs } from "../../../function/logs";
+import { getParams } from "../../../function/base";
 
 const commandThreadInit = async (client, interaction) => {
   const { commandName } = interaction;
@@ -38,4 +38,4 @@ const commandThreadInit = async (client, interaction) => {
   }
 };
 
-module.exports = { commandThreadInit };
+export default { commandThreadInit };

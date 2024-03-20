@@ -1,6 +1,6 @@
-const { Events } = require("discord.js");
-const { logs } = require("../function/logs");
-const { removeRole } = require("./interaction/reaction/reactionRole");
+import { Events } from "discord.js";
+import { logs } from "../function/logs";
+import { removeRole } from "./interaction/reaction/reactionRole";
 
 const reactionRemoveEventInit = (client) => {
   client.on(Events.MessageReactionRemove, async (reaction, user) => {
@@ -24,4 +24,4 @@ const reactionRemoveEventInit = (client) => {
   });
 };
 
-module.exports = { reactionRemoveEventInit };
+export default { reactionRemoveEventInit };

@@ -1,6 +1,6 @@
-const { EmbedBuilder } = require("discord.js");
-const { logs } = require("../../../function/logs");
-const { getRules, getParams } = require("../../../function/base");
+import { EmbedBuilder } from "discord.js";
+import { logs } from "../../../function/logs";
+import { getRules, getParams } from "../../../function/base";
 
 const bangRule = async (message, guild) => {
   const guildParams = await getParams(guild);
@@ -37,4 +37,4 @@ const bangRule = async (message, guild) => {
   }
 };
 
-module.exports = { bangRule };
+export default { bangRule };

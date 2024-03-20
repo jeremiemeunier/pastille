@@ -1,6 +1,6 @@
-const { logs } = require("../logs");
-const axios = require("axios");
-const { automodSanction } = require("./automodSanction");
+import { logs } from "../logs";
+import { post, get } from "axios";
+import { automodSanction } from "./automodSanction";
 
 const automodRegister = async (user, reason, guild) => {
   const userId = user.user.id;
@@ -8,7 +8,7 @@ const automodRegister = async (user, reason, guild) => {
 
   // On créer un nouveau register
   try {
-    const addNewInfraction = await axios.post("/infraction", {
+    const addNewInfraction = await post("/infraction", {
       user_id: userId,
       reason: reason,
       date: today,
@@ -17,7 +17,7 @@ const automodRegister = async (user, reason, guild) => {
 
     // On vérifie le nombre de warn
     try {
-      const totalWarnUser = await axios.get("/infraction/all", {
+      const totalWarnUser = await get("/infraction/all", {
         params: { user_id: userId, guild_id: guild.id },
       });
       automodSanction(user, totalWarnUser, guild);
@@ -29,4 +29,4 @@ const automodRegister = async (user, reason, guild) => {
   }
 };
 
-module.exports = { automodRegister };
+export default { automodRegister };

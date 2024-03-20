@@ -25,4 +25,4 @@ const pollReactions = async (client, reaction, user) => {
   }
 };
 
-module.exports = { pollReactions };
+export default { pollReactions };

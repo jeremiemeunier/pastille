@@ -1,14 +1,14 @@
-const express = require("express");
-const router = express.Router();
-const Sanction = require("../model/Sanction");
-const isPastille = require("../middlewares/isPastille");
-const { logs } = require("../function/logs");
+import { Router } from "express";
+const router = Router();
+import Sanction, { findByIdAndUpdate, find } from "../model/Sanction";
+import isPastille from "../middlewares/isPastille";
+import { logs } from "../function/logs";
 
 router.put("/sanction/update", isPastille, async (req, res) => {
   const { id } = req.query;
 
   try {
-    const updateSanction = await Sanction.findByIdAndUpdate(
+    const updateSanction = await findByIdAndUpdate(
       { _id: { $eq: id } },
       { checkable: false }
     );
@@ -48,7 +48,7 @@ router.get("/sanction", isPastille, async (req, res) => {
   const { guild_id } = req.query;
 
   try {
-    const allSanction = await Sanction.find({
+    const allSanction = await find({
       guild_id: { $eq: guild_id },
       checkable: true,
     });
@@ -59,4 +59,4 @@ router.get("/sanction", isPastille, async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

@@ -1,7 +1,7 @@
-const { logs } = require("../logs");
-const axios = require("axios");
-const { getParams } = require("../base");
-const { automodApply, automodFinalNotify } = require("./automodVerifer");
+import { logs } from "../logs";
+import { post } from "axios";
+import { getParams } from "../base";
+import { automodApply, automodFinalNotify } from "./automodVerifer";
 
 const automodSanctionEvalute = async (size, guild) => {
   const guildParams = await getParams(guild);
@@ -88,7 +88,7 @@ const durationInterpreter = (sanctionData) => {
 
 const sanctionRegister = async (userId, level, start, end, guild) => {
   try {
-    const register = await axios.post("/sanction/add", {
+    const register = await post("/sanction/add", {
       user_id: userId,
       guild_id: guild.id,
       level: level,
@@ -100,4 +100,4 @@ const sanctionRegister = async (userId, level, start, end, guild) => {
   }
 };
 
-module.exports = { automodSanction };
+export default { automodSanction };

@@ -1,6 +1,6 @@
-const { Events } = require("discord.js");
-const { logs } = require("../../../function/logs");
-const { getParams } = require("../../../function/base");
+import { Events } from "discord.js";
+import { logs } from "../../../function/logs";
+import { getParams } from "../../../function/base";
 
 const buttonOpenTicketInit = async (client, interaction) => {
   const { customId } = interaction;
@@ -35,4 +35,4 @@ const buttonOpenTicketInit = async (client, interaction) => {
   }
 };
 
-module.exports = { buttonOpenTicketInit };
+export default { buttonOpenTicketInit };

@@ -4,6 +4,4 @@ const commands = {
   type: 3,
 };
 
-module.exports = {
-  data: commands,
-};
+export const data = commands;

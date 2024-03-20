@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
+import { model } from "mongoose";
 
-const streamer = mongoose.model("Streamer", {
+const streamer = model("Streamer", {
   guild_id: String,
   twitch: {
     id: String,
@@ -10,4 +10,4 @@ const streamer = mongoose.model("Streamer", {
   progress: Boolean,
 });
 
-module.exports = streamer;
+export default streamer;

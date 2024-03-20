@@ -1,18 +1,18 @@
-const process = require("process");
-const mongoose = require("mongoose");
+import { env, on, exit } from "process";
+import { connect } from "mongoose";
 
 // BDD
-mongoose.connect(process.env.MONGODB_URL);
+connect(env.MONGODB_URL);
 
 // ##### BOT SETUP ##### \\
 
-const {
+import {
   Client,
   GatewayIntentBits,
   Partials,
   Events,
   ActivityType,
-} = require("discord.js");
+} from "discord.js";
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -24,21 +24,17 @@ const client = new Client({
   partials: [Partials.Message, Partials.Channel, Partials.Reaction],
 });
 
-const { logs } = require("./function/logs");
-const { voiceEventInit } = require("./events/voiceEvent");
-const { reactionAddEventInit } = require("./events/messageReactionAddEvent");
-const {
-  reactionRemoveEventInit,
-} = require("./events/messageReactionRemoveEvent");
-const {
-  interactionCreateEventInit,
-} = require("./events/interactionCreateEvent");
-const { messageCreateEventInit } = require("./events/messageCreateEvent");
-const { addonsRegisterInit } = require("./function/addonsRegister");
-const { automod } = require("./events/messageModerationEvent");
-const { automodVerifier } = require("./function/automod/automodVerifer");
-const { api } = require("./function/api");
-const { messageEditInit } = require("./events/messageEditEvent");
+import { logs } from "./function/logs";
+import { voiceEventInit } from "./events/voiceEvent";
+import { reactionAddEventInit } from "./events/messageReactionAddEvent";
+import { reactionRemoveEventInit } from "./events/messageReactionRemoveEvent";
+import { interactionCreateEventInit } from "./events/interactionCreateEvent";
+import { messageCreateEventInit } from "./events/messageCreateEvent";
+import { addonsRegisterInit } from "./function/addonsRegister";
+import { automod } from "./events/messageModerationEvent";
+import { automodVerifier } from "./function/automod/automodVerifer";
+import { api } from "./function/api";
+import { messageEditInit } from "./events/messageEditEvent";
 
 // ##### FIX ##### \\
 if (!String.prototype.endsWith) {
@@ -119,16 +115,16 @@ const pastilleBooter = async () => {
   });
 };
 
-process.on("SIGINT", async () => {
+on("SIGINT", async () => {
   logs("infos", "process:stop", "Process has request to stop");
-  process.exit(300);
+  exit(300);
 });
 
 try {
   client.on("ready", () => {
     pastilleBooter();
   });
-  client.login(process.env.BOT_TOKEN);
+  client.login(env.BOT_TOKEN);
 } catch (error) {
   logs("error", "client:connect", error);
 }

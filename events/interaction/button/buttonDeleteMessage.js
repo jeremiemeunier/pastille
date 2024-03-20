@@ -1,6 +1,6 @@
-const { logs } = require("../../../function/logs");
-const { getParams, postWarnUser } = require("../../../function/base");
-const { EmbedBuilder, time } = require("@discordjs/builders");
+import { logs } from "../../../function/logs";
+import { getParams, postWarnUser } from "../../../function/base";
+import { EmbedBuilder, time } from "@discordjs/builders";
 
 const buttonDeleteMessage = async (client, interaction) => {
   try {
@@ -77,4 +77,4 @@ const deleteReportedMessage = async (data, guild) => {
   }
 };
 
-module.exports = { buttonDeleteMessage };
+export default { buttonDeleteMessage };

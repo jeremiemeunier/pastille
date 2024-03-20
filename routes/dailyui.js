@@ -1,15 +1,15 @@
-const express = require("express");
-const router = express.Router();
-const DailyUi = require("../model/Dailyui");
-const isPastille = require("../middlewares/isPastille");
-const { logs } = require("../function/logs");
+import { Router } from "express";
+const router = Router();
+import DailyUi, { findByIdAndUpdate, findOne } from "../model/Dailyui";
+import isPastille from "../middlewares/isPastille";
+import { logs } from "../function/logs";
 
 router.put("/dailyui", isPastille, async (req, res) => {
   const { id } = req.query;
 
   try {
-    const updateDailyUi = await DailyUi.findByIdAndUpdate(
-      { _id: { $eq: id } },
+    const updateDailyUi = await findByIdAndUpdate(
+      { _id: id },
       { available: false }
     );
     res
@@ -24,7 +24,7 @@ router.get("/dailyui", isPastille, async (req, res) => {
   const { guild_id } = req.query;
 
   try {
-    const dailyuiNotSend = await DailyUi.findOne({
+    const dailyuiNotSend = await findOne({
       available: true,
       guild_id: guild_id,
     });
@@ -85,4 +85,4 @@ router.post("/dailyui/mass", isPastille, async (req, res) => {
   res.status(200).json({ message: "New daily challenge added" });
 });
 
-module.exports = router;
+export default router;

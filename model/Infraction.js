@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
+import { model } from "mongoose";
 
-const infraction = mongoose.model("Infraction", {
+const infraction = model("Infraction", {
   user_id: String,
   guild_id: String,
   warn: {
@@ -9,4 +9,4 @@ const infraction = mongoose.model("Infraction", {
   },
 });
 
-module.exports = infraction;
+export default infraction;

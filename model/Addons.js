@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
+import { model } from "mongoose";
 
-const addons = mongoose.model("Addons", {
+const addons = model("Addons", {
   guild_id: String,
   name: String,
   active: Boolean,
@@ -9,4 +9,4 @@ const addons = mongoose.model("Addons", {
   role: String,
 });
 
-module.exports = addons;
+export default addons;

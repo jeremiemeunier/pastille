@@ -1,34 +1,22 @@
-const { Events } = require("discord.js");
+import { Events } from "discord.js";
 
-const { commandPollInit } = require("./interaction/command/commandPoll");
-const { commandRuleInit } = require("./interaction/command/commandRule");
-const { commandStaffInit } = require("./interaction/command/commandStaff");
-const {
-  commandAnnounceInit,
-} = require("./interaction/command/commandAnnounce");
-const { commandRoleInit } = require("./interaction/command/commandRole");
-const { commandThreadInit } = require("./interaction/command/commandThread");
-const { commandStatutInit } = require("./interaction/command/commandStatut");
-const { commandClearInit } = require("./interaction/command/commandClear");
+import { commandPollInit } from "./interaction/command/commandPoll";
+import { commandRuleInit } from "./interaction/command/commandRule";
+import { commandStaffInit } from "./interaction/command/commandStaff";
+import { commandAnnounceInit } from "./interaction/command/commandAnnounce";
+import { commandRoleInit } from "./interaction/command/commandRole";
+import { commandThreadInit } from "./interaction/command/commandThread";
+import { commandStatutInit } from "./interaction/command/commandStatut";
+import { commandClearInit } from "./interaction/command/commandClear";
 
-const {
-  buttonAcceptRuleInit,
-} = require("./interaction/button/buttonAcceptRule");
-const {
-  buttonStaffRequest,
-} = require("./interaction/button/buttonStaffRequest");
-const {
-  buttonOpenTicketInit,
-} = require("./interaction/button/buttonOpenCloseTicket");
-const { contextReportUser } = require("./interaction/menu/menuReportUser");
-const { modalReportUser } = require("./interaction/modal/modalReportUser");
-const { logs } = require("../function/logs");
-const {
-  contextReportMessage,
-} = require("./interaction/menu/menuReportMessage");
-const {
-  buttonDeleteMessage,
-} = require("./interaction/button/buttonDeleteMessage");
+import { buttonAcceptRuleInit } from "./interaction/button/buttonAcceptRule";
+import { buttonStaffRequest } from "./interaction/button/buttonStaffRequest";
+import { buttonOpenTicketInit } from "./interaction/button/buttonOpenCloseTicket";
+import { contextReportUser } from "./interaction/menu/menuReportUser";
+import { modalReportUser } from "./interaction/modal/modalReportUser";
+import { logs } from "../function/logs";
+import { contextReportMessage } from "./interaction/menu/menuReportMessage";
+import { buttonDeleteMessage } from "./interaction/button/buttonDeleteMessage";
 
 const interactionCreateEventInit = (client) => {
   client.on(Events.InteractionCreate, async (interaction) => {
@@ -92,4 +80,4 @@ const interactionCreateEventInit = (client) => {
   });
 };
 
-module.exports = { interactionCreateEventInit };
+export default { interactionCreateEventInit };

@@ -1,16 +1,16 @@
-const express = require("express");
+import express, { json } from "express";
 const app = express();
-const cors = require("cors");
-const { logs } = require("../function/logs");
-const axios = require("axios");
+import cors from "cors";
+import { logs } from "../function/logs";
+import { defaults, get } from "axios";
 
 const api = () => {
   // ##### API SETUP ##### \\
-  app.use(express.json());
+  app.use(json());
   app.use(cors());
 
   // Setup of axios
-  axios.defaults.baseURL = "http://localhost:3000";
+  defaults.baseURL = "http://localhost:3000";
 
   // API
   const infractionRoute = require("../routes/infraction");
@@ -48,7 +48,7 @@ const api = () => {
 
 const apiVerifier = async () => {
   try {
-    const apiTester = await axios.get("/");
+    const apiTester = await get("/");
     return true;
   } catch (error) {
     logs("error", "api:tester", error);
@@ -56,4 +56,4 @@ const apiVerifier = async () => {
   }
 };
 
-module.exports = { api, apiVerifier };
+export default { api, apiVerifier };

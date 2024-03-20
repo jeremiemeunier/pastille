@@ -84,4 +84,4 @@ const logs = async (state, service, content, guild) => {
   }
 };
 
-module.exports = { logs };
+export default { logs };

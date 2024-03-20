@@ -1,10 +1,10 @@
-const mongoose = require("mongoose");
+import { model } from "mongoose";
 
-const dailyui = mongoose.model("DailyUi", {
+const dailyui = model("DailyUi", {
   guild_id: String,
   available: Boolean,
   title: String,
   description: String,
 });
 
-module.exports = dailyui;
+export default dailyui;

@@ -1,8 +1,8 @@
-const express = require("express");
-const router = express.Router();
-const Infraction = require("../model/Infraction");
-const isPastille = require("../middlewares/isPastille");
-const { logs } = require("../function/logs");
+import { Router } from "express";
+const router = Router();
+import Infraction, { countDocuments } from "../model/Infraction";
+import isPastille from "../middlewares/isPastille";
+import { logs } from "../function/logs";
 
 router.post("/infraction", isPastille, async (req, res) => {
   const { user_id, reason, date, guild_id } = req.body;
@@ -31,7 +31,7 @@ router.get("/infraction/all", isPastille, async (req, res) => {
   const { user_id, guild_id } = req.query;
 
   try {
-    const allInfractions = await Infraction.countDocuments({
+    const allInfractions = await countDocuments({
       user_id: { $eq: user_id },
       guild_id: { $eq: guild_id },
     });
@@ -44,4 +44,4 @@ router.get("/infraction/all", isPastille, async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

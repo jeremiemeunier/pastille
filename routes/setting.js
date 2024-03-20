@@ -1,8 +1,8 @@
-const express = require("express");
-const router = express.Router();
-const Setting = require("../model/Setting");
-const isPastille = require("../middlewares/isPastille");
-const { logs } = require("../function/logs");
+import { Router } from "express";
+const router = Router();
+import Setting, { findOne } from "../model/Setting";
+import isPastille from "../middlewares/isPastille";
+import { logs } from "../function/logs";
 
 router.post("/settings/add", isPastille, async (req, res) => {
   const { guild_id, premium, premium_end, options, moderation } = req.body;
@@ -74,7 +74,7 @@ router.get("/settings", isPastille, async (req, res) => {
   const { guild_id } = req.query;
 
   try {
-    const guildSettings = await Setting.findOne({
+    const guildSettings = await findOne({
       guild_id: { $eq: guild_id },
     });
 
@@ -89,4 +89,4 @@ router.get("/settings", isPastille, async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

@@ -1,11 +1,11 @@
-const {
+import {
   EmbedBuilder,
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
-} = require("discord.js");
-const { logs } = require("../../../function/logs");
-const { getParams } = require("../../../function/base");
+} from "discord.js";
+import { logs } from "../../../function/logs";
+import { getParams } from "../../../function/base";
 
 const contextReportMessage = async (client, interaction) => {
   const { commandName } = interaction;
@@ -73,4 +73,4 @@ const contextReportMessage = async (client, interaction) => {
   }
 };
 
-module.exports = { contextReportMessage };
+export default { contextReportMessage };

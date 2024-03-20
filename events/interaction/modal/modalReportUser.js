@@ -1,6 +1,6 @@
-const { EmbedBuilder } = require("discord.js");
-const { logs } = require("../../../function/logs");
-const { getParams } = require("../../../function/base");
+import { EmbedBuilder } from "discord.js";
+import { logs } from "../../../function/logs";
+import { getParams } from "../../../function/base";
 
 const modalReportUser = async (client, interaction) => {
   if (interaction.customId !== "modalReportUser") {
@@ -61,4 +61,4 @@ const modalReportUser = async (client, interaction) => {
   }
 };
 
-module.exports = { modalReportUser };
+export default { modalReportUser };

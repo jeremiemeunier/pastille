@@ -1,5 +1,5 @@
-const { getCommands } = require("../../../function/base");
-const { logs } = require("../../../function/logs");
+import { getCommands } from "../../../function/base";
+import { logs } from "../../../function/logs";
 
 const bangExecute = async (message, guild, command) => {
   const commandDetails = await getCommands(guild, command);
@@ -12,4 +12,4 @@ const bangExecute = async (message, guild, command) => {
   }
 };
 
-module.exports = { bangExecute };
+export default { bangExecute };

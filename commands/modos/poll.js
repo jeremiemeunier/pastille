@@ -1,7 +1,5 @@
-const fs = require("node:fs");
-const alphabetLetters = JSON.parse(
-  fs.readFileSync("config/data/alphabet.json")
-);
+import { readFileSync } from "node:fs";
+const alphabetLetters = JSON.parse(readFileSync("config/data/alphabet.json"));
 
 const pollOptions = () => {
   let options = [
@@ -34,6 +32,4 @@ const commands = {
   default_member_permissions: 17600775979008,
 };
 
-module.exports = {
-  data: commands,
-};
+export const data = commands;

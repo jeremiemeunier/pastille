@@ -1,8 +1,8 @@
-const mongoose = require("mongoose");
+import { model } from "mongoose";
 
-const emote = mongoose.model("Emote", {
+const emote = model("Emote", {
   letter: String,
   emote: String,
 });
 
-module.exports = emote;
+export default emote;

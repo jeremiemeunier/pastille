@@ -1,12 +1,12 @@
-const { Events } = require("discord.js");
-const { logs } = require("../function/logs");
-const {
+import { Events } from "discord.js";
+import { logs } from "../function/logs";
+import {
   createVoiceThread,
   joinVoiceThread,
   leaveVoiceThread,
   deleteVoiceThread,
-} = require("../function/voice");
-const { getParams } = require("../function/base");
+} from "../function/voice";
+import { getParams } from "../function/base";
 
 const countMembers = async (channel, guild) => {
   try {
@@ -118,4 +118,4 @@ const voiceEventInit = (client) => {
   });
 };
 
-module.exports = { voiceEventInit };
+export default { voiceEventInit };

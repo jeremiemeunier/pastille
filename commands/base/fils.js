@@ -12,6 +12,4 @@ const commands = {
   ],
 };
 
-module.exports = {
-  data: commands,
-};
+export const data = commands;

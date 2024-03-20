@@ -1,5 +1,5 @@
-const { getRoles } = require("../../../function/base");
-const { logs } = require("../../../function/logs");
+import { getRoles } from "../../../function/base";
+import { logs } from "../../../function/logs";
 
 const addRole = async (client, reaction, user) => {
   const guild = client.guilds.cache.find(
@@ -49,4 +49,4 @@ const removeRole = async (client, reaction, user) => {
   });
 };
 
-module.exports = { addRole, removeRole };
+export default { addRole, removeRole };

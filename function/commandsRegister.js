@@ -1,20 +1,20 @@
-const fs = require("node:fs");
-const path = require("node:path");
-const { REST, Routes } = require("discord.js");
-const { logs } = require("../function/logs");
+import { readdirSync } from "node:fs";
+import { join } from "node:path";
+import { REST, Routes } from "discord.js";
+import { logs } from "../function/logs";
 
 const commands = [];
-const foldersPath = path.join(__dirname, "../commands");
-const commandFolders = fs.readdirSync(foldersPath);
+const foldersPath = join(__dirname, "../commands");
+const commandFolders = readdirSync(foldersPath);
 
 for (const folder of commandFolders) {
-  const commandsPath = path.join(foldersPath, folder);
-  const commandFiles = fs
-    .readdirSync(commandsPath)
-    .filter((file) => file.endsWith(".js"));
+  const commandsPath = join(foldersPath, folder);
+  const commandFiles = readdirSync(commandsPath).filter((file) =>
+    file.endsWith(".js")
+  );
 
   for (const file of commandFiles) {
-    const filePath = path.join(commandsPath, file);
+    const filePath = join(commandsPath, file);
     const command = require(filePath);
     if ("data" in command) {
       commands.push(command.data);
@@ -85,4 +85,4 @@ const commandDelete = async (guild) => {
   })();
 };
 
-module.exports = { commandRegister, commandDelete };
+export default { commandRegister, commandDelete };

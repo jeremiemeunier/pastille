@@ -1,7 +1,7 @@
-const { EmbedBuilder } = require("discord.js");
-const { logs } = require("../logs");
-const axios = require("axios");
-const { getParams } = require("../base");
+import { EmbedBuilder } from "discord.js";
+import { logs } from "../logs";
+import { get, put } from "axios";
+import { getParams } from "../base";
 
 const durationFormater = (time) => {
   const duration = time / 1000;
@@ -127,7 +127,7 @@ const automodVerifier = async (guild) => {
   logs("infos", "automod:verifier", "Start sanctions verifications", guild.id);
 
   try {
-    const allGuildSanctionsRequest = await axios.get("/sanction", {
+    const allGuildSanctionsRequest = await get("/sanction", {
       params: { guild_id: guild.id },
       headers: { pastille_botid: process.env.BOT_ID },
     });
@@ -155,7 +155,7 @@ const automodVerifier = async (guild) => {
 
           if (!user) {
             try {
-              await axios.put(
+              await put(
                 "/sanction/update",
                 {},
                 {
@@ -213,7 +213,7 @@ const automodVerifier = async (guild) => {
   logs("infos", "automod:verifier", "End sanctions verifications", guild.id);
 };
 
-module.exports = {
+export default {
   automodVerifier,
   automodApply,
   automodRemove,

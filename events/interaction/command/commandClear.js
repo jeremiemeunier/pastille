@@ -1,5 +1,5 @@
-const { Events } = require("discord.js");
-const { logs } = require("../../../function/logs");
+import { Events } from "discord.js";
+import { logs } from "../../../function/logs";
 
 const commandClearInit = async (client, interaction) => {
   const { commandName } = interaction;
@@ -57,4 +57,4 @@ const commandClearInit = async (client, interaction) => {
   }
 };
 
-module.exports = { commandClearInit };
+export default { commandClearInit };

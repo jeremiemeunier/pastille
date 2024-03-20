@@ -1,4 +1,4 @@
-const { logs } = require("../../../function/logs");
+import { logs } from "../../../function/logs";
 
 const bangStatus = async (message, guild) => {
   const user = guild.members.cache.find(
@@ -16,4 +16,4 @@ const bangStatus = async (message, guild) => {
   }
 };
 
-module.exports = { bangStatus };
+export default { bangStatus };

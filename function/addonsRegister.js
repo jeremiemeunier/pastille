@@ -1,5 +1,5 @@
-const { logs } = require("../function/logs");
-const { getAddons } = require("./base");
+import { logs } from "../function/logs";
+import { getAddons } from "./base";
 
 const addonsRegisterInit = async (guild) => {
   const guildAddons = await getAddons(guild);
@@ -39,4 +39,4 @@ const addonsRegister = async (addons, guild) => {
 
 const addonsLaunch = (addons) => {};
 
-module.exports = { addonsRegisterInit, addonsRegister, addonsLaunch };
+export default { addonsRegisterInit, addonsRegister, addonsLaunch };

@@ -1,12 +1,12 @@
-const axios = require("axios");
-const {
+import axios from "axios";
+import {
   EmbedBuilder,
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
-} = require("discord.js");
-const { logs } = require("../function/logs");
-const { getStreamers } = require("../function/base");
+} from "discord.js";
+import { logs } from "../function/logs";
+import { getStreamers } from "../function/base";
 const waitingTime = 300000;
 
 const addonsLoaded = async (guild, params) => {
@@ -131,4 +131,4 @@ const requestStreamerState = async (streamerId, bearerToken) => {
   }
 };
 
-module.exports = { addonsLoaded };
+export default { addonsLoaded };

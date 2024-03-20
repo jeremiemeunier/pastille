@@ -1,6 +1,6 @@
-const { Events, EmbedBuilder } = require("discord.js");
-const { logs } = require("../../../function/logs");
-const { getRoles, getParams } = require("../../../function/base");
+import { Events, EmbedBuilder } from "discord.js";
+import { logs } from "../../../function/logs";
+import { getRoles, getParams } from "../../../function/base";
 
 const commandRoleInit = async (client, interaction) => {
   const { commandName } = interaction;
@@ -46,4 +46,4 @@ const commandRoleInit = async (client, interaction) => {
   }
 };
 
-module.exports = { commandRoleInit };
+export default { commandRoleInit };

@@ -1,7 +1,7 @@
-const { Events, EmbedBuilder } = require("discord.js");
-const { logs } = require("../function/logs");
-const { automodRegister } = require("../function/automod/automodRegister");
-const { getParams } = require("../function/base");
+import { Events, EmbedBuilder } from "discord.js";
+import { logs } from "../function/logs";
+import { automodRegister } from "../function/automod/automodRegister";
+import { getParams } from "../function/base";
 
 const automod = (client) => {
   client.on(Events.MessageCreate, async (message) => {
@@ -152,4 +152,4 @@ const isImune = (user, imune) => {
   return false;
 };
 
-module.exports = { automod };
+export default { automod };
