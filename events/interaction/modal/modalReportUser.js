@@ -61,4 +61,4 @@ const modalReportUser = async (client, interaction) => {
   }
 };
 
-export default { modalReportUser };
+export { modalReportUser };

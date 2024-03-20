@@ -77,4 +77,4 @@ const deleteReportedMessage = async (data, guild) => {
   }
 };
 
-export default { buttonDeleteMessage };
+export { buttonDeleteMessage };

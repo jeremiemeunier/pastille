@@ -1,7 +1,7 @@
 import { Router } from "express";
 const router = Router();
 import Emote, { findOne, find } from "../model/Emote";
-import isPastille from "../middlewares/isPastille";
+import { isPastille } from "../middlewares/isPastille";
 import { logs } from "../function/logs";
 
 router.get("/emotes", isPastille, async (req, res) => {

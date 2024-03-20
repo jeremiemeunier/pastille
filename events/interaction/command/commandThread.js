@@ -38,4 +38,4 @@ const commandThreadInit = async (client, interaction) => {
   }
 };
 
-export default { commandThreadInit };
+export { commandThreadInit };

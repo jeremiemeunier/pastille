@@ -1,8 +1,9 @@
 import { Router } from "express";
-const router = Router();
 import Addons, { find, findByIdAndUpdate } from "../model/Addons";
-import isPastille from "../middlewares/isPastille";
+import { isPastille } from "../middlewares/isPastille";
 import { logs } from "../function/logs";
+
+const router = Router();
 
 router.get("/addons", isPastille, async (req, res) => {
   const { guild_id } = req.query;

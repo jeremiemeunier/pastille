@@ -37,15 +37,19 @@ const composeTime = () => {
 };
 
 const composeService = (data) => {
-  const size = data.length;
-  const max = 32;
+  if (data) {
+    const size = data.length;
+    const max = 32;
 
-  if (size < max) {
-    for (let i = 0; i < max - size; i++) {
-      data = `${data}_`;
+    if (size < max) {
+      for (let i = 0; i < max - size; i++) {
+        data = `${data}_`;
+      }
+      return data;
     }
     return data;
   }
+
   return data;
 };
 
@@ -72,7 +76,7 @@ const composeState = (data) => {
  * @param {string} content Error message content
  * @param {string} guild Id of current guild
  */
-const logs = async (state, service, content, guild) => {
+export const logs = async (state, service, content, guild) => {
   if (guild) {
     console.log(
       `${composeTime()}[${tag}]${composeState(state)}[${composeService(service)}][${guild}] » ${content}`
@@ -83,5 +87,3 @@ const logs = async (state, service, content, guild) => {
     );
   }
 };
-
-export default { logs };

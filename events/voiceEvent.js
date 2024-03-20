@@ -8,7 +8,7 @@ import {
 } from "../function/voice";
 import { getParams } from "../function/base";
 
-const countMembers = async (channel, guild) => {
+export const countMembers = async (channel, guild) => {
   try {
     const connected = channel.members.map((x) => x).length;
     return connected;
@@ -17,7 +17,7 @@ const countMembers = async (channel, guild) => {
   }
 };
 
-const getTextualChannel = async (channel, guild) => {
+export const getTextualChannel = async (channel, guild) => {
   const guildParams = await getParams(guild);
   const { channels } = guildParams.options;
 
@@ -52,7 +52,7 @@ const getTextualChannel = async (channel, guild) => {
   }
 };
 
-const voiceEventInit = (client) => {
+export const voiceEventInit = (client) => {
   client.on(Events.VoiceStateUpdate, async (oldState, newState) => {
     if (newState.channelId === oldState.channelId) {
       return;
@@ -117,5 +117,3 @@ const voiceEventInit = (client) => {
     }
   });
 };
-
-export default { voiceEventInit };

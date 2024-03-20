@@ -25,4 +25,4 @@ const commandStatutInit = async (client, interaction) => {
   }
 };
 
-export default { commandStatutInit };
+export { commandStatutInit };

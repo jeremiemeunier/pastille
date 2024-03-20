@@ -1,12 +1,12 @@
 import { logs } from "../function/logs";
 import { getAddons } from "./base";
 
-const addonsRegisterInit = async (guild) => {
+export const addonsRegisterInit = async (guild) => {
   const guildAddons = await getAddons(guild);
   addonsRegister(guildAddons, guild);
 };
 
-const addonsRegister = async (addons, guild) => {
+export const addonsRegister = async (addons, guild) => {
   if (addons) {
     try {
       addons.map((item) => {
@@ -37,6 +37,4 @@ const addonsRegister = async (addons, guild) => {
   }
 };
 
-const addonsLaunch = (addons) => {};
-
-export default { addonsRegisterInit, addonsRegister, addonsLaunch };
+export const addonsLaunch = (addons) => {};

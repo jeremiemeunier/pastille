@@ -1,4 +1,4 @@
-import { get, post } from "axios";
+import axios from "axios";
 import { logs } from "../function/logs";
 
 /**
@@ -7,9 +7,9 @@ import { logs } from "../function/logs";
  * @param {object} guild Discord guild item
  * @returns {boolean|object} false on error | A json object with all registred addons for guild on success
  */
-const getAddons = async (guild) => {
+export const getAddons = async (guild) => {
   try {
-    const guildAddonsRequest = await get("/addons", {
+    const guildAddonsRequest = await axios.get("/addons", {
       params: { guild_id: guild.id },
       headers: { pastille_botid: process.env.BOT_ID },
     });
@@ -27,9 +27,9 @@ const getAddons = async (guild) => {
  * @param {object} guild Discord guild item
  * @returns {boolean|object} false on error | A json object with all registred banned word for guild on success
  */
-const getBanWord = async (guild) => {
+export const getBanWord = async (guild) => {
   try {
-    const guildBanWordsRequest = await get("/banwords", {
+    const guildBanWordsRequest = await axios.get("/banwords", {
       params: { guild_id: guild.id },
       headers: { pastille_botid: process.env.BOT_ID },
     });
@@ -47,9 +47,9 @@ const getBanWord = async (guild) => {
  * @param {object} guild Discord guild item
  * @returns {boolean|object} false on error | A json object with all registred streamer for guild on success
  */
-const getStreamers = async (guild) => {
+export const getStreamers = async (guild) => {
   try {
-    const guildStreamersRequest = await get("/twitch", {
+    const guildStreamersRequest = await axios.get("/twitch", {
       params: { guild_id: guild.id },
       headers: { pastille_botid: process.env.BOT_ID },
     });
@@ -68,9 +68,9 @@ const getStreamers = async (guild) => {
  * @param {object} guild Discord guild item
  * @returns {boolean|object} false on error | A json object with all registred roles for guild on success
  */
-const getRoles = async (guild) => {
+export const getRoles = async (guild) => {
   try {
-    const guildRolesrequest = await get("/roles", {
+    const guildRolesrequest = await axios.get("/roles", {
       params: { guild_id: guild.id },
       headers: { pastille_botid: process.env.BOT_ID },
     });
@@ -88,9 +88,9 @@ const getRoles = async (guild) => {
  * @param {object} guild Discord guild item
  * @returns {boolean|object} false on error | A json object with all registred rules for guild on success
  */
-const getRules = async (guild) => {
+export const getRules = async (guild) => {
   try {
-    const guildRulesRequest = await get("/rules", {
+    const guildRulesRequest = await axios.get("/rules", {
       params: { guild_id: guild.id },
       headers: { pastille_botid: process.env.BOT_ID },
     });
@@ -102,10 +102,10 @@ const getRules = async (guild) => {
   }
 };
 
-const getLetters = async (letter, limit = -1) => {
+export const getLetters = async (letter, limit = -1) => {
   if (letter) {
     try {
-      const appLetterRequest = await get("/emotes", {
+      const appLetterRequest = await axios.get("/emotes", {
         params: { letter: letter },
         headers: { pastille_botid: process.env.BOT_ID },
       });
@@ -117,7 +117,7 @@ const getLetters = async (letter, limit = -1) => {
     }
   } else {
     try {
-      const appLettersRequest = await get("/emotes/all", {
+      const appLettersRequest = await axios.get("/emotes/all", {
         params: { limit: limit },
         headers: { pastille_botid: process.env.BOT_ID },
       });
@@ -130,10 +130,10 @@ const getLetters = async (letter, limit = -1) => {
   }
 };
 
-const getCommands = async (guild, id) => {
+export const getCommands = async (guild, id) => {
   if (id) {
     try {
-      const guildCommandsRequest = await get("/commands/id", {
+      const guildCommandsRequest = await axios.get("/commands/id", {
         params: { id: id },
         headers: { pastille_botid: process.env.BOT_ID },
       });
@@ -145,7 +145,7 @@ const getCommands = async (guild, id) => {
     }
   } else {
     try {
-      const guildCommandsRequest = await get("/commands", {
+      const guildCommandsRequest = await axios.get("/commands", {
         params: { guild_id: guild.id },
         headers: { pastille_botid: process.env.BOT_ID },
       });
@@ -164,9 +164,9 @@ const getCommands = async (guild, id) => {
  * @param {object} guild Discord guild item
  * @returns {boolean|object} false on error | A json object with settings for guild on success
  */
-const getParams = async (guild) => {
+export const getParams = async (guild) => {
   try {
-    const guildParamsRequest = await get("/settings", {
+    const guildParamsRequest = await axios.get("/settings", {
       params: { guild_id: guild.id },
       headers: { pastille_botid: process.env.BOT_ID },
     });
@@ -185,7 +185,7 @@ const getParams = async (guild) => {
  * @param {object} data A json object with user_id and reason
  * @returns {boolean|object} false on error | A json object with new registred warn for user on success
  */
-const postWarnUser = async (guild, data) => {
+export const postWarnUser = async (guild, data) => {
   try {
     const warnUserRequest = post(
       "/infraction",
@@ -211,7 +211,7 @@ const postWarnUser = async (guild, data) => {
  * @param {undefined|Date} date
  * @returns {string}
  */
-const hoursParser = async (date) => {
+export const hoursParser = async (date) => {
   if (date === undefined) {
     date = new Date();
   }
@@ -231,7 +231,7 @@ const hoursParser = async (date) => {
  * @param {undefined|Date} date
  * @returns {string}
  */
-const dateParser = async (date) => {
+export const dateParser = async (date) => {
   if (date === undefined) {
     date = new Date();
   }
@@ -242,18 +242,4 @@ const dateParser = async (date) => {
   const year = date.getFullYear();
 
   return `${day}/${month}/${year}`;
-};
-
-export default {
-  hoursParser,
-  dateParser,
-  getParams,
-  getAddons,
-  getRules,
-  getRoles,
-  getCommands,
-  getLetters,
-  getBanWord,
-  getStreamers,
-  postWarnUser,
 };

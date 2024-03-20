@@ -131,4 +131,4 @@ const requestStreamerState = async (streamerId, bearerToken) => {
   }
 };
 
-export default { addonsLoaded };
+export { addonsLoaded };

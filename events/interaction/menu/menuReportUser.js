@@ -65,4 +65,4 @@ const contextReportUser = async (client, interaction) => {
   }
 };
 
-export default { contextReportUser };
+export { contextReportUser };

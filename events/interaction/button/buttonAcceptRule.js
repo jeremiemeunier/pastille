@@ -33,4 +33,4 @@ const buttonAcceptRuleInit = async (client, interaction) => {
   }
 };
 
-export default { buttonAcceptRuleInit };
+export { buttonAcceptRuleInit };

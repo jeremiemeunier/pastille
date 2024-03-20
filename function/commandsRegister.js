@@ -28,7 +28,7 @@ for (const folder of commandFolders) {
   }
 }
 
-const commandRegister = async (guild) => {
+export const commandRegister = async (guild) => {
   const rest = new REST().setToken(process.env.BOT_TOKEN);
   await (async () => {
     try {
@@ -54,7 +54,7 @@ const commandRegister = async (guild) => {
   })();
 };
 
-const commandDelete = async (guild) => {
+export const commandDelete = async (guild) => {
   const rest = new REST().setToken(process.env.BOT_TOKEN);
   await (async () => {
     try {
@@ -84,5 +84,3 @@ const commandDelete = async (guild) => {
     }
   })();
 };
-
-export default { commandRegister, commandDelete };

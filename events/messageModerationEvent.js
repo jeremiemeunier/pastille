@@ -3,7 +3,7 @@ import { logs } from "../function/logs";
 import { automodRegister } from "../function/automod/automodRegister";
 import { getParams } from "../function/base";
 
-const automod = (client) => {
+export const automod = (client) => {
   client.on(Events.MessageCreate, async (message) => {
     const guild = client.guilds.cache.find(
       (guild) => guild.id === message.guildId
@@ -134,7 +134,7 @@ const automod = (client) => {
   });
 };
 
-const isImune = (user, imune) => {
+export const isImune = (user, imune) => {
   const userRoles = user.roles.cache;
   let imunised = [];
 
@@ -151,5 +151,3 @@ const isImune = (user, imune) => {
   }
   return false;
 };
-
-export default { automod };

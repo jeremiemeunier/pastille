@@ -1,7 +1,7 @@
 import { Router } from "express";
 const router = Router();
 import Command, { find, findById } from "../model/Command";
-import isPastille from "../middlewares/isPastille";
+import { isPastille } from "../middlewares/isPastille";
 import { logs } from "../function/logs";
 
 router.get("/commands", isPastille, async (req, res) => {

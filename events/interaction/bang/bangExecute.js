@@ -12,4 +12,4 @@ const bangExecute = async (message, guild, command) => {
   }
 };
 
-export default { bangExecute };
+export { bangExecute };

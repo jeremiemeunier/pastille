@@ -73,4 +73,4 @@ const contextReportMessage = async (client, interaction) => {
   }
 };
 
-export default { contextReportMessage };
+export { contextReportMessage };

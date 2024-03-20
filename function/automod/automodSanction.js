@@ -1,9 +1,9 @@
 import { logs } from "../logs";
-import { post } from "axios";
+import axios from "axios";
 import { getParams } from "../base";
 import { automodApply, automodFinalNotify } from "./automodVerifer";
 
-const automodSanctionEvalute = async (size, guild) => {
+export const automodSanctionEvalute = async (size, guild) => {
   const guildParams = await getParams(guild);
   const { moderation } = guildParams;
   const { sanctions } = moderation;
@@ -52,7 +52,7 @@ const automodSanctionEvalute = async (size, guild) => {
   return { decision: "nothing" };
 };
 
-const automodSanction = async (user, size, guild) => {
+export const automodSanction = async (user, size, guild) => {
   const { count } = size.data;
   const evaluation = await automodSanctionEvalute(count, guild);
 
@@ -74,7 +74,7 @@ const automodSanction = async (user, size, guild) => {
   }
 };
 
-const durationInterpreter = (sanctionData) => {
+export const durationInterpreter = (sanctionData) => {
   const { duration, unit } = sanctionData;
 
   if (unit === "m") {
@@ -86,9 +86,9 @@ const durationInterpreter = (sanctionData) => {
   }
 };
 
-const sanctionRegister = async (userId, level, start, end, guild) => {
+export const sanctionRegister = async (userId, level, start, end, guild) => {
   try {
-    const register = await post("/sanction/add", {
+    const register = await axios.post("/sanction/add", {
       user_id: userId,
       guild_id: guild.id,
       level: level,
@@ -99,5 +99,3 @@ const sanctionRegister = async (userId, level, start, end, guild) => {
     logs("error", "automod:sanction:register:api", error, guild);
   }
 };
-
-export default { automodSanction };

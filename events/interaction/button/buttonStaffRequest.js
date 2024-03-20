@@ -125,4 +125,4 @@ const buttonStaffRequest = async (client, interaction) => {
   }
 };
 
-export default { buttonStaffRequest };
+export { buttonStaffRequest };

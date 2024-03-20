@@ -2,7 +2,7 @@ import { Events } from "discord.js";
 import { logs } from "../function/logs";
 import { removeRole } from "./interaction/reaction/reactionRole";
 
-const reactionRemoveEventInit = (client) => {
+export const reactionRemoveEventInit = (client) => {
   client.on(Events.MessageReactionRemove, async (reaction, user) => {
     if (user.bot === true) {
       return;
@@ -23,5 +23,3 @@ const reactionRemoveEventInit = (client) => {
     }
   });
 };
-
-export default { reactionRemoveEventInit };

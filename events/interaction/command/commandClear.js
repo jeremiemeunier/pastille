@@ -57,4 +57,4 @@ const commandClearInit = async (client, interaction) => {
   }
 };
 
-export default { commandClearInit };
+export { commandClearInit };

@@ -49,4 +49,4 @@ const removeRole = async (client, reaction, user) => {
   });
 };
 
-export default { addRole, removeRole };
+export { addRole, removeRole };

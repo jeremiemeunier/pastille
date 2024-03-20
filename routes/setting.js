@@ -1,7 +1,7 @@
 import { Router } from "express";
 const router = Router();
 import Setting, { findOne } from "../model/Setting";
-import isPastille from "../middlewares/isPastille";
+import { isPastille } from "../middlewares/isPastille";
 import { logs } from "../function/logs";
 
 router.post("/settings/add", isPastille, async (req, res) => {

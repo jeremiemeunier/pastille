@@ -55,4 +55,4 @@ const commandPollInit = async (client, interaction) => {
   }
 };
 
-export default { commandPollInit };
+export { commandPollInit };

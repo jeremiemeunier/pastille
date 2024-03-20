@@ -1,8 +1,7 @@
-import { env, on, exit } from "process";
 import { connect } from "mongoose";
 
 // BDD
-connect(env.MONGODB_URL);
+connect(process.env.MONGODB_URL);
 
 // ##### BOT SETUP ##### \\
 
@@ -108,23 +107,18 @@ const pastilleBooter = async () => {
     logs("error", "api:server", error);
   }
 
-  client.on(Events.GuildCreate, (guild) => {
+  client.on(Events.GuildCreate, ({ guild }) => {
     logs("infos", "events:new_guild", "Join a new guild", guild.id);
     guildStarter(guild);
     setStatus();
   });
 };
 
-on("SIGINT", async () => {
-  logs("infos", "process:stop", "Process has request to stop");
-  exit(300);
-});
-
 try {
   client.on("ready", () => {
     pastilleBooter();
   });
-  client.login(env.BOT_TOKEN);
+  client.login(process.env.BOT_TOKEN);
 } catch (error) {
   logs("error", "client:connect", error);
 }

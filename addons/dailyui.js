@@ -1,7 +1,7 @@
 import { EmbedBuilder } from "discord.js";
 import { options } from "../config/settings.json";
 import { logs } from "../function/logs";
-import { get, put } from "axios";
+import axios from "axios";
 
 const addonsLoaded = async (guild, addonsParamsItem) => {
   const { role, params, guild_id } = addonsParamsItem;
@@ -15,7 +15,7 @@ const addonsLoaded = async (guild, addonsParamsItem) => {
       actualDate.getMinutes().toString() === minutes
     ) {
       try {
-        const dailyUiChallenge = await get("/dailyui", {
+        const dailyUiChallenge = await axios.get("/dailyui", {
           headers: { pastille_botid: process.env.BOT_ID },
           params: { guild_id: guild_id },
         });
@@ -46,7 +46,7 @@ const addonsLoaded = async (guild, addonsParamsItem) => {
             });
 
             try {
-              const dailyUiChallenge = await put(
+              const dailyUiChallenge = await axios.put(
                 "/dailyui",
                 {},
                 {
@@ -70,4 +70,4 @@ const addonsLoaded = async (guild, addonsParamsItem) => {
   }, 60000);
 };
 
-export default { addonsLoaded };
+export { addonsLoaded };

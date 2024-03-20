@@ -1,7 +1,7 @@
 import { Router } from "express";
 const router = Router();
 import Streamer, { find, findById, findByIdAndDelete } from "../model/Twitch";
-import isPastille from "../middlewares/isPastille";
+import { isPastille } from "../middlewares/isPastille";
 import { logs } from "../function/logs";
 
 router.get("/twitch", isPastille, async (req, res) => {

@@ -1,16 +1,18 @@
 import express, { json } from "express";
-const app = express();
 import cors from "cors";
 import { logs } from "../function/logs";
-import { defaults, get } from "axios";
+import axios from "axios";
+import { isPastille } from "../middlewares/isPastille";
 
-const api = () => {
+const app = express();
+
+export const api = () => {
   // ##### API SETUP ##### \\
   app.use(json());
   app.use(cors());
 
   // Setup of axios
-  defaults.baseURL = "http://localhost:3000";
+  axios.defaults.baseURL = "http://localhost:3000";
 
   // API
   const infractionRoute = require("../routes/infraction");
@@ -24,16 +26,16 @@ const api = () => {
   const commandsRoute = require("../routes/command");
   const emotesRoute = require("../routes/emote");
 
-  app.use(infractionRoute);
-  app.use(sanctionRoute);
-  app.use(dailyuiRoute);
-  app.use(twitchpingRoute);
-  app.use(addonsRoute);
-  app.use(rulesRoute);
-  app.use(rolesRoute);
-  app.use(settingsRoute);
-  app.use(commandsRoute);
-  app.use(emotesRoute);
+  app.use(infractionRoute, isPastille);
+  app.use(sanctionRoute, isPastille);
+  app.use(dailyuiRoute, isPastille);
+  app.use(twitchpingRoute, isPastille);
+  app.use(addonsRoute, isPastille);
+  app.use(rulesRoute, isPastille);
+  app.use(rolesRoute, isPastille);
+  app.use(settingsRoute, isPastille);
+  app.use(commandsRoute, isPastille);
+  app.use(emotesRoute, isPastille);
 
   app.get("/", (req, res) => {
     res.status(200).json({ message: "Bienvenue sur le Backend de Pastille" });
@@ -45,15 +47,3 @@ const api = () => {
     logs("start", "api", `Started on port 3000`);
   });
 };
-
-const apiVerifier = async () => {
-  try {
-    const apiTester = await get("/");
-    return true;
-  } catch (error) {
-    logs("error", "api:tester", error);
-    return false;
-  }
-};
-
-export default { api, apiVerifier };

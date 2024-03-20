@@ -18,7 +18,7 @@ import { logs } from "../function/logs";
 import { contextReportMessage } from "./interaction/menu/menuReportMessage";
 import { buttonDeleteMessage } from "./interaction/button/buttonDeleteMessage";
 
-const interactionCreateEventInit = (client) => {
+export const interactionCreateEventInit = (client) => {
   client.on(Events.InteractionCreate, async (interaction) => {
     if (interaction.isButton()) {
       //Buttons
@@ -79,5 +79,3 @@ const interactionCreateEventInit = (client) => {
     return;
   });
 };
-
-export default { interactionCreateEventInit };

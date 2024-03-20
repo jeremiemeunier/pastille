@@ -37,4 +37,4 @@ const bangRule = async (message, guild) => {
   }
 };
 
-export default { bangRule };
+export { bangRule };

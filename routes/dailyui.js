@@ -1,7 +1,7 @@
 import { Router } from "express";
 const router = Router();
 import DailyUi, { findByIdAndUpdate, findOne } from "../model/Dailyui";
-import isPastille from "../middlewares/isPastille";
+import { isPastille } from "../middlewares/isPastille";
 import { logs } from "../function/logs";
 
 router.put("/dailyui", isPastille, async (req, res) => {

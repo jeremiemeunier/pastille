@@ -1,10 +1,9 @@
-import fs from "node:fs";
 import { Events, EmbedBuilder } from "discord.js";
 import { logs } from "../function/logs";
 import { addRole } from "./interaction/reaction/reactionRole";
 import { pollReactions } from "./interaction/reaction/reactionPoll";
 
-const reactionAddEventInit = (client) => {
+export const reactionAddEventInit = (client) => {
   client.on(Events.MessageReactionAdd, async (reaction, user) => {
     if (user.bot === true) {
       return;
@@ -28,5 +27,3 @@ const reactionAddEventInit = (client) => {
     }
   });
 };
-
-export default { reactionAddEventInit };

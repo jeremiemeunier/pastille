@@ -35,4 +35,4 @@ const buttonOpenTicketInit = async (client, interaction) => {
   }
 };
 
-export default { buttonOpenTicketInit };
+export { buttonOpenTicketInit };

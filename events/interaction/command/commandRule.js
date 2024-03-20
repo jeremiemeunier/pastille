@@ -67,4 +67,4 @@ const commandRuleInit = async (client, interaction) => {
   }
 };
 
-export default { commandRuleInit };
+export { commandRuleInit };

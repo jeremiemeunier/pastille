@@ -27,4 +27,4 @@ const commandAnnounceInit = async (client, interaction) => {
   }
 };
 
-export default { commandAnnounceInit };
+export { commandAnnounceInit };

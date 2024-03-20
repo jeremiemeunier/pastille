@@ -1,7 +1,7 @@
 import { Router } from "express";
 const router = Router();
 import Infraction, { countDocuments } from "../model/Infraction";
-import isPastille from "../middlewares/isPastille";
+import { isPastille } from "../middlewares/isPastille";
 import { logs } from "../function/logs";
 
 router.post("/infraction", isPastille, async (req, res) => {

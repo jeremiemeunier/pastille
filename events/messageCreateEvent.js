@@ -10,7 +10,7 @@ import { bangStatus } from "./interaction/bang/bangStatus";
 import { logs } from "../function/logs";
 import { bangExecute } from "./interaction/bang/bangExecute";
 
-const messageCreateEventInit = (client) => {
+export const messageCreateEventInit = (client) => {
   client.on(Events.MessageCreate, async (message) => {
     const content = message.content;
     const guild = client.guilds.cache.find(
@@ -70,5 +70,3 @@ const messageCreateEventInit = (client) => {
     return;
   });
 };
-
-export default { messageCreateEventInit };

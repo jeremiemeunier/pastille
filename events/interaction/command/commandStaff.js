@@ -40,4 +40,4 @@ const commandStaffInit = async (client, interaction) => {
   }
 };
 
-export default { commandStaffInit };
+export { commandStaffInit };

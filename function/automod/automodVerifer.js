@@ -1,9 +1,9 @@
 import { EmbedBuilder } from "discord.js";
 import { logs } from "../logs";
-import { get, put } from "axios";
+import axios from "axios";
 import { getParams } from "../base";
 
-const durationFormater = (time) => {
+export const durationFormater = (time) => {
   const duration = time / 1000;
   const days = Math.floor(duration / (24 * 3600));
 
@@ -33,7 +33,7 @@ const durationFormater = (time) => {
   }
 };
 
-const automodFinalNotify = async (guild, user) => {
+export const automodFinalNotify = async (guild, user) => {
   const guildParams = await getParams(guild);
   const { options } = guildParams;
 
@@ -53,7 +53,7 @@ const automodFinalNotify = async (guild, user) => {
   }
 };
 
-const automodRemove = async (guild, user) => {
+export const automodRemove = async (guild, user) => {
   const guildParams = await getParams(guild);
   const { moderation } = guildParams;
 
@@ -77,7 +77,7 @@ const automodRemove = async (guild, user) => {
   }
 };
 
-const automodApply = async (guild, user, timer) => {
+export const automodApply = async (guild, user, timer) => {
   const guildParams = await getParams(guild);
   const { moderation } = guildParams;
 
@@ -121,13 +121,13 @@ const automodApply = async (guild, user, timer) => {
  *
  * @param {*} guild A discord guild item
  */
-const automodVerifier = async (guild) => {
+export const automodVerifier = async (guild) => {
   const now = Date.parse(new Date());
 
   logs("infos", "automod:verifier", "Start sanctions verifications", guild.id);
 
   try {
-    const allGuildSanctionsRequest = await get("/sanction", {
+    const allGuildSanctionsRequest = await axios.get("/sanction", {
       params: { guild_id: guild.id },
       headers: { pastille_botid: process.env.BOT_ID },
     });
@@ -155,7 +155,7 @@ const automodVerifier = async (guild) => {
 
           if (!user) {
             try {
-              await put(
+              await axios.put(
                 "/sanction/update",
                 {},
                 {
@@ -211,11 +211,4 @@ const automodVerifier = async (guild) => {
   }
 
   logs("infos", "automod:verifier", "End sanctions verifications", guild.id);
-};
-
-export default {
-  automodVerifier,
-  automodApply,
-  automodRemove,
-  automodFinalNotify,
 };

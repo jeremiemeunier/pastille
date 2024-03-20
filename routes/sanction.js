@@ -1,7 +1,7 @@
 import { Router } from "express";
 const router = Router();
 import Sanction, { findByIdAndUpdate, find } from "../model/Sanction";
-import isPastille from "../middlewares/isPastille";
+import { isPastille } from "../middlewares/isPastille";
 import { logs } from "../function/logs";
 
 router.put("/sanction/update", isPastille, async (req, res) => {

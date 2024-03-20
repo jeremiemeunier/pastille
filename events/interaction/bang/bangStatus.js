@@ -16,4 +16,4 @@ const bangStatus = async (message, guild) => {
   }
 };
 
-export default { bangStatus };
+export { bangStatus };

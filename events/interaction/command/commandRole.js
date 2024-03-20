@@ -46,4 +46,4 @@ const commandRoleInit = async (client, interaction) => {
   }
 };
 
-export default { commandRoleInit };
+export { commandRoleInit };

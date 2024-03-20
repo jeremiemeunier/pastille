@@ -10,7 +10,12 @@ import { getParams } from "./base";
  * @param {*} threadChannel Discord thread channel item
  * @param {*} user Discord user item
  */
-const createVoiceThread = async (guild, channel, threadChannel, user) => {
+export const createVoiceThread = async (
+  guild,
+  channel,
+  threadChannel,
+  user
+) => {
   const guildParams = await getParams(guild);
   const { options } = guildParams;
 
@@ -47,7 +52,7 @@ const createVoiceThread = async (guild, channel, threadChannel, user) => {
  * @param {*} threadChannel Discord thread channel item
  * @param {*} user Discord user item
  */
-const joinVoiceThread = async (guild, channel, threadChannel, user) => {
+export const joinVoiceThread = async (guild, channel, threadChannel, user) => {
   try {
     const thread = threadChannel.threads.cache.find(
       (thread) => thread.name === `Voice : ${channel.name}`
@@ -72,7 +77,7 @@ const joinVoiceThread = async (guild, channel, threadChannel, user) => {
  * @param {*} user Discord user item
  */
 
-const leaveVoiceThread = async (guild, channel, threadChannel, user) => {
+export const leaveVoiceThread = async (guild, channel, threadChannel, user) => {
   try {
     const thread = threadChannel.threads.cache.find(
       (thread) => thread.name === `Voice : ${channel.name}`
@@ -95,7 +100,7 @@ const leaveVoiceThread = async (guild, channel, threadChannel, user) => {
  * @param {*} channel Discord channel item
  * @param {*} threadChannel Discord thread channel item
  */
-const deleteVoiceThread = async (guild, channel, threadChannel) => {
+export const deleteVoiceThread = async (guild, channel, threadChannel) => {
   const guildParams = await getParams(guild);
   const { options } = guildParams;
 
@@ -118,11 +123,4 @@ const deleteVoiceThread = async (guild, channel, threadChannel) => {
   } catch (error) {
     logs("error", "voice:thread:delete", error);
   }
-};
-
-export default {
-  createVoiceThread,
-  joinVoiceThread,
-  leaveVoiceThread,
-  deleteVoiceThread,
 };
