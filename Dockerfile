@@ -11,4 +11,4 @@ RUN npm i
 COPY . .
 EXPOSE 3000
 
-CMD [ "node", "--env-file=.env", "index.js" ]
+CMD [ "npm", "run", "prod" ]
