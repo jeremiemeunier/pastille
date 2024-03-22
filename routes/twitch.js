@@ -1,14 +1,15 @@
 import { Router } from "express";
-const router = Router();
-import Streamer, { find, findById, findByIdAndDelete } from "../model/Twitch";
+import Streamer from "../model/Twitch";
 import { isPastille } from "../middlewares/isPastille";
 import { logs } from "../function/logs";
+
+const router = Router();
 
 router.get("/twitch", isPastille, async (req, res) => {
   const { guild_id } = req.query;
 
   try {
-    const allTwitchPings = await find({ guild_id: { $eq: guild_id } });
+    const allTwitchPings = await Streamer.find({ guild_id: { $eq: guild_id } });
 
     if (allTwitchPings.length > 0) {
       res.status(200).json({
@@ -28,7 +29,7 @@ router.get("/twitch/id", isPastille, async (req, res) => {
   const { id } = req.query;
 
   try {
-    const twitchItem = findById({ _id: { $eq: id } });
+    const twitchItem = Streamer.findById({ _id: { $eq: id } });
 
     if (!twitchItem) {
       res.status(404).json({ message: "Item not found" });
@@ -72,7 +73,7 @@ router.delete("/twitch/remove", isPastille, async (req, res) => {
   const { id } = req.query;
 
   try {
-    await findByIdAndDelete({ _id: { $eq: id } });
+    await Streamer.findByIdAndDelete({ _id: { $eq: id } });
     res.status(200).json({ message: "Item deleted" });
   } catch (error) {
     res.status(400).json({ message: "An error occured", error: error });

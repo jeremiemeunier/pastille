@@ -1,8 +1,9 @@
 import { Router } from "express";
-const router = Router();
-import Infraction, { countDocuments } from "../model/Infraction";
+import Infraction from "../model/Infraction";
 import { isPastille } from "../middlewares/isPastille";
 import { logs } from "../function/logs";
+
+const router = Router();
 
 router.post("/infraction", isPastille, async (req, res) => {
   const { user_id, reason, date, guild_id } = req.body;
@@ -31,7 +32,7 @@ router.get("/infraction/all", isPastille, async (req, res) => {
   const { user_id, guild_id } = req.query;
 
   try {
-    const allInfractions = await countDocuments({
+    const allInfractions = await Infraction.countDocuments({
       user_id: { $eq: user_id },
       guild_id: { $eq: guild_id },
     });

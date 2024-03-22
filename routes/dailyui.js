@@ -1,14 +1,15 @@
 import { Router } from "express";
-const router = Router();
-import DailyUi, { findByIdAndUpdate, findOne } from "../model/Dailyui";
+import DailyUi from "../model/Dailyui";
 import { isPastille } from "../middlewares/isPastille";
 import { logs } from "../function/logs";
+
+const router = Router();
 
 router.put("/dailyui", isPastille, async (req, res) => {
   const { id } = req.query;
 
   try {
-    const updateDailyUi = await findByIdAndUpdate(
+    const updateDailyUi = await DailyUi.findByIdAndUpdate(
       { _id: id },
       { available: false }
     );
@@ -24,7 +25,7 @@ router.get("/dailyui", isPastille, async (req, res) => {
   const { guild_id } = req.query;
 
   try {
-    const dailyuiNotSend = await findOne({
+    const dailyuiNotSend = await DailyUi.findOne({
       available: true,
       guild_id: guild_id,
     });

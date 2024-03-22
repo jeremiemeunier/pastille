@@ -1,14 +1,15 @@
 import { Router } from "express";
-const router = Router();
-import Sanction, { findByIdAndUpdate, find } from "../model/Sanction";
+import Sanction from "../model/Sanction";
 import { isPastille } from "../middlewares/isPastille";
 import { logs } from "../function/logs";
+
+const router = Router();
 
 router.put("/sanction/update", isPastille, async (req, res) => {
   const { id } = req.query;
 
   try {
-    const updateSanction = await findByIdAndUpdate(
+    const updateSanction = await Sanction.findByIdAndUpdate(
       { _id: { $eq: id } },
       { checkable: false }
     );
@@ -48,7 +49,7 @@ router.get("/sanction", isPastille, async (req, res) => {
   const { guild_id } = req.query;
 
   try {
-    const allSanction = await find({
+    const allSanction = await Sanction.find({
       guild_id: { $eq: guild_id },
       checkable: true,
     });

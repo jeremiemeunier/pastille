@@ -1,14 +1,15 @@
 import { Router } from "express";
-const router = Router();
-import Emote, { findOne, find } from "../model/Emote";
+import Emote from "../model/Emote";
 import { isPastille } from "../middlewares/isPastille";
 import { logs } from "../function/logs";
+
+const router = Router();
 
 router.get("/emotes", isPastille, async (req, res) => {
   const { letter } = req.query;
 
   try {
-    const letterRequest = await findOne({ letter: { $eq: letter } });
+    const letterRequest = await Emote.findOne({ letter: { $eq: letter } });
 
     if (letterRequest) {
       res.status(404).json({ message: "No emotes" });
@@ -28,9 +29,11 @@ router.get("/emotes/all", isPastille, async (req, res) => {
     let allLettersRequest;
 
     if (limit > 0) {
-      allLettersRequest = await find().limit(limit).sort({ letter: "asc" });
+      allLettersRequest = await Emote.find()
+        .limit(limit)
+        .sort({ letter: "asc" });
     } else {
-      allLettersRequest = await find().sort({ letter: "asc" });
+      allLettersRequest = await Emote.find().sort({ letter: "asc" });
     }
 
     if (allLettersRequest.length > 0) {

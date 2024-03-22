@@ -1,14 +1,15 @@
 import { Router } from "express";
-const router = Router();
-import Rule, { find, findByIdAndUpdate } from "../model/Rule";
+import Rule from "../model/Rule";
 import { isPastille } from "../middlewares/isPastille";
 import { logs } from "../function/logs";
+
+const router = Router();
 
 router.get("/rules", isPastille, async (req, res) => {
   const { guild_id } = req.query;
 
   try {
-    const allRulesRequest = await find({ guild_id: { $eq: guild_id } });
+    const allRulesRequest = await Rule.find({ guild_id: { $eq: guild_id } });
 
     if (allRulesRequest.length === 0) {
       res.status(404).json({ message: "No rules" });
@@ -51,7 +52,7 @@ router.put("/rules/update", isPastille, async (req, res) => {
     res.status(400).json({ message: "You must provide all input" });
   } else {
     try {
-      const updatedRulesItem = await findByIdAndUpdate(
+      const updatedRulesItem = await Rule.findByIdAndUpdate(
         { _id: { $eq: id } },
         {
           guild_id: guild_id,

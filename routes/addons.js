@@ -1,5 +1,5 @@
 import { Router } from "express";
-import Addons, { find, findByIdAndUpdate } from "../model/Addons";
+import Addons from "../model/Addons";
 import { isPastille } from "../middlewares/isPastille";
 import { logs } from "../function/logs";
 
@@ -9,7 +9,7 @@ router.get("/addons", isPastille, async (req, res) => {
   const { guild_id } = req.query;
 
   try {
-    const allAddonsRequest = await find({ guild_id: { $eq: guild_id } });
+    const allAddonsRequest = await Addons.find({ guild_id: { $eq: guild_id } });
 
     if (allAddonsRequest.length === 0) {
       res.status(404).json({ message: "No addons" });
@@ -58,7 +58,7 @@ router.put("/addons/update", isPastille, async (req, res) => {
   }
 
   try {
-    const updatedAddons = await findByIdAndUpdate(
+    const updatedAddons = await Addons.findByIdAndUpdate(
       { _id: { $eq: id } },
       {
         guild_id: guild_id,

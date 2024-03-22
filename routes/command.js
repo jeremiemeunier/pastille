@@ -1,14 +1,15 @@
 import { Router } from "express";
-const router = Router();
-import Command, { find, findById } from "../model/Command";
+import Command from "../model/Command";
 import { isPastille } from "../middlewares/isPastille";
 import { logs } from "../function/logs";
+
+const router = Router();
 
 router.get("/commands", isPastille, async (req, res) => {
   const { guild_id } = req.query;
 
   try {
-    const allCommandsRequest = await find({
+    const allCommandsRequest = await Command.find({
       guild_id: { $eq: guild_id },
     });
 
@@ -27,7 +28,7 @@ router.get("/commands/id", isPastille, async (req, res) => {
   const { id } = req.query;
 
   try {
-    const commandRequest = await findById({ _id: { $eq: id } });
+    const commandRequest = await Command.findById({ _id: { $eq: id } });
 
     if (!commandRequest) {
       res.status(404).json({ message: "No command with this _id" });

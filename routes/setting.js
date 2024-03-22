@@ -1,8 +1,9 @@
 import { Router } from "express";
-const router = Router();
-import Setting, { findOne } from "../model/Setting";
+import Setting from "../model/Setting";
 import { isPastille } from "../middlewares/isPastille";
 import { logs } from "../function/logs";
+
+const router = Router();
 
 router.post("/settings/add", isPastille, async (req, res) => {
   const { guild_id, premium, premium_end, options, moderation } = req.body;
@@ -74,7 +75,7 @@ router.get("/settings", isPastille, async (req, res) => {
   const { guild_id } = req.query;
 
   try {
-    const guildSettings = await findOne({
+    const guildSettings = await Setting.findOne({
       guild_id: { $eq: guild_id },
     });
 
