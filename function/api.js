@@ -4,6 +4,17 @@ import { logs } from "../function/logs";
 import axios from "axios";
 import { isPastille } from "../middlewares/isPastille";
 
+import infractionRoute from "../routes/infraction";
+import sanctionRoute from "../routes/sanction";
+import dailyuiRoute from "../routes/dailyui";
+import twitchpingRoute from "../routes/twitch";
+import addonsRoute from "../routes/addons";
+import rulesRoute from "../routes/rules";
+import rolesRoute from "../routes/roles";
+import settingsRoute from "../routes/setting";
+import commandsRoute from "../routes/command";
+import emotesRoute from "../routes/emote";
+
 const app = express();
 
 export const api = () => {
@@ -15,17 +26,6 @@ export const api = () => {
   axios.defaults.baseURL = "http://localhost:3000";
 
   // API
-  const infractionRoute = require("../routes/infraction");
-  const sanctionRoute = require("../routes/sanction");
-  const dailyuiRoute = require("../routes/dailyui");
-  const twitchpingRoute = require("../routes/twitch");
-  const addonsRoute = require("../routes/addons");
-  const rulesRoute = require("../routes/rules");
-  const rolesRoute = require("../routes/roles");
-  const settingsRoute = require("../routes/setting");
-  const commandsRoute = require("../routes/command");
-  const emotesRoute = require("../routes/emote");
-
   app.use(infractionRoute, isPastille);
   app.use(sanctionRoute, isPastille);
   app.use(dailyuiRoute, isPastille);
