@@ -3,10 +3,7 @@ import { getParams } from "@functions/base";
 import logs from "@functions/logs";
 import { Events, EmbedBuilder } from "discord.js";
 
-export const automod = (client: {
-  on: (arg0: Events, arg1: (message: any) => Promise<void>) => void;
-  guilds: { cache: any[] };
-}) => {
+export const automod = (client: any) => {
   client.on(
     Events.MessageCreate,
     async (message: {

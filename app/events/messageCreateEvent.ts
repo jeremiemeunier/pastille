@@ -10,10 +10,7 @@ import {
 } from "@functions/base";
 import logs from "@functions/logs";
 
-export const messageCreateEventInit = (client: {
-  on: (arg0: Events, arg1: (message: any) => Promise<void>) => void;
-  guilds: { cache: any[] };
-}) => {
+export const messageCreateEventInit = (client: any) => {
   client.on(
     Events.MessageCreate,
     async (message: {

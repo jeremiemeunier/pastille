@@ -62,13 +62,7 @@ export const getTextualChannel = async (
   }
 };
 
-export const voiceEventInit = (client: {
-  on: (
-    arg0: Events,
-    arg1: (oldState: any, newState: any) => Promise<void>
-  ) => void;
-  guilds: { cache: any[] };
-}) => {
+export const voiceEventInit = (client: any) => {
   client.on(
     Events.VoiceStateUpdate,
     async (
