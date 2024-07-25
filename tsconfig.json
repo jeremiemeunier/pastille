@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./",
+    "target": "es2016",
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "paths": {
+      "@routes/*": ["./app/routes/*"],
+      "@libs/*": ["./app/libs/*"],
+      "@utils/*": ["./app/utils/*"],
+      "@middlewares/*": ["./app/middlewares/*"],
+      "@models/*": ["./app/models/*"],
+      "@commands/*": ["./app/commands/*"],
+      "@functions/*": ["./app/functions/*"],
+      "@modules/*": ["./app/modules/*"],
+      "@events/*": ["./app/events/*"],
+      "@/*": ["./app/*"]
+    }
+  },
+  "tsc-alias": {
+    "resolveFullPaths": true,
+    "verbose": false
+  },
+  "include": ["app/**/*"],
+  "exclude": ["node_modules"]
+}
