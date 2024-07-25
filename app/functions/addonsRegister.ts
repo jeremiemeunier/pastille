@@ -1,5 +1,6 @@
 import { getAddons } from "./base";
 import { AddonsTypes } from "@/types/Addons.types";
+import { cwd } from "process";
 import logs from "./logs";
 
 export const addonsRegisterInit = async (guild: any) => {
@@ -16,7 +17,7 @@ export const addonsRegister = async (addons: any, guild: any) => {
           : logs(null, "addons:register", `[INACTIVE] ${item.name}`, guild.id);
 
         if (item.active) {
-          const { addonsLoaded } = require(`../addons/${item.name}`);
+          const { addonsLoaded } = require(`${cwd()}/app/modules/${item.name}`);
           addonsLoaded(guild, item);
         }
       });
