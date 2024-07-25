@@ -129,7 +129,7 @@ export const getLetters = async (letter: any, limit: number = -1) => {
   }
 };
 
-export const getCommands = async (guild: any, id: any) => {
+export const getCommands = async (guild: any, id?: any) => {
   if (id) {
     try {
       const guildCommandsRequest = await pastilleAxios.get("/commands/id", {
@@ -210,7 +210,7 @@ export const postWarnUser = async (guild: any, data: any) => {
  * @param {undefined|Date} date
  * @returns {string}
  */
-export const hoursParser = async (date: any) => {
+export const hoursParser = async (date?: any) => {
   if (date === undefined) {
     date = new Date();
   }
@@ -230,7 +230,7 @@ export const hoursParser = async (date: any) => {
  * @param {undefined|Date} date
  * @returns {string}
  */
-export const dateParser = async (date: any) => {
+export const dateParser = async (date?: any) => {
   if (date === undefined) {
     date = new Date();
   }
