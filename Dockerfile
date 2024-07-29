@@ -1,14 +1,17 @@
-FROM node:20-slim
-
-RUN apt-get update && apt-get install -y tzdata
-ENV TZ=Europe/Paris
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+FROM node:20-slim AS builder
 
 WORKDIR /app
-COPY package.json ./
+COPY package*.json ./
 RUN npm i
 
 COPY . .
-EXPOSE 3000
+RUN npm run build
 
-CMD [ "npm", "run", "prod" ]
+FROM node:20-slim AS runner
+
+WORKDIR /app
+COPY --from=builder /app/dist /app
+COPY package*.json ./
+RUN npm i
+
+CMD [ "node", "index.js" ]
