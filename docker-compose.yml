@@ -1,0 +1,11 @@
+name: "Pastille"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pastille
+    env_file:
+      - .env
+    restart: always
