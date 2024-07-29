@@ -1,24 +1,37 @@
 {
   "name": "pastille-bot",
-  "version": "2.0.0",
-  "description": "A discord bot for automoderation, twitch alert and more",
-  "main": "index.js",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/jeremiemeunier/pastille-bot.git"
+  "version": "1.0.0",
+  "description": "",
+  "main": "app/index.ts",
+  "bin": {
+    "pastille-bot": "bin/index.js"
   },
-  "bugs": {
-    "url": "https://github.com/jeremiemeunier/pastille-bot/issues"
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prod": "ts-node -r dotenv/config -r tsconfig-paths/register app/index.ts",
+    "dev": "nodemon --exec \"ts-node -r dotenv/config -r tsconfig-paths/register app/index.ts\""
   },
-  "homepage": "https://github.com/jeremiemeunier/pastille-bot#readme",
-  "author": "jeremiemeunier",
+  "author": "",
+  "license": "ISC",
   "dependencies": {
-    "@discordjs/rest": "^2.2.0",
-    "axios": "^1.6.7",
+    "axios": "^1.7.2",
     "cors": "^2.8.5",
-    "discord.js": "^14.14.1",
-    "express": "^4.18.3",
-    "mongoose": "^8.2.1",
-    "nodemon": "^3.1.0"
+    "discord.js": "^14.15.3",
+    "express": "^4.19.2",
+    "mongoose": "^8.5.1",
+    "tsc-alias": "^1.8.10",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.5.4"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4",
+    "@discordjs/rest": "^2.3.0",
+    "@types/axios": "^0.14.0",
+    "@types/cors": "^2.8.17",
+    "@types/dotenv": "^8.2.0",
+    "@types/express": "^4.17.21",
+    "@types/mongoose": "^5.11.97",
+    "discord-api-types": "^0.37.93",
+    "ts-node": "^10.9.2"
   }
 }
