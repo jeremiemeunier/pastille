@@ -1,6 +1,6 @@
 const commands = {
   name: "Signaler",
-  default_member_permissions: 68608,
+  default_member_permissions: 2048,
   type: 2,
 };
 
