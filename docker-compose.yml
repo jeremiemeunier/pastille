@@ -1,4 +1,4 @@
-name: "Pastille"
+name: pastille
 
 services:
   app:
