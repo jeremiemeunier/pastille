@@ -122,13 +122,6 @@ export const deleteVoiceThread = async (
     const thread = threadChannel.threads.cache.find(
       (thread: any) => thread.name === `Voice : ${channel.name}`
     );
-    const embed = new EmbedBuilder({
-      color: parseInt(options.color, 16),
-      description:
-        "Il n'y a plus personne dans ce channel, il va être supprimé dans quelques secondes.",
-    });
-    const message = await thread.send({ embeds: [embed] });
-
     try {
       await thread.delete();
     } catch (error: any) {
