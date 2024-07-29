@@ -1,6 +1,7 @@
 import { TwitchTypes } from "@/types/Twitch.types";
 import { getStreamers } from "@functions/base";
 import logs from "@functions/logs";
+import TwitchAxios from "@utils/TwitchAxios";
 import axios from "axios";
 import {
   EmbedBuilder,
@@ -94,22 +95,19 @@ const startAnalyze = (startItem: any) => {
  */
 const requestAuthenticator = async () => {
   try {
-    const requestToken = await axios.post(
+    const requestToken = await TwitchAxios.post(
       "https://id.twitch.tv/oauth2/token",
-      {},
       {
-        params: {
-          client_id: process.env.TWITCH_CLIENT_TOKEN,
-          client_secret: process.env.TWITCH_SECRET_TOKEN,
-          grant_type: "client_credentials",
-          scope: "viewing_activity_read",
-        },
+        client_id: process.env.TWITCH_CLIENT_TOKEN,
+        client_secret: process.env.TWITCH_SECRET_TOKEN,
+        grant_type: "client_credentials",
+        scope: "viewing_activity_read",
       }
     );
 
     return requestToken.data.access_token;
   } catch (error: any) {
-    logs("error", "twitch:auth", error);
+    logs("error", "twitch:auth", error.message || error);
   }
 };
 
@@ -120,21 +118,24 @@ const requestAuthenticator = async () => {
  * @param {*} bearerToken
  * @returns A json object with streamer data
  */
-const requestStreamerState = async (streamerId: any, bearerToken: any) => {
+const requestStreamerState = async (
+  streamerId: string,
+  bearerToken: string
+) => {
   try {
-    const requestState = await axios.get(
+    const requestState = await TwitchAxios.get(
       "https://api.twitch.tv/helix/streams",
       {
         params: { user_id: streamerId },
         headers: {
-          "client-id": process.env.TWITCH_CLIENT_TOKEN,
+          "Client-Id": process.env.TWITCH_CLIENT_TOKEN,
           Authorization: `Bearer ${bearerToken}`,
         },
       }
     );
     return requestState.data.data[0];
   } catch (error: any) {
-    logs("error", "twitch:request:state", error);
+    logs("error", "twitch:request:state", error.message || error);
   }
 };
 
