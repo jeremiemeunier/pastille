@@ -1,17 +1,10 @@
-FROM node:20-slim AS builder
+FROM node:20-slim
 
 WORKDIR /app
-COPY package*.json ./
+COPY package.json ./
 RUN npm i
 
 COPY . .
-RUN npm run build
+EXPOSE 3000
 
-FROM node:20-slim AS runner
-
-WORKDIR /app
-COPY --from=builder /app/dist /app
-COPY package*.json ./
-RUN npm i
-
-CMD [ "node", "index.js" ]
+CMD [ "npm", "run", "prod" ]
