@@ -1,6 +1,8 @@
 {
   "compilerOptions": {
     "baseUrl": "./",
+    "outDir": "./dist",
+    "rootDir": "./app",
     "target": "es2016",
     "module": "commonjs",
     "esModuleInterop": true,
