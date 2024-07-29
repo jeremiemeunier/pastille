@@ -4,7 +4,7 @@
     "outDir": "./dist",
     "rootDir": "./app",
     "target": "ES2023",
-    "module": "ESNext",
+    "module": "commonjs",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
