@@ -9,3 +9,5 @@ services:
     env_file:
       - .env
     restart: always
+    ports:
+      - "3004:3000"
