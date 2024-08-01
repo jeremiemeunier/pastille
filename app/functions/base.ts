@@ -134,12 +134,11 @@ export const getCommands = async (guild: any, id?: any) => {
     try {
       const guildCommandsRequest = await pastilleAxios.get("/commands/id", {
         params: { id: id },
-        headers: { pastille_botid: process.env.BOT_ID },
       });
       const guildCommands = guildCommandsRequest.data.data;
       return guildCommands;
     } catch (error: any) {
-      logs("error", "global:get:guild_commands:id", error, guild.id);
+      logs("error", "global:get:guild:cmd:id", error, guild.id);
       return false;
     }
   } else {

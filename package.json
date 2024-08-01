@@ -9,7 +9,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prod": "ts-node -r dotenv/config -r tsconfig-paths/register app/index.ts",
-    "dev": "nodemon --exec \"ts-node -r dotenv/config -r tsconfig-paths/register app/index.ts\""
+    "dev": "infisical run -- nodemon --exec \"ts-node -r dotenv/config -r tsconfig-paths/register app/index.ts\""
   },
   "author": "",
   "license": "ISC",

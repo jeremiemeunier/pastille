@@ -10,7 +10,7 @@ router.get("/commands", isPastille, async (req, res) => {
 
   try {
     const allCommandsRequest = await Command.find({
-      guild_id: { $eq: guild_id },
+      guild_id: guild_id,
     });
 
     if (allCommandsRequest.length === 0) {
@@ -28,7 +28,7 @@ router.get("/commands/id", isPastille, async (req, res) => {
   const { id } = req.query;
 
   try {
-    const commandRequest = await Command.findById({ _id: { $eq: id } });
+    const commandRequest = await Command.findById({ _id: id });
 
     if (!commandRequest) {
       res.status(404).json({ message: "No command with this _id" });
@@ -42,7 +42,7 @@ router.get("/commands/id", isPastille, async (req, res) => {
 });
 
 router.post("/commands/add", isPastille, async (req, res) => {
-  const { terms, guild_id, response } = req.body;
+  const { terms, guild_id, response, role_id } = req.body;
 
   if (!terms || !guild_id || !response) {
     res.status(400).json({ message: "You must provide all inputs" });
@@ -50,6 +50,7 @@ router.post("/commands/add", isPastille, async (req, res) => {
     try {
       const newCommandsRegister = new Command({
         guild_id: guild_id,
+        role_id: role_id ? role_id : "",
         terms: terms,
         response: response,
       });
