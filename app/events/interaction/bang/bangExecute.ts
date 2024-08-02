@@ -24,13 +24,13 @@ const bangExecute = async (message: any, guild: any, command: any) => {
       } catch (error: any) {
         logs("error", "bang:guild:cmd:send", error, guild.id);
       }
-    } else if (role_id && params.role) {
+    } else if (!channel_id && role_id && params.role) {
       try {
         await message.reply({ content: response });
       } catch (error: any) {
         logs("error", "bang:guild:cmd:send", error, guild.id);
       }
-    } else if (channel_id && params.channel) {
+    } else if (!role_id && channel_id && params.channel) {
       try {
         await message.reply({ content: response });
       } catch (error: any) {
