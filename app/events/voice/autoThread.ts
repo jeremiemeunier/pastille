@@ -7,14 +7,7 @@ import {
   leaveVoiceThread,
 } from "@functions/voice";
 
-export const countMembers = async (
-  channel: {
-    members: {
-      map: (arg0: (x: any) => any) => { (): any; new (): any; length: any };
-    };
-  },
-  guild: { id: any }
-) => {
+export const countMembers = async (channel: any, guild: { id: any }) => {
   try {
     const connected = channel.members.map((x: any) => x).length;
     return connected;

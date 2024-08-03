@@ -57,7 +57,7 @@ export const autoChannel = async ({
   });
   const guildUser = getUser({ guild: guild, user: newState.member.user.id });
   const channel = guild.channels.cache.find(
-    (chans: VoiceChannel) => chans.id === newState.channelId
+    (voice: VoiceChannel) => voice.id === newState.channelId
   );
   const parent = guild.channels.cache.find(
     (p: CategoryChannel) => p.id === channel.parentId
@@ -101,16 +101,17 @@ export const autoRemoveChannel = async ({
   });
   const guildUser = getUser({ guild: guild, user: oldState.member.user.id });
   const channel = guild.channels.cache.find(
-    (chans: VoiceChannel) => chans.id === oldState.channelId
+    (voice: VoiceChannel) => voice.id === oldState.channelId
   );
 
-  const presence = await countMembers(channel, guild);
-
-  if (presence === 0 && channel.name.startsWith("Voice of ")) {
-    try {
-      await channel.delete();
-    } catch (error: any) {
-      logs("error", "auto:voice:delete", error, guild);
+  if (channel && channel.name.startsWith("Voice of ")) {
+    const presence = await countMembers(channel, guild);
+    if (presence === 0 && channel.name.startsWith("Voice of ")) {
+      try {
+        await channel.delete();
+      } catch (error: any) {
+        logs("error", "auto:voice:delete", error, guild);
+      }
     }
   }
 };
