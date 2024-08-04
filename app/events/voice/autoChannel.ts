@@ -106,7 +106,7 @@ export const autoRemoveChannel = async ({
   );
 
   if (channel && channel.name.startsWith("Voice of ")) {
-    const presence = await countMembers(channel, guild);
+    const presence = await countMembers({ channel: channel, guild: guild });
     if (presence === 0 && channel.name.startsWith("Voice of ")) {
       try {
         await channel.delete();
