@@ -65,11 +65,12 @@ export const autoChannel = async ({
 
   // making channel
   try {
-    const newChannel = await guild.channels.create({
+    const newChannel = (await guild.channels.create({
       name: `Voice of ${guildUser.user.globalName}`,
       type: ChannelType.GuildVoice,
       parent: parent,
-    });
+      userLimit: 8,
+    })) as VoiceChannel;
 
     await guildUser.voice.setChannel(newChannel);
   } catch (error: any) {
