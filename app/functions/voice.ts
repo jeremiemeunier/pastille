@@ -1,14 +1,38 @@
-import { ChannelType, EmbedBuilder } from "discord.js";
+import {
+  ChannelType,
+  EmbedBuilder,
+  Guild,
+  GuildMember,
+  TextChannel,
+  VoiceChannel,
+} from "discord.js";
 import { getParams } from "./base";
 import logs from "./logs";
 
+export const haveVoiceThread = async ({
+  channel,
+  threadChannel,
+}: {
+  channel: VoiceChannel;
+  threadChannel: TextChannel;
+}) => {
+  try {
+    const thread = threadChannel.threads.cache.find(
+      (thread: any) => thread.name === `Voice : ${channel.name}`
+    );
+
+    if (thread) {
+      return true;
+    }
+
+    return false;
+  } catch (error: any) {
+    logs("error", "voice:thread:join", error);
+  }
+};
+
 /**
  * Create a new thread on first join on voice channel
- *
- * @param {*} guild Discord guild item
- * @param {*} channel Discord channel item
- * @param {*} threadChannel Discord thread channel item
- * @param {*} user Discord user item
  */
 export const createVoiceThread = async (
   guild: any,
@@ -18,16 +42,15 @@ export const createVoiceThread = async (
 ) => {
   const guildParams = await getParams(guild);
   const { options } = guildParams;
-  const threadName = `Voice : ${channel.name}`;
+  const threadAlreadyExist = await haveVoiceThread({
+    channel: channel,
+    threadChannel: threadChannel,
+  });
 
   try {
-    const existingThread = await threadChannel.threads.find(
-      (thread: any) => thread.name === threadName
-    );
-
-    if (!existingThread) {
+    if (!threadAlreadyExist) {
       try {
-        const thread = await threadChannel.threads.cache.create({
+        const thread = await threadChannel.threads.create({
           name: `Voice : ${channel.name}`,
           autoArchiveDuration: 4320,
           reason: `Dedicated text channel for the voice channel ${channel.name}`,
@@ -45,7 +68,7 @@ export const createVoiceThread = async (
           color: 32768,
           description: `<@${user}> tu as rejoint un salon vocal 🎙️`,
         });
-        const message = await thread.send({
+        await thread.send({
           embeds: [embed, embedExplicative],
         });
       } catch (error: any) {
@@ -59,28 +82,69 @@ export const createVoiceThread = async (
 
 /**
  * Add user to thread on join voice channel
- *
- * @param {*} guild Discord guild item
- * @param {*} channel Discord channel item
- * @param {*} threadChannel Discord thread channel item
- * @param {*} user Discord user item
  */
-export const joinVoiceThread = async (
-  guild: any,
-  channel: any,
-  threadChannel: any,
-  user: any
-) => {
+export const joinVoiceThread = async ({
+  guild,
+  channel,
+  threadChannel,
+  user,
+}: {
+  guild: Guild;
+  channel: VoiceChannel;
+  threadChannel: TextChannel;
+  user: GuildMember;
+}) => {
   try {
     const thread = threadChannel.threads.cache.find(
       (thread: any) => thread.name === `Voice : ${channel.name}`
     );
-    await thread.members.add(user);
-    const embed = new EmbedBuilder({
-      color: 32768,
-      description: `<@${user}> tu as rejoint le salon vocal 🎙️`,
-    });
-    const message = await thread.send({ embeds: [embed] });
+
+    if (thread) {
+      await thread.members.add(user);
+      const embed = new EmbedBuilder({
+        color: 32768,
+        description: `<@${user}> tu as rejoint le salon vocal 🎙️`,
+      });
+      await thread.send({ embeds: [embed] });
+    }
+  } catch (error: any) {
+    logs("error", "voice:thread:join", error);
+  }
+};
+
+/**
+ * Add all user to thread on join voice channel
+ */
+export const joinAllVoiceThread = async ({
+  channel,
+  threadChannel,
+  user,
+}: {
+  channel: VoiceChannel;
+  threadChannel: TextChannel;
+  user: String;
+}) => {
+  try {
+    const thread = threadChannel.threads.cache.find(
+      (thread: any) => thread.name === `Voice : ${channel.name}`
+    );
+
+    if (thread) {
+      channel.members.map(async (member: GuildMember) => {
+        if (member.id !== user) {
+          try {
+            await thread.members.add(member);
+            const embed = new EmbedBuilder({
+              color: 32768,
+              description: `${member} tu as été ajouté à ce fils dédié 🎙️`,
+            });
+            await thread.send({ embeds: [embed] });
+          } catch (error: any) {
+            logs("error", "voice:thread:join:all", error);
+          }
+        }
+      });
+    }
   } catch (error: any) {
     logs("error", "voice:thread:join", error);
   }
@@ -88,11 +152,6 @@ export const joinVoiceThread = async (
 
 /**
  * Remove user to thread on join voice channel
- *
- * @param {*} guild Discord guild item
- * @param {*} channel Discord channel item
- * @param {*} threadChannel Discord thread channel item
- * @param {*} user Discord user item
  */
 
 export const leaveVoiceThread = async (
@@ -118,10 +177,6 @@ export const leaveVoiceThread = async (
 
 /**
  * Deleting thread on last user leave voice channel
- *
- * @param {*} guild Discord guild item
- * @param {*} channel Discord channel item
- * @param {*} threadChannel Discord thread channel item
  */
 export const deleteVoiceThread = async (
   guild: any,
