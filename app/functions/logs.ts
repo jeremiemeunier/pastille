@@ -7,7 +7,7 @@ export const composeTime: () => string = () => {
   const month = (now.getMonth() + 1).toString().padStart(2, "0");
   const year = now.getFullYear();
 
-  const hours = (now.getHours() + 2).toString().padStart(2, "0");
+  const hours = now.getHours().toString().padStart(2, "0");
   const minutes = now.getMinutes().toString().padStart(2, "0");
   const seconds = now.getSeconds().toString().padStart(2, "0");
   const miliseconds = now.getMilliseconds().toString().padStart(3, "0");
@@ -16,7 +16,7 @@ export const composeTime: () => string = () => {
 };
 
 const composeService: (data: string) => string = (data: string) => {
-  return data.padEnd(24, "_");
+  return data.padEnd(32, "_");
 };
 
 const composeState: (
@@ -51,7 +51,7 @@ const logs: (
     console.log(
       `${composeTime()}[${tag}]${composeState(state)}[${composeService(
         service
-      )}][${guild.padEnd(20, " ")}] » ${content}`
+      )}][${guild.toString().padEnd(20, " ")}] » ${content}`
     );
   } else {
     console.log(
