@@ -16,7 +16,7 @@ export const composeTime: () => string = () => {
 };
 
 const composeService: (data: string) => string = (data: string) => {
-  return data.padEnd(24, "_");
+  return data.padEnd(32, "_");
 };
 
 const composeState: (
@@ -51,7 +51,7 @@ const logs: (
     console.log(
       `${composeTime()}[${tag}]${composeState(state)}[${composeService(
         service
-      )}][${guild.padEnd(20, " ")}] » ${content}`
+      )}][${guild.toString().padEnd(20, " ")}] » ${content}`
     );
   } else {
     console.log(
