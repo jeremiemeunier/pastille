@@ -18,29 +18,42 @@ export const createVoiceThread = async (
 ) => {
   const guildParams = await getParams(guild);
   const { options } = guildParams;
+  const threadName = `Voice : ${channel.name}`;
 
   try {
-    const thread = await threadChannel.threads.create({
-      name: `Voice : ${channel.name}`,
-      autoArchiveDuration: 4320,
-      reason: `Dedicated text channel for the voice channel ${channel.name}`,
-      type: ChannelType.PrivateThread,
-      invitable: false,
-    });
-    await thread.members.add(user);
+    const existingThread = await threadChannel.threads.find(
+      (thread: any) => thread.name === threadName
+    );
 
-    const embedExplicative = new EmbedBuilder({
-      color: parseInt(options.color, 16),
-      title: "Ce salon est dédié à votre channel vocal actuel.",
-      description: `- Il sera automatiquement supprimé une fois que tout le monde aura quitté le channel.\n- Chaque personne qui rejoint est automatiquement ajoutée au fil.\n- Chaque personne qui quitte le channel vocal est retirée du fil automatiquement.\n- L'automodération est toujours présente même ici. Tu **doit** donc respecter les règles du serveur.\n**Les commandes**\n- Pour un rappel des règles tu peux faire **!regles** directement depuis ce fil`,
-    });
-    const embed = new EmbedBuilder({
-      color: 32768,
-      description: `<@${user}> tu as rejoint un salon vocal 🎙️`,
-    });
-    const message = await thread.send({ embeds: [embed, embedExplicative] });
+    if (!existingThread) {
+      try {
+        const thread = await threadChannel.threads.cache.create({
+          name: `Voice : ${channel.name}`,
+          autoArchiveDuration: 4320,
+          reason: `Dedicated text channel for the voice channel ${channel.name}`,
+          type: ChannelType.PrivateThread,
+          invitable: false,
+        });
+        await thread.members.add(user);
+
+        const embedExplicative = new EmbedBuilder({
+          color: parseInt(options.color, 16),
+          title: "Ce salon est dédié à votre channel vocal actuel.",
+          description: `- Il sera automatiquement supprimé une fois que tout le monde aura quitté le channel.\n- Chaque personne qui rejoint est automatiquement ajoutée au fil.\n- Chaque personne qui quitte le channel vocal est retirée du fil automatiquement.\n- L'automodération est toujours présente même ici. Tu **doit** donc respecter les règles du serveur.\n**Les commandes**\n- Pour un rappel des règles tu peux faire **!regles** directement depuis ce fil`,
+        });
+        const embed = new EmbedBuilder({
+          color: 32768,
+          description: `<@${user}> tu as rejoint un salon vocal 🎙️`,
+        });
+        const message = await thread.send({
+          embeds: [embed, embedExplicative],
+        });
+      } catch (error: any) {
+        logs("error", "voice:thread:create", error);
+      }
+    }
   } catch (error: any) {
-    logs("error", "voice:thread:create", error);
+    logs("error", "voice:thread:find:existing", error);
   }
 };
 
