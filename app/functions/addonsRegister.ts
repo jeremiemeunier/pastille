@@ -4,7 +4,7 @@ import { cwd } from "process";
 import logs from "./logs";
 
 export const addonsRegisterInit = async (guild: any) => {
-  const guildAddons = await getAddons(guild);
+  const guildAddons = await getAddons({ guild: guild });
   addonsRegister(guildAddons, guild);
 };
 

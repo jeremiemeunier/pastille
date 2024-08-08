@@ -18,8 +18,8 @@ const bangRule = async (
   },
   guild: { channels: { cache: any[] }; id: any }
 ) => {
-  const guildParams = await getParams(guild);
-  const rules = await getRules(guild);
+  const guildParams = await getParams({ guild: guild });
+  const rules = await getRules({ guild: guild });
   const { options } = guildParams;
 
   const channel = guild.channels.cache.find(

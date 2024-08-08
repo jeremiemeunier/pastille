@@ -26,7 +26,7 @@ export const automod = (client: any) => {
         (guild: { id: any }) => guild.id === message.guildId
       );
 
-      const guildParams = await getParams(guild);
+      const guildParams = await getParams({ guild: guild });
       const { options, moderation } = guildParams;
       const { limit } = moderation;
 

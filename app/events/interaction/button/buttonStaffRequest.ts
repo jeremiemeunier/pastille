@@ -10,7 +10,7 @@ import {
 } from "discord.js";
 
 const lockableThread = async (thread: { locked: any }, guild: any) => {
-  const guildParams = await getParams(guild);
+  const guildParams = await getParams({ guild: guild });
   const { options } = guildParams;
 
   if (!thread.locked) {
@@ -77,7 +77,7 @@ const buttonStaffRequest = async (
     (channel: { id: any }) => channel.id === interaction.channelId
   );
 
-  const guildParams = await getParams(guild);
+  const guildParams = await getParams({ guild: guild });
   const { options, moderation } = guildParams;
 
   const activeRequest = channel.threads.cache.find(

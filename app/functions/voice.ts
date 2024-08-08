@@ -40,7 +40,7 @@ export const createVoiceThread = async (
   threadChannel: any,
   user: any
 ) => {
-  const guildParams = await getParams(guild);
+  const guildParams = await getParams({ guild: guild });
   const { options } = guildParams;
   const threadAlreadyExist = await haveVoiceThread({
     channel: channel,
@@ -183,7 +183,7 @@ export const deleteVoiceThread = async (
   channel: any,
   threadChannel: any
 ) => {
-  const guildParams = await getParams(guild);
+  const guildParams = await getParams({ guild: guild });
   const { options } = guildParams;
 
   try {

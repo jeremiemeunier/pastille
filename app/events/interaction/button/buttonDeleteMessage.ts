@@ -89,9 +89,12 @@ const deleteReportedMessage = async (
       return { error: true, message: "Message has already deleted" };
     }
 
-    await postWarnUser(guild, {
-      reason: "reportedMessage",
-      user_id: reportedMessage.author.id,
+    await postWarnUser({
+      guild: guild,
+      data: {
+        reason: "reportedMessage",
+        user_id: reportedMessage.author.id,
+      },
     });
     await reportedMessage.delete();
     return { error: false };
