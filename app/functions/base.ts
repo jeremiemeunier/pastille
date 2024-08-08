@@ -7,7 +7,7 @@ import pastilleAxios from "@libs/PastilleAxios";
  * @param {object} guild Discord guild item
  * @returns {boolean|object} false on error | A json object with all registred addons for guild on success
  */
-export const getAddons = async (guild: any) => {
+export const getAddons = async ({ guild }: { guild: any }) => {
   try {
     const guildAddonsRequest = await pastilleAxios.get("/addons", {
       params: { guild_id: guild.id },
@@ -26,7 +26,7 @@ export const getAddons = async (guild: any) => {
  * @param {object} guild Discord guild item
  * @returns {boolean|object} false on error | A json object with all registred banned word for guild on success
  */
-export const getBanWord = async (guild: any) => {
+export const getBanWord = async ({ guild }: { guild: any }) => {
   try {
     const guildBanWordsRequest = await pastilleAxios.get("/banwords", {
       params: { guild_id: guild.id },
@@ -46,7 +46,7 @@ export const getBanWord = async (guild: any) => {
  * @param {object} guild Discord guild item
  * @returns {boolean|object} false on error | A json object with all registred streamer for guild on success
  */
-export const getStreamers = async (guild: any) => {
+export const getStreamers = async ({ guild }: { guild: any }) => {
   try {
     const guildStreamersRequest = await pastilleAxios.get("/twitch", {
       params: { guild_id: guild.id },
@@ -67,7 +67,7 @@ export const getStreamers = async (guild: any) => {
  * @param {object} guild Discord guild item
  * @returns {boolean|object} false on error | A json object with all registred roles for guild on success
  */
-export const getRoles = async (guild: any) => {
+export const getRoles = async ({ guild }: { guild: any }) => {
   try {
     const guildRolesrequest = await pastilleAxios.get("/roles", {
       params: { guild_id: guild.id },
@@ -87,7 +87,7 @@ export const getRoles = async (guild: any) => {
  * @param {object} guild Discord guild item
  * @returns {boolean|object} false on error | A json object with all registred rules for guild on success
  */
-export const getRules = async (guild: any) => {
+export const getRules = async ({ guild }: { guild: any }) => {
   try {
     const guildRulesRequest = await pastilleAxios.get("/rules", {
       params: { guild_id: guild.id },
@@ -101,35 +101,7 @@ export const getRules = async (guild: any) => {
   }
 };
 
-export const getLetters = async (letter: any, limit: number = -1) => {
-  if (letter) {
-    try {
-      const appLetterRequest = await pastilleAxios.get("/emotes", {
-        params: { letter: letter },
-        headers: { pastille_botid: process.env.BOT_ID },
-      });
-      const appLetter = appLetterRequest.data.data;
-      return appLetter;
-    } catch (error: any) {
-      logs("error", "global:get:letter", error);
-      return false;
-    }
-  } else {
-    try {
-      const appLettersRequest = await pastilleAxios.get("/emotes/all", {
-        params: { limit: limit },
-        headers: { pastille_botid: process.env.BOT_ID },
-      });
-      const appLetters = appLettersRequest.data.data;
-      return appLetters;
-    } catch (error: any) {
-      logs("error", "global:get:letters", error);
-      return false;
-    }
-  }
-};
-
-export const getCommands = async (guild: any, id?: any) => {
+export const getCommands = async ({ guild, id }: { guild: any; id?: any }) => {
   if (id) {
     try {
       const guildCommandsRequest = await pastilleAxios.get("/commands/id", {
@@ -162,7 +134,7 @@ export const getCommands = async (guild: any, id?: any) => {
  * @param {object} guild Discord guild item
  * @returns {boolean|object} false on error | A json object with settings for guild on success
  */
-export const getParams = async (guild: any) => {
+export const getParams = async ({ guild }: { guild: any }) => {
   try {
     const guildParamsRequest = await pastilleAxios.get("/settings", {
       params: { guild_id: guild.id },
@@ -183,7 +155,13 @@ export const getParams = async (guild: any) => {
  * @param {object} data A json object with user_id and reason
  * @returns {boolean|object} false on error | A json object with new registred warn for user on success
  */
-export const postWarnUser = async (guild: any, data: any) => {
+export const postWarnUser = async ({
+  guild,
+  data,
+}: {
+  guild: any;
+  data: any;
+}) => {
   try {
     const warnUserRequest = await pastilleAxios.post(
       "/infraction",
