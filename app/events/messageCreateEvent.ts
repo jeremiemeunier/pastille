@@ -33,7 +33,7 @@ export const messageCreateEventInit = (client: any) => {
         (channel: { id: any }) => channel.id === message.channelId
       );
 
-      const guildParams = await getParams(guild);
+      const guildParams = await getParams({ guild: guild });
       const { options } = guildParams;
 
       const splitedMsg = content.split(" ");
@@ -43,7 +43,7 @@ export const messageCreateEventInit = (client: any) => {
         return;
       }
       if (content.startsWith(options.bang)) {
-        const guildCommands = await getCommands(guild);
+        const guildCommands = await getCommands({ guild: guild });
 
         if (cmd === "regles") {
           bangRule(message, guild);

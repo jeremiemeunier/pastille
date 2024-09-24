@@ -20,7 +20,7 @@ const addRole = async (
     (member: { id: any }) => member.id === user.id
   );
 
-  const roles = await getRoles(guild);
+  const roles = await getRoles({ guild: guild });
 
   roles.map(async (item: { role?: any; emote?: any }) => {
     const { emote } = item;
@@ -58,7 +58,7 @@ const removeRole = async (
     (member: { id: any }) => member.id === user.id
   );
 
-  const roles = await getRoles(guild);
+  const roles = await getRoles({ guild: guild });
 
   roles.map(async (item: { role?: any; emote?: any }) => {
     const { emote } = item;

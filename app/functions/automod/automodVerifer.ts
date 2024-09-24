@@ -35,7 +35,7 @@ export const durationFormater = (time: any) => {
 };
 
 export const automodFinalNotify = async (guild: any, user: any) => {
-  const guildParams = await getParams(guild);
+  const guildParams = await getParams({ guild: guild });
   const { options } = guildParams;
 
   const embedSanction = new EmbedBuilder({
@@ -55,7 +55,7 @@ export const automodFinalNotify = async (guild: any, user: any) => {
 };
 
 export const automodRemove = async (guild: any, user: any) => {
-  const guildParams = await getParams(guild);
+  const guildParams = await getParams({ guild: guild });
   const { moderation } = guildParams;
 
   const sanctionRole = guild.roles.cache.find(
@@ -79,7 +79,7 @@ export const automodRemove = async (guild: any, user: any) => {
 };
 
 export const automodApply = async (guild: any, user: any, timer: any) => {
-  const guildParams = await getParams(guild);
+  const guildParams = await getParams({ guild: guild });
   const { moderation } = guildParams;
 
   const alertChannel = guild.channels.cache.find(
@@ -136,7 +136,7 @@ export const automodVerifier = async (guild: any) => {
     });
 
     const allGuildSanctions = allGuildSanctionsRequest.data.data;
-    const guildParams = await getParams(guild);
+    const guildParams = await getParams({ guild: guild });
     const { moderation } = guildParams;
 
     if (allGuildSanctions && allGuildSanctions.length > 0) {

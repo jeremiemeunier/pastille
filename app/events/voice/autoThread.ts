@@ -29,7 +29,7 @@ export const getTextualChannel = async (
   channel: { parentId: null },
   guild: { channels: { cache: any[] }; id: any }
 ) => {
-  const guildParams = await getParams(guild);
+  const guildParams = await getParams({ guild: guild });
   const { channels } = guildParams.options;
 
   try {

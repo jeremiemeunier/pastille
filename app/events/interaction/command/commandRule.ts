@@ -13,8 +13,8 @@ const commandRuleInit = async (_client: any, interaction: any) => {
     return;
   }
 
-  const rules = await getRules(interaction.guild);
-  const guildParams = await getParams(interaction.guild);
+  const rules = await getRules({ guild: interaction.guild });
+  const guildParams = await getParams({ guild: interaction.guild });
   const { options } = guildParams;
   const channel = interaction.channel;
 

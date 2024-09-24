@@ -14,7 +14,7 @@ const waitingTime = 300000;
 const addonsLoaded = async (guild: any, params: any) => {
   logs("start", "addons:twitch:start", "Starting twitch addons", guild.id);
 
-  const streamerList = await getStreamers(guild);
+  const streamerList = await getStreamers({ guild: guild });
   const notificationChannel = guild.channels.cache.find(
     (channel: any) => channel.id === params.channel
   );

@@ -27,7 +27,7 @@ const modalReportUser = async (
   const guild = client.guilds.cache.find(
     (guild: { id: any }) => guild.id === interaction.guildId
   );
-  const guildParams = await getParams(guild);
+  const guildParams = await getParams({ guild: guild });
   const { moderation } = guildParams;
 
   const reportChannel = guild.channels.cache.find(

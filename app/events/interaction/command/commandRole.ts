@@ -10,7 +10,7 @@ const commandRoleInit = async (_client: any, interaction: any) => {
 
   const guildParams = await getParams(interaction.guild);
   const { options } = guildParams;
-  const roles = await getRoles(interaction.guild);
+  const roles = await getRoles({ guild: interaction.guild });
   let fields: any[] = [];
 
   roles.map((item: any) => {

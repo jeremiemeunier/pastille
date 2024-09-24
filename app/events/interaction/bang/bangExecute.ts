@@ -2,7 +2,7 @@ import { getCommands } from "@functions/base";
 import logs from "@functions/logs";
 
 const bangExecute = async (message: any, guild: any, command: any) => {
-  const commandDetails = await getCommands(guild, command);
+  const commandDetails = await getCommands({ guild: guild, id: command });
   const { response, role_id, channel_id } = commandDetails;
 
   // check if a channel or/and a role is defined to lock command
