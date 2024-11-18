@@ -21,7 +21,6 @@ import { interactionCreateEventInit } from "@events/interactionCreateEvent";
 import { messageCreateEventInit } from "@events/messageCreateEvent";
 import { messageEditInit } from "@events/messageEditEvent";
 import { automod } from "@events/messageModerationEvent";
-import { api } from "@functions/api";
 import { addonsRegisterInit } from "@functions/addonsRegister";
 import { automodVerifier } from "@functions/automod/automodVerifer";
 import Logs from "@libs/Logs";
