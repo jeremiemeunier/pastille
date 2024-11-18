@@ -1,5 +1,5 @@
 import { getParams, getRules } from "@functions/base";
-import logs from "@functions/logs";
+import Logs from "@libs/Logs";
 import { EmbedBuilder } from "discord.js";
 
 const bangRule = async (
@@ -48,7 +48,7 @@ const bangRule = async (
       });
     }
   } catch (error: any) {
-    logs("error", "rule:thread_voice", error, guild.id);
+    Logs("rule:thread_voice", "error", error, guild.id);
   }
 };
 

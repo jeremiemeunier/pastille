@@ -1,6 +1,6 @@
 import { automodRegister } from "@functions/automod/automodRegister";
 import { getParams } from "@functions/base";
-import logs from "@functions/logs";
+import Logs from "@libs/Logs";
 import { Events, EmbedBuilder } from "discord.js";
 
 export const automod = (client: any) => {
@@ -84,7 +84,7 @@ export const automod = (client: any) => {
             });
             automodRegister(user, "limitMention", guild);
           } catch (error: any) {
-            logs("error", "automod:mention", error);
+            Logs("automod:mention", "error", error);
           }
           return;
         }
@@ -112,7 +112,7 @@ export const automod = (client: any) => {
             });
             automodRegister(user, "mentionEveryone", guild);
           } catch (error: any) {
-            logs("error", "automod:everyone", error);
+            Logs("automod:everyone", "error", error);
           }
           return;
         }
@@ -144,12 +144,12 @@ export const automod = (client: any) => {
             });
             automodRegister(user, "sendInvite", guild);
           } catch (error: any) {
-            logs("error", "automod:send_invite", error);
+            Logs("automod:send_invite", "error", error);
           }
           return;
         }
       } catch (error: any) {
-        logs("error", "automod", error);
+        Logs("automod", "error", error);
       }
     }
   );

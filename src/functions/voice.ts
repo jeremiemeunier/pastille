@@ -7,7 +7,7 @@ import {
   VoiceChannel,
 } from "discord.js";
 import { getParams } from "./base";
-import logs from "./logs";
+import Logs from "@libs/Logs";
 
 export const haveVoiceThread = async ({
   channel,
@@ -27,7 +27,7 @@ export const haveVoiceThread = async ({
 
     return false;
   } catch (error: any) {
-    logs("error", "voice:thread:join", error);
+    Logs("voice:thread:join", "error", error);
   }
 };
 
@@ -72,11 +72,11 @@ export const createVoiceThread = async (
           embeds: [embed, embedExplicative],
         });
       } catch (error: any) {
-        logs("error", "voice:thread:create", error);
+        Logs("voice:thread:create", "error", error);
       }
     }
   } catch (error: any) {
-    logs("error", "voice:thread:find:existing", error);
+    Logs("voice:thread:find:existing", "error", error);
   }
 };
 
@@ -108,7 +108,7 @@ export const joinVoiceThread = async ({
       await thread.send({ embeds: [embed] });
     }
   } catch (error: any) {
-    logs("error", "voice:thread:join", error);
+    Logs("voice:thread:join", "error", error);
   }
 };
 
@@ -140,13 +140,13 @@ export const joinAllVoiceThread = async ({
             });
             await thread.send({ embeds: [embed] });
           } catch (error: any) {
-            logs("error", "voice:thread:join:all", error);
+            Logs("voice:thread:join:all", "error", error);
           }
         }
       });
     }
   } catch (error: any) {
-    logs("error", "voice:thread:join", error);
+    Logs("voice:thread:join", "error", error);
   }
 };
 
@@ -171,7 +171,7 @@ export const leaveVoiceThread = async (
     });
     const message = await thread.send({ embeds: [embed] });
   } catch (error: any) {
-    logs("error", "voice:thread:leave", error);
+    Logs("voice:thread:leave", "error", error);
   }
 };
 
@@ -193,9 +193,9 @@ export const deleteVoiceThread = async (
     try {
       await thread.delete();
     } catch (error: any) {
-      logs("error", "voice:thread:delete:timeout", error);
+      Logs("voice:thread:delete:timeout", "error", error);
     }
   } catch (error: any) {
-    logs("error", "voice:thread:delete", error);
+    Logs("voice:thread:delete", "error", error);
   }
 };

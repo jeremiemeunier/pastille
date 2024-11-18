@@ -1,6 +1,6 @@
 import { EmbedBuilder, time } from "@discordjs/builders";
 import { getParams, postWarnUser } from "@functions/base";
-import logs from "@functions/logs";
+import Logs from "@libs/Logs";
 import { Events } from "discord.js";
 
 const buttonDeleteMessage = async (
@@ -68,7 +68,7 @@ const buttonDeleteMessage = async (
       });
     }
   } catch (error: any) {
-    logs("error", "button:delete_reported:base", error, interaction.guild.id);
+    Logs("button:delete_reported:base", "error", error, interaction.guild.id);
   }
 };
 
@@ -99,7 +99,7 @@ const deleteReportedMessage = async (
     await reportedMessage.delete();
     return { error: false };
   } catch (error: any) {
-    logs("error", "button:delete:reported_message", error, guild.id);
+    Logs("button:delete:reported_message", "error", error, guild.id);
     return { error: true, message: "Somethings went wrong" };
   }
 };

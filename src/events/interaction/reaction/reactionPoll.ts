@@ -1,4 +1,4 @@
-import logs from "@functions/logs";
+import Logs from "@libs/Logs";
 import { Events } from "discord.js";
 
 const pollReactions = async (
@@ -30,7 +30,7 @@ const pollReactions = async (
     try {
       await reaction.users.remove(user);
     } catch (error: any) {
-      logs("error", "reaction:poll:remove", error, reaction.guildId);
+      Logs("reaction:poll:remove", "error", error, reaction.guildId);
       return;
     }
   } else {
@@ -43,7 +43,7 @@ const pollReactions = async (
           try {
             await react.users.remove(user);
           } catch (error: any) {
-            logs("error", "reaction:poll:remove_2", error, reaction.guildId);
+            Logs("reaction:poll:remove_2", "error", error, reaction.guildId);
             return;
           }
         }

@@ -1,5 +1,5 @@
 import { getParams } from "@functions/base";
-import logs from "@functions/logs";
+import Logs from "@libs/Logs";
 import {
   EmbedBuilder,
   ActionRowBuilder,
@@ -69,7 +69,7 @@ const contextReportMessage = async (client: any, interaction: any) => {
       ephemeral: true,
     });
   } catch (error: any) {
-    logs("error", "command:report:message", error, guild.id);
+    Logs("command:report:message", "error", error, guild.id);
   }
 };
 

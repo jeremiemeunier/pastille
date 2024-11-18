@@ -8,7 +8,7 @@ import {
   getParams,
   hoursParser,
 } from "@functions/base";
-import logs from "@functions/logs";
+import Logs from "@libs/Logs";
 
 export const messageCreateEventInit = (client: any) => {
   client.on(
@@ -76,7 +76,7 @@ export const messageCreateEventInit = (client: any) => {
               reason: "New screenshots posted",
             });
           } catch (error: any) {
-            logs("error", "thread:screenshots", error);
+            Logs("thread:screenshots", "error", error);
             return;
           }
         }

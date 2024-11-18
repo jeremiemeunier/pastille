@@ -1,5 +1,5 @@
 import { getParams } from "@functions/base";
-import logs from "@functions/logs";
+import Logs from "@libs/Logs";
 import {
   EmbedBuilder,
   ActionRowBuilder,
@@ -36,7 +36,7 @@ const commandStaffInit = async (_client: any, interaction: any) => {
       fetchReply: false,
     });
   } catch (error: any) {
-    logs("error", "command:staff", error, interaction.guildId);
+    Logs("command:staff", "error", error, interaction.guildId);
   }
 };
 

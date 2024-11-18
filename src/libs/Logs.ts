@@ -20,15 +20,15 @@ const composeState: (
 ) => {
   switch (data) {
     case "error":
-      return "[ \x1b[41m ERROR \x1b[0m ]";
+      return "[\x1b[41m ERROR \x1b[0m]";
     case "success":
       return "[\x1b[32mSUCCESS\x1b[0m]";
     case "warning":
-      return "[\x1b[33m WARNING \x1b[0m]";
+      return "[\x1b[33mWARNING\x1b[0m]";
     case "start":
       return "[\x1b[47m START \x1b[0m]";
     default:
-      return "[ \x1b[34m INFOS \x1b[0m ]";
+      return "[\x1b[34m INFOS \x1b[0m]";
   }
 };
 
@@ -60,16 +60,14 @@ const Logs: (
   } else {
     details
       ? console.log(
-          `${composeTime()}[service][${node.padEnd(20, ".")}]${composeState(
+          `${composeTime()}[${node.padEnd(20, ".")}]${composeState(
             state
           )}(${details}) » ${
             typeof content === "string" ? content : JSON.stringify(content)
           }`
         )
       : console.log(
-          `${composeTime()}[service][${node.padEnd(20, ".")}]${composeState(
-            state
-          )} » ${
+          `${composeTime()}[${node.padEnd(20, ".")}]${composeState(state)} » ${
             typeof content === "string" ? content : JSON.stringify(content)
           }`
         );

@@ -1,5 +1,5 @@
 import { getParams } from "@functions/base";
-import logs from "@functions/logs";
+import Logs from "@libs/Logs";
 import { EmbedBuilder, Events } from "discord.js";
 
 const modalReportUser = async (
@@ -75,7 +75,7 @@ const modalReportUser = async (
       content:
         "Une erreur est survenue lors du signalement veuillez réessayer plus tard.",
     });
-    logs("error", "context:report_user", error, guild.id);
+    Logs("context:report_user", "error", error, guild.id);
   }
 };
 

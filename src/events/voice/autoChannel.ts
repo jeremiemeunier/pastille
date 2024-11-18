@@ -1,6 +1,6 @@
-import logs from "@functions/logs";
 import { CategoryChannel, ChannelType, User, VoiceChannel } from "discord.js";
 import { countMembers } from "./autoThread";
+import Logs from "@libs/Logs";
 
 const getGuild = ({
   client,
@@ -74,7 +74,7 @@ export const autoChannel = async ({
 
     await guildUser.voice.setChannel(newChannel);
   } catch (error: any) {
-    logs("error", "voice:create:dedicated", error, guild.id);
+    Logs("voice:create:dedicated", "error", error, guild.id);
   }
 };
 
@@ -111,7 +111,7 @@ export const autoRemoveChannel = async ({
       try {
         await channel.delete();
       } catch (error: any) {
-        logs("error", "auto:voice:delete", error, guild);
+        Logs("auto:voice:delete", "error", error, guild);
       }
     }
   }

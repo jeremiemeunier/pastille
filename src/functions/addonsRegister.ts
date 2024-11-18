@@ -1,31 +1,47 @@
 import { getAddons } from "./base";
 import { AddonsTypes } from "@/types/Addons.types";
 import { cwd } from "process";
-import logs from "./logs";
+import Logs from "@libs/Logs";
 
-export const addonsRegisterInit = async (guild: any) => {
+export const AddonRegisterDaemon = async (guild: any) => {
   const guildAddons = await getAddons({ guild: guild });
-  addonsRegister(guildAddons, guild);
+  AddonsRegister(guildAddons, guild);
 };
 
-export const addonsRegister = async (addons: any, guild: any) => {
+export const AddonsRegister = async (addons: any, guild: any) => {
   if (addons) {
     try {
       addons.map((item: AddonsTypes) => {
         item.active
-          ? logs(null, "addons:register", `[ ACTIVE ] ${item.name}`, guild.id)
-          : logs(null, "addons:register", `[INACTIVE] ${item.name}`, guild.id);
+          ? Logs(
+              "daemon:addons",
+              null,
+              `[\x1b[32m ACTIVE \x1b[0m] ${item.name}`,
+              guild.id
+            )
+          : Logs(
+              "daemon:addons",
+              null,
+              `[\x1b[31mINACTIVE\x1b[0m] ${item.name}`,
+              guild.id
+            );
 
         if (item.active) {
-          const { addonsLoaded } = require(`${cwd()}/app/modules/${item.name}`);
-          addonsLoaded(guild, item);
+          try {
+            const { addonsLoaded } = require(`${cwd()}/src/modules/${
+              item.name
+            }`);
+            addonsLoaded(guild, item);
+          } catch (error: any) {
+            Logs("daemon:addons:load", "error", error);
+          }
         }
       });
     } catch (error: any) {
-      logs("error", "addons:register:map", error);
+      Logs("daemon:addons:map", "error", error);
     }
   } else {
-    logs(null, "addons:register", "No addons", guild.id);
+    Logs("daemon:addons", null, "No addons", guild.id);
   }
 };
 

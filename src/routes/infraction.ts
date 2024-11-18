@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { isPastille } from "../middlewares/isPastille";
 import Infraction from "@models/Infraction";
-import logs from "@functions/logs";
+import Logs from "@libs/Logs";
 
 const router = Router();
 
@@ -24,7 +24,7 @@ router.post("/infraction", isPastille, async (req, res) => {
       .json({ message: "New infraction items created", data: newInfraction });
   } catch (error: any) {
     res.status(400).json({ message: "An error occured", error: error });
-    logs("error", "api:infraction:post", error, guild_id);
+    Logs("api:infraction:post", "error", error, guild_id);
   }
 });
 
@@ -41,7 +41,7 @@ router.get("/infraction/all", isPastille, async (req, res) => {
       .json({ message: "Infractions find", count: allInfractions });
   } catch (error: any) {
     res.status(400).json({ message: "An error occured", error: error });
-    logs("error", "api:infraction:get:all", error, guild_id as string);
+    Logs("api:infraction:get:all", "error", error, guild_id as string);
   }
 });
 

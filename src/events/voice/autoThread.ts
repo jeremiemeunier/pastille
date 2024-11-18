@@ -1,5 +1,4 @@
 import { getParams } from "@functions/base";
-import logs from "@functions/logs";
 import {
   createVoiceThread,
   deleteVoiceThread,
@@ -8,6 +7,7 @@ import {
   joinVoiceThread,
   leaveVoiceThread,
 } from "@functions/voice";
+import Logs from "@libs/Logs";
 import { Guild, VoiceChannel } from "discord.js";
 
 export const countMembers = async ({
@@ -21,7 +21,7 @@ export const countMembers = async ({
     const connected = channel.members.map((x: any) => x).length;
     return connected;
   } catch (error: any) {
-    logs("error", "voice:count_members", error, guild.id);
+    Logs("voice:count_members", "error", error, guild.id);
   }
 };
 
@@ -59,7 +59,7 @@ export const getTextualChannel = async (
       return textual;
     }
   } catch (error: any) {
-    logs("error", "voice:search_textual", error, guild.id);
+    Logs("voice:search_textual", "error", error, guild.id);
   }
 };
 
@@ -195,7 +195,7 @@ export const autoThread = async ({
       }
     }
   } catch (error: any) {
-    logs("error", "voice", error);
+    Logs("voice", "error", error);
     return;
   }
 };

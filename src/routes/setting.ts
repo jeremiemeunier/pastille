@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { isPastille } from "../middlewares/isPastille";
 import Setting from "@models/Setting";
-import logs from "@functions/logs";
+import Logs from "@libs/Logs";
 
 const router = Router();
 
@@ -67,7 +67,7 @@ router.post("/settings/add", isPastille, async (req, res) => {
       .json({ message: "New settings registred", data: newSettingsRegistre });
   } catch (error: any) {
     res.status(400).json({ message: "An error occured", error: error });
-    logs("error", "api:settings:post", error, guild_id);
+    Logs("api:settings:post", "error", error, guild_id);
   }
 });
 
@@ -86,7 +86,7 @@ router.get("/settings", isPastille, async (req, res) => {
     }
   } catch (error: any) {
     res.status(400).json({ message: "An error occured", error: error });
-    logs("error", "api:settings:get", error, guild_id as string);
+    Logs("api:settings:get", "error", error, guild_id as string);
   }
 });
 

@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { isPastille } from "../middlewares/isPastille";
-import logs from "@functions/logs";
 import Command from "@models/Command";
+import Logs from "@libs/Logs";
 
 const router = Router();
 
@@ -20,7 +20,7 @@ router.get("/commands", isPastille, async (req, res) => {
     }
   } catch (error: any) {
     res.status(400).json({ message: "An error occured", error: error });
-    logs("error", "api:commands:get", error);
+    Logs("api:commands:get", "error", error);
   }
 });
 
@@ -37,7 +37,7 @@ router.get("/commands/id", isPastille, async (req, res) => {
     }
   } catch (error: any) {
     res.status(400).json({ message: "An error occured", error: error });
-    logs("error", "api:commands:get", error);
+    Logs("api:commands:get", "error", error);
   }
 });
 
@@ -61,7 +61,7 @@ router.post("/commands/add", isPastille, async (req, res) => {
         .json({ message: "New command added", data: newCommandsRegister });
     } catch (error: any) {
       res.status(400).json({ message: "An error occured", error: error });
-      logs("error", "api:commands:add", error, guild_id);
+      Logs("api:commands:add", "error", error, guild_id);
     }
   }
 });

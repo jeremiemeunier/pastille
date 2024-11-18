@@ -13,7 +13,6 @@ import {
   ActivityType,
   Guild,
 } from "discord.js";
-import { commandRegister } from "@functions/commandsRegister";
 import { voiceEventInit } from "@events/voiceEvent";
 import { reactionAddEventInit } from "@events/messageReactionAddEvent";
 import { reactionRemoveEventInit } from "@events/messageReactionRemoveEvent";
@@ -21,10 +20,11 @@ import { interactionCreateEventInit } from "@events/interactionCreateEvent";
 import { messageCreateEventInit } from "@events/messageCreateEvent";
 import { messageEditInit } from "@events/messageEditEvent";
 import { automod } from "@events/messageModerationEvent";
-import { addonsRegisterInit } from "@functions/addonsRegister";
-import { automodVerifier } from "@functions/automod/automodVerifer";
 import Logs from "@libs/Logs";
 import Api from "./config/Api";
+import { CommandRegisterDaemon } from "@functions/CommandRegister";
+import { AddonRegisterDaemon } from "@functions/AddonsRegister";
+import AutomodDaemon from "@functions/automod/Automod";
 
 const client = new Client({
   intents: [
@@ -42,9 +42,9 @@ const client = new Client({
 const guildStarter = (guild: Guild) => {
   try {
     Logs("booter:guild_starter", "start", "Start all functions", guild.id);
-    automodVerifier(guild);
-    commandRegister(guild);
-    addonsRegisterInit(guild);
+    AutomodDaemon(guild);
+    CommandRegisterDaemon(guild);
+    AddonRegisterDaemon(guild);
   } catch (error: any) {
     Logs("booter:guild_starter", "error", error, guild.id);
   }

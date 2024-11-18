@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { isPastille } from "../middlewares/isPastille";
 import Rule from "@models/Rule";
-import logs from "@functions/logs";
+import Logs from "@libs/Logs";
 
 const router = Router();
 
@@ -18,7 +18,7 @@ router.get("/rules", isPastille, async (req, res) => {
     }
   } catch (error: any) {
     res.status(400).json({ message: "An error occured", error: error });
-    logs("error", "api:rules:get", error);
+    Logs("api:rules:get", "error", error);
   }
 });
 
@@ -40,7 +40,7 @@ router.post("/rules/add", isPastille, async (req, res) => {
       res.status(201).json({ data: newRulesRegistre });
     } catch (error: any) {
       res.status(400).json({ message: "An error occured", error: error });
-      logs("error", "api:rules:post", error, guild_id);
+      Logs("api:rules:post", "error", error, guild_id);
     }
   }
 });
@@ -65,7 +65,7 @@ router.put("/rules/update", isPastille, async (req, res) => {
       res.status(200).json({ data: updatedRulesItem });
     } catch (error: any) {
       res.status(400).json({ message: "An error occured", error: error });
-      logs("error", "api:rules:put", error, guild_id);
+      Logs("api:rules:put", "error", error, guild_id);
     }
   }
 });

@@ -1,5 +1,5 @@
 import { getParams } from "@functions/base";
-import logs from "@functions/logs";
+import Logs from "@libs/Logs";
 import { Events } from "discord.js";
 
 const buttonOpenTicketInit = async (
@@ -49,7 +49,7 @@ const buttonOpenTicketInit = async (
     channel.setLocked(true);
     await interaction.reply({ content: "Channel, now lock", ephemeral: true });
   } catch (error: any) {
-    logs("error", "close:staff:channel", error, guild.id);
+    Logs("close:staff:channel", "error", error, guild.id);
   }
 };
 

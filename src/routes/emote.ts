@@ -1,8 +1,8 @@
 import { Router } from "express";
 import { isPastille } from "../middlewares/isPastille";
 import Emote from "@models/Emote";
-import logs from "@functions/logs";
 import { EmoteTypes } from "@/types/Emote.types";
+import Logs from "@libs/Logs";
 
 const router = Router();
 
@@ -19,7 +19,7 @@ router.get("/emotes", isPastille, async (req, res) => {
     }
   } catch (error: any) {
     res.status(400).json({ message: "An error occured", error: error });
-    logs("error", "api:emotes:get", error);
+    Logs("api:emotes:get", "error", error);
   }
 });
 
@@ -44,7 +44,7 @@ router.get("/emotes/all", isPastille, async (req, res) => {
     }
   } catch (error: any) {
     res.status(400).json({ message: "An error occured", error: error });
-    logs("error", "api:emotes:get:all", error);
+    Logs("api:emotes:get:all", "error", error);
   }
 });
 
@@ -61,12 +61,12 @@ router.post("/emotes/mass", isPastille, async (req, res) => {
       try {
         await emoteRegister.save();
       } catch (error: any) {
-        logs("error", "api:emotes:post:save", error);
+        Logs("api:emotes:post:save", "error", error);
       }
     });
   } catch (error: any) {
     res.status(400).json({ message: "An error occured", error: error });
-    logs("error", "api:emotes:post:mass", error);
+    Logs("api:emotes:post:mass", "error", error);
   }
 });
 

@@ -1,7 +1,7 @@
 import { readdirSync } from "node:fs";
 import { join } from "node:path";
 import { REST, Routes } from "discord.js";
-import logs from "./logs";
+import Logs from "@libs/Logs";
 
 const commands: any[] = [];
 const foldersPath = join(__dirname, "../commands");
@@ -19,22 +19,22 @@ for (const folder of commandFolders) {
     if ("data" in command) {
       commands.push(command.data);
     } else {
-      logs(
-        "warning",
+      Logs(
         "commands:register",
+        "warning",
         `The command at ${filePath} is missing a required "data" property.`
       );
     }
   }
 }
 
-export const commandRegister = async (guild: any) => {
+export const CommandRegisterDaemon = async (guild: any) => {
   const rest = new REST().setToken(process.env.BOT_TOKEN as string);
   await (async () => {
     try {
-      logs(
+      Logs(
+        "daemon:command",
         null,
-        "command:register",
         `Refreshing ${commands.length} (/) commands`,
         guild.id
       );
@@ -42,14 +42,14 @@ export const commandRegister = async (guild: any) => {
         Routes.applicationGuildCommands(process.env.BOT_ID as string, guild.id),
         { body: commands }
       );
-      logs(
+      Logs(
+        "daemon:command",
         null,
-        "command:register",
         `Reloaded ${data.length} (/) commands`,
         guild.id
       );
     } catch (error: any) {
-      logs("error", "command:register", error, guild.id);
+      Logs("daemon:command", "error", error, guild.id);
     }
   })();
 };

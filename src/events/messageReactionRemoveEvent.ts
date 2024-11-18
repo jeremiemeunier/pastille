@@ -1,6 +1,6 @@
-import logs from "@functions/logs";
 import { Events } from "discord.js";
 import { removeRole } from "./interaction/reaction/reactionRole";
+import Logs from "@libs/Logs";
 
 export const reactionRemoveEventInit = (client: {
   on: (arg0: Events, arg1: (reaction: any, user: any) => Promise<void>) => void;
@@ -22,7 +22,7 @@ export const reactionRemoveEventInit = (client: {
         try {
           await reaction.fetch();
         } catch (error: any) {
-          logs("error", "reaction:remove:fetch", error);
+          Logs("reaction:remove:fetch", "error", error);
           return;
         }
       }

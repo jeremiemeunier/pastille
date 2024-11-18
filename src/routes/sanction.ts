@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { isPastille } from "../middlewares/isPastille";
-import logs from "@functions/logs";
 import Sanction from "@models/Sanction";
+import Logs from "@libs/Logs";
 
 const router = Router();
 
@@ -16,7 +16,7 @@ router.put("/sanction/update", isPastille, async (req, res) => {
     res.status(200).json({ data: updateSanction });
   } catch (error: any) {
     res.status(400).json({ message: "An error occured", error: error });
-    logs("error", "api:sanction:put", error);
+    Logs("api:sanction:put", "error", error);
   }
 });
 
@@ -41,7 +41,7 @@ router.post("/sanction/add", isPastille, async (req, res) => {
       .json({ message: "New sanction items created", data: newSanction });
   } catch (error: any) {
     res.status(400).json({ message: "An error occured", error: error });
-    logs("error", "api:sanction:register:post", error, guild_id);
+    Logs("api:sanction:register:post", "error", error, guild_id);
   }
 });
 
@@ -56,7 +56,7 @@ router.get("/sanction", isPastille, async (req, res) => {
     res.status(200).json({ message: "Sanction find", data: allSanction });
   } catch (error: any) {
     res.status(400).json({ message: "An error occured", error: error });
-    logs("error", "api:sanction:get:all", error, guild_id as string);
+    Logs("api:sanction:get:all", "error", error, guild_id as string);
   }
 });
 

@@ -1,5 +1,5 @@
 import { getRoles } from "@functions/base";
-import logs from "@functions/logs";
+import Logs from "@libs/Logs";
 import { Events } from "discord.js";
 
 const addRole = async (
@@ -33,7 +33,7 @@ const addRole = async (
       try {
         await member.roles.add(roleItem);
       } catch (error: any) {
-        logs("error", "reaction:role:add", error, reaction.message.guildId);
+        Logs("reaction:role:add", "error", error, reaction.message.guildId);
         return;
       }
     }
@@ -71,7 +71,7 @@ const removeRole = async (
       try {
         await member.roles.remove(roleItem);
       } catch (error: any) {
-        logs("error", "reaction:role:remove", error, reaction.message.guildId);
+        Logs("reaction:role:remove", "error", error, reaction.message.guildId);
         return;
       }
     }

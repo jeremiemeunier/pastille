@@ -1,5 +1,5 @@
+import Logs from "@libs/Logs";
 import { automodSanction } from "./automodSanction";
-import logs from "@functions/logs";
 import pastilleAxios from "@libs/PastilleAxios";
 
 export const automodRegister = async (user: any, reason: any, guild: any) => {
@@ -22,9 +22,9 @@ export const automodRegister = async (user: any, reason: any, guild: any) => {
       });
       automodSanction(user, totalWarnUser, guild);
     } catch (error: any) {
-      logs("error", "automod:get:infractions", error, guild.id);
+      Logs("automod:get:infractions", "error", error, guild.id);
     }
   } catch (error: any) {
-    logs("error", "automod:register", error, guild.id);
+    Logs("automod:register", "error", error, guild.id);
   }
 };

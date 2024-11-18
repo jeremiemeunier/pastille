@@ -1,4 +1,4 @@
-import logs from "@functions/logs";
+import Logs from "@libs/Logs";
 
 const commandClearInit = async (client: any, interaction: any) => {
   const { commandName } = interaction;
@@ -17,7 +17,7 @@ const commandClearInit = async (client: any, interaction: any) => {
         try {
           await thread.delete();
         } catch (error: any) {
-          logs("error", "command:clear:threads", error);
+          Logs("command:clear:threads", "error", error);
         }
       });
 
@@ -30,7 +30,7 @@ const commandClearInit = async (client: any, interaction: any) => {
         content: "Une erreur est survenue, veuillez réessayer plus tard",
         ephemeral: true,
       });
-      logs("error", "command:clear:threads", error);
+      Logs("command:clear:threads", "error", error);
     }
   }
 
@@ -44,7 +44,7 @@ const commandClearInit = async (client: any, interaction: any) => {
         try {
           await message.delete();
         } catch (error: any) {
-          logs("error", "command:clear:messages", error);
+          Logs("command:clear:messages", "error", error);
         }
       });
     });

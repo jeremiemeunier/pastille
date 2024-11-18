@@ -1,8 +1,8 @@
 import { Router } from "express";
 import { isPastille } from "../middlewares/isPastille";
 import Dailyui from "@models/Dailyui";
-import logs from "@functions/logs";
 import { DailyUiTypes } from "@/types/Dailyui.types";
+import Logs from "@libs/Logs";
 
 const router = Router();
 
@@ -18,7 +18,7 @@ router.put("/dailyui", isPastille, async (req, res) => {
       .status(201)
       .json({ message: "State updated for DailyUi", data: updateDailyUi });
   } catch (error: any) {
-    logs("error", "api:dailyui:put", error);
+    Logs("api:dailyui:put", "error", error);
   }
 });
 
@@ -39,7 +39,7 @@ router.get("/dailyui", isPastille, async (req, res) => {
         .json({ message: "DailyUi available", data: dailyuiNotSend });
     }
   } catch (error: any) {
-    logs("error", "api:dailyui:get", error, guild_id as string);
+    Logs("api:dailyui:get", "error", error, guild_id as string);
   }
 });
 
@@ -62,7 +62,7 @@ router.post("/dailyui", isPastille, async (req, res) => {
         .status(200)
         .json({ message: "New daily challenge added", data: newDailyUi });
     } catch (error: any) {
-      logs("error", "api:dailyui:add", error, guild_id);
+      Logs("api:dailyui:add", "error", error, guild_id);
     }
   }
 });
@@ -80,7 +80,7 @@ router.post("/dailyui/mass", isPastille, async (req, res) => {
       });
       await newDailyUi.save();
     } catch (error: any) {
-      logs("error", "api:dailyui:mass", error);
+      Logs("api:dailyui:mass", "error", error);
     }
   });
 

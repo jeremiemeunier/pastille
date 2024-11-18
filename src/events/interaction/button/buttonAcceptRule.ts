@@ -1,5 +1,5 @@
 import { getParams } from "@functions/base";
-import logs from "@functions/logs";
+import Logs from "@libs/Logs";
 import { Events } from "discord.js";
 
 const buttonAcceptRuleInit = async (
@@ -46,7 +46,7 @@ const buttonAcceptRuleInit = async (
     });
   } catch (error: any) {
     interaction.reply({ content: "Une erreur est survenue", ephemeral: true });
-    logs("error", "event:accept_rule", error);
+    Logs("event:accept_rule", "error", error);
     return;
   }
 };

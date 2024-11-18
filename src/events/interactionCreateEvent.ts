@@ -16,7 +16,7 @@ import { contextReportUser } from "./interaction/menu/menuReportUser";
 import { modalReportUser } from "./interaction/modal/modalReportUser";
 import { contextReportMessage } from "./interaction/menu/menuReportMessage";
 import { buttonDeleteMessage } from "./interaction/button/buttonDeleteMessage";
-import logs from "@functions/logs";
+import Logs from "@libs/Logs";
 
 export const interactionCreateEventInit = (client: {
   on: (arg0: Events, arg1: (interaction: any) => Promise<void>) => void;
@@ -38,7 +38,7 @@ export const interactionCreateEventInit = (client: {
           buttonOpenTicketInit(client, interaction);
           buttonDeleteMessage(client, interaction);
         } catch (error: any) {
-          logs("error", "interaction:button", error);
+          Logs("interaction:button", "error", error);
         }
       }
 
@@ -54,7 +54,7 @@ export const interactionCreateEventInit = (client: {
           commandStatutInit(client, interaction);
           commandClearInit(client, interaction);
         } catch (error: any) {
-          logs("error", "interaction:slash_command", error);
+          Logs("interaction:slash_command", "error", error);
         }
       }
 
@@ -64,7 +64,7 @@ export const interactionCreateEventInit = (client: {
           contextReportUser(client, interaction);
           contextReportMessage(client, interaction);
         } catch (error: any) {
-          logs("error", "interaction:context_user", error);
+          Logs("interaction:context_user", "error", error);
         }
       }
 
@@ -73,7 +73,7 @@ export const interactionCreateEventInit = (client: {
         try {
           contextReportMessage(client, interaction);
         } catch (error: any) {
-          logs("error", "interaction:context_message", error);
+          Logs("interaction:context_message", "error", error);
         }
       }
 
@@ -82,7 +82,7 @@ export const interactionCreateEventInit = (client: {
         try {
           modalReportUser(client, interaction);
         } catch (error: any) {
-          logs("error", "interaction:modal", error);
+          Logs("interaction:modal", "error", error);
         }
       }
 

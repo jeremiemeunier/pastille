@@ -1,7 +1,7 @@
 import { Events } from "discord.js";
 import { pollReactions } from "./interaction/reaction/reactionPoll";
-import logs from "@functions/logs";
 import { addRole } from "./interaction/reaction/reactionRole";
+import Logs from "@libs/Logs";
 
 export const reactionAddEventInit = (client: {
   on: (arg0: Events, arg1: (reaction: any, user: any) => Promise<void>) => void;
@@ -23,7 +23,7 @@ export const reactionAddEventInit = (client: {
         try {
           await reaction.fetch();
         } catch (error: any) {
-          logs("error", `An error occured on fetch`, error);
+          Logs(`An error occured on fetch`, "error", error);
           return;
         }
       }

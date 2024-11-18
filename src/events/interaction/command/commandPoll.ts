@@ -1,8 +1,8 @@
 import { readFileSync } from "node:fs";
-import { Events, EmbedBuilder } from "discord.js";
+import { EmbedBuilder } from "discord.js";
 import { cwd } from "process";
 import { getParams } from "@functions/base";
-import logs from "@functions/logs";
+import Logs from "@libs/Logs";
 const alphabetLetters = JSON.parse(
   readFileSync(cwd() + "/src/data/alphabet.json").toString()
 );
@@ -45,7 +45,7 @@ const commandPollInit = async (_client: any, interaction: any) => {
           try {
             await message.react(letter);
           } catch (error: any) {
-            logs("error", "command:poll", error);
+            Logs("command:poll", "error", error);
           }
         }
       }

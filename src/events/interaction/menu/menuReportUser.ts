@@ -1,10 +1,9 @@
-import logs from "@functions/logs";
+import Logs from "@libs/Logs";
 import {
   ModalBuilder,
   TextInputBuilder,
   TextInputStyle,
   ActionRowBuilder,
-  Events,
 } from "discord.js";
 
 const contextReportUser = async (client: any, interaction: any) => {
@@ -62,7 +61,7 @@ const contextReportUser = async (client: any, interaction: any) => {
     );
     await interaction.showModal(reportModal);
   } catch (error: any) {
-    logs("error", "command:report:showmodal", error, guild.id);
+    Logs("command:report:showmodal", "error", error, guild.id);
   }
 };
 

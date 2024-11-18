@@ -1,5 +1,5 @@
-import logs from "@functions/logs";
-import { Events, ActivityType } from "discord.js";
+import Logs from "@libs/Logs";
+import { ActivityType } from "discord.js";
 
 const commandStatutInit = async (client: any, interaction: any) => {
   const { commandName } = interaction;
@@ -21,7 +21,7 @@ const commandStatutInit = async (client: any, interaction: any) => {
       ephemeral: true,
     });
   } catch (error: any) {
-    logs("error", "command:status", error);
+    Logs("command:status", "error", error);
   }
 };
 

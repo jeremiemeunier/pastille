@@ -1,4 +1,4 @@
-import logs from "./logs";
+import Logs from "@libs/Logs";
 import pastilleAxios from "@libs/PastilleAxios";
 
 /**
@@ -15,7 +15,7 @@ export const getAddons = async ({ guild }: { guild: any }) => {
     const guildAddons = guildAddonsRequest.data.data;
     return guildAddons;
   } catch (error: any) {
-    logs("error", "global:get:guild_addons", error, guild.id);
+    Logs("global:get:guild_addons", "error", error, guild.id);
     return false;
   }
 };
@@ -35,7 +35,7 @@ export const getBanWord = async ({ guild }: { guild: any }) => {
     const guildBanWords = guildBanWordsRequest.data.data;
     return guildBanWords;
   } catch (error: any) {
-    logs("error", "global:get:guild_ban_word", error, guild.id);
+    Logs("global:get:guild_ban_word", "error", error, guild.id);
     return false;
   }
 };
@@ -56,7 +56,7 @@ export const getStreamers = async ({ guild }: { guild: any }) => {
 
     return guildStreamersList;
   } catch (error: any) {
-    logs("error", "global:get:streamer_list", error, guild.id);
+    Logs("global:get:streamer_list", "error", error, guild.id);
     return false;
   }
 };
@@ -76,7 +76,7 @@ export const getRoles = async ({ guild }: { guild: any }) => {
     const guildRoles = guildRolesrequest.data.data;
     return guildRoles;
   } catch (error: any) {
-    logs("error", "global:get:guild_rules", error, guild.id);
+    Logs("global:get:guild_rules", "error", error, guild.id);
     return false;
   }
 };
@@ -96,7 +96,7 @@ export const getRules = async ({ guild }: { guild: any }) => {
     const guildRules = guildRulesRequest.data.data;
     return guildRules;
   } catch (error: any) {
-    logs("error", "global:get:guild_rules", error, guild.id);
+    Logs("global:get:guild_rules", "error", error, guild.id);
     return false;
   }
 };
@@ -110,7 +110,7 @@ export const getCommands = async ({ guild, id }: { guild: any; id?: any }) => {
       const guildCommands = guildCommandsRequest.data.data;
       return guildCommands;
     } catch (error: any) {
-      logs("error", "global:get:guild:cmd:id", error, guild.id);
+      Logs("global:get:guild:cmd:id", "error", error, guild.id);
       return false;
     }
   } else {
@@ -122,7 +122,7 @@ export const getCommands = async ({ guild, id }: { guild: any; id?: any }) => {
       const guildCommands = guildCommandsRequest.data.data;
       return guildCommands;
     } catch (error: any) {
-      logs("error", "global:get:guild_commands", error, guild.id);
+      Logs("global:get:guild_commands", "error", error, guild.id);
       return false;
     }
   }
@@ -143,7 +143,7 @@ export const getParams = async ({ guild }: { guild: any }) => {
     const guildParams = guildParamsRequest.data.data;
     return guildParams;
   } catch (error: any) {
-    logs("error", "global:get:guild_params", error, guild.id);
+    Logs("global:get:guild_params", "error", error, guild.id);
     return false;
   }
 };
@@ -176,7 +176,7 @@ export const postWarnUser = async ({
 
     return warnUserRequest.data.data;
   } catch (error: any) {
-    logs("error", "global:post:infraction", error, guild.id);
+    Logs("global:post:infraction", "error", error, guild.id);
     return false;
   }
 };

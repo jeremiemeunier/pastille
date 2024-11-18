@@ -1,6 +1,6 @@
 import { TwitchTypes } from "@/types/Twitch.types";
 import { getStreamers } from "@functions/base";
-import logs from "@functions/logs";
+import Logs from "@libs/Logs";
 import TwitchAxios from "@utils/TwitchAxios";
 import {
   EmbedBuilder,
@@ -11,7 +11,7 @@ import {
 const waitingTime = 300000;
 
 const addonsLoaded = async (guild: any, params: any) => {
-  logs("start", "addons:twitch:start", "Starting twitch addons", guild.id);
+  Logs("addons:twitch:start", "start", "Starting twitch addons", guild.id);
 
   // get stream list
   // group streamer id
@@ -59,16 +59,16 @@ const addonsLoaded = async (guild: any, params: any) => {
                   components: [liveButton],
                 });
               } catch (error: any) {
-                logs("error", "addons:twitch:send", error, guild.id);
+                Logs("addons:twitch:send", "error", error, guild.id);
               }
             } catch (error: any) {
-              logs("error", "addons:twitch:ping", error, guild.id);
+              Logs("addons:twitch:ping", "error", error, guild.id);
             }
           }
         }
       });
     } else {
-      logs("error", "twitch:auth:global", "Cannot auth to twitch");
+      Logs("twitch:auth:global", "error", "Cannot auth to twitch");
     }
   }, waitingTime);
 };
@@ -102,15 +102,15 @@ const requestAuthenticator = async () => {
     const requestToken = await TwitchAxios.post(
       "https://id.twitch.tv/oauth2/token",
       {
-        client_id: process.env.TWITCH_CLIENT_TOKEN,
-        client_secret: process.env.TWITCH_SECRET_TOKEN,
+        client_id: process.env.TWITCH_CLIENT,
+        client_secret: process.env.TWITCH_SECRET,
         grant_type: "client_credentials",
       }
     );
 
     return requestToken.data.access_token;
   } catch (error: any) {
-    logs("error", "twitch:auth", error.message || error);
+    Logs("twitch:auth", "error", error.message || error);
   }
 };
 
@@ -138,7 +138,7 @@ const requestStreamerState = async (
     );
     return requestState.data.data[0];
   } catch (error: any) {
-    logs("error", "twitch:request:state", error.message || error);
+    Logs("twitch:request:state", "error", error.message || error);
   }
 };
 

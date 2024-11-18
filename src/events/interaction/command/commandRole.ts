@@ -1,6 +1,6 @@
 import { getParams, getRoles } from "@functions/base";
-import logs from "@functions/logs";
-import { Events, EmbedBuilder } from "discord.js";
+import Logs from "@libs/Logs";
+import { EmbedBuilder } from "discord.js";
 
 const commandRoleInit = async (_client: any, interaction: any) => {
   const { commandName } = interaction;
@@ -38,11 +38,11 @@ const commandRoleInit = async (_client: any, interaction: any) => {
       try {
         await message.react(item.emote);
       } catch (error: any) {
-        logs("error", "command:role:react", error, interaction.guild.id);
+        Logs("command:role:react", "error", error, interaction.guild.id);
       }
     });
   } catch (error: any) {
-    logs("error", "command:role:send", error, interaction.guild.id);
+    Logs("command:role:send", "error", error, interaction.guild.id);
   }
 };
 

@@ -1,5 +1,5 @@
 import { getParams, getRules } from "@functions/base";
-import logs from "@functions/logs";
+import Logs from "@libs/Logs";
 import {
   EmbedBuilder,
   ActionRowBuilder,
@@ -63,7 +63,7 @@ const commandRuleInit = async (_client: any, interaction: any) => {
       ephemeral: true,
     });
   } catch (error: any) {
-    logs("error", "rule:embed", error, interaction.guild.id);
+    Logs("rule:embed", "error", error, interaction.guild.id);
   }
 };
 

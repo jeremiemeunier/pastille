@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { isPastille } from "../middlewares/isPastille";
 import Twitch from "@models/Twitch";
-import logs from "@functions/logs";
+import Logs from "@libs/Logs";
 
 const router = Router();
 
@@ -21,7 +21,7 @@ router.get("/twitch", isPastille, async (req, res) => {
     }
   } catch (error: any) {
     res.status(400).json({ message: "An error occured", error: error });
-    logs("error", "api:twitch:get", error, guild_id as string);
+    Logs("api:twitch:get", "error", error, guild_id as string);
   }
 });
 
@@ -38,7 +38,7 @@ router.get("/twitch/id", isPastille, async (req, res) => {
     res.status(200).json({ message: "Item found", data: twitchItem });
   } catch (error: any) {
     res.status(400).json({ message: "An error occured", error: error });
-    logs("error", "api:twitch:get:id", error);
+    Logs("api:twitch:get:id", "error", error);
   }
 });
 
@@ -64,7 +64,7 @@ router.post("/twitch/add", isPastille, async (req, res) => {
         .json({ message: "Twitch added to the list", data: newAddPing });
     } catch (error: any) {
       res.status(400).json({ message: "An error occured", error: error });
-      logs("error", "api:twitch:add", error, guild_id);
+      Logs("api:twitch:add", "error", error, guild_id);
     }
   }
 });
@@ -77,7 +77,7 @@ router.delete("/twitch/remove", isPastille, async (req, res) => {
     res.status(200).json({ message: "Item deleted" });
   } catch (error: any) {
     res.status(400).json({ message: "An error occured", error: error });
-    logs("error", "api:twitch:delete", error);
+    Logs("api:twitch:delete", "error", error);
   }
 });
 

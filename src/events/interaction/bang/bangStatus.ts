@@ -1,4 +1,4 @@
-import logs from "@functions/logs";
+import Logs from "@libs/Logs";
 
 const bangStatus = async (
   message: {
@@ -26,7 +26,7 @@ const bangStatus = async (
   try {
     await voiceChannelUser.setTopic(statusText);
   } catch (error: any) {
-    logs("error", "voice:text:command:status", error, guild.id);
+    Logs("voice:text:command:status", "error", error, guild.id);
   }
 };
 
