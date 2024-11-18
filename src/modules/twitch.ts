@@ -2,7 +2,6 @@ import { TwitchTypes } from "@/types/Twitch.types";
 import { getStreamers } from "@functions/base";
 import logs from "@functions/logs";
 import TwitchAxios from "@utils/TwitchAxios";
-import axios from "axios";
 import {
   EmbedBuilder,
   ActionRowBuilder,
@@ -14,7 +13,12 @@ const waitingTime = 300000;
 const addonsLoaded = async (guild: any, params: any) => {
   logs("start", "addons:twitch:start", "Starting twitch addons", guild.id);
 
+  // get stream list
+  // group streamer id
+
+  const authToken = await requestAuthenticator();
   const streamerList = await getStreamers({ guild: guild });
+
   const notificationChannel = guild.channels.cache.find(
     (channel: any) => channel.id === params.channel
   );
@@ -101,7 +105,6 @@ const requestAuthenticator = async () => {
         client_id: process.env.TWITCH_CLIENT_TOKEN,
         client_secret: process.env.TWITCH_SECRET_TOKEN,
         grant_type: "client_credentials",
-        scope: "viewing_activity_read",
       }
     );
 

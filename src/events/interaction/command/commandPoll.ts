@@ -4,7 +4,7 @@ import { cwd } from "process";
 import { getParams } from "@functions/base";
 import logs from "@functions/logs";
 const alphabetLetters = JSON.parse(
-  readFileSync(cwd() + "/app/data/alphabet.json").toString()
+  readFileSync(cwd() + "/src/data/alphabet.json").toString()
 );
 
 const commandPollInit = async (_client: any, interaction: any) => {

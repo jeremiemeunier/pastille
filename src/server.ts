@@ -1,7 +1,7 @@
 import { connect } from "mongoose";
 
 // BDD
-connect(process.env.MONGODB_URL as string);
+connect(process.env.MONGO_URI as string);
 
 // ##### BOT SETUP ##### \\
 
@@ -13,7 +13,6 @@ import {
   ActivityType,
   Guild,
 } from "discord.js";
-import logs from "@functions/logs";
 import { commandRegister } from "@functions/commandsRegister";
 import { voiceEventInit } from "@events/voiceEvent";
 import { reactionAddEventInit } from "@events/messageReactionAddEvent";
@@ -25,6 +24,8 @@ import { automod } from "@events/messageModerationEvent";
 import { api } from "@functions/api";
 import { addonsRegisterInit } from "@functions/addonsRegister";
 import { automodVerifier } from "@functions/automod/automodVerifer";
+import Logs from "@libs/Logs";
+import Api from "./config/Api";
 
 const client = new Client({
   intents: [
@@ -41,12 +42,12 @@ const client = new Client({
 
 const guildStarter = (guild: Guild) => {
   try {
-    logs("start", "booter:guild_starter", "Start all functions", guild.id);
+    Logs("booter:guild_starter", "start", "Start all functions", guild.id);
     automodVerifier(guild);
     commandRegister(guild);
     addonsRegisterInit(guild);
   } catch (error: any) {
-    logs("error", "booter:guild_starter", error, guild.id);
+    Logs("booter:guild_starter", "error", error, guild.id);
   }
 };
 
@@ -67,12 +68,12 @@ const setStatus = async () => {
 };
 
 const pastilleBooter = async () => {
-  logs("start", "booter", "Pastille has started successfully");
+  Logs("booter", "start", "Pastille has started successfully");
   setStatus();
 
   try {
     // API
-    api();
+    Api();
 
     try {
       const allGuilds = client.guilds.cache;
@@ -89,16 +90,16 @@ const pastilleBooter = async () => {
       messageEditInit(client);
       automod(client);
     } catch (error: any) {
-      logs("error", "booter", error);
+      Logs("booter", "error", error);
     }
   } catch (error: any) {
-    logs("error", "api:server", error);
+    Logs("api:server", "error", error);
   }
 
   client.on(Events.GuildCreate, (event) => {
     console.log(event);
 
-    logs(null, "events:new_guild", "Join a new guild", event.id);
+    Logs("events:new_guild", null, "Join a new guild", event.id);
     guildStarter(event);
     setStatus();
   });
@@ -110,5 +111,5 @@ try {
   });
   client.login(process.env.BOT_TOKEN);
 } catch (error: any) {
-  logs("error", "client:connect", error);
+  Logs("client:connect", "error", error);
 }

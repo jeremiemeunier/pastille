@@ -2,7 +2,7 @@
   "compilerOptions": {
     "baseUrl": "./",
     "outDir": "./dist",
-    "rootDir": "./app",
+    "rootDir": "src",
     "target": "ES2023",
     "module": "commonjs",
     "esModuleInterop": true,
@@ -10,22 +10,22 @@
     "strict": true,
     "skipLibCheck": true,
     "paths": {
-      "@routes/*": ["./app/routes/*"],
-      "@libs/*": ["./app/libs/*"],
-      "@utils/*": ["./app/utils/*"],
-      "@middlewares/*": ["./app/middlewares/*"],
-      "@models/*": ["./app/models/*"],
-      "@commands/*": ["./app/commands/*"],
-      "@functions/*": ["./app/functions/*"],
-      "@modules/*": ["./app/modules/*"],
-      "@events/*": ["./app/events/*"],
-      "@/*": ["./app/*"]
+      "@routes/*": ["src/routes/*"],
+      "@libs/*": ["src/libs/*"],
+      "@utils/*": ["src/utils/*"],
+      "@middlewares/*": ["src/middlewares/*"],
+      "@models/*": ["src/models/*"],
+      "@commands/*": ["src/commands/*"],
+      "@functions/*": ["src/functions/*"],
+      "@modules/*": ["src/modules/*"],
+      "@events/*": ["src/events/*"],
+      "@/*": ["src/*"]
     }
   },
   "tsc-alias": {
     "resolveFullPaths": true,
     "verbose": false
   },
-  "include": ["app/**/*"],
+  "include": ["src/**/*"],
   "exclude": ["node_modules"]
 }

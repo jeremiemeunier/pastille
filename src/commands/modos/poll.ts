@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { cwd } from "process";
 
 const alphabetLetters = JSON.parse(
-  readFileSync(cwd() + "/app/data/alphabet.json").toString()
+  readFileSync(cwd() + "/src/data/alphabet.json").toString()
 );
 
 const pollOptions = () => {
