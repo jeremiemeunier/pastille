@@ -1,9 +1,37 @@
-import { Router } from "express";
+import { Request, Response, Router } from "express";
 import { isPastille } from "../middlewares/isPastille";
 import Twitch from "@models/Twitch";
 import Logs from "@libs/Logs";
+import Streamers from "@models/Streamers";
 
 const router = Router();
+
+router.get(
+  "/twitch/streamers",
+  isPastille,
+  async (req: Request, res: Response) => {
+    try {
+      const streamers = await Streamers.find();
+
+      if (streamers.length > 0) {
+        res.status(200).json(streamers);
+      } else {
+        res.status(404).json({ message: "No streamer found" });
+      }
+    } catch (error: any) {
+      Logs("", "error", error);
+      res.status(500).json({ message: "An error occured", err: error });
+    }
+  }
+);
+
+router.post("/twitch/webhook", async (req, res) => {
+  const headers = req.headers;
+
+  const twitchMessageId = headers["Twitch-Eventsub-Message-Id"]
+    ?.toString()
+    .toLowerCase();
+});
 
 router.get("/twitch", isPastille, async (req, res) => {
   const { guild_id } = req.query;
