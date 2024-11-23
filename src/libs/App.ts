@@ -4,7 +4,6 @@ import cors from "cors";
 
 const App: Application = express();
 
-App.use(express.json());
 App.use(cors());
 App.use(cookieParser());
 
