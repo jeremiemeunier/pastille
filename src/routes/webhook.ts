@@ -51,7 +51,9 @@ router.post("/twitch/webhook", raw({ type: "*/*" }), async (req, res) => {
       if (eventsub_message_type === "webhook_callback_verification") {
         res.status(200).json({ message: "Valid signature" });
       } else if (eventsub_message_type === "notification") {
-        console.log(notif);
+        // handle stream online notifications
+        const { type } = notif.subscription;
+        const { broadcaster_user_id } = notif.event;
       }
     } else {
       res.status(403).json({ message: "Invalid signature" });
