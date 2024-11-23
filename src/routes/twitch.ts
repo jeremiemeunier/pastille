@@ -25,14 +25,6 @@ router.get(
   }
 );
 
-router.post("/twitch/webhook", async (req, res) => {
-  const headers = req.headers;
-
-  const twitchMessageId = headers["Twitch-Eventsub-Message-Id"]
-    ?.toString()
-    .toLowerCase();
-});
-
 router.get("/twitch", isPastille, async (req, res) => {
   const { guild_id } = req.query;
 
