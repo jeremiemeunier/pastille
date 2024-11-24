@@ -15,8 +15,13 @@ export const getAddons = async ({ guild }: { guild: any }) => {
     const guildAddons = guildAddonsRequest.data.data;
     return guildAddons;
   } catch (error: any) {
-    Logs("global:get:guild_addons", "error", error, guild.id);
-    return false;
+    if (error.http_response === 404) {
+      Logs("addon:load:guild", "warning", error, guild.id);
+      return false;
+    } else {
+      Logs("addon:load:guild", "error", error, guild.id);
+      return false;
+    }
   }
 };
 
@@ -35,8 +40,13 @@ export const getBanWord = async ({ guild }: { guild: any }) => {
     const guildBanWords = guildBanWordsRequest.data.data;
     return guildBanWords;
   } catch (error: any) {
-    Logs("global:get:guild_ban_word", "error", error, guild.id);
-    return false;
+    if (error.http_response === 404) {
+      Logs("automod:load:banword", "warning", error, guild.id);
+      return false;
+    } else {
+      Logs("automod:load:banword", "error", error, guild.id);
+      return false;
+    }
   }
 };
 
@@ -76,8 +86,13 @@ export const getRoles = async ({ guild }: { guild: any }) => {
     const guildRoles = guildRolesrequest.data.data;
     return guildRoles;
   } catch (error: any) {
-    Logs("global:get:guild_rules", "error", error, guild.id);
-    return false;
+    if (error.http_response === 404) {
+      Logs("roles:load:guild", "warning", error, guild.id);
+      return false;
+    } else {
+      Logs("roles:load:guild", "error", error, guild.id);
+      return false;
+    }
   }
 };
 
@@ -96,8 +111,13 @@ export const getRules = async ({ guild }: { guild: any }) => {
     const guildRules = guildRulesRequest.data.data;
     return guildRules;
   } catch (error: any) {
-    Logs("global:get:guild_rules", "error", error, guild.id);
-    return false;
+    if (error.http_response === 404) {
+      Logs("rules:load:guild", "warning", error, guild.id);
+      return false;
+    } else {
+      Logs("rules:load:guild", "error", error, guild.id);
+      return false;
+    }
   }
 };
 
@@ -110,8 +130,13 @@ export const getCommands = async ({ guild, id }: { guild: any; id?: any }) => {
       const guildCommands = guildCommandsRequest.data.data;
       return guildCommands;
     } catch (error: any) {
-      Logs("global:get:guild:cmd:id", "error", error, guild.id);
-      return false;
+      if (error.http_response === 404) {
+        Logs("cmd:load:guild", "warning", error, guild.id);
+        return false;
+      } else {
+        Logs("cmd:load:guild", "error", error, guild.id);
+        return false;
+      }
     }
   } else {
     try {
@@ -122,8 +147,13 @@ export const getCommands = async ({ guild, id }: { guild: any; id?: any }) => {
       const guildCommands = guildCommandsRequest.data.data;
       return guildCommands;
     } catch (error: any) {
-      Logs("global:get:guild_commands", "error", error, guild.id);
-      return false;
+      if (error.http_response === 404) {
+        Logs("cmds:load:guild", "warning", error, guild.id);
+        return false;
+      } else {
+        Logs("cmds:load:guild", "error", error, guild.id);
+        return false;
+      }
     }
   }
 };
@@ -143,8 +173,13 @@ export const getParams = async ({ guild }: { guild: any }) => {
     const guildParams = guildParamsRequest.data.data;
     return guildParams;
   } catch (error: any) {
-    Logs("global:get:guild_params", "error", error, guild.id);
-    return false;
+    if (error.http_response === 404) {
+      Logs("params:load:guild", "warning", error, guild.id);
+      return false;
+    } else {
+      Logs("params:load:guild", "error", error, guild.id);
+      return false;
+    }
   }
 };
 
@@ -176,7 +211,7 @@ export const postWarnUser = async ({
 
     return warnUserRequest.data.data;
   } catch (error: any) {
-    Logs("global:post:infraction", "error", error, guild.id);
+    Logs("automod:add:warn", "error", error, guild.id);
     return false;
   }
 };
