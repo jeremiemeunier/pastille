@@ -25,7 +25,24 @@ router.get(
   }
 );
 
-router.get("/twitch", isPastille, async (req, res) => {
+router.get("/twitch/live", isPastille, async (req: Request, res: Response) => {
+  try {
+    const query = await Streamers.find({ isLive: true, isAnnounce: false });
+
+    if (query && query.length > 0) {
+      res.status(200).json(query);
+    } else {
+      res.status(404).json({ message: "No live to be announced" });
+    }
+  } catch (error: any) {
+    Logs("twitch", "error", error);
+    res.status(500).json({
+      message: "An error occured on getting live and unannounced live",
+    });
+  }
+});
+
+router.get("/twitch", isPastille, async (req: Request, res: Response) => {
   const { guild_id } = req.query;
 
   try {
@@ -45,7 +62,7 @@ router.get("/twitch", isPastille, async (req, res) => {
   }
 });
 
-router.get("/twitch/id", isPastille, async (req, res) => {
+router.get("/twitch/id", isPastille, async (req: Request, res: Response) => {
   const { id } = req.query;
 
   try {
@@ -62,7 +79,7 @@ router.get("/twitch/id", isPastille, async (req, res) => {
   }
 });
 
-router.post("/twitch/add", isPastille, async (req, res) => {
+router.post("/twitch/add", isPastille, async (req: Request, res: Response) => {
   const { guild_id, twitch_id, twitch_name, message, progress } = req.body;
 
   if (!twitch_id || !twitch_name || !guild_id) {
@@ -89,16 +106,20 @@ router.post("/twitch/add", isPastille, async (req, res) => {
   }
 });
 
-router.delete("/twitch/remove", isPastille, async (req, res) => {
-  const { id } = req.query;
+router.delete(
+  "/twitch/remove",
+  isPastille,
+  async (req: Request, res: Response) => {
+    const { id } = req.query;
 
-  try {
-    await Twitch.findByIdAndDelete({ _id: { $eq: id } });
-    res.status(200).json({ message: "Item deleted" });
-  } catch (error: any) {
-    res.status(400).json({ message: "An error occured", error: error });
-    Logs("api:twitch:delete", "error", error);
+    try {
+      await Twitch.findByIdAndDelete({ _id: { $eq: id } });
+      res.status(200).json({ message: "Item deleted" });
+    } catch (error: any) {
+      res.status(400).json({ message: "An error occured", error: error });
+      Logs("api:twitch:delete", "error", error);
+    }
   }
-});
+);
 
 export default router;
