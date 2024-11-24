@@ -22,7 +22,7 @@ const composeState: (
     case "error":
       return "[\x1b[41m ERROR \x1b[0m]";
     case "success":
-      return "[\x1b[32mSUCCESS\x1b[0m]";
+      return "[\x1b[42mSUCCESS\x1b[0m]";
     case "warning":
       return "[\x1b[33mWARNING\x1b[0m]";
     case "start":
