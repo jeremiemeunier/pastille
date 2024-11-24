@@ -1,13 +1,12 @@
 {
   "compilerOptions": {
     "baseUrl": "./",
-    "outDir": "./dist",
-    "rootDir": "src",
     "target": "es6",
     "module": "CommonJS",
-    "esModuleInterop": true,
     "strict": true,
-    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "outDir": "./dist",
+    "noImplicitAny": true,
     "paths": {
       "@routes/*": ["./src/routes/*"],
       "@libs/*": ["./src/libs/*"],
