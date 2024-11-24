@@ -20,12 +20,12 @@ import { interactionCreateEventInit } from "@events/interactionCreateEvent";
 import { messageCreateEventInit } from "@events/messageCreateEvent";
 import { messageEditInit } from "@events/messageEditEvent";
 import { automod } from "@events/messageModerationEvent";
+import { AddonTwitch } from "@modules/twitch";
 import Logs from "@libs/Logs";
 import Api from "./config/Api";
+import AutomodDaemon from "@functions/automod/Automod";
 import { CommandRegisterDaemon } from "@functions/CommandRegister";
 import { AddonRegisterDaemon } from "@functions/AddonsRegister";
-import AutomodDaemon from "@functions/automod/Automod";
-import { AddonTwitch } from "@modules/twitch";
 
 const client = new Client({
   intents: [
