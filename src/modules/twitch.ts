@@ -23,7 +23,7 @@ const AddonTwitch = async (client: any) => {
     try {
       const streamerList = await pastilleAxios.get("/twitch/streamers");
 
-      const eventSubRegister = streamerList.data.map(
+      streamerList.data.map(
         (streamer: StreamerTypes) =>
           new Promise(async (resolve, rejet) => {
             try {
@@ -51,7 +51,8 @@ const AddonTwitch = async (client: any) => {
                 }
               );
 
-              Logs("", null, req.data);
+              Logs("addon:twitch", null, req.data, "subscription.created");
+              resolve("subscription.created");
             } catch (error: any) {
               Logs("addon:twitch", "error", error, "event_subscription");
             }
@@ -181,7 +182,7 @@ const AddonTwitch = async (client: any) => {
           );
         }
       } catch (error: any) {
-        if (error.status !== 404) {
+        if (error.http_code !== 404) {
           Logs("module:twitch", "error", error);
         }
       }

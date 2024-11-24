@@ -12,7 +12,7 @@ router.get("/rules", isPastille, async (req, res) => {
     const allRulesRequest = await Rule.find({ guild_id: { $eq: guild_id } });
 
     if (allRulesRequest.length === 0) {
-      res.status(404).json({ message: "No rules" });
+      res.status(404).json({ message: "No rules", http_response: 404 });
     } else {
       res.status(200).json({ data: allRulesRequest });
     }

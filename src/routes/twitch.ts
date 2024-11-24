@@ -16,7 +16,9 @@ router.get(
       if (streamers.length > 0) {
         res.status(200).json(streamers);
       } else {
-        res.status(404).json({ message: "No streamer found" });
+        res
+          .status(404)
+          .json({ message: "No streamer found", http_response: 404 });
       }
     } catch (error: any) {
       Logs("", "error", error);
@@ -32,7 +34,9 @@ router.get("/twitch/live", isPastille, async (req: Request, res: Response) => {
     if (query && query.length > 0) {
       res.status(200).json(query);
     } else {
-      res.status(404).json({ message: "No live to be announced" });
+      res
+        .status(404)
+        .json({ message: "No live to be announced", http_response: 404 });
     }
   } catch (error: any) {
     Logs("twitch", "error", error);
@@ -54,7 +58,7 @@ router.get("/twitch", isPastille, async (req: Request, res: Response) => {
         data: allTwitchPings,
       });
     } else {
-      res.status(404).json({ message: "Empty pings" });
+      res.status(404).json({ message: "Empty pings", http_response: 404 });
     }
   } catch (error: any) {
     res.status(400).json({ message: "An error occured", error: error });
@@ -69,7 +73,7 @@ router.get("/twitch/id", isPastille, async (req: Request, res: Response) => {
     const twitchItem = Twitch.findById({ _id: { $eq: id } });
 
     if (!twitchItem) {
-      res.status(404).json({ message: "Item not found" });
+      res.status(404).json({ message: "Item not found", http_response: 404 });
     }
 
     res.status(200).json({ message: "Item found", data: twitchItem });

@@ -32,7 +32,9 @@ router.get("/dailyui", isPastille, async (req, res) => {
     });
 
     if (!dailyuiNotSend) {
-      res.status(404).json({ message: "No dailyui available" });
+      res
+        .status(404)
+        .json({ message: "No dailyui available", http_response: 404 });
     } else {
       res
         .status(200)

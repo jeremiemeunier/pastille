@@ -13,7 +13,7 @@ router.get("/emotes", isPastille, async (req, res) => {
     const letterRequest = await Emote.findOne({ letter: { $eq: letter } });
 
     if (letterRequest) {
-      res.status(404).json({ message: "No emotes" });
+      res.status(404).json({ message: "No emotes", http_response: 404 });
     } else {
       res.status(200).json({ data: letterRequest });
     }
@@ -40,7 +40,7 @@ router.get("/emotes/all", isPastille, async (req, res) => {
     if (allLettersRequest.length > 0) {
       res.status(200).json({ data: allLettersRequest });
     } else {
-      res.status(404).json({ message: "No letters found" });
+      res.status(404).json({ message: "No letters found", http_response: 404 });
     }
   } catch (error: any) {
     res.status(400).json({ message: "An error occured", error: error });

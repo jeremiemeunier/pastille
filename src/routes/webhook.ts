@@ -36,6 +36,7 @@ router.post("/twitch/webhook", raw({ type: "*/*" }), async (req, res) => {
 
       // handle event
       if (message_type === "webhook_callback_verification") {
+        Logs("webhook", null, notif, "validating");
         res.status(200).set("Content-Type", "text/plain").send(notif.challenge);
       } else if (message_type === "notification") {
         // handle stream online notifications
