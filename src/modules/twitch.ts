@@ -1,26 +1,23 @@
-import { StreamerTypes } from "@/types/Streamers.types";
-import { TwitchTypes } from "@/types/Twitch.types";
-import { getStreamers } from "@functions/base";
+import { StreamerAnnouncerTypes, StreamerTypes } from "@/types/Streamers.types";
 import Logs from "@libs/Logs";
 import pastilleAxios from "@libs/PastilleAxios";
 import TwitchAxios from "@utils/TwitchAxios";
+import cron from "node-cron";
 import {
   EmbedBuilder,
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
 } from "discord.js";
+import Streamers from "@models/Streamers";
 const waitingTime = 300000;
 
-const addonsLoaded = async (guild: any, params: any) => {
-  Logs("addons:twitch:start", "start", "Starting twitch addons", guild.id);
+const AddonTwitch = async (client: any) => {
+  Logs("addons:twitch:start", "start", "Starting twitch addons");
 
   try {
-    // get stream list
-    // group streamer id
-
     // getting auth token from twitch
-    const authToken = await requestAuthenticator();
+    let authToken = await requestAuthenticator();
 
     // getting streamer id list from api
     try {
@@ -64,82 +61,133 @@ const addonsLoaded = async (guild: any, params: any) => {
       Logs("addon:twitch", "warning", error, "get_streamers");
     }
 
-    // const notificationChannel = guild.channels.cache.find(
-    //   (channel: any) => channel.id === params.channel
-    // );
-    // const notificationRole = guild.roles.cache.find(
-    //   (role: any) => role.id === params.role
-    // );
+    // now launch cron task
+    cron.schedule("* * * * *", async () => {
+      try {
+        // getting all up and unannounced stream
+        const req = await pastilleAxios.get("/twitch/live");
 
-    // const pingStreamer = setInterval(async () => {
-    //   const authToken = await requestAuthenticator();
+        if (!authToken) authToken = await requestAuthenticator();
 
-    //   if (authToken) {
-    //     streamerList.map(async (item: TwitchTypes) => {
-    //       const { twitch } = item;
-    //       const streamerState = await requestStreamerState(
-    //         twitch.id,
-    //         authToken
-    //       );
+        if (req.data && req.data.length > 0) {
+          // map list
+          const notifications = req.data.map(
+            (live: StreamerTypes) =>
+              new Promise(async (resolve, reject) => {
+                // parse all announcer
+                const { announcer } = live;
 
-    //       if (streamerState !== undefined) {
-    //         if (startAnalyze(streamerState.started_at)) {
-    //           try {
-    //             const liveButton = new ActionRowBuilder().addComponents(
-    //               new ButtonBuilder({
-    //                 label: "Rejoindre sur twitch.tv",
-    //                 style: ButtonStyle.Link,
-    //                 url: `https://twitch.tv/${twitch.name.toString()}`,
-    //               })
-    //             );
-    //             const liveEmbed = new EmbedBuilder({
-    //               color: parseInt("6441a5", 16),
-    //               title: `${twitch.name.toString()} est actuellement en live !`,
-    //               description: `Il stream : **__${streamerState.title}__** sur **__${streamerState.game_name}__**`,
-    //             });
+                const annoucing = announcer.map(
+                  async (recipient: StreamerAnnouncerTypes) =>
+                    new Promise<StreamerTypes>(async (resolve, reject) => {
+                      // define recipient informations
+                      const guild = client.guilds.cache.find(
+                        (guild: any) => guild.id === recipient.guild_id
+                      );
+                      const channel = guild.channels.cache.find(
+                        (channel: any) => channel.id === recipient.channel_id
+                      );
+                      const role = guild.roles.cache.find(
+                        (role: any) => role.id === recipient.role_id
+                      );
 
-    //             try {
-    //               await notificationChannel.send({
-    //                 content: `${twitch.name.toString()} est en live ! ${
-    //                   item.message ? item.message : ""
-    //                 } ${notificationRole}`,
-    //                 embeds: [liveEmbed],
-    //                 components: [liveButton],
-    //               });
-    //             } catch (error: any) {
-    //               Logs("addons:twitch:send", "error", error, guild.id);
-    //             }
-    //           } catch (error: any) {
-    //             Logs("addons:twitch:ping", "error", error, guild.id);
-    //           }
-    //         }
-    //       }
-    //     });
-    //   } else {
-    //     Logs("twitch:auth:global", "error", "Cannot auth to twitch");
-    //   }
-    // }, waitingTime);
+                      // get stream infos
+                      const stream = await requestStreamerState(
+                        live.id,
+                        authToken
+                      );
+
+                      if (stream) {
+                        // build announce items
+                        try {
+                          const liveButton =
+                            new ActionRowBuilder().addComponents(
+                              new ButtonBuilder({
+                                label: "Rejoindre sur twitch.tv",
+                                style: ButtonStyle.Link,
+                                url: `https://twitch.tv/${stream.user_login.toString()}`,
+                              })
+                            );
+                          const liveEmbed = new EmbedBuilder({
+                            color: parseInt("6441a5", 16),
+                            title: `${stream.user_name.toString()} est actuellement en live !`,
+                            description: `Il stream : **__${stream.title}__** sur **__${stream.game_name}__**`,
+                          });
+
+                          try {
+                            await channel.send({
+                              content: `${stream.user_name.toString()} est en live ! ${
+                                recipient.message ? recipient.message : ""
+                              } ${role}`,
+                              embeds: [liveEmbed],
+                              components: [liveButton],
+                            });
+                          } catch (error: any) {
+                            Logs(
+                              "addons:twitch:send",
+                              "error",
+                              error,
+                              guild.id
+                            );
+                          }
+                        } catch (error: any) {
+                          Logs("addons:twitch:ping", "error", error, guild.id);
+                        }
+                      } else {
+                        try {
+                          await Streamers.findOneAndUpdate(
+                            { id: live.id },
+                            { isLive: false }
+                          );
+                        } catch (error: any) {
+                          Logs(
+                            "module:twitch",
+                            "error",
+                            error,
+                            "update_is_live_state"
+                          );
+                        }
+                      }
+
+                      resolve(live);
+                    })
+                );
+
+                await Promise.all(annoucing)
+                  .then(async (value) => {
+                    value.map(async (item) => {
+                      try {
+                        await Streamers.findOneAndUpdate(
+                          { id: item.id },
+                          { isAnnounce: true }
+                        );
+                      } catch (error: any) {
+                        Logs(
+                          "module:twitch",
+                          "error",
+                          error,
+                          "update_is_live_state"
+                        );
+                      }
+                    });
+                  })
+                  .catch((error) => Logs("", "error", error));
+                resolve("notif.send");
+              })
+          );
+
+          await Promise.all(notifications).catch((error) =>
+            Logs("", "error", error)
+          );
+        }
+      } catch (error: any) {
+        if (error.status !== 404) {
+          Logs("module:twitch", "error", error);
+        }
+      }
+    });
   } catch (error: any) {
     Logs("addon:twitch", "error", error);
-  }
-};
-
-/**
- * Return true or false to indicate if livestream was started within range
- *
- * @param {*} startItem
- * @returns {boolean} Return true if live was started within range of settings
- */
-const startAnalyze = (startItem: any) => {
-  const now = Date.parse(new Date().toString());
-  const start = Date.parse(startItem);
-  const prev = now - waitingTime;
-  const next = now + waitingTime;
-
-  if (start > prev && start < next) {
-    return true;
-  } else {
-    return false;
   }
 };
 
@@ -182,7 +230,7 @@ const requestStreamerState = async (
       {
         params: { user_id: streamerId },
         headers: {
-          "Client-Id": process.env.TWITCH_CLIENT_TOKEN,
+          "Client-Id": process.env.TWITCH_CLIENT,
           Authorization: `Bearer ${bearerToken}`,
         },
       }
@@ -193,4 +241,4 @@ const requestStreamerState = async (
   }
 };
 
-export { addonsLoaded };
+export { AddonTwitch };
