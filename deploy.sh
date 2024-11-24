@@ -10,14 +10,13 @@ git fetch --all && git checkout --force "origin/main" > /dev/null 2>&1
 
 export INFISICAL_TOKEN=$(infisical login --method=universal-auth --client-id=$inf_client --client-secret=$inf_token --plain --silent)
 
-TAG=$(date +%Y-%m-%d_%H%M)
-
-docker build ./ -t pastillebot/pastille-bot:prod_$TAG
+docker build ./ -t jeremiemeunier/pastille-bot:prod
 docker stop pastille-bot > /dev/null 2>&1
 docker rm pastille-bot > /dev/null 2>&1
 docker run \
   -d \
-  --name pastille-bot \
+  -p 3004:3000 \
   --env INFISICAL_TOKEN=$INFISICAL_TOKEN \
-  --privileged \
-  pastillebot/pastille-bot:prod_$TAG
+  --name pastille-bot \
+  --restart always \
+  jeremiemeunier/pastille-bot:prod
