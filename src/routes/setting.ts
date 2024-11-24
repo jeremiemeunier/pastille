@@ -80,7 +80,9 @@ router.get("/settings", isPastille, async (req, res) => {
     });
 
     if (!guildSettings) {
-      res.status(404).json({ message: "No settings found" });
+      res
+        .status(404)
+        .json({ message: "No settings found", http_response: 404 });
     } else {
       res.status(200).json({ message: "Settings found", data: guildSettings });
     }

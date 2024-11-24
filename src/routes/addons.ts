@@ -12,7 +12,7 @@ router.get("/addons", isPastille, async (req, res) => {
     const allAddonsRequest = await Addons.find({ guild_id: { $eq: guild_id } });
 
     if (allAddonsRequest.length === 0) {
-      res.status(404).json({ message: "No addons" });
+      res.status(404).json({ message: "No addons", http_response: 404 });
     } else {
       res.status(200).json({ data: allAddonsRequest });
     }

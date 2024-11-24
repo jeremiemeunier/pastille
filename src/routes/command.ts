@@ -14,7 +14,7 @@ router.get("/commands", isPastille, async (req, res) => {
     });
 
     if (allCommandsRequest.length === 0) {
-      res.status(404).json({ message: "No commands" });
+      res.status(404).json({ message: "No commands", http_response: 404 });
     } else {
       res.status(200).json({ data: allCommandsRequest });
     }
@@ -31,7 +31,9 @@ router.get("/commands/id", isPastille, async (req, res) => {
     const commandRequest = await Command.findById({ _id: id });
 
     if (!commandRequest) {
-      res.status(404).json({ message: "No command with this _id" });
+      res
+        .status(404)
+        .json({ message: "No command with this _id", http_response: 404 });
     } else {
       res.status(200).json({ data: commandRequest });
     }

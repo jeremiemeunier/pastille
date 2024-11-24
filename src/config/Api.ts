@@ -43,7 +43,9 @@ const Api = () => {
     res.status(200).json({ message: "This is pastille" });
   });
   App.all("*", (_req: Request, res: Response) => {
-    res.status(404).json({ message: "This route do not exist" });
+    res
+      .status(404)
+      .json({ message: "This route do not exist", http_response: 404 });
   });
   App.listen(3000, () => {
     Logs("api", "start", `Started on port 3000`);

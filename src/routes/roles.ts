@@ -12,7 +12,7 @@ router.get("/roles", isPastille, async (req, res) => {
     const allRolesRequest = await Role.find({ guild_id: { $eq: guild_id } });
 
     if (allRolesRequest.length === 0) {
-      res.status(404).json({ message: "No roles" });
+      res.status(404).json({ message: "No roles", http_response: 404 });
     } else {
       res.status(200).json({ data: allRolesRequest });
     }
