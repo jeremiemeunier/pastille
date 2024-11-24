@@ -182,7 +182,7 @@ const AddonTwitch = async (client: any) => {
           );
         }
       } catch (error: any) {
-        if (error.http_code !== 404) {
+        if (error.http_response !== 404) {
           Logs("module:twitch", "error", error);
         }
       }
