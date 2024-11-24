@@ -2,6 +2,8 @@ export interface StreamerTypes {
   id: string;
   name: string;
   sig: string;
+  isLive: boolean;
+  isAnnounce: boolean;
   announcer: StreamerAnnouncerTypes[];
 }
 
