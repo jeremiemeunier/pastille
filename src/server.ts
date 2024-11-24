@@ -26,6 +26,7 @@ import Api from "./config/Api";
 import AutomodDaemon from "@functions/automod/Automod";
 import { CommandRegisterDaemon } from "@functions/CommandRegister";
 import { AddonRegisterDaemon } from "@functions/AddonsRegisterDaemon";
+import Start from "@libs/Start";
 
 const client = new Client({
   intents: [
@@ -68,6 +69,8 @@ const setStatus = async () => {
 };
 
 const pastilleBooter = async () => {
+  Start();
+
   Logs("booter", "start", "Pastille has started successfully");
   setStatus();
 
