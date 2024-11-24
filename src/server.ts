@@ -25,7 +25,7 @@ import Logs from "@libs/Logs";
 import Api from "./config/Api";
 import AutomodDaemon from "@functions/automod/Automod";
 import { CommandRegisterDaemon } from "@functions/CommandRegister";
-import { AddonRegisterDaemon } from "@functions/AddonsRegister";
+import { AddonRegisterDaemon } from "@functions/AddonsRegisterDaemon";
 
 const client = new Client({
   intents: [
