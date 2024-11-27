@@ -4,6 +4,7 @@ export interface StreamerTypes {
   sig: string;
   isLive: boolean;
   isAnnounce: boolean;
+  isValid: boolean;
   announcer: StreamerAnnouncerTypes[];
 }
 
