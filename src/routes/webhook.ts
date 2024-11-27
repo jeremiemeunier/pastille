@@ -37,6 +37,22 @@ router.post("/twitch/webhook", raw({ type: "*/*" }), async (req, res) => {
       // handle event
       if (message_type === "webhook_callback_verification") {
         Logs("webhook", null, notif, "validating");
+
+        // updating streamers docs to valid him
+        try {
+          await Streamers.findOneAndUpdate(
+            {
+              id: notif.event.broadcaster_user_id,
+            },
+            {
+              isValid: true,
+            },
+            { new: true }
+          );
+        } catch (error: any) {
+          Logs("webhook", "error", error, "valid_subscription");
+        }
+
         res.status(200).set("Content-Type", "text/plain").send(notif.challenge);
       } else if (message_type === "notification") {
         // handle stream online notifications
