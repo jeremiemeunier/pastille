@@ -10,7 +10,6 @@ import {
   ButtonStyle,
 } from "discord.js";
 import Streamers from "@models/Streamers";
-const waitingTime = 300000;
 
 const AddonTwitch = async (client: any) => {
   Logs("addons:twitch:start", "start", "Starting twitch addons");
@@ -64,6 +63,7 @@ const AddonTwitch = async (client: any) => {
 
     // now launch cron task
     cron.schedule("* * * * *", async () => {
+      // handling gesture of live
       try {
         // getting all up and unannounced stream
         const req = await pastilleAxios.get("/twitch/live");
@@ -117,9 +117,9 @@ const AddonTwitch = async (client: any) => {
 
                           try {
                             await channel.send({
-                              content: `${stream.user_name.toString()} est en live ! ${
+                              content: `**${stream.user_name.toString()}** est en live ! ${
                                 recipient.message ? recipient.message : ""
-                              } ${role}`,
+                              } ||${role}||`,
                               embeds: [liveEmbed],
                               components: [liveButton],
                             });
@@ -184,6 +184,54 @@ const AddonTwitch = async (client: any) => {
       } catch (error: any) {
         if (error.http_response !== 404) {
           Logs("module:twitch", "error", error);
+        }
+      }
+
+      // handling gesture of new streamers
+      try {
+        const streamers = await pastilleAxios.get("/twitch/streamers");
+        if (!authToken) authToken = await requestAuthenticator();
+
+        streamers.data.map(
+          (streamer: StreamerTypes) =>
+            new Promise(async (resolve, rejet) => {
+              try {
+                const req = await TwitchAxios.post(
+                  "https://api.twitch.tv/helix/eventsub/subscriptions",
+                  {
+                    type: "stream.online",
+                    version: 1,
+                    condition: {
+                      broadcaster_user_id: streamer.id,
+                    },
+                    transport: {
+                      method: "webhook",
+                      callback:
+                        "https://pastille.api.jeremiemeunier.fr/twitch/webhook",
+                      secret: process.env.BOT_SECRET_SIG,
+                    },
+                  },
+                  {
+                    headers: {
+                      Accept: "application/json",
+                      Authorization: `Bearer ${authToken}`,
+                      "Client-ID": process.env.TWITCH_CLIENT,
+                    },
+                  }
+                );
+
+                Logs("addon:twitch", null, req.data, "subscription.created");
+                resolve("subscription.created");
+              } catch (error: any) {
+                if (error.http_response !== 404) {
+                  Logs("addon:twitch", "error", error, "event_subscription");
+                }
+              }
+            })
+        );
+      } catch (error: any) {
+        if (error.http_response !== 404) {
+          Logs("addons:twitch", "error", error, "register_webhook");
         }
       }
     });
