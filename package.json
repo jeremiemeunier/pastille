@@ -1,6 +1,6 @@
 {
   "name": "pastille-bot",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "",
   "main": "app/server.ts",
   "bin": {
@@ -13,30 +13,30 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@discordjs/rest": "^2.4.0",
-    "axios": "^1.7.7",
+    "@discordjs/rest": "^2.5.0",
+    "axios": "^1.9.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
-    "discord.js": "^14.16.3",
-    "express": "^4.21.1",
-    "mongoose": "^8.8.1",
-    "mysql2": "^3.11.4",
-    "node-cron": "^3.0.3",
-    "sequelize": "^6.37.5",
-    "tsc-alias": "^1.8.10",
+    "discord.js": "^14.19.3",
+    "express": "^5.1.0",
+    "mongoose": "^8.15.1",
+    "mysql2": "^3.14.1",
+    "node-cron": "^4.1.0",
+    "sequelize": "^6.37.7",
+    "tsc-alias": "^1.8.16",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.6.3"
+    "typescript": "^5.8.3"
   },
   "devDependencies": {
-    "@types/cookie-parser": "^1.4.7",
-    "@types/cors": "^2.8.17",
-    "@types/express": "^5.0.0",
-    "@types/node": "^22.9.0",
+    "@types/cookie-parser": "^1.4.8",
+    "@types/cors": "^2.8.18",
+    "@types/express": "^5.0.2",
+    "@types/node": "^22.15.29",
     "@types/node-cron": "^3.0.11",
     "@types/sequelize": "^4.28.20",
-    "discord-api-types": "^0.37.105",
-    "dotenv": "^16.4.5",
-    "nodemon": "^3.1.7",
+    "discord-api-types": "^0.38.10",
+    "dotenv": "^16.5.0",
+    "nodemon": "^3.1.10",
     "ts-node": "^10.9.2"
   }
 }

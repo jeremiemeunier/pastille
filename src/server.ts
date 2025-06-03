@@ -110,9 +110,7 @@ const pastilleBooter = async () => {
 };
 
 try {
-  client.on("ready", () => {
-    pastilleBooter();
-  });
+  client.on("ready", pastilleBooter);
   client.login(process.env.BOT_TOKEN);
 } catch (error: any) {
   Logs("client:connect", "error", error);

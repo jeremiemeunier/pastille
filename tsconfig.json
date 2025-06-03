@@ -8,15 +8,15 @@
     "outDir": "./dist",
     "noImplicitAny": true,
     "paths": {
-      "@routes/*": ["./src/routes/*"],
+      "@commands/*": ["./src/commands/*"],
+      "@events/*": ["./src/events/*"],
+      "@functions/*": ["./src/functions/*"],
       "@libs/*": ["./src/libs/*"],
-      "@utils/*": ["./src/utils/*"],
       "@middlewares/*": ["./src/middlewares/*"],
       "@models/*": ["./src/models/*"],
-      "@commands/*": ["./src/commands/*"],
-      "@functions/*": ["./src/functions/*"],
       "@modules/*": ["./src/modules/*"],
-      "@events/*": ["./src/events/*"],
+      "@routes/*": ["./src/routes/*"],
+      "@utils/*": ["./src/utils/*"],
       "@/*": ["./src/*"]
     }
   },
