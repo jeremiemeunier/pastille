@@ -9,6 +9,7 @@ import {
   hoursParser,
 } from "@functions/base";
 import Logs from "@libs/Logs";
+import axios from "axios";
 
 export const messageCreateEventInit = (client: any) => {
   client.on(Events.MessageCreate, async (message: Message) => {
@@ -77,6 +78,38 @@ export const messageCreateEventInit = (client: any) => {
           Logs("delete:message:screenshots", "error", error);
           return;
         }
+      }
+    }
+
+    if (message.mentions.has(client.user)) {
+      try {
+        const req = await axios.post(
+          "https://ollama.jeremiemeunier.fr/api/chat/",
+          {
+            model: "gemma3",
+            messages: [
+              {
+                role: "system",
+                content: `Répond de manière sarcastique et rigolote au message de cet utilisateur, il se nomme ${message.author.displayName}. Tu es pastille un bot exceptionnel qui ne se laisse pas marcher sur les pieds. Tu te prénomme Pastille. N'utilise jamais le nom de l'utilisateur comme étant le tient tu vaut mieux que ça. Si l'utilisateur te pose des questions et faits des fautes n'hésite pas à la reprendre en précédant ta correction de l'émoji suivant : 🤓. Tu peux d'ailleurs utiliser des emoji et du text enrichie avec MarkDown pour répondre aux questions.`,
+              },
+              { role: "user", content: message.content },
+            ],
+            stream: false,
+            options: {
+              num_predict: 400,
+            },
+          }
+        );
+
+        if (req.data.message) {
+          try {
+            await message.reply({ content: req.data.message.content });
+          } catch (error: any) {
+            Logs("message:event:ai:reply", "error", error);
+          }
+        }
+      } catch (error: any) {
+        Logs("message:event:ai", "error", error);
       }
     }
 
