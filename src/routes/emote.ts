@@ -12,7 +12,7 @@ router.get("/emotes", isPastille, async (req, res) => {
   try {
     const letterRequest = await Emote.findOne({ letter: { $eq: letter } });
 
-    if (letterRequest) {
+    if (!letterRequest) {
       res.status(404).json({ message: "No emotes", http_response: 404 });
     } else {
       res.status(200).json({ data: letterRequest });
