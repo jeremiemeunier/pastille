@@ -64,6 +64,7 @@ router.post("/emotes/mass", isPastille, async (req, res) => {
         Logs("api:emotes:post:save", "error", error);
       }
     });
+    res.status(201).json({ message: "Emotes added" });
   } catch (error: any) {
     res.status(400).json({ message: "An error occured", error: error });
     Logs("api:emotes:post:mass", "error", error);
