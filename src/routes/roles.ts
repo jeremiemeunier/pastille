@@ -46,7 +46,7 @@ router.post("/roles/add", isPastille, async (req, res) => {
   }
 });
 
-router.put("/rules/update", isPastille, async (req, res) => {
+router.put("/roles/update", isPastille, async (req, res) => {
   const { guild_id, name, description, role, id, emote } = req.body;
 
   if (!guild_id || !name || !description || !role || !emote || !id) {
