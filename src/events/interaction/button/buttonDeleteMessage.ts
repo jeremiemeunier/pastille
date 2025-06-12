@@ -1,7 +1,7 @@
-import { EmbedBuilder, time } from "@discordjs/builders";
+import { time } from "@discordjs/builders";
 import { getParams, postWarnUser } from "@functions/base";
 import Logs from "@libs/Logs";
-import { Events } from "discord.js";
+import { Events, EmbedBuilder } from "discord.js";
 
 const buttonDeleteMessage = async (
   _client: {
