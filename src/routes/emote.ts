@@ -12,7 +12,7 @@ router.get("/emotes", isPastille, async (req, res) => {
   try {
     const letterRequest = await Emote.findOne({ letter: { $eq: letter } });
 
-    if (letterRequest) {
+    if (!letterRequest) {
       res.status(404).json({ message: "No emotes", http_response: 404 });
     } else {
       res.status(200).json({ data: letterRequest });
@@ -64,6 +64,7 @@ router.post("/emotes/mass", isPastille, async (req, res) => {
         Logs("api:emotes:post:save", "error", error);
       }
     });
+    res.status(201).json({ message: "Emotes added" });
   } catch (error: any) {
     res.status(400).json({ message: "An error occured", error: error });
     Logs("api:emotes:post:mass", "error", error);

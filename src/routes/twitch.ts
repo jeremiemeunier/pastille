@@ -130,8 +130,8 @@ router.delete(
 
       if (isRegistred.announcer.length > 1) {
         // we have many announcer
-        const annoucers = isRegistred.annoucer;
-        const newAnnouncer = annoucers.filter(
+        const announcers = isRegistred.announcer;
+        const newAnnouncer = announcers.filter(
           (item: StreamerAnnouncerTypes) => item.guild_id !== guild_id
         );
 
