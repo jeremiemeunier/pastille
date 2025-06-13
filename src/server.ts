@@ -1,4 +1,5 @@
 import { connect } from "mongoose";
+import "@libs/dbLimiter";
 
 // BDD
 connect(process.env.MONGO_URI as string);
