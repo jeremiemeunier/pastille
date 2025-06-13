@@ -1,6 +1,6 @@
 # pastille-bot
 
-It's a bot. An explosive bot named Pastille but only for discord !
+Pastille is an explosive Discord bot written in TypeScript.
 
 <div align="center">
 	<br />
@@ -18,26 +18,41 @@ It's a bot. An explosive bot named Pastille but only for discord !
   </p>
 </div>
 
-## Prerequires
+## Prerequisites
 
-If you are using category for control and organized your discord server, you must create an text channel with the name indicate in the settings for `channels > voiceText` in all category with an voice channel.
+If you use categories to keep your Discord server organised, create a text channel named as defined in `channels > voiceText` inside each category that contains a voice channel.
 
-Pastille implement an auto host api for automoderation.
+Pastille exposes a small HTTP API used for automoderation and addons such as Twitch or DailyUI.
 
 package.json
 ```json
 {
   "dependencies": {
-    "@discordjs/rest": "^2.0.1",
-    "axios": "^1.5.0",
-    "discord.js": "^14.13.0",
-    "nodemon": "^3.0.1",
+    "@discordjs/rest": "^2.5.0",
+    "axios": "^1.9.0",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
-    "mongoose": "^7.2.4",
-    "express": "^4.18.2",
-    "express-rate-limit": "^7.1.0"
+    "discord.js": "^14.19.3",
+    "express": "^5.1.0",
+    "mongoose": "^8.15.1",
+    "mysql2": "^3.14.1",
+    "node-cron": "^4.1.0",
+    "sequelize": "^6.37.7",
+    "tsc-alias": "^1.8.16",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.8.3"
   }
 }
+```
+
+## Usage
+
+Install the dependencies and start the bot:
+
+```bash
+npm install
+npm run dev   # start in development with nodemon
+npm run prod  # start in production
 ```
 
 ## Configuration files
@@ -57,9 +72,14 @@ To create your twitch app : [Twitch Developers](https://dev.twitch.tv/console/ap
     "BOT_OWNER_ID": YOUR_DISCORD_ID,
     "GUILD_ID": YOUR_DISCORD_SERVER_ID,
     "BOT_ID": YOUR_BOT_USER_ID,
-    "TWITCH_SECRET_TOKEN": YOUR_SECRET_APP_TOKEN,
-    "TWITCH_CLIENT_TOKEN": YOUR_CLIENT_APP_TOKEN,
-    "MONGODB_URL": YOUR_SECRET_APP_TOKEN,
+    "TWITCH_SECRET": YOUR_TWITCH_SECRET_TOKEN,
+    "TWITCH_CLIENT": YOUR_TWITCH_CLIENT_ID,
+    "BOT_SECRET_SIG": YOUR_WEBHOOK_SIGNATURE,
+    "MONGO_URI": YOUR_MONGODB_URI,
+    "DB_NAME": YOUR_MYSQL_DATABASE,
+    "DB_USER": YOUR_MYSQL_USER,
+    "DB_PSWD": YOUR_MYSQL_PASSWORD,
+    "DB_HOST": YOUR_MYSQL_HOST,
     "PORT": YOUR_PORT
 }
 ```
