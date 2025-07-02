@@ -4,6 +4,7 @@ import Twitch from "@models/Twitch";
 import Logs from "@libs/Logs";
 import Streamers from "@models/Streamers";
 import { StreamerAnnouncerTypes } from "@/types/Streamers.types";
+import { InferAttributes } from "sequelize";
 
 const router = Router();
 
@@ -46,6 +47,33 @@ router.get("/twitch/live", isPastille, async (_req: Request, res: Response) => {
     });
   }
 });
+
+router.patch(
+  "/twitch/streamers/:id",
+  isPastille,
+  async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    try {
+      await Streamers.findByIdAndUpdate(
+        { _id: id },
+        {
+          isValid: true,
+        },
+        { new: true }
+      );
+
+      res.status(200).json({ message: "streamers entry has been updated" });
+    } catch (err: any) {
+      Logs("twitch", "error", err);
+      res
+        .status(500)
+        .json({
+          message: "An error occured on updating streamers isValid entry",
+        });
+    }
+  }
+);
 
 router.post(
   "/twitch/streamers",
