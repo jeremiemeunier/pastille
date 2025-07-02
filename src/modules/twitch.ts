@@ -50,9 +50,27 @@ const AddonTwitch = async (client: any) => {
                 }
               );
 
+              try {
+                await pastilleAxios.patch(`/twitch/streamers/${streamer._id}`);
+                Logs("addon:twitch", null, "streamer.updated");
+              } catch (err: any) {
+                Logs("addon:twitch", "error", err);
+              }
+
               Logs("addon:twitch", null, req.data, "subscription.created");
               resolve("subscription.created");
             } catch (error: any) {
+              if (error.status === 409) {
+                try {
+                  await pastilleAxios.patch(
+                    `/twitch/streamers/${streamer._id}`
+                  );
+                  Logs("addon:twitch", null, "streamer.updated");
+                } catch (err: any) {
+                  Logs("addon:twitch", "error", err);
+                }
+              }
+
               Logs("addon:twitch", "error", error, "event_subscription");
             }
           })

@@ -1,4 +1,5 @@
 export interface StreamerTypes {
+  _id: string;
   id: string;
   name: string;
   isLive: boolean;
