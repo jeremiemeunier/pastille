@@ -48,9 +48,18 @@ router.get("/twitch/live", isPastille, async (_req: Request, res: Response) => {
   }
 });
 
+import rateLimit from "express-rate-limit";
+
+const patchStreamerLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: { message: "Too many requests, please try again later." },
+});
+
 router.patch(
   "/twitch/streamers/:id",
   isPastille,
+  patchStreamerLimiter,
   async (req: Request, res: Response) => {
     const { id } = req.params;
 
