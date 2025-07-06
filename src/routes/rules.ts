@@ -3,6 +3,7 @@ import { isPastille } from "../middlewares/isPastille";
 import Rule from "@models/Rule";
 import Logs from "@libs/Logs";
 import { rateLimiter } from "@libs/RateLimiter";
+import { isValidObjectId } from "mongoose";
 
 const router = Router();
 
@@ -58,7 +59,12 @@ router.put(
   async (req: Request, res: Response) => {
     const { guild_id, name, description, active, id } = req.body;
 
-    if (!guild_id || !name || !description || !active || !id) {
+    if (!id || !isValidObjectId(id)) {
+      res.status(400).json({ message: "Invalid Id provided" });
+      return;
+    }
+
+    if (!guild_id || !name || !description || !active) {
       res.status(400).json({ message: "You must provide all input" });
     } else {
       try {

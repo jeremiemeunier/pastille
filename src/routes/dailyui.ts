@@ -4,6 +4,7 @@ import Dailyui from "@models/Dailyui";
 import { DailyUiTypes } from "@/types/Dailyui.types";
 import Logs from "@libs/Logs";
 import { rateLimiter } from "@libs/RateLimiter";
+import { isValidObjectId } from "mongoose";
 
 const router = Router();
 
@@ -13,6 +14,11 @@ router.put(
   rateLimiter,
   async (req: Request, res: Response) => {
     const { id } = req.query;
+
+    if (!id || !isValidObjectId(id)) {
+      res.status(400).json({ message: "Invalid Id provided" });
+      return;
+    }
 
     try {
       const updateDailyUi = await Dailyui.findByIdAndUpdate(

@@ -2,12 +2,14 @@ import { raw, Request, Response, Router } from "express";
 import crypto from "crypto";
 import Logs from "@libs/Logs";
 import Streamers from "@models/Streamers";
+import { rateLimiter } from "@libs/RateLimiter";
 
 const router = Router();
 
 router.post(
   "/twitch/webhook",
   raw({ type: "*/*" }),
+  rateLimiter,
   async (req: Request, res: Response) => {
     const headers = req.headers;
 
@@ -49,7 +51,7 @@ router.post(
           try {
             await Streamers.findOneAndUpdate(
               {
-                id: notif.event.broadcaster_user_id,
+                id: { $eq: notif.event.broadcaster_user_id },
               },
               {
                 isValid: true,
@@ -74,7 +76,7 @@ router.post(
               // find a streamer with this id
               // update him to indicate is live and unannounced
               const req = await Streamers.findOneAndUpdate(
-                { id: broadcaster_user_id },
+                { id: { $eq: broadcaster_user_id } },
                 { isLive: true, isAnnounce: false },
                 { new: true }
               );
@@ -98,6 +100,7 @@ router.post(
 router.post(
   "/discord/webhook",
   raw({ type: "*/*" }),
+  rateLimiter,
   async (req: Request, res: Response) => {
     const signature = req.header("X-Signature-Ed25519");
     const timestamp = req.header("X-Signature-Timestamp");
