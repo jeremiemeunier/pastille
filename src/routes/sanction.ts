@@ -19,9 +19,9 @@ router.put(
         { checkable: false }
       );
       res.status(200).json({ data: updateSanction });
-    } catch (error: any) {
-      res.status(400).json({ message: "An error occured", error: error });
-      Logs("api:sanction:put", "error", error);
+    } catch (err: any) {
+      res.status(500).end();
+      Logs("api:sanction:put", "error", err);
     }
   }
 );
@@ -49,9 +49,9 @@ router.post(
       res
         .status(200)
         .json({ message: "New sanction items created", data: newSanction });
-    } catch (error: any) {
-      res.status(400).json({ message: "An error occured", error: error });
-      Logs("api:sanction:register:post", "error", error, guild_id);
+    } catch (err: any) {
+      res.status(500).end();
+      Logs("api:sanction:register:post", "error", err, guild_id);
     }
   }
 );
@@ -65,9 +65,9 @@ router.get("/sanction", isPastille, async (req: Request, res: Response) => {
       checkable: true,
     });
     res.status(200).json({ message: "Sanction find", data: allSanction });
-  } catch (error: any) {
-    res.status(400).json({ message: "An error occured", error: error });
-    Logs("api:sanction:get:all", "error", error, guild_id as string);
+  } catch (err: any) {
+    res.status(500).end();
+    Logs("api:sanction:get:all", "error", err, guild_id as string);
   }
 });
 

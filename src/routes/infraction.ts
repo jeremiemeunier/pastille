@@ -27,9 +27,9 @@ router.post(
       res
         .status(200)
         .json({ message: "New infraction items created", data: newInfraction });
-    } catch (error: any) {
-      res.status(400).json({ message: "An error occured", error: error });
-      Logs("api:infraction:post", "error", error, guild_id);
+    } catch (err: any) {
+      res.status(500).end();
+      Logs("api:infraction:post", "error", err, guild_id);
     }
   }
 );
@@ -48,9 +48,9 @@ router.get(
       res
         .status(200)
         .json({ message: "Infractions find", count: allInfractions });
-    } catch (error: any) {
-      res.status(400).json({ message: "An error occured", error: error });
-      Logs("api:infraction:get:all", "error", error, guild_id as string);
+    } catch (err: any) {
+      res.status(500).end();
+      Logs("api:infraction:get:all", "error", err, guild_id as string);
     }
   }
 );

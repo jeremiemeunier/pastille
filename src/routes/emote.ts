@@ -18,9 +18,9 @@ router.get("/emotes", isPastille, async (req: Request, res: Response) => {
     } else {
       res.status(200).json({ data: letterRequest });
     }
-  } catch (error: any) {
-    res.status(400).json({ message: "An error occured", error: error });
-    Logs("api:emotes:get", "error", error);
+  } catch (err: any) {
+    res.status(500).end();
+    Logs("api:emotes:get", "error", err);
   }
 });
 
@@ -43,9 +43,9 @@ router.get("/emotes/all", isPastille, async (req: Request, res: Response) => {
     } else {
       res.status(404).json({ message: "No letters found", http_response: 404 });
     }
-  } catch (error: any) {
-    res.status(400).json({ message: "An error occured", error: error });
-    Logs("api:emotes:get:all", "error", error);
+  } catch (err: any) {
+    res.status(500).end();
+    Logs("api:emotes:get:all", "error", err);
   }
 });
 
@@ -70,9 +70,9 @@ router.post(
         }
       });
       res.status(201).json({ message: "Emotes added" });
-    } catch (error: any) {
-      res.status(400).json({ message: "An error occured", error: error });
-      Logs("api:emotes:post:mass", "error", error);
+    } catch (err: any) {
+      res.status(500).end();
+      Logs("api:emotes:post:mass", "error", err);
     }
   }
 );

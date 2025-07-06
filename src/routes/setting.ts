@@ -70,9 +70,9 @@ router.post(
       res
         .status(200)
         .json({ message: "New settings registred", data: newSettingsRegistre });
-    } catch (error: any) {
-      res.status(400).json({ message: "An error occured", error: error });
-      Logs("api:settings:post", "error", error, guild_id);
+    } catch (err: any) {
+      res.status(500).end();
+      Logs("api:settings:post", "error", err, guild_id);
     }
   }
 );
@@ -92,9 +92,9 @@ router.get("/settings", isPastille, async (req: Request, res: Response) => {
     } else {
       res.status(200).json({ message: "Settings found", data: guildSettings });
     }
-  } catch (error: any) {
-    res.status(400).json({ message: "An error occured", error: error });
-    Logs("api:settings:get", "error", error, guild_id as string);
+  } catch (err: any) {
+    res.status(500).end();
+    Logs("api:settings:get", "error", err, guild_id as string);
   }
 });
 

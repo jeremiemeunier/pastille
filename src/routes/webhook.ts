@@ -80,8 +80,8 @@ router.post(
                 { isLive: true, isAnnounce: false },
                 { new: true }
               );
-            } catch (error: any) {
-              Logs("webhook", "error", error);
+            } catch (err: any) {
+              Logs("webhook", "error", err);
             }
           }
 

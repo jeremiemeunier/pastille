@@ -21,9 +21,9 @@ router.get(
           .status(404)
           .json({ message: "No streamer found", http_response: 404 });
       }
-    } catch (error: any) {
-      Logs("", "error", error);
-      res.status(500).json({ message: "An error occured", err: error });
+    } catch (err: any) {
+      res.status(500).end();
+      Logs("", "error", err);
     }
   }
 );
@@ -39,11 +39,9 @@ router.get("/twitch/live", isPastille, async (_req: Request, res: Response) => {
         .status(404)
         .json({ message: "No live to be announced", http_response: 404 });
     }
-  } catch (error: any) {
-    Logs("twitch", "error", error);
-    res.status(500).json({
-      message: "An error occured on getting live and unannounced live",
-    });
+  } catch (err: any) {
+    res.status(500).end();
+    Logs("twitch", "error", err);
   }
 });
 
@@ -65,10 +63,8 @@ router.patch(
 
       res.status(200).json({ message: "streamers entry has been updated" });
     } catch (err: any) {
+      res.status(500).end();
       Logs("twitch", "error", err);
-      res.status(500).json({
-        message: "An error occured on updating streamers isValid entry",
-      });
     }
   }
 );
@@ -136,9 +132,9 @@ router.post(
         await newDocs.save();
         res.status(201).json(newDocs);
       }
-    } catch (error: any) {
-      Logs("", "error", error, "post_listener");
-      res.status(500).json({ message: "An error occured on listener adding" });
+    } catch (err: any) {
+      res.status(500).end();
+      Logs("", "error", err, "post_listener");
     }
   }
 );
@@ -176,9 +172,9 @@ router.delete(
           .status(200)
           .json({ message: "Document has been removed successfully" });
       }
-    } catch (error: any) {
-      Logs("", "error", error, "post_listener");
-      res.status(500).json({ message: "An error occured on listener adding" });
+    } catch (err: any) {
+      res.status(500).end();
+      Logs("", "error", err, "post_listener");
     }
   }
 );

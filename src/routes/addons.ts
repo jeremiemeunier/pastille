@@ -18,9 +18,9 @@ router.get("/addons", isPastille, async (req: Request, res: Response) => {
     } else {
       res.status(200).json({ data: allAddonsRequest });
     }
-  } catch (error: any) {
-    res.status(400).json({ message: "An error occured", error: error });
-    Logs("api:addons:get", "error", error, guild_id as string);
+  } catch (err: any) {
+    res.status(500).end();
+    Logs("api:addons:get", "error", err, guild_id as string);
   }
 });
 
@@ -45,9 +45,9 @@ router.post("/addons/add", isPastille, async (req, res) => {
     res
       .status(200)
       .json({ message: "New addons registred", data: newAddonsRegister });
-  } catch (error: any) {
-    res.status(400).json({ message: "An error occured", error: error });
-    Logs("api:addons:post", "error", error, guild_id);
+  } catch (err: any) {
+    res.status(500).end();
+    Logs("api:addons:post", "error", err, guild_id);
   }
 });
 
@@ -63,8 +63,19 @@ router.put(
       return;
     }
 
-    if (!guild_id && !name && !active && !channel && !role) {
-      res.status(400).json({ message: "You must provide all inputs" });
+    if (
+      !guild_id ||
+      typeof guild_id !== "string" ||
+      !name ||
+      typeof name !== "string" ||
+      !active ||
+      typeof active !== "boolean" ||
+      !channel ||
+      typeof channel !== "string" ||
+      !role ||
+      typeof role !== "string"
+    ) {
+      res.status(400).json({ message: "You must provide all correct inputs" });
       return;
     }
 
@@ -83,9 +94,9 @@ router.put(
       res
         .status(200)
         .json({ message: "Addons has being updated", data: updatedAddons });
-    } catch (error: any) {
-      res.status(400).json({ message: "An error occured", error: error });
-      Logs("api:addons:put", "error", error, guild_id);
+    } catch (err: any) {
+      res.status(500).end();
+      Logs("api:addons:put", "error", err, guild_id);
     }
   }
 );

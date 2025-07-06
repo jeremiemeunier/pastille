@@ -18,9 +18,9 @@ router.get("/rules", isPastille, async (req: Request, res: Response) => {
     } else {
       res.status(200).json({ data: allRulesRequest });
     }
-  } catch (error: any) {
-    res.status(400).json({ message: "An error occured", error: error });
-    Logs("api:rules:get", "error", error);
+  } catch (err: any) {
+    res.status(500).end();
+    Logs("api:rules:get", "error", err);
   }
 });
 
@@ -44,9 +44,9 @@ router.post(
 
         await newRulesRegistre.save();
         res.status(201).json({ data: newRulesRegistre });
-      } catch (error: any) {
-        res.status(400).json({ message: "An error occured", error: error });
-        Logs("api:rules:post", "error", error, guild_id);
+      } catch (err: any) {
+        res.status(500).end();
+        Logs("api:rules:post", "error", err, guild_id);
       }
     }
   }
@@ -64,14 +64,23 @@ router.put(
       return;
     }
 
-    if (!guild_id || !name || !description || !active) {
+    if (
+      !guild_id ||
+      typeof guild_id !== "string" ||
+      !name ||
+      typeof name !== "string" ||
+      !description ||
+      typeof description !== "string" ||
+      !active ||
+      typeof active !== "boolean"
+    ) {
       res.status(400).json({ message: "You must provide all input" });
     } else {
       try {
         const updatedRulesItem = await Rule.findByIdAndUpdate(
           { _id: { $eq: id } },
           {
-            guild_id: guild_id,
+            guild_id: { $eq: guild_id },
             name: name,
             description: description,
             active: active,
@@ -79,9 +88,9 @@ router.put(
         );
 
         res.status(200).json({ data: updatedRulesItem });
-      } catch (error: any) {
-        res.status(400).json({ message: "An error occured", error: error });
-        Logs("api:rules:put", "error", error, guild_id);
+      } catch (err: any) {
+        res.status(500).end();
+        Logs("api:rules:put", "error", err, guild_id);
       }
     }
   }

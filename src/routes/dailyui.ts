@@ -22,14 +22,15 @@ router.put(
 
     try {
       const updateDailyUi = await Dailyui.findByIdAndUpdate(
-        { _id: id },
+        { _id: { $eq: id } },
         { available: false }
       );
       res
         .status(201)
         .json({ message: "State updated for DailyUi", data: updateDailyUi });
-    } catch (error: any) {
-      Logs("api:dailyui:put", "error", error);
+    } catch (err: any) {
+      res.status(500).end();
+      Logs("api:dailyui:put", "error", err);
     }
   }
 );
@@ -52,8 +53,9 @@ router.get("/dailyui", isPastille, async (req: Request, res: Response) => {
         .status(200)
         .json({ message: "DailyUi available", data: dailyuiNotSend });
     }
-  } catch (error: any) {
-    Logs("api:dailyui:get", "error", error, guild_id as string);
+  } catch (err: any) {
+    res.status(500).end();
+    Logs("api:dailyui:get", "error", err, guild_id as string);
   }
 });
 
@@ -79,8 +81,9 @@ router.post(
         res
           .status(200)
           .json({ message: "New daily challenge added", data: newDailyUi });
-      } catch (error: any) {
-        Logs("api:dailyui:add", "error", error, guild_id);
+      } catch (err: any) {
+        res.status(500).end();
+        Logs("api:dailyui:add", "error", err, guild_id);
       }
     }
   }
@@ -102,8 +105,8 @@ router.post(
           description: dailychallenge.description,
         });
         await newDailyUi.save();
-      } catch (error: any) {
-        Logs("api:dailyui:mass", "error", error);
+      } catch (err: any) {
+        Logs("api:dailyui:mass", "error", err);
       }
     });
 

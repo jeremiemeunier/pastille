@@ -18,9 +18,9 @@ router.get("/roles", isPastille, async (req: Request, res: Response) => {
     } else {
       res.status(200).json({ data: allRolesRequest });
     }
-  } catch (error: any) {
-    res.status(400).json({ message: "An error occured", error: error });
-    Logs("api:roles:get", "error", error, guild_id as string);
+  } catch (err: any) {
+    res.status(500).end();
+    Logs("api:roles:get", "error", err, guild_id as string);
   }
 });
 
@@ -45,9 +45,9 @@ router.post(
 
         await newRoleRegistre.save();
         res.status(201).json({ data: newRoleRegistre });
-      } catch (error: any) {
-        res.status(400).json({ message: "An error occured", error: error });
-        Logs("api:roles:post", "error", error, guild_id as string);
+      } catch (err: any) {
+        res.status(500).end();
+        Logs("api:roles:post", "error", err, guild_id as string);
       }
     }
   }
@@ -60,7 +60,7 @@ router.put(
   async (req: Request, res: Response) => {
     const { guild_id, name, description, role, id, emote } = req.body;
 
-    if (!id || !isValidObjectId(id)) {
+    if (!id || !isValidObjectId(id) || typeof id !== "string") {
       res.status(400).json({ message: "Invalid Id provided" });
       return;
     }
@@ -81,9 +81,9 @@ router.put(
         );
 
         res.status(200).json({ data: updatedRoleItem });
-      } catch (error: any) {
-        res.status(400).json({ message: "An error occured", error: error });
-        Logs("api:roles:put", "error", error, guild_id as string);
+      } catch (err: any) {
+        res.status(500).end();
+        Logs("api:roles:put", "error", err, guild_id as string);
       }
     }
   }
