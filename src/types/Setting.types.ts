@@ -1,4 +1,5 @@
 export interface SettingTypes {
+  _id?: string;
   guild_id: string;
   premium: boolean;
   premium_end: string;
