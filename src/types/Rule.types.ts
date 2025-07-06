@@ -1,4 +1,5 @@
 export interface RuleTypes {
+  _id?: string;
   guild_id: string;
   name: string;
   description: string;

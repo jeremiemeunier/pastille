@@ -1,16 +1,16 @@
 import { Request, Response, Router } from "express";
 import { isPastille } from "../middlewares/isPastille";
-import Twitch from "@models/Twitch";
 import Logs from "@libs/Logs";
 import Streamers from "@models/Streamers";
 import { StreamerAnnouncerTypes } from "@/types/Streamers.types";
-import { InferAttributes } from "sequelize";
+import { rateLimiter } from "@libs/RateLimiter";
 
 const router = Router();
 
 router.get(
   "/twitch/streamers",
   isPastille,
+  rateLimiter,
   async (_req: Request, res: Response) => {
     try {
       const streamers = await Streamers.find({ isValid: false });
@@ -22,35 +22,39 @@ router.get(
           .status(404)
           .json({ message: "No streamer found", http_response: 404 });
       }
-    } catch (error: any) {
-      Logs("", "error", error);
-      res.status(500).json({ message: "An error occured", err: error });
+    } catch (err: any) {
+      res.status(500).end();
+      Logs("", "error", err);
     }
   }
 );
 
-router.get("/twitch/live", isPastille, async (_req: Request, res: Response) => {
-  try {
-    const query = await Streamers.find({ isLive: true, isAnnounce: false });
+router.get(
+  "/twitch/live",
+  isPastille,
+  rateLimiter,
+  async (_req: Request, res: Response) => {
+    try {
+      const query = await Streamers.find({ isLive: true, isAnnounce: false });
 
-    if (query && query.length > 0) {
-      res.status(200).json(query);
-    } else {
-      res
-        .status(404)
-        .json({ message: "No live to be announced", http_response: 404 });
+      if (query && query.length > 0) {
+        res.status(200).json(query);
+      } else {
+        res
+          .status(404)
+          .json({ message: "No live to be announced", http_response: 404 });
+      }
+    } catch (err: any) {
+      res.status(500).end();
+      Logs("twitch", "error", err);
     }
-  } catch (error: any) {
-    Logs("twitch", "error", error);
-    res.status(500).json({
-      message: "An error occured on getting live and unannounced live",
-    });
   }
-});
+);
 
 router.patch(
   "/twitch/streamers/:id",
   isPastille,
+  rateLimiter,
   async (req: Request, res: Response) => {
     const { id } = req.params;
 
@@ -65,12 +69,8 @@ router.patch(
 
       res.status(200).json({ message: "streamers entry has been updated" });
     } catch (err: any) {
+      res.status(500).end();
       Logs("twitch", "error", err);
-      res
-        .status(500)
-        .json({
-          message: "An error occured on updating streamers isValid entry",
-        });
     }
   }
 );
@@ -78,6 +78,7 @@ router.patch(
 router.post(
   "/twitch/streamers",
   isPastille,
+  rateLimiter,
   async (req: Request, res: Response) => {
     const {
       streamer_id,
@@ -137,9 +138,9 @@ router.post(
         await newDocs.save();
         res.status(201).json(newDocs);
       }
-    } catch (error: any) {
-      Logs("", "error", error, "post_listener");
-      res.status(500).json({ message: "An error occured on listener adding" });
+    } catch (err: any) {
+      res.status(500).end();
+      Logs("", "error", err, "post_listener");
     }
   }
 );
@@ -147,6 +148,7 @@ router.post(
 router.delete(
   "/twitch/streamers",
   isPastille,
+  rateLimiter,
   async (req: Request, res: Response) => {
     const { streamer_id, guild_id } = req.body;
 
@@ -176,9 +178,9 @@ router.delete(
           .status(200)
           .json({ message: "Document has been removed successfully" });
       }
-    } catch (error: any) {
-      Logs("", "error", error, "post_listener");
-      res.status(500).json({ message: "An error occured on listener adding" });
+    } catch (err: any) {
+      res.status(500).end();
+      Logs("", "error", err, "post_listener");
     }
   }
 );
