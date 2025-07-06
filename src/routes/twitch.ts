@@ -10,6 +10,7 @@ const router = Router();
 router.get(
   "/twitch/streamers",
   isPastille,
+  rateLimiter,
   async (_req: Request, res: Response) => {
     try {
       const streamers = await Streamers.find({ isValid: false });
@@ -28,22 +29,27 @@ router.get(
   }
 );
 
-router.get("/twitch/live", isPastille, async (_req: Request, res: Response) => {
-  try {
-    const query = await Streamers.find({ isLive: true, isAnnounce: false });
+router.get(
+  "/twitch/live",
+  isPastille,
+  rateLimiter,
+  async (_req: Request, res: Response) => {
+    try {
+      const query = await Streamers.find({ isLive: true, isAnnounce: false });
 
-    if (query && query.length > 0) {
-      res.status(200).json(query);
-    } else {
-      res
-        .status(404)
-        .json({ message: "No live to be announced", http_response: 404 });
+      if (query && query.length > 0) {
+        res.status(200).json(query);
+      } else {
+        res
+          .status(404)
+          .json({ message: "No live to be announced", http_response: 404 });
+      }
+    } catch (err: any) {
+      res.status(500).end();
+      Logs("twitch", "error", err);
     }
-  } catch (err: any) {
-    res.status(500).end();
-    Logs("twitch", "error", err);
   }
-});
+);
 
 router.patch(
   "/twitch/streamers/:id",

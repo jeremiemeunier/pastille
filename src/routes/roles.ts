@@ -7,22 +7,27 @@ import { isValidObjectId } from "mongoose";
 
 const router = Router();
 
-router.get("/roles", isPastille, async (req: Request, res: Response) => {
-  const { guild_id } = req.query;
+router.get(
+  "/roles",
+  isPastille,
+  rateLimiter,
+  async (req: Request, res: Response) => {
+    const { guild_id } = req.query;
 
-  try {
-    const allRolesRequest = await Role.find({ guild_id: { $eq: guild_id } });
+    try {
+      const allRolesRequest = await Role.find({ guild_id: { $eq: guild_id } });
 
-    if (allRolesRequest.length === 0) {
-      res.status(404).json({ message: "No roles", http_response: 404 });
-    } else {
-      res.status(200).json({ data: allRolesRequest });
+      if (allRolesRequest.length === 0) {
+        res.status(404).json({ message: "No roles", http_response: 404 });
+      } else {
+        res.status(200).json({ data: allRolesRequest });
+      }
+    } catch (err: any) {
+      res.status(500).end();
+      Logs("api:roles:get", "error", err, guild_id as string);
     }
-  } catch (err: any) {
-    res.status(500).end();
-    Logs("api:roles:get", "error", err, guild_id as string);
   }
-});
+);
 
 router.post(
   "/roles/add",

@@ -7,24 +7,31 @@ import { isValidObjectId } from "mongoose";
 
 const router = Router();
 
-router.get("/addons", isPastille, async (req: Request, res: Response) => {
-  const { guild_id } = req.query;
+router.get(
+  "/addons",
+  isPastille,
+  rateLimiter,
+  async (req: Request, res: Response) => {
+    const { guild_id } = req.query;
 
-  try {
-    const allAddonsRequest = await Addons.find({ guild_id: { $eq: guild_id } });
+    try {
+      const allAddonsRequest = await Addons.find({
+        guild_id: { $eq: guild_id },
+      });
 
-    if (allAddonsRequest.length === 0) {
-      res.status(404).json({ message: "No addons", http_response: 404 });
-    } else {
-      res.status(200).json({ data: allAddonsRequest });
+      if (allAddonsRequest.length === 0) {
+        res.status(404).json({ message: "No addons", http_response: 404 });
+      } else {
+        res.status(200).json({ data: allAddonsRequest });
+      }
+    } catch (err: any) {
+      res.status(500).end();
+      Logs("api:addons:get", "error", err, guild_id as string);
     }
-  } catch (err: any) {
-    res.status(500).end();
-    Logs("api:addons:get", "error", err, guild_id as string);
   }
-});
+);
 
-router.post("/addons/add", isPastille, async (req, res) => {
+router.post("/addons/add", isPastille, rateLimiter, async (req, res) => {
   const { guild_id, name, active, channel, role } = req.body;
 
   if (!guild_id && !name && !active && !channel && !role) {

@@ -37,6 +37,7 @@ router.post(
 router.get(
   "/infraction/all",
   isPastille,
+  rateLimiter,
   async (req: Request, res: Response) => {
     const { user_id, guild_id } = req.query;
 

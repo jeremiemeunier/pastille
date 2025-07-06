@@ -7,22 +7,27 @@ import { isValidObjectId } from "mongoose";
 
 const router = Router();
 
-router.get("/rules", isPastille, async (req: Request, res: Response) => {
-  const { guild_id } = req.query;
+router.get(
+  "/rules",
+  isPastille,
+  rateLimiter,
+  async (req: Request, res: Response) => {
+    const { guild_id } = req.query;
 
-  try {
-    const allRulesRequest = await Rule.find({ guild_id: { $eq: guild_id } });
+    try {
+      const allRulesRequest = await Rule.find({ guild_id: { $eq: guild_id } });
 
-    if (allRulesRequest.length === 0) {
-      res.status(404).json({ message: "No rules", http_response: 404 });
-    } else {
-      res.status(200).json({ data: allRulesRequest });
+      if (allRulesRequest.length === 0) {
+        res.status(404).json({ message: "No rules", http_response: 404 });
+      } else {
+        res.status(200).json({ data: allRulesRequest });
+      }
+    } catch (err: any) {
+      res.status(500).end();
+      Logs("api:rules:get", "error", err);
     }
-  } catch (err: any) {
-    res.status(500).end();
-    Logs("api:rules:get", "error", err);
   }
-});
+);
 
 router.post(
   "/rules/add",

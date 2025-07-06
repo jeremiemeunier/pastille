@@ -56,19 +56,24 @@ router.post(
   }
 );
 
-router.get("/sanction", isPastille, async (req: Request, res: Response) => {
-  const { guild_id } = req.query;
+router.get(
+  "/sanction",
+  isPastille,
+  rateLimiter,
+  async (req: Request, res: Response) => {
+    const { guild_id } = req.query;
 
-  try {
-    const allSanction = await Sanction.find({
-      guild_id: { $eq: guild_id },
-      checkable: true,
-    });
-    res.status(200).json({ message: "Sanction find", data: allSanction });
-  } catch (err: any) {
-    res.status(500).end();
-    Logs("api:sanction:get:all", "error", err, guild_id as string);
+    try {
+      const allSanction = await Sanction.find({
+        guild_id: { $eq: guild_id },
+        checkable: true,
+      });
+      res.status(200).json({ message: "Sanction find", data: allSanction });
+    } catch (err: any) {
+      res.status(500).end();
+      Logs("api:sanction:get:all", "error", err, guild_id as string);
+    }
   }
-});
+);
 
 export default router;

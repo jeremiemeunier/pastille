@@ -77,25 +77,32 @@ router.post(
   }
 );
 
-router.get("/settings", isPastille, async (req: Request, res: Response) => {
-  const { guild_id } = req.query;
+router.get(
+  "/settings",
+  isPastille,
+  rateLimiter,
+  async (req: Request, res: Response) => {
+    const { guild_id } = req.query;
 
-  try {
-    const guildSettings = await Setting.findOne({
-      guild_id: { $eq: guild_id },
-    });
+    try {
+      const guildSettings = await Setting.findOne({
+        guild_id: { $eq: guild_id },
+      });
 
-    if (!guildSettings) {
-      res
-        .status(404)
-        .json({ message: "No settings found", http_response: 404 });
-    } else {
-      res.status(200).json({ message: "Settings found", data: guildSettings });
+      if (!guildSettings) {
+        res
+          .status(404)
+          .json({ message: "No settings found", http_response: 404 });
+      } else {
+        res
+          .status(200)
+          .json({ message: "Settings found", data: guildSettings });
+      }
+    } catch (err: any) {
+      res.status(500).end();
+      Logs("api:settings:get", "error", err, guild_id as string);
     }
-  } catch (err: any) {
-    res.status(500).end();
-    Logs("api:settings:get", "error", err, guild_id as string);
   }
-});
+);
 
 export default router;

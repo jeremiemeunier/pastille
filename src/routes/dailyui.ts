@@ -35,29 +35,34 @@ router.put(
   }
 );
 
-router.get("/dailyui", isPastille, async (req: Request, res: Response) => {
-  const { guild_id } = req.query;
+router.get(
+  "/dailyui",
+  isPastille,
+  rateLimiter,
+  async (req: Request, res: Response) => {
+    const { guild_id } = req.query;
 
-  try {
-    const dailyuiNotSend = await Dailyui.findOne({
-      available: true,
-      guild_id: guild_id,
-    });
+    try {
+      const dailyuiNotSend = await Dailyui.findOne({
+        available: true,
+        guild_id: guild_id,
+      });
 
-    if (!dailyuiNotSend) {
-      res
-        .status(404)
-        .json({ message: "No dailyui available", http_response: 404 });
-    } else {
-      res
-        .status(200)
-        .json({ message: "DailyUi available", data: dailyuiNotSend });
+      if (!dailyuiNotSend) {
+        res
+          .status(404)
+          .json({ message: "No dailyui available", http_response: 404 });
+      } else {
+        res
+          .status(200)
+          .json({ message: "DailyUi available", data: dailyuiNotSend });
+      }
+    } catch (err: any) {
+      res.status(500).end();
+      Logs("api:dailyui:get", "error", err, guild_id as string);
     }
-  } catch (err: any) {
-    res.status(500).end();
-    Logs("api:dailyui:get", "error", err, guild_id as string);
   }
-});
+);
 
 router.post(
   "/dailyui",

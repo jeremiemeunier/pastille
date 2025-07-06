@@ -7,47 +7,59 @@ import { rateLimiter } from "@libs/RateLimiter";
 
 const router = Router();
 
-router.get("/emotes", isPastille, async (req: Request, res: Response) => {
-  const { letter } = req.query;
+router.get(
+  "/emotes",
+  isPastille,
+  rateLimiter,
+  async (req: Request, res: Response) => {
+    const { letter } = req.query;
 
-  try {
-    const letterRequest = await Emote.findOne({ letter: { $eq: letter } });
+    try {
+      const letterRequest = await Emote.findOne({ letter: { $eq: letter } });
 
-    if (!letterRequest) {
-      res.status(404).json({ message: "No emotes", http_response: 404 });
-    } else {
-      res.status(200).json({ data: letterRequest });
+      if (!letterRequest) {
+        res.status(404).json({ message: "No emotes", http_response: 404 });
+      } else {
+        res.status(200).json({ data: letterRequest });
+      }
+    } catch (err: any) {
+      res.status(500).end();
+      Logs("api:emotes:get", "error", err);
     }
-  } catch (err: any) {
-    res.status(500).end();
-    Logs("api:emotes:get", "error", err);
   }
-});
+);
 
-router.get("/emotes/all", isPastille, async (req: Request, res: Response) => {
-  const { limit } = req.query;
+router.get(
+  "/emotes/all",
+  isPastille,
+  rateLimiter,
+  async (req: Request, res: Response) => {
+    const { limit } = req.query;
 
-  try {
-    let allLettersRequest;
+    try {
+      let allLettersRequest;
 
-    if (limit && parseInt(limit as string) > 0) {
-      allLettersRequest = await Emote.find()
-        .limit(parseInt(limit as string))
-        .sort({ letter: "asc" });
-    } else {
-      allLettersRequest = await Emote.find().sort({ letter: "asc" });
+      if (limit && parseInt(limit as string) > 0) {
+        allLettersRequest = await Emote.find()
+          .limit(parseInt(limit as string))
+          .sort({ letter: "asc" });
+      } else {
+        allLettersRequest = await Emote.find().sort({ letter: "asc" });
+      }
+
+      if (allLettersRequest.length > 0) {
+        res.status(200).json({ data: allLettersRequest });
+      } else {
+        res
+          .status(404)
+          .json({ message: "No letters found", http_response: 404 });
+      }
+    } catch (err: any) {
+      res.status(500).end();
+      Logs("api:emotes:get:all", "error", err);
     }
-
-    if (allLettersRequest.length > 0) {
-      res.status(200).json({ data: allLettersRequest });
-    } else {
-      res.status(404).json({ message: "No letters found", http_response: 404 });
-    }
-  } catch (err: any) {
-    res.status(500).end();
-    Logs("api:emotes:get:all", "error", err);
   }
-});
+);
 
 router.post(
   "/emotes/mass",
