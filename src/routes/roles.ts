@@ -65,14 +65,25 @@ router.put(
       return;
     }
 
-    if (!guild_id || !name || !description || !role || !emote) {
+    if (
+      !guild_id ||
+      typeof guild_id !== "string" ||
+      !name ||
+      typeof name !== "string" ||
+      !description ||
+      typeof description !== "string" ||
+      !role ||
+      typeof role !== "string" ||
+      !emote ||
+      typeof emote !== "string"
+    ) {
       res.status(400).json({ message: "You must provide all input" });
     } else {
       try {
         const updatedRoleItem = await Role.findByIdAndUpdate(
           { _id: { $eq: id } },
           {
-            guild_id: guild_id,
+            guild_id: { $eq: guild_id },
             name: name,
             description: description,
             role: role,
