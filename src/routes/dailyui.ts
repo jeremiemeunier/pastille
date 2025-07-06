@@ -42,10 +42,15 @@ router.get(
   async (req: Request, res: Response) => {
     const { guild_id } = req.query;
 
+    if (!guild_id || typeof guild_id !== "string") {
+      res.status(400).end();
+      return;
+    }
+
     try {
       const dailyuiNotSend = await Dailyui.findOne({
         available: true,
-        guild_id: guild_id,
+        guild_id: { $eq: guild_id },
       });
 
       if (!dailyuiNotSend) {
@@ -71,12 +76,19 @@ router.post(
   async (req: Request, res: Response) => {
     const { guild_id, state, title, description } = req.body;
 
-    if (!guild_id || !title || !description) {
+    if (
+      !guild_id ||
+      typeof guild_id !== "string" ||
+      !title ||
+      typeof title !== "string" ||
+      !description ||
+      typeof description !== "string"
+    ) {
       res.status(400).json({ message: "Complete all input", data: req.body });
     } else {
       try {
         const newDailyUi = new Dailyui({
-          guild_id: guild_id,
+          guild_id: { $eq: guild_id },
           available: state || true,
           title: title,
           description: description,
