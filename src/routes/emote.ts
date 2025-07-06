@@ -1,12 +1,13 @@
-import { Router } from "express";
+import { Request, Response, Router } from "express";
 import { isPastille } from "../middlewares/isPastille";
 import Emote from "@models/Emote";
 import { EmoteTypes } from "@/types/Emote.types";
 import Logs from "@libs/Logs";
+import { rateLimiter } from "@libs/RateLimiter";
 
 const router = Router();
 
-router.get("/emotes", isPastille, async (req, res) => {
+router.get("/emotes", isPastille, async (req: Request, res: Response) => {
   const { letter } = req.query;
 
   try {
@@ -23,7 +24,7 @@ router.get("/emotes", isPastille, async (req, res) => {
   }
 });
 
-router.get("/emotes/all", isPastille, async (req, res) => {
+router.get("/emotes/all", isPastille, async (req: Request, res: Response) => {
   const { limit } = req.query;
 
   try {
@@ -48,27 +49,32 @@ router.get("/emotes/all", isPastille, async (req, res) => {
   }
 });
 
-router.post("/emotes/mass", isPastille, async (req, res) => {
-  const { emotes } = req.body;
+router.post(
+  "/emotes/mass",
+  isPastille,
+  rateLimiter,
+  async (req: Request, res: Response) => {
+    const { emotes } = req.body;
 
-  try {
-    emotes.map(async (item: EmoteTypes) => {
-      const emoteRegister = new Emote({
-        letter: item.letter,
-        emote: item.emote,
+    try {
+      emotes.map(async (item: EmoteTypes) => {
+        const emoteRegister = new Emote({
+          letter: item.letter,
+          emote: item.emote,
+        });
+
+        try {
+          await emoteRegister.save();
+        } catch (error: any) {
+          Logs("api:emotes:post:save", "error", error);
+        }
       });
-
-      try {
-        await emoteRegister.save();
-      } catch (error: any) {
-        Logs("api:emotes:post:save", "error", error);
-      }
-    });
-    res.status(201).json({ message: "Emotes added" });
-  } catch (error: any) {
-    res.status(400).json({ message: "An error occured", error: error });
-    Logs("api:emotes:post:mass", "error", error);
+      res.status(201).json({ message: "Emotes added" });
+    } catch (error: any) {
+      res.status(400).json({ message: "An error occured", error: error });
+      Logs("api:emotes:post:mass", "error", error);
+    }
   }
-});
+);
 
 export default router;

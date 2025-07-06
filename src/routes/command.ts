@@ -1,11 +1,12 @@
-import { Router } from "express";
+import { Request, Response, Router } from "express";
 import { isPastille } from "../middlewares/isPastille";
 import Command from "@models/Command";
 import Logs from "@libs/Logs";
+import { rateLimiter } from "@libs/RateLimiter";
 
 const router = Router();
 
-router.get("/commands", isPastille, async (req, res) => {
+router.get("/commands", isPastille, async (req: Request, res: Response) => {
   const { guild_id } = req.query;
 
   try {
@@ -24,7 +25,7 @@ router.get("/commands", isPastille, async (req, res) => {
   }
 });
 
-router.get("/commands/id", isPastille, async (req, res) => {
+router.get("/commands/id", isPastille, async (req: Request, res: Response) => {
   const { id } = req.query;
 
   try {
@@ -43,29 +44,34 @@ router.get("/commands/id", isPastille, async (req, res) => {
   }
 });
 
-router.post("/commands/add", isPastille, async (req, res) => {
-  const { terms, guild_id, response, role_id } = req.body;
+router.post(
+  "/commands/add",
+  isPastille,
+  rateLimiter,
+  async (req: Request, res: Response) => {
+    const { terms, guild_id, response, role_id } = req.body;
 
-  if (!terms || !guild_id || !response) {
-    res.status(400).json({ message: "You must provide all inputs" });
-  } else {
-    try {
-      const newCommandsRegister = new Command({
-        guild_id: guild_id,
-        role_id: role_id ? role_id : "",
-        terms: terms,
-        response: response,
-      });
+    if (!terms || !guild_id || !response) {
+      res.status(400).json({ message: "You must provide all inputs" });
+    } else {
+      try {
+        const newCommandsRegister = new Command({
+          guild_id: guild_id,
+          role_id: role_id ? role_id : "",
+          terms: terms,
+          response: response,
+        });
 
-      await newCommandsRegister.save();
-      res
-        .status(200)
-        .json({ message: "New command added", data: newCommandsRegister });
-    } catch (error: any) {
-      res.status(400).json({ message: "An error occured", error: error });
-      Logs("api:commands:add", "error", error, guild_id);
+        await newCommandsRegister.save();
+        res
+          .status(200)
+          .json({ message: "New command added", data: newCommandsRegister });
+      } catch (error: any) {
+        res.status(400).json({ message: "An error occured", error: error });
+        Logs("api:commands:add", "error", error, guild_id);
+      }
     }
   }
-});
+);
 
 export default router;

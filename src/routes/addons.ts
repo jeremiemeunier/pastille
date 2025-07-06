@@ -1,11 +1,12 @@
-import { Router } from "express";
+import { Request, Response, Router } from "express";
 import { isPastille } from "../middlewares/isPastille";
 import Addons from "@models/Addons";
 import Logs from "@libs/Logs";
+import { rateLimiter } from "@libs/RateLimiter";
 
 const router = Router();
 
-router.get("/addons", isPastille, async (req, res) => {
+router.get("/addons", isPastille, async (req: Request, res: Response) => {
   const { guild_id } = req.query;
 
   try {
@@ -49,33 +50,38 @@ router.post("/addons/add", isPastille, async (req, res) => {
   }
 });
 
-router.put("/addons/update", isPastille, async (req, res) => {
-  const { guild_id, name, active, channel, role, id } = req.body;
+router.put(
+  "/addons/update",
+  isPastille,
+  rateLimiter,
+  async (req: Request, res: Response) => {
+    const { guild_id, name, active, channel, role, id } = req.body;
 
-  if (!guild_id && !name && !active && !channel && !role) {
-    res.status(400).json({ message: "You must provide all inputs" });
-    return;
+    if (!guild_id && !name && !active && !channel && !role) {
+      res.status(400).json({ message: "You must provide all inputs" });
+      return;
+    }
+
+    try {
+      const updatedAddons = await Addons.findByIdAndUpdate(
+        { _id: { $eq: id } },
+        {
+          guild_id: guild_id,
+          name: name,
+          active: active,
+          channel: channel,
+          role: role,
+        }
+      );
+
+      res
+        .status(200)
+        .json({ message: "Addons has being updated", data: updatedAddons });
+    } catch (error: any) {
+      res.status(400).json({ message: "An error occured", error: error });
+      Logs("api:addons:put", "error", error, guild_id);
+    }
   }
-
-  try {
-    const updatedAddons = await Addons.findByIdAndUpdate(
-      { _id: { $eq: id } },
-      {
-        guild_id: guild_id,
-        name: name,
-        active: active,
-        channel: channel,
-        role: role,
-      }
-    );
-
-    res
-      .status(200)
-      .json({ message: "Addons has being updated", data: updatedAddons });
-  } catch (error: any) {
-    res.status(400).json({ message: "An error occured", error: error });
-    Logs("api:addons:put", "error", error, guild_id);
-  }
-});
+);
 
 export default router;

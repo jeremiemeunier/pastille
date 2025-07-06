@@ -1,11 +1,12 @@
-import { Router } from "express";
+import { Request, Response, Router } from "express";
 import { isPastille } from "../middlewares/isPastille";
 import Role from "@models/Role";
 import Logs from "@libs/Logs";
+import { rateLimiter } from "@libs/RateLimiter";
 
 const router = Router();
 
-router.get("/roles", isPastille, async (req, res) => {
+router.get("/roles", isPastille, async (req: Request, res: Response) => {
   const { guild_id } = req.query;
 
   try {
@@ -22,54 +23,64 @@ router.get("/roles", isPastille, async (req, res) => {
   }
 });
 
-router.post("/roles/add", isPastille, async (req, res) => {
-  const { guild_id, name, description, role, emote } = req.body;
+router.post(
+  "/roles/add",
+  isPastille,
+  rateLimiter,
+  async (req: Request, res: Response) => {
+    const { guild_id, name, description, role, emote } = req.body;
 
-  if (!guild_id || !name || !description || !role || !emote) {
-    res.status(400).json({ message: "You must provide all input" });
-  } else {
-    try {
-      const newRoleRegistre = new Role({
-        guild_id: guild_id,
-        name: name,
-        role: role,
-        emote: emote,
-        description: description,
-      });
-
-      await newRoleRegistre.save();
-      res.status(201).json({ data: newRoleRegistre });
-    } catch (error: any) {
-      res.status(400).json({ message: "An error occured", error: error });
-      Logs("api:roles:post", "error", error, guild_id as string);
-    }
-  }
-});
-
-router.put("/roles/update", isPastille, async (req, res) => {
-  const { guild_id, name, description, role, id, emote } = req.body;
-
-  if (!guild_id || !name || !description || !role || !emote || !id) {
-    res.status(400).json({ message: "You must provide all input" });
-  } else {
-    try {
-      const updatedRoleItem = await Role.findByIdAndUpdate(
-        { _id: { $eq: id } },
-        {
+    if (!guild_id || !name || !description || !role || !emote) {
+      res.status(400).json({ message: "You must provide all input" });
+    } else {
+      try {
+        const newRoleRegistre = new Role({
           guild_id: guild_id,
           name: name,
-          description: description,
           role: role,
           emote: emote,
-        }
-      );
+          description: description,
+        });
 
-      res.status(200).json({ data: updatedRoleItem });
-    } catch (error: any) {
-      res.status(400).json({ message: "An error occured", error: error });
-      Logs("api:roles:put", "error", error, guild_id as string);
+        await newRoleRegistre.save();
+        res.status(201).json({ data: newRoleRegistre });
+      } catch (error: any) {
+        res.status(400).json({ message: "An error occured", error: error });
+        Logs("api:roles:post", "error", error, guild_id as string);
+      }
     }
   }
-});
+);
+
+router.put(
+  "/roles/update",
+  isPastille,
+  rateLimiter,
+  async (req: Request, res: Response) => {
+    const { guild_id, name, description, role, id, emote } = req.body;
+
+    if (!guild_id || !name || !description || !role || !emote || !id) {
+      res.status(400).json({ message: "You must provide all input" });
+    } else {
+      try {
+        const updatedRoleItem = await Role.findByIdAndUpdate(
+          { _id: { $eq: id } },
+          {
+            guild_id: guild_id,
+            name: name,
+            description: description,
+            role: role,
+            emote: emote,
+          }
+        );
+
+        res.status(200).json({ data: updatedRoleItem });
+      } catch (error: any) {
+        res.status(400).json({ message: "An error occured", error: error });
+        Logs("api:roles:put", "error", error, guild_id as string);
+      }
+    }
+  }
+);
 
 export default router;

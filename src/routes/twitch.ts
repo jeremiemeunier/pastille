@@ -1,10 +1,9 @@
 import { Request, Response, Router } from "express";
 import { isPastille } from "../middlewares/isPastille";
-import Twitch from "@models/Twitch";
 import Logs from "@libs/Logs";
 import Streamers from "@models/Streamers";
 import { StreamerAnnouncerTypes } from "@/types/Streamers.types";
-import { InferAttributes } from "sequelize";
+import { rateLimiter } from "@libs/RateLimiter";
 
 const router = Router();
 
@@ -48,18 +47,10 @@ router.get("/twitch/live", isPastille, async (_req: Request, res: Response) => {
   }
 });
 
-import rateLimit from "express-rate-limit";
-
-const patchStreamerLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
-  message: { message: "Too many requests, please try again later." },
-});
-
 router.patch(
   "/twitch/streamers/:id",
   isPastille,
-  patchStreamerLimiter,
+  rateLimiter,
   async (req: Request, res: Response) => {
     const { id } = req.params;
 
@@ -75,11 +66,9 @@ router.patch(
       res.status(200).json({ message: "streamers entry has been updated" });
     } catch (err: any) {
       Logs("twitch", "error", err);
-      res
-        .status(500)
-        .json({
-          message: "An error occured on updating streamers isValid entry",
-        });
+      res.status(500).json({
+        message: "An error occured on updating streamers isValid entry",
+      });
     }
   }
 );
@@ -87,6 +76,7 @@ router.patch(
 router.post(
   "/twitch/streamers",
   isPastille,
+  rateLimiter,
   async (req: Request, res: Response) => {
     const {
       streamer_id,
@@ -156,6 +146,7 @@ router.post(
 router.delete(
   "/twitch/streamers",
   isPastille,
+  rateLimiter,
   async (req: Request, res: Response) => {
     const { streamer_id, guild_id } = req.body;
 
