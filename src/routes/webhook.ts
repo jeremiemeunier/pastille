@@ -1,4 +1,4 @@
-import { raw, Router } from "express";
+import { raw, Request, Response, Router } from "express";
 import crypto from "crypto";
 import Logs from "@libs/Logs";
 import Streamers from "@models/Streamers";
@@ -80,5 +80,17 @@ router.post("/twitch/webhook", raw({ type: "*/*" }), async (req, res) => {
     }
   }
 });
+
+router.post(
+  "/discord/webhook",
+  raw({ type: "*/*" }),
+  async (req: Request, res: Response) => {
+    const notif = JSON.parse(req.body);
+
+    if (notif.type === 0) {
+      res.status(204);
+    }
+  }
+);
 
 export default router;
