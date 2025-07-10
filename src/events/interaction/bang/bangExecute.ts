@@ -21,27 +21,27 @@ const bangExecute = async (message: any, guild: any, command: any) => {
     if (role_id && channel_id && params.role && params.channel) {
       try {
         await message.reply({ content: response });
-      } catch (error: any) {
-        Logs("bang:guild:cmd:send", "error", error, guild.id);
+      } catch (err: any) {
+        Logs("bang:guild:cmd:send", "error", err, guild.id);
       }
     } else if (!channel_id && role_id && params.role) {
       try {
         await message.reply({ content: response });
-      } catch (error: any) {
-        Logs("bang:guild:cmd:send", "error", error, guild.id);
+      } catch (err: any) {
+        Logs("bang:guild:cmd:send", "error", err, guild.id);
       }
     } else if (!role_id && channel_id && params.channel) {
       try {
         await message.reply({ content: response });
-      } catch (error: any) {
-        Logs("bang:guild:cmd:send", "error", error, guild.id);
+      } catch (err: any) {
+        Logs("bang:guild:cmd:send", "error", err, guild.id);
       }
     }
   } else {
     try {
       await message.reply({ content: response });
-    } catch (error: any) {
-      Logs("bang:guild:cmd:send", "error", error, guild.id);
+    } catch (err: any) {
+      Logs("bang:guild:cmd:send", "error", err, guild.id);
     }
   }
 };

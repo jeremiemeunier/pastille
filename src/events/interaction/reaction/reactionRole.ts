@@ -32,8 +32,8 @@ const addRole = async (
 
       try {
         await member.roles.add(roleItem);
-      } catch (error: any) {
-        Logs("reaction:role:add", "error", error, reaction.message.guildId);
+      } catch (err: any) {
+        Logs("reaction:role:add", "error", err, reaction.message.guildId);
         return;
       }
     }
@@ -70,8 +70,8 @@ const removeRole = async (
 
       try {
         await member.roles.remove(roleItem);
-      } catch (error: any) {
-        Logs("reaction:role:remove", "error", error, reaction.message.guildId);
+      } catch (err: any) {
+        Logs("reaction:role:remove", "error", err, reaction.message.guildId);
         return;
       }
     }

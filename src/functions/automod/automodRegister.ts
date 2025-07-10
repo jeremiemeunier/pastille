@@ -21,10 +21,10 @@ export const automodRegister = async (user: any, reason: any, guild: any) => {
         params: { user_id: userId, guild_id: guild.id },
       });
       automodSanction(user, totalWarnUser, guild);
-    } catch (error: any) {
-      Logs("automod:get:infractions", "error", error, guild.id);
+    } catch (err: any) {
+      Logs("automod:get:infractions", "error", err, guild.id);
     }
-  } catch (error: any) {
-    Logs("automod:register", "error", error, guild.id);
+  } catch (err: any) {
+    Logs("automod:register", "error", err, guild.id);
   }
 };

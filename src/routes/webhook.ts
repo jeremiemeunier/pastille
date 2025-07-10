@@ -58,8 +58,8 @@ router.post(
               },
               { new: true }
             );
-          } catch (error: any) {
-            Logs("webhook", "error", error, "valid_subscription");
+          } catch (err: any) {
+            Logs("webhook", "error", err, "valid_subscription");
           }
 
           res

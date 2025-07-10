@@ -32,16 +32,16 @@ export const AddonsRegister = async (addons: any, guild: any) => {
               item.name
             }`);
             addonsLoaded(guild, item);
-          } catch (error: any) {
-            Logs("daemon:addons:load", "error", error);
+          } catch (err: any) {
+            Logs("daemon:addons:load", "error", err);
           }
         }
       });
-    } catch (error: any) {
-      Logs("daemon:addons:map", "error", error);
+    } catch (err: any) {
+      Logs("daemon:addons:map", "error", err);
     }
   } else {
-    Logs("daemon:addons", null, "No addons", guild.id);
+    Logs("daemon:addons", null, "no addons", guild.id);
   }
 };
 

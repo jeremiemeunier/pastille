@@ -29,8 +29,8 @@ const pollReactions = async (
   if (botReactThis === undefined) {
     try {
       await reaction.users.remove(user);
-    } catch (error: any) {
-      Logs("reaction:poll:remove", "error", error, reaction.guildId);
+    } catch (err: any) {
+      Logs("reaction:poll:remove", "error", err, reaction.guildId);
       return;
     }
   } else {
@@ -42,8 +42,8 @@ const pollReactions = async (
         if (react.emoji.name !== reaction.emoji.name) {
           try {
             await react.users.remove(user);
-          } catch (error: any) {
-            Logs("reaction:poll:remove_2", "error", error, reaction.guildId);
+          } catch (err: any) {
+            Logs("reaction:poll:remove_2", "error", err, reaction.guildId);
             return;
           }
         }

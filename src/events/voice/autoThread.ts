@@ -20,8 +20,8 @@ export const countMembers = async ({
   try {
     const connected = channel.members.map((x: any) => x).length;
     return connected;
-  } catch (error: any) {
-    Logs("voice:count_members", "error", error, guild.id);
+  } catch (err: any) {
+    Logs("voice:count_members", "error", err, guild.id);
   }
 };
 
@@ -58,8 +58,8 @@ export const getTextualChannel = async (
 
       return textual;
     }
-  } catch (error: any) {
-    Logs("voice:search_textual", "error", error, guild.id);
+  } catch (err: any) {
+    Logs("voice:search_textual", "error", err, guild.id);
   }
 };
 
@@ -194,8 +194,8 @@ export const autoThread = async ({
         });
       }
     }
-  } catch (error: any) {
-    Logs("voice", "error", error);
+  } catch (err: any) {
+    Logs("voice", "error", err);
     return;
   }
 };

@@ -26,8 +26,8 @@ export const haveVoiceThread = async ({
     }
 
     return false;
-  } catch (error: any) {
-    Logs("voice:thread:join", "error", error);
+  } catch (err: any) {
+    Logs("voice:thread:join", "error", err);
   }
 };
 
@@ -71,12 +71,12 @@ export const createVoiceThread = async (
         await thread.send({
           embeds: [embed, embedExplicative],
         });
-      } catch (error: any) {
-        Logs("voice:thread:create", "error", error);
+      } catch (err: any) {
+        Logs("voice:thread:create", "error", err);
       }
     }
-  } catch (error: any) {
-    Logs("voice:thread:find:existing", "error", error);
+  } catch (err: any) {
+    Logs("voice:thread:find:existing", "error", err);
   }
 };
 
@@ -107,8 +107,8 @@ export const joinVoiceThread = async ({
       });
       await thread.send({ embeds: [embed] });
     }
-  } catch (error: any) {
-    Logs("voice:thread:join", "error", error);
+  } catch (err: any) {
+    Logs("voice:thread:join", "error", err);
   }
 };
 
@@ -139,14 +139,14 @@ export const joinAllVoiceThread = async ({
               description: `${member} tu as été ajouté à ce fils dédié 🎙️`,
             });
             await thread.send({ embeds: [embed] });
-          } catch (error: any) {
-            Logs("voice:thread:join:all", "error", error);
+          } catch (err: any) {
+            Logs("voice:thread:join:all", "error", err);
           }
         }
       });
     }
-  } catch (error: any) {
-    Logs("voice:thread:join", "error", error);
+  } catch (err: any) {
+    Logs("voice:thread:join", "error", err);
   }
 };
 
@@ -170,8 +170,8 @@ export const leaveVoiceThread = async (
       description: `<@${user}> a quitté ce salon vocal 💨`,
     });
     const message = await thread.send({ embeds: [embed] });
-  } catch (error: any) {
-    Logs("voice:thread:leave", "error", error);
+  } catch (err: any) {
+    Logs("voice:thread:leave", "error", err);
   }
 };
 
@@ -192,10 +192,10 @@ export const deleteVoiceThread = async (
     );
     try {
       await thread.delete();
-    } catch (error: any) {
-      Logs("voice:thread:delete:timeout", "error", error);
+    } catch (err: any) {
+      Logs("voice:thread:delete:timeout", "error", err);
     }
-  } catch (error: any) {
-    Logs("voice:thread:delete", "error", error);
+  } catch (err: any) {
+    Logs("voice:thread:delete", "error", err);
   }
 };

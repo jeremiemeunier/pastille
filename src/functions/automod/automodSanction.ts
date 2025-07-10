@@ -101,7 +101,7 @@ export const sanctionRegister = async (
       date: start,
       end: end,
     });
-  } catch (error: any) {
-    Logs("automod:sanction:register:api", "error", error, guild);
+  } catch (err: any) {
+    Logs("automod:sanction:register:api", "error", err, guild);
   }
 };

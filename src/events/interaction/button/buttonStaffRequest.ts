@@ -23,8 +23,8 @@ const lockableThread = async (thread: { locked: any }, guild: any) => {
         })
       );
       return lockButton;
-    } catch (error: any) {
-      Logs("reaction:thread:lock", "error", error);
+    } catch (err: any) {
+      Logs("reaction:thread:lock", "error", err);
       return false;
     }
   } else {
@@ -37,8 +37,8 @@ const lockableThread = async (thread: { locked: any }, guild: any) => {
         })
       );
       return unlockButton;
-    } catch (error: any) {
-      Logs("reaction:thread:lock", "error", error);
+    } catch (err: any) {
+      Logs("reaction:thread:lock", "error", err);
       return false;
     }
   }
@@ -130,12 +130,12 @@ const buttonStaffRequest = async (
     } else {
       try {
         await staffThread.delete();
-      } catch (error: any) {
-        Logs("staff:thread:delete", "error", error, guild.id);
+      } catch (err: any) {
+        Logs("staff:thread:delete", "error", err, guild.id);
       }
     }
-  } catch (error: any) {
-    Logs("staff:button:thread", "error", error, guild.id);
+  } catch (err: any) {
+    Logs("staff:button:thread", "error", err, guild.id);
     await interaction.reply({
       content: `Une erreur s'est produite.`,
       ephemeral: true,

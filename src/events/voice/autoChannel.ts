@@ -73,8 +73,8 @@ export const autoChannel = async ({
     })) as VoiceChannel;
 
     await guildUser.voice.setChannel(newChannel);
-  } catch (error: any) {
-    Logs("voice:create:dedicated", "error", error, guild.id);
+  } catch (err: any) {
+    Logs("voice:create:dedicated", "error", err, guild.id);
   }
 };
 
@@ -110,8 +110,8 @@ export const autoRemoveChannel = async ({
     if (presence === 0 && channel.name.startsWith("Voice of ")) {
       try {
         await channel.delete();
-      } catch (error: any) {
-        Logs("auto:voice:delete", "error", error, guild);
+      } catch (err: any) {
+        Logs("auto:voice:delete", "error", err, guild);
       }
     }
   }

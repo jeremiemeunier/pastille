@@ -5,7 +5,7 @@ import pastilleAxios from "@libs/PastilleAxios";
  * Return a json object with addons registred for this guild
  *
  * @param {object} guild Discord guild item
- * @returns {boolean|object} false on error | A json object with all registred addons for guild on success
+ * @returns {boolean|object} false on err | A json object with all registred addons for guild on success
  */
 export const getAddons = async ({ guild }: { guild: any }) => {
   try {
@@ -14,12 +14,12 @@ export const getAddons = async ({ guild }: { guild: any }) => {
     });
     const guildAddons = guildAddonsRequest.data.data;
     return guildAddons;
-  } catch (error: any) {
-    if (error.http_response === 404) {
-      Logs("addon:load:guild", "warning", error, guild.id);
+  } catch (err: any) {
+    if (err.http_response === 404) {
+      Logs("addon:load:guild", "warning", err, guild.id);
       return false;
     } else {
-      Logs("addon:load:guild", "error", error, guild.id);
+      Logs("addon:load:guild", "error", err, guild.id);
       return false;
     }
   }
@@ -29,7 +29,7 @@ export const getAddons = async ({ guild }: { guild: any }) => {
  * Return a json object with banned words registred for this guild
  *
  * @param {object} guild Discord guild item
- * @returns {boolean|object} false on error | A json object with all registred banned word for guild on success
+ * @returns {boolean|object} false on err | A json object with all registred banned word for guild on success
  */
 export const getBanWord = async ({ guild }: { guild: any }) => {
   try {
@@ -39,12 +39,12 @@ export const getBanWord = async ({ guild }: { guild: any }) => {
     });
     const guildBanWords = guildBanWordsRequest.data.data;
     return guildBanWords;
-  } catch (error: any) {
-    if (error.http_response === 404) {
-      Logs("automod:load:banword", "warning", error, guild.id);
+  } catch (err: any) {
+    if (err.http_response === 404) {
+      Logs("automod:load:banword", "warning", err, guild.id);
       return false;
     } else {
-      Logs("automod:load:banword", "error", error, guild.id);
+      Logs("automod:load:banword", "error", err, guild.id);
       return false;
     }
   }
@@ -54,7 +54,7 @@ export const getBanWord = async ({ guild }: { guild: any }) => {
  * Return a json object with streamer registred for this guild
  *
  * @param {object} guild Discord guild item
- * @returns {boolean|object} false on error | A json object with all registred streamer for guild on success
+ * @returns {boolean|object} false on err | A json object with all registred streamer for guild on success
  */
 export const getStreamers = async ({ guild }: { guild: any }) => {
   try {
@@ -65,8 +65,8 @@ export const getStreamers = async ({ guild }: { guild: any }) => {
     const guildStreamersList = guildStreamersRequest.data.data;
 
     return guildStreamersList;
-  } catch (error: any) {
-    Logs("global:get:streamer_list", "error", error, guild.id);
+  } catch (err: any) {
+    Logs("global:get:streamer_list", "error", err, guild.id);
     return false;
   }
 };
@@ -75,7 +75,7 @@ export const getStreamers = async ({ guild }: { guild: any }) => {
  * Return a json object with roles registred for this guild
  *
  * @param {object} guild Discord guild item
- * @returns {boolean|object} false on error | A json object with all registred roles for guild on success
+ * @returns {boolean|object} false on err | A json object with all registred roles for guild on success
  */
 export const getRoles = async ({ guild }: { guild: any }) => {
   try {
@@ -85,12 +85,12 @@ export const getRoles = async ({ guild }: { guild: any }) => {
     });
     const guildRoles = guildRolesrequest.data.data;
     return guildRoles;
-  } catch (error: any) {
-    if (error.http_response === 404) {
-      Logs("roles:load:guild", "warning", error, guild.id);
+  } catch (err: any) {
+    if (err.http_response === 404) {
+      Logs("roles:load:guild", "warning", err, guild.id);
       return false;
     } else {
-      Logs("roles:load:guild", "error", error, guild.id);
+      Logs("roles:load:guild", "error", err, guild.id);
       return false;
     }
   }
@@ -100,7 +100,7 @@ export const getRoles = async ({ guild }: { guild: any }) => {
  * Return a json object with rules registred for this guild
  *
  * @param {object} guild Discord guild item
- * @returns {boolean|object} false on error | A json object with all registred rules for guild on success
+ * @returns {boolean|object} false on err | A json object with all registred rules for guild on success
  */
 export const getRules = async ({ guild }: { guild: any }) => {
   try {
@@ -110,12 +110,12 @@ export const getRules = async ({ guild }: { guild: any }) => {
     });
     const guildRules = guildRulesRequest.data.data;
     return guildRules;
-  } catch (error: any) {
-    if (error.http_response === 404) {
-      Logs("rules:load:guild", "warning", error, guild.id);
+  } catch (err: any) {
+    if (err.http_response === 404) {
+      Logs("rules:load:guild", "warning", err, guild.id);
       return false;
     } else {
-      Logs("rules:load:guild", "error", error, guild.id);
+      Logs("rules:load:guild", "error", err, guild.id);
       return false;
     }
   }
@@ -129,12 +129,12 @@ export const getCommands = async ({ guild, id }: { guild: any; id?: any }) => {
       });
       const guildCommands = guildCommandsRequest.data.data;
       return guildCommands;
-    } catch (error: any) {
-      if (error.http_response === 404) {
-        Logs("cmd:load:guild", "warning", error, guild.id);
+    } catch (err: any) {
+      if (err.http_response === 404) {
+        Logs("cmd:load:guild", "warning", err, guild.id);
         return false;
       } else {
-        Logs("cmd:load:guild", "error", error, guild.id);
+        Logs("cmd:load:guild", "error", err, guild.id);
         return false;
       }
     }
@@ -146,12 +146,12 @@ export const getCommands = async ({ guild, id }: { guild: any; id?: any }) => {
       });
       const guildCommands = guildCommandsRequest.data.data;
       return guildCommands;
-    } catch (error: any) {
-      if (error.http_response === 404) {
-        Logs("cmds:load:guild", "warning", error, guild.id);
+    } catch (err: any) {
+      if (err.http_response === 404) {
+        Logs("cmds:load:guild", "warning", err, guild.id);
         return false;
       } else {
-        Logs("cmds:load:guild", "error", error, guild.id);
+        Logs("cmds:load:guild", "error", err, guild.id);
         return false;
       }
     }
@@ -162,7 +162,7 @@ export const getCommands = async ({ guild, id }: { guild: any; id?: any }) => {
  * Return a json object with settings registred for this guild
  *
  * @param {object} guild Discord guild item
- * @returns {boolean|object} false on error | A json object with settings for guild on success
+ * @returns {boolean|object} false on err | A json object with settings for guild on success
  */
 export const getParams = async ({ guild }: { guild: any }) => {
   try {
@@ -172,12 +172,12 @@ export const getParams = async ({ guild }: { guild: any }) => {
     });
     const guildParams = guildParamsRequest.data.data;
     return guildParams;
-  } catch (error: any) {
-    if (error.http_response === 404) {
-      Logs("params:load:guild", "warning", error, guild.id);
+  } catch (err: any) {
+    if (err.http_response === 404) {
+      Logs("params:load:guild", "warning", err, guild.id);
       return false;
     } else {
-      Logs("params:load:guild", "error", error, guild.id);
+      Logs("params:load:guild", "error", err, guild.id);
       return false;
     }
   }
@@ -188,7 +188,7 @@ export const getParams = async ({ guild }: { guild: any }) => {
  *
  * @param {object} guild Discord guild item
  * @param {object} data A json object with user_id and reason
- * @returns {boolean|object} false on error | A json object with new registred warn for user on success
+ * @returns {boolean|object} false on err | A json object with new registred warn for user on success
  */
 export const postWarnUser = async ({
   guild,
@@ -210,8 +210,8 @@ export const postWarnUser = async ({
     );
 
     return warnUserRequest.data.data;
-  } catch (error: any) {
-    Logs("automod:add:warn", "error", error, guild.id);
+  } catch (err: any) {
+    Logs("automod:add:warn", "error", err, guild.id);
     return false;
   }
 };
@@ -249,9 +249,7 @@ export const dateParser = async (date?: any) => {
 
   const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
   const month =
-    date.getMonth() + 1 < 10
-      ? `0${date.getMonth() + 1}`
-      : date.getMonth() + 1;
+    date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : date.getMonth() + 1;
   const year = date.getFullYear();
 
   return `${day}/${month}/${year}`;

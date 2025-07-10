@@ -62,8 +62,8 @@ const commandRuleInit = async (_client: any, interaction: any) => {
       content: "Les règles ont bien été envoyé",
       ephemeral: true,
     });
-  } catch (error: any) {
-    Logs("rule:embed", "error", error, interaction.guild.id);
+  } catch (err: any) {
+    Logs("rule:embed", "error", err, interaction.guild.id);
   }
 };
 

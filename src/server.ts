@@ -43,12 +43,12 @@ const client = new Client({
 
 const guildStarter = (guild: Guild) => {
   try {
-    Logs("booter:guild_starter", "start", "Start all functions", guild.id);
+    Logs("booter:guild_starter", "start", "start all functions", guild.id);
     AutomodDaemon(guild);
     CommandRegisterDaemon(guild);
     AddonRegisterDaemon(guild);
-  } catch (error: any) {
-    Logs("booter:guild_starter", "error", error, guild.id);
+  } catch (err: any) {
+    Logs("booter:guild_starter", "error", err, guild.id);
   }
 };
 
@@ -71,7 +71,8 @@ const setStatus = async () => {
 const pastilleBooter = async () => {
   Start();
 
-  Logs("booter", "start", "Pastille has started successfully");
+  Logs("booter", "start", "pastille has started successfully");
+  Logs("booter", null, `authenticated has ${client.user?.displayName}`);
   setStatus();
 
   try {
@@ -93,17 +94,17 @@ const pastilleBooter = async () => {
       messageCreateEventInit(client);
       messageEditInit(client);
       automod(client);
-    } catch (error: any) {
-      Logs("booter", "error", error);
+    } catch (err: any) {
+      Logs("booter", "error", err);
     }
-  } catch (error: any) {
-    Logs("api:server", "error", error);
+  } catch (err: any) {
+    Logs("api:server", "error", err);
   }
 
   client.on(Events.GuildCreate, (event) => {
     console.log(event);
 
-    Logs("events:new_guild", null, "Join a new guild", event.id);
+    Logs("events:new_guild", null, "join a new guild", event.id);
     guildStarter(event);
     setStatus();
   });
@@ -112,6 +113,6 @@ const pastilleBooter = async () => {
 try {
   client.on("ready", pastilleBooter);
   client.login(process.env.BOT_TOKEN);
-} catch (error: any) {
-  Logs("client:connect", "error", error);
+} catch (err: any) {
+  Logs("client:connect", "error", err);
 }

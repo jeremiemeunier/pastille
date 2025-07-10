@@ -64,8 +64,8 @@ export const messageCreateEventInit = (client: any) => {
             autoArchiveDuration: 4320,
             reason: "New screenshots posted",
           });
-        } catch (error: any) {
-          Logs("thread:screenshots", "error", error);
+        } catch (err: any) {
+          Logs("thread:screenshots", "error", err);
           return;
         }
       } else {
@@ -74,8 +74,8 @@ export const messageCreateEventInit = (client: any) => {
           await message.author.send(
             "Tu es sur un channel dédié aux screenshots. Afin de garder de la clarté dans la lecture, tu peux commenter les posts des autres membres directement dans les fils liés."
           );
-        } catch (error: any) {
-          Logs("delete:message:screenshots", "error", error);
+        } catch (err: any) {
+          Logs("delete:message:screenshots", "error", err);
           return;
         }
       }
@@ -104,12 +104,12 @@ export const messageCreateEventInit = (client: any) => {
         if (req.data.message) {
           try {
             await message.reply({ content: req.data.message.content });
-          } catch (error: any) {
-            Logs("message:event:ai:reply", "error", error);
+          } catch (err: any) {
+            Logs("message:event:ai:reply", "error", err);
           }
         }
-      } catch (error: any) {
-        Logs("message:event:ai", "error", error);
+      } catch (err: any) {
+        Logs("message:event:ai", "error", err);
       }
     }
 

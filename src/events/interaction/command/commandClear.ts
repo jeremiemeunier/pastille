@@ -16,8 +16,8 @@ const commandClearInit = async (client: any, interaction: any) => {
       await threadsMap.map(async (thread: any) => {
         try {
           await thread.delete();
-        } catch (error: any) {
-          Logs("command:clear:threads", "error", error);
+        } catch (err: any) {
+          Logs("command:clear:threads", "error", err);
         }
       });
 
@@ -25,12 +25,12 @@ const commandClearInit = async (client: any, interaction: any) => {
         content: `Tout les threads ont été supprimés`,
         ephemeral: true,
       });
-    } catch (error: any) {
+    } catch (err: any) {
       interaction.reply({
         content: "Une erreur est survenue, veuillez réessayer plus tard",
         ephemeral: true,
       });
-      Logs("command:clear:threads", "error", error);
+      Logs("command:clear:threads", "error", err);
     }
   }
 
@@ -43,8 +43,8 @@ const commandClearInit = async (client: any, interaction: any) => {
       messages.map(async (message: any) => {
         try {
           await message.delete();
-        } catch (error: any) {
-          Logs("command:clear:messages", "error", error);
+        } catch (err: any) {
+          Logs("command:clear:messages", "error", err);
         }
       });
     });

@@ -22,8 +22,8 @@ export const reactionAddEventInit = (client: {
       if (reaction.partial) {
         try {
           await reaction.fetch();
-        } catch (error: any) {
-          Logs(`An error occured on fetch`, "error", error);
+        } catch (err: any) {
+          Logs(`An err occured on fetch`, "error", err);
           return;
         }
       }

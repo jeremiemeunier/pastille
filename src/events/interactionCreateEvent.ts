@@ -1,4 +1,4 @@
-import { Events } from "discord.js";
+import { Client, ClientUser, Events } from "discord.js";
 
 import { commandPollInit } from "./interaction/command/commandPoll";
 import { commandRuleInit } from "./interaction/command/commandRule";
@@ -17,10 +17,9 @@ import { modalReportUser } from "./interaction/modal/modalReportUser";
 import { contextReportMessage } from "./interaction/menu/menuReportMessage";
 import { buttonDeleteMessage } from "./interaction/button/buttonDeleteMessage";
 import Logs from "@libs/Logs";
+import { commandJusticeInit } from "./interaction/command/commandJustice";
 
-export const interactionCreateEventInit = (client: {
-  on: (arg0: Events, arg1: (interaction: any) => Promise<void>) => void;
-}) => {
+export const interactionCreateEventInit = (client: Client) => {
   client.on(
     Events.InteractionCreate,
     async (interaction: {
@@ -37,8 +36,8 @@ export const interactionCreateEventInit = (client: {
           buttonStaffRequest(client, interaction);
           buttonOpenTicketInit(client, interaction);
           buttonDeleteMessage(client, interaction);
-        } catch (error: any) {
-          Logs("interaction:button", "error", error);
+        } catch (err: any) {
+          Logs("interaction:button", "error", err);
         }
       }
 
@@ -53,8 +52,9 @@ export const interactionCreateEventInit = (client: {
           commandThreadInit(client, interaction);
           commandStatutInit(client, interaction);
           commandClearInit(client, interaction);
-        } catch (error: any) {
-          Logs("interaction:slash_command", "error", error);
+          commandJusticeInit(client, interaction);
+        } catch (err: any) {
+          Logs("interaction:slash_command", "error", err);
         }
       }
 
@@ -63,8 +63,8 @@ export const interactionCreateEventInit = (client: {
         try {
           contextReportUser(client, interaction);
           contextReportMessage(client, interaction);
-        } catch (error: any) {
-          Logs("interaction:context_user", "error", error);
+        } catch (err: any) {
+          Logs("interaction:context_user", "error", err);
         }
       }
 
@@ -72,8 +72,8 @@ export const interactionCreateEventInit = (client: {
         // Context message
         try {
           contextReportMessage(client, interaction);
-        } catch (error: any) {
-          Logs("interaction:context_message", "error", error);
+        } catch (err: any) {
+          Logs("interaction:context_message", "error", err);
         }
       }
 
@@ -81,8 +81,8 @@ export const interactionCreateEventInit = (client: {
         // Modal
         try {
           modalReportUser(client, interaction);
-        } catch (error: any) {
-          Logs("interaction:modal", "error", error);
+        } catch (err: any) {
+          Logs("interaction:modal", "error", err);
         }
       }
 

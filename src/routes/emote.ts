@@ -77,8 +77,8 @@ router.post(
 
         try {
           await emoteRegister.save();
-        } catch (error: any) {
-          Logs("api:emotes:post:save", "error", error);
+        } catch (err: any) {
+          Logs("api:emotes:post:save", "error", err);
         }
       });
       res.status(201).json({ message: "Emotes added" });

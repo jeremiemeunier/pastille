@@ -53,17 +53,17 @@ const addonsLoaded = async (guild: any, addonsParamsItem: any) => {
                   headers: { pastille_botid: process.env.BOT_ID },
                 }
               );
-            } catch (error: any) {
-              logs("error", "dailyui:update", error);
+            } catch (err: any) {
+              logs("error", "dailyui:update", err);
             }
-          } catch (error: any) {
-            logs("error", "dailyui:topics", error);
+          } catch (err: any) {
+            logs("error", "dailyui:topics", err);
           }
-        } catch (error: any) {
-          logs("error", "dailyui:embed", error);
+        } catch (err: any) {
+          logs("error", "dailyui:embed", err);
         }
-      } catch (error: any) {
-        logs("error", "dailyui:request", error);
+      } catch (err: any) {
+        logs("error", "dailyui:request", err);
       }
     }
   }, 60000);

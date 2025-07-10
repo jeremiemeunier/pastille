@@ -33,10 +33,10 @@ const commandStaffInit = async (_client: any, interaction: any) => {
     const message = await interaction.reply({
       embeds: [embed],
       components: [requestStaffButton],
-      fetchReply: false,
+      withResponse: false,
     });
-  } catch (error: any) {
-    Logs("command:staff", "error", error, interaction.guildId);
+  } catch (err: any) {
+    Logs("command:staff", "error", err, interaction.guildId);
   }
 };
 

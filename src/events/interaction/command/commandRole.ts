@@ -31,18 +31,18 @@ const commandRoleInit = async (_client: any, interaction: any) => {
   try {
     const message = await interaction.reply({
       embeds: [embed],
-      fetchReply: true,
+      withResponse: true,
     });
 
     roles.map(async (item: any) => {
       try {
         await message.react(item.emote);
-      } catch (error: any) {
-        Logs("command:role:react", "error", error, interaction.guild.id);
+      } catch (err: any) {
+        Logs("command:role:react", "error", err, interaction.guild.id);
       }
     });
-  } catch (error: any) {
-    Logs("command:role:send", "error", error, interaction.guild.id);
+  } catch (err: any) {
+    Logs("command:role:send", "error", err, interaction.guild.id);
   }
 };
 

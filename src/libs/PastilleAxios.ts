@@ -7,8 +7,8 @@ const pastilleAxios = axios.create({
 
 pastilleAxios.interceptors.response.use(
   (response) => response,
-  (error) => {
-    return Promise.reject(error.response.data);
+  (err) => {
+    return Promise.reject(err.response.data);
   }
 );
 

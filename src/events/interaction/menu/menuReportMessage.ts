@@ -68,8 +68,8 @@ const contextReportMessage = async (client: any, interaction: any) => {
       content: "Le signalement à bien été transmis à l'équipe de modération",
       ephemeral: true,
     });
-  } catch (error: any) {
-    Logs("command:report:message", "error", error, guild.id);
+  } catch (err: any) {
+    Logs("command:report:message", "error", err, guild.id);
   }
 };
 

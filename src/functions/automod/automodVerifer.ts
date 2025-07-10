@@ -49,8 +49,8 @@ export const automodFinalNotify = async (guild: any, user: any) => {
       content: `Tu es banni(e) définitivement de **__${guild.name}__**`,
       embeds: [embedSanction],
     });
-  } catch (error: any) {
-    Logs("automod:remove", "error", error, guild.id);
+  } catch (err: any) {
+    Logs("automod:remove", "error", err, guild.id);
   }
 };
 
@@ -73,8 +73,8 @@ export const automodRemove = async (guild: any, user: any) => {
       content: `Ta sanction sur **__${guild.name}__** vient de prend fin`,
       embeds: [embedSanction],
     });
-  } catch (error: any) {
-    Logs("automod:remove", "error", error, guild.id);
+  } catch (err: any) {
+    Logs("automod:remove", "error", err, guild.id);
   }
 };
 
@@ -110,8 +110,8 @@ export const automodApply = async (guild: any, user: any, timer: any) => {
     });
     await user.roles.add(sanctionRole);
     await alertChannel.send({ embeds: [embedDecision] });
-  } catch (error: any) {
-    Logs("automod:sanction:notice", "error", error, guild.id);
+  } catch (err: any) {
+    Logs("automod:sanction:notice", "error", err, guild.id);
   }
 
   const applySanction = setTimeout(async () => {
@@ -127,7 +127,7 @@ export const automodApply = async (guild: any, user: any, timer: any) => {
 export const automodVerifier = async (guild: any) => {
   const now = Date.parse(new Date().toString());
 
-  Logs("automod:verifier", null, "Start sanctions verifications", guild.id);
+  Logs("automod:verifier", null, "start sanctions verifications", guild.id);
 
   try {
     const allGuildSanctionsRequest = await pastilleAxios.get("/sanction", {
@@ -147,8 +147,8 @@ export const automodVerifier = async (guild: any) => {
           const userFetch = async () => {
             try {
               return await guild.members.fetch(user_id);
-            } catch (error: any) {
-              Logs("automode:verifier:fetch_user", "error", error, guild.id);
+            } catch (err: any) {
+              Logs("automode:verifier:fetch_user", "error", err, guild.id);
             }
           };
           const user = await userFetch();
@@ -166,13 +166,13 @@ export const automodVerifier = async (guild: any) => {
                   headers: { pastille_botid: process.env.BOT_ID },
                 }
               );
-            } catch (error: any) {
-              Logs("automod:rebind:update", "error", error, guild.id);
+            } catch (err: any) {
+              Logs("automod:rebind:update", "error", err, guild.id);
             }
             Logs(
               "automod:verifier:rebind",
               "warning",
-              `User not find : ${user_id}`,
+              `user not find : ${user_id}`,
               guild.id
             );
             return;
@@ -181,7 +181,7 @@ export const automodVerifier = async (guild: any) => {
             Logs(
               "automod:verifier:rebind",
               "warning",
-              `Role not find : ${moderation.roles.muted}`,
+              `role not find : ${moderation.roles.muted}`,
               guild.id
             );
             return;
@@ -190,8 +190,8 @@ export const automodVerifier = async (guild: any) => {
           if (ending <= now) {
             try {
               await user.roles.remove(sanctionRole);
-            } catch (error: any) {
-              Logs("sanction:verifier:remove", "error", error, guild.id);
+            } catch (err: any) {
+              Logs("sanction:verifier:remove", "error", err, guild.id);
             }
           } else {
             const newTimer = ending - now;
@@ -200,18 +200,18 @@ export const automodVerifier = async (guild: any) => {
               const sanctionApply = setTimeout(async () => {
                 automodRemove(guild, user);
               }, newTimer);
-            } catch (error: any) {
-              Logs("sanction:verifier:remove:timer", "error", error, guild.id);
+            } catch (err: any) {
+              Logs("sanction:verifier:remove:timer", "error", err, guild.id);
             }
           }
         });
-      } catch (error: any) {
-        Logs("automod:verifier", "error", error, guild.id);
+      } catch (err: any) {
+        Logs("automod:verifier", "error", err, guild.id);
       }
     }
-  } catch (error: any) {
-    Logs("automod:verifier", "error", error);
+  } catch (err: any) {
+    Logs("automod:verifier", "error", err);
   }
 
-  Logs("automod:verifier", null, "End sanctions verifications", guild.id);
+  Logs("automod:verifier", null, "end sanctions verifications", guild.id);
 };

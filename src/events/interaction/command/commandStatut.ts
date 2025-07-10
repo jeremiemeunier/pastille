@@ -20,8 +20,8 @@ const commandStatutInit = async (client: any, interaction: any) => {
       content: `Le nouveau nouveau statut de ${client.user} a été définis`,
       ephemeral: true,
     });
-  } catch (error: any) {
-    Logs("command:status", "error", error);
+  } catch (err: any) {
+    Logs("command:status", "error", err);
   }
 };
 

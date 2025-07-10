@@ -44,9 +44,9 @@ const buttonAcceptRuleInit = async (
       content: "Tu as bien accepté les règles",
       ephemeral: true,
     });
-  } catch (error: any) {
+  } catch (err: any) {
     interaction.reply({ content: "Une erreur est survenue", ephemeral: true });
-    Logs("event:accept_rule", "error", error);
+    Logs("event:accept_rule", "error", err);
     return;
   }
 };
