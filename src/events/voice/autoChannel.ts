@@ -21,10 +21,10 @@ const getGuild = ({
 }) => {
   return (
     client.guilds.cache.find(
-      (guild: { id: any }) => guild.id === oldState.guild.id
+      (guild: { id: any }) => guild?.id === oldState.guild?.id
     ) ||
     client.guilds.cache.find(
-      (guild: { id: any }) => guild.id === newState.guild.id
+      (guild: { id: any }) => guild?.id === newState.guild?.id
     )
   );
 };
@@ -74,7 +74,7 @@ export const autoChannel = async ({
 
     await guildUser.voice.setChannel(newChannel);
   } catch (err: any) {
-    Logs("voice:create:dedicated", "error", err, guild.id);
+    Logs("voice:create:dedicated", "error", err, guild?.id);
   }
 };
 

@@ -23,7 +23,7 @@ export const automod = (client: any) => {
       delete: () => void;
     }) => {
       const guild = client.guilds.cache.find(
-        (guild: { id: any }) => guild.id === message.guildId
+        (guild: { id: any }) => guild?.id === message.guildId
       );
 
       const guildParams = await getParams({ guild: guild });

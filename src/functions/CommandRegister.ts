@@ -53,20 +53,23 @@ export const CommandRegisterDaemon = async (guild: any) => {
         "daemon:command",
         null,
         `refreshing ${guildCmds.length} guilds commands`,
-        guild.id
+        guild?.id
       );
       const data: any = await rest.put(
-        Routes.applicationGuildCommands(process.env.BOT_ID as string, guild.id),
+        Routes.applicationGuildCommands(
+          process.env.BOT_ID as string,
+          guild?.id
+        ),
         { body: guildCmds }
       );
       Logs(
         "daemon:command",
         null,
         `reloaded ${data.length} guilds commands`,
-        guild.id
+        guild?.id
       );
     } catch (err: any) {
-      Logs("daemon:command", "error", err, guild.id);
+      Logs("daemon:command", "error", err, guild?.id);
     }
 
     try {

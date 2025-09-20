@@ -14,7 +14,7 @@ const contextReportMessage = async (client: any, interaction: any) => {
   }
 
   const guild = client.guilds.cache.find(
-    (guild: any) => guild.id === interaction.guildId
+    (guild: any) => guild?.id === interaction.guildId
   );
   const guildParams = await getParams({ guild: guild });
   const { moderation } = guildParams;
@@ -69,7 +69,7 @@ const contextReportMessage = async (client: any, interaction: any) => {
       ephemeral: true,
     });
   } catch (err: any) {
-    Logs("command:report:message", "error", err, guild.id);
+    Logs("command:report:message", "error", err, guild?.id);
   }
 };
 

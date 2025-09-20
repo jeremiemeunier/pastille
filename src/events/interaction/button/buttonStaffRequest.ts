@@ -68,7 +68,7 @@ const buttonStaffRequest = async (
   }
 
   const guild = client.guilds.cache.find(
-    (guild: { id: any }) => guild.id === interaction.guildId
+    (guild: { id: any }) => guild?.id === interaction.guildId
   );
   const member = guild.members.cache.find(
     (member: { id: any }) => member.id === interaction.user.id
@@ -131,11 +131,11 @@ const buttonStaffRequest = async (
       try {
         await staffThread.delete();
       } catch (err: any) {
-        Logs("staff:thread:delete", "error", err, guild.id);
+        Logs("staff:thread:delete", "error", err, guild?.id);
       }
     }
   } catch (err: any) {
-    Logs("staff:button:thread", "error", err, guild.id);
+    Logs("staff:button:thread", "error", err, guild?.id);
     await interaction.reply({
       content: `Une erreur s'est produite.`,
       ephemeral: true,

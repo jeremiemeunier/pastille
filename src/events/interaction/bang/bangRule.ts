@@ -48,7 +48,7 @@ const bangRule = async (
       });
     }
   } catch (err: any) {
-    Logs("rule:thread_voice", "error", err, guild.id);
+    Logs("rule:thread_voice", "error", err, guild?.id);
   }
 };
 

@@ -68,7 +68,7 @@ const buttonDeleteMessage = async (
       });
     }
   } catch (err: any) {
-    Logs("button:delete_reported:base", "error", err, interaction.guild.id);
+    Logs("button:delete_reported:base", "error", err, interaction.guild?.id);
   }
 };
 
@@ -99,7 +99,7 @@ const deleteReportedMessage = async (
     await reportedMessage.delete();
     return { err: false };
   } catch (err: any) {
-    Logs("button:delete:reported_message", "error", err, guild.id);
+    Logs("button:delete:reported_message", "error", err, guild?.id);
     return { err: true, message: "Somethings went wrong" };
   }
 };

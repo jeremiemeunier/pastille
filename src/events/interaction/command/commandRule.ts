@@ -63,7 +63,7 @@ const commandRuleInit = async (_client: any, interaction: any) => {
       ephemeral: true,
     });
   } catch (err: any) {
-    Logs("rule:embed", "error", err, interaction.guild.id);
+    Logs("rule:embed", "error", err, interaction.guild?.id);
   }
 };
 

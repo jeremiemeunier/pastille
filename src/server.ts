@@ -43,12 +43,12 @@ const client = new Client({
 
 const guildStarter = (guild: Guild) => {
   try {
-    Logs("booter:guild_starter", "start", "start all functions", guild.id);
+    Logs("booter:guild_starter", "start", "start all functions", guild?.id);
     AutomodDaemon(guild);
     CommandRegisterDaemon(guild);
     AddonRegisterDaemon(guild);
   } catch (err: any) {
-    Logs("booter:guild_starter", "error", err, guild.id);
+    Logs("booter:guild_starter", "error", err, guild?.id);
   }
 };
 

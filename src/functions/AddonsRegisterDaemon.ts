@@ -17,13 +17,13 @@ export const AddonsRegister = async (addons: any, guild: any) => {
               "daemon:addons",
               null,
               `[\x1b[32m ACTIVE \x1b[0m] ${item.name}`,
-              guild.id
+              guild?.id
             )
           : Logs(
               "daemon:addons",
               null,
               `[\x1b[31mINACTIVE\x1b[0m] ${item.name}`,
-              guild.id
+              guild?.id
             );
 
         if (item.active) {
@@ -41,7 +41,7 @@ export const AddonsRegister = async (addons: any, guild: any) => {
       Logs("daemon:addons:map", "error", err);
     }
   } else {
-    Logs("daemon:addons", null, "no addons", guild.id);
+    Logs("daemon:addons", null, "no addons", guild?.id);
   }
 };
 

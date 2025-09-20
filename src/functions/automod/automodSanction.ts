@@ -96,7 +96,7 @@ export const sanctionRegister = async (
   try {
     const register = await pastilleAxios.post("/sanction/add", {
       user_id: userId,
-      guild_id: guild.id,
+      guild_id: guild?.id,
       level: level,
       date: start,
       end: end,

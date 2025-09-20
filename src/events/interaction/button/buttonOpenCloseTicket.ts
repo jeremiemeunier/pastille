@@ -30,7 +30,7 @@ const buttonOpenTicketInit = async (
   const { moderation } = guildParams;
 
   const guild = client.guilds.cache.find(
-    (guild: { id: any }) => guild.id === interaction.guildId
+    (guild: { id: any }) => guild?.id === interaction.guildId
   );
   const member = guild.members.cache.find(
     (member: { id: any }) => member.id === interaction.user.id
@@ -49,7 +49,7 @@ const buttonOpenTicketInit = async (
     channel.setLocked(true);
     await interaction.reply({ content: "Channel, now lock", ephemeral: true });
   } catch (err: any) {
-    Logs("close:staff:channel", "error", err, guild.id);
+    Logs("close:staff:channel", "error", err, guild?.id);
   }
 };
 

@@ -38,11 +38,11 @@ const commandRoleInit = async (_client: any, interaction: any) => {
       try {
         await message.react(item.emote);
       } catch (err: any) {
-        Logs("command:role:react", "error", err, interaction.guild.id);
+        Logs("command:role:react", "error", err, interaction.guild?.id);
       }
     });
   } catch (err: any) {
-    Logs("command:role:send", "error", err, interaction.guild.id);
+    Logs("command:role:send", "error", err, interaction.guild?.id);
   }
 };
 

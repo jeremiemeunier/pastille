@@ -101,7 +101,7 @@ const AddonTwitch = async (client: any) => {
                     new Promise<StreamerTypes>(async (resolve, reject) => {
                       // define recipient informations
                       const guild = client.guilds.cache.find(
-                        (guild: any) => guild.id === recipient.guild_id
+                        (guild: any) => guild?.id === recipient.guild_id
                       );
                       const channel = guild.channels.cache.find(
                         (channel: any) => channel.id === recipient.channel_id
@@ -142,10 +142,10 @@ const AddonTwitch = async (client: any) => {
                               components: [liveButton],
                             });
                           } catch (err: any) {
-                            Logs("addons:twitch:send", "error", err, guild.id);
+                            Logs("addons:twitch:send", "error", err, guild?.id);
                           }
                         } catch (err: any) {
-                          Logs("addons:twitch:ping", "error", err, guild.id);
+                          Logs("addons:twitch:ping", "error", err, guild?.id);
                         }
                       } else {
                         try {

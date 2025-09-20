@@ -14,7 +14,7 @@ const addRole = async (
   user: { bot?: boolean; id?: any }
 ) => {
   const guild = client.guilds.cache.find(
-    (guild: { id: any }) => guild.id === reaction.message.guildId
+    (guild: { id: any }) => guild?.id === reaction.message.guildId
   );
   const member = guild.members.cache.find(
     (member: { id: any }) => member.id === user.id
@@ -52,7 +52,7 @@ const removeRole = async (
   user: { bot?: boolean; id?: any }
 ) => {
   const guild = client.guilds.cache.find(
-    (guild: { id: any }) => guild.id === reaction.message.guildId
+    (guild: { id: any }) => guild?.id === reaction.message.guildId
   );
   const member = guild.members.cache.find(
     (member: { id: any }) => member.id === user.id

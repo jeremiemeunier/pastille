@@ -24,10 +24,10 @@ export const voiceEventInit = (client: any) => {
 
       const guild =
         client.guilds.cache.find(
-          (guild: { id: any }) => guild.id === oldState.guild.id
+          (guild: { id: any }) => guild?.id === oldState.guild?.id
         ) ||
         client.guilds.cache.find(
-          (guild: { id: any }) => guild.id === newState.guild.id
+          (guild: { id: any }) => guild?.id === newState.guild?.id
         );
       const guildParams = await getParams({ guild: guild });
       const { channels } = guildParams.options;
