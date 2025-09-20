@@ -21,9 +21,7 @@ const buttonAcceptRuleInit = async (
   }
 ) => {
   const { customId } = interaction;
-  if (customId !== "acceptedRules") {
-    return;
-  }
+  if (customId !== "acceptedRules") return;
 
   const guildParams = await getParams(interaction.guild);
   const { moderation } = guildParams;
