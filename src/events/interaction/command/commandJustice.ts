@@ -19,7 +19,7 @@ const commandJusticeInit = async (client: Client, interaction: any) => {
       content: `Voici un résumé de tes sanctions et avertissement gérer par ${client.user?.displayName}`,
     });
   } catch (err: any) {
-    Logs("command:announce", "error", err);
+    Logs("command:justice", "error", err);
   }
 };
 
