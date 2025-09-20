@@ -21,8 +21,8 @@ export const reactionRemoveEventInit = (client: {
       if (reaction.partial) {
         try {
           await reaction.fetch();
-        } catch (error: any) {
-          Logs("reaction:remove:fetch", "error", error);
+        } catch (err: any) {
+          Logs("reaction:remove:fetch", "error", err);
           return;
         }
       }

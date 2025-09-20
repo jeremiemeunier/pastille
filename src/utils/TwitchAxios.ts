@@ -4,8 +4,8 @@ const TwitchAxios = axios.create({});
 
 TwitchAxios.interceptors.response.use(
   (response) => response,
-  (error) => {
-    return Promise.reject(error.response.data);
+  (err) => {
+    return Promise.reject(err.response.data);
   }
 );
 

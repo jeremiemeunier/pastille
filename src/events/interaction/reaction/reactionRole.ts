@@ -14,7 +14,7 @@ const addRole = async (
   user: { bot?: boolean; id?: any }
 ) => {
   const guild = client.guilds.cache.find(
-    (guild: { id: any }) => guild.id === reaction.message.guildId
+    (guild: { id: any }) => guild?.id === reaction.message.guildId
   );
   const member = guild.members.cache.find(
     (member: { id: any }) => member.id === user.id
@@ -32,8 +32,8 @@ const addRole = async (
 
       try {
         await member.roles.add(roleItem);
-      } catch (error: any) {
-        Logs("reaction:role:add", "error", error, reaction.message.guildId);
+      } catch (err: any) {
+        Logs("reaction:role:add", "error", err, reaction.message.guildId);
         return;
       }
     }
@@ -52,7 +52,7 @@ const removeRole = async (
   user: { bot?: boolean; id?: any }
 ) => {
   const guild = client.guilds.cache.find(
-    (guild: { id: any }) => guild.id === reaction.message.guildId
+    (guild: { id: any }) => guild?.id === reaction.message.guildId
   );
   const member = guild.members.cache.find(
     (member: { id: any }) => member.id === user.id
@@ -70,8 +70,8 @@ const removeRole = async (
 
       try {
         await member.roles.remove(roleItem);
-      } catch (error: any) {
-        Logs("reaction:role:remove", "error", error, reaction.message.guildId);
+      } catch (err: any) {
+        Logs("reaction:role:remove", "error", err, reaction.message.guildId);
         return;
       }
     }

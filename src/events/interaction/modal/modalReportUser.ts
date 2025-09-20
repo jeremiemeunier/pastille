@@ -25,7 +25,7 @@ const modalReportUser = async (
   }
 
   const guild = client.guilds.cache.find(
-    (guild: { id: any }) => guild.id === interaction.guildId
+    (guild: { id: any }) => guild?.id === interaction.guildId
   );
   const guildParams = await getParams({ guild: guild });
   const { moderation } = guildParams;
@@ -70,12 +70,12 @@ const modalReportUser = async (
       content: "Votre signalement à bien été transmis à la modération",
       ephemeral: true,
     });
-  } catch (error: any) {
+  } catch (err: any) {
     await interaction.reply({
       content:
         "Une erreur est survenue lors du signalement veuillez réessayer plus tard.",
     });
-    Logs("context:report_user", "error", error, guild.id);
+    Logs("context:report_user", "error", err, guild?.id);
   }
 };
 

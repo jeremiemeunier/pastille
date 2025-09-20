@@ -20,8 +20,8 @@ try {
     Logs("god", "start", "Connection has been established successfully");
   };
   connect();
-} catch (error: any) {
-  Logs("global", "error", error);
+} catch (err: any) {
+  Logs("global", "error", err);
 }
 
 export default database;

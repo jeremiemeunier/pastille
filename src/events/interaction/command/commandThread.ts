@@ -33,8 +33,8 @@ const commandThreadInit = async (client: any, interaction: any) => {
       description: "Bienvenue sur ton thread dédié",
     });
     const msg = await thread.send({ embeds: [embed] });
-  } catch (error: any) {
-    Logs("command:thread", "error", error);
+  } catch (err: any) {
+    Logs("command:thread", "error", err);
   }
 };
 

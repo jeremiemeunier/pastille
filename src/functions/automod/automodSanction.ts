@@ -96,12 +96,12 @@ export const sanctionRegister = async (
   try {
     const register = await pastilleAxios.post("/sanction/add", {
       user_id: userId,
-      guild_id: guild.id,
+      guild_id: guild?.id,
       level: level,
       date: start,
       end: end,
     });
-  } catch (error: any) {
-    Logs("automod:sanction:register:api", "error", error, guild);
+  } catch (err: any) {
+    Logs("automod:sanction:register:api", "error", err, guild);
   }
 };

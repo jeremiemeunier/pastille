@@ -1,8 +1,8 @@
 import { getParams } from "@functions/base";
 import Logs from "@libs/Logs";
-import { EmbedBuilder } from "discord.js";
+import { Client, EmbedBuilder } from "discord.js";
 
-const commandAnnounceInit = async (client: any, interaction: any) => {
+const commandAnnounceInit = async (client: Client, interaction: any) => {
   const { commandName } = interaction;
   if (commandName !== "announce") {
     return;
@@ -19,11 +19,11 @@ const commandAnnounceInit = async (client: any, interaction: any) => {
     });
     const message = await interaction.reply({
       embeds: [embed],
-      fetchReply: true,
+      withResponse: true,
       content: "📢 **Annonce** ||@everyone||",
     });
-  } catch (error: any) {
-    Logs("command:announce", "error", error);
+  } catch (err: any) {
+    Logs("command:announce", "error", err);
   }
 };
 

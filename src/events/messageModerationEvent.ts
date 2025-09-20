@@ -23,7 +23,7 @@ export const automod = (client: any) => {
       delete: () => void;
     }) => {
       const guild = client.guilds.cache.find(
-        (guild: { id: any }) => guild.id === message.guildId
+        (guild: { id: any }) => guild?.id === message.guildId
       );
 
       const guildParams = await getParams({ guild: guild });
@@ -83,8 +83,8 @@ export const automod = (client: any) => {
               embeds: [embedSanction],
             });
             automodRegister(user, "limitMention", guild);
-          } catch (error: any) {
-            Logs("automod:mention", "error", error);
+          } catch (err: any) {
+            Logs("automod:mention", "error", err);
           }
           return;
         }
@@ -111,8 +111,8 @@ export const automod = (client: any) => {
               embeds: [embedSanction],
             });
             automodRegister(user, "mentionEveryone", guild);
-          } catch (error: any) {
-            Logs("automod:everyone", "error", error);
+          } catch (err: any) {
+            Logs("automod:everyone", "error", err);
           }
           return;
         }
@@ -143,13 +143,13 @@ export const automod = (client: any) => {
               embeds: [embedSanction],
             });
             automodRegister(user, "sendInvite", guild);
-          } catch (error: any) {
-            Logs("automod:send_invite", "error", error);
+          } catch (err: any) {
+            Logs("automod:send_invite", "error", err);
           }
           return;
         }
-      } catch (error: any) {
-        Logs("automod", "error", error);
+      } catch (err: any) {
+        Logs("automod", "error", err);
       }
     }
   );

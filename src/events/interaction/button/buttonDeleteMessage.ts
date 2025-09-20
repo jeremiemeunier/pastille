@@ -54,7 +54,7 @@ const buttonDeleteMessage = async (
     reportMessage.embeds.push(embedActionWarn);
 
     const action = await deleteReportedMessage(reportData, guild);
-    if (action.error) {
+    if (action.err) {
       await interaction.reply({ content: action.message, ephemeral: true });
     } else {
       await interaction.reply({
@@ -67,8 +67,8 @@ const buttonDeleteMessage = async (
         components: [],
       });
     }
-  } catch (error: any) {
-    Logs("button:delete_reported:base", "error", error, interaction.guild.id);
+  } catch (err: any) {
+    Logs("button:delete_reported:base", "error", err, interaction.guild?.id);
   }
 };
 
@@ -81,12 +81,12 @@ const deleteReportedMessage = async (
       (channel: { id: any }) => channel.id === data[3].value
     );
     if (!reportedChannel) {
-      return { error: true, message: "Channel has already deleted" };
+      return { err: true, message: "Channel has already deleted" };
     }
 
     const reportedMessage = await reportedChannel.messages.fetch(data[2].value);
     if (!reportedMessage) {
-      return { error: true, message: "Message has already deleted" };
+      return { err: true, message: "Message has already deleted" };
     }
 
     await postWarnUser({
@@ -97,10 +97,10 @@ const deleteReportedMessage = async (
       },
     });
     await reportedMessage.delete();
-    return { error: false };
-  } catch (error: any) {
-    Logs("button:delete:reported_message", "error", error, guild.id);
-    return { error: true, message: "Somethings went wrong" };
+    return { err: false };
+  } catch (err: any) {
+    Logs("button:delete:reported_message", "error", err, guild?.id);
+    return { err: true, message: "Somethings went wrong" };
   }
 };
 

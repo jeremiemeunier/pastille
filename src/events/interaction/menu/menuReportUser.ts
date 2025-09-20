@@ -13,7 +13,7 @@ const contextReportUser = async (client: any, interaction: any) => {
   }
 
   const guild = client.guilds.cache.find(
-    (guild: { id: any }) => guild.id === interaction.commandGuildId
+    (guild: { id: any }) => guild?.id === interaction.commandGuildId
   );
 
   const reportModal: any = new ModalBuilder({
@@ -60,8 +60,8 @@ const contextReportUser = async (client: any, interaction: any) => {
       descriptionFieldComponents
     );
     await interaction.showModal(reportModal);
-  } catch (error: any) {
-    Logs("command:report:showmodal", "error", error, guild.id);
+  } catch (err: any) {
+    Logs("command:report:showmodal", "error", err, guild?.id);
   }
 };
 

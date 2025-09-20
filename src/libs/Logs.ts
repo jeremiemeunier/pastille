@@ -20,7 +20,7 @@ const composeState: (
 ) => {
   switch (data) {
     case "error":
-      return "[\x1b[41m ERROR \x1b[0m]";
+      return "[\x1b[41m err \x1b[0m]";
     case "success":
       return "[\x1b[42mSUCCESS\x1b[0m]";
     case "warning":

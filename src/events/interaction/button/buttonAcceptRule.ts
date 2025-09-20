@@ -21,15 +21,13 @@ const buttonAcceptRuleInit = async (
   }
 ) => {
   const { customId } = interaction;
-  if (customId !== "acceptedRules") {
-    return;
-  }
+  if (customId !== "acceptedRules") return;
 
   const guildParams = await getParams(interaction.guild);
   const { moderation } = guildParams;
 
   const guild = client.guilds.cache.find(
-    (guild: { id: any }) => guild.id === interaction.guildId
+    (guild: { id: any }) => guild?.id === interaction.guildId
   );
   const member = guild.members.cache.find(
     (member: { id: any }) => member.id === interaction.user.id
@@ -44,9 +42,9 @@ const buttonAcceptRuleInit = async (
       content: "Tu as bien accepté les règles",
       ephemeral: true,
     });
-  } catch (error: any) {
+  } catch (err: any) {
     interaction.reply({ content: "Une erreur est survenue", ephemeral: true });
-    Logs("event:accept_rule", "error", error);
+    Logs("event:accept_rule", "error", err);
     return;
   }
 };

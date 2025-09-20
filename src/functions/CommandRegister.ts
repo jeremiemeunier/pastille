@@ -3,7 +3,8 @@ import { join } from "node:path";
 import { REST, Routes } from "discord.js";
 import Logs from "@libs/Logs";
 
-const commands: any[] = [];
+const guildCmds: any[] = [];
+const userCmds: any[] = [];
 const foldersPath = join(__dirname, "../commands");
 const commandFolders = readdirSync(foldersPath);
 
@@ -13,17 +14,33 @@ for (const folder of commandFolders) {
     file.endsWith(".ts")
   );
 
-  for (const file of commandFiles) {
-    const filePath = join(commandsPath, file);
-    const command = require(filePath);
-    if ("data" in command) {
-      commands.push(command.data);
-    } else {
-      Logs(
-        "commands:register",
-        "warning",
-        `The command at ${filePath} is missing a required "data" property.`
-      );
+  if (folder === "user") {
+    for (const file of commandFiles) {
+      const filePath = join(commandsPath, file);
+      const command = require(filePath);
+      if ("data" in command) {
+        userCmds.push(command.data);
+      } else {
+        Logs(
+          "commands:register",
+          "warning",
+          `the command at ${filePath} is missing a required "data" property.`
+        );
+      }
+    }
+  } else {
+    for (const file of commandFiles) {
+      const filePath = join(commandsPath, file);
+      const command = require(filePath);
+      if ("data" in command) {
+        guildCmds.push(command.data);
+      } else {
+        Logs(
+          "commands:register",
+          "warning",
+          `the command at ${filePath} is missing a required "data" property.`
+        );
+      }
     }
   }
 }
@@ -35,21 +52,39 @@ export const CommandRegisterDaemon = async (guild: any) => {
       Logs(
         "daemon:command",
         null,
-        `Refreshing ${commands.length} (/) commands`,
-        guild.id
+        `refreshing ${guildCmds.length} guilds commands`,
+        guild?.id
       );
       const data: any = await rest.put(
-        Routes.applicationGuildCommands(process.env.BOT_ID as string, guild.id),
-        { body: commands }
+        Routes.applicationGuildCommands(
+          process.env.BOT_ID as string,
+          guild?.id
+        ),
+        { body: guildCmds }
       );
       Logs(
         "daemon:command",
         null,
-        `Reloaded ${data.length} (/) commands`,
-        guild.id
+        `reloaded ${data.length} guilds commands`,
+        guild?.id
       );
-    } catch (error: any) {
-      Logs("daemon:command", "error", error, guild.id);
+    } catch (err: any) {
+      Logs("daemon:command", "error", err, guild?.id);
+    }
+
+    try {
+      Logs(
+        "daemon:command",
+        null,
+        `refreshing ${userCmds.length} global commands`
+      );
+      const data: any = await rest.put(
+        Routes.applicationCommands(process.env.BOT_ID as string),
+        { body: userCmds }
+      );
+      Logs("daemon:command", null, `reloaded ${data.length} global commands`);
+    } catch (err: any) {
+      Logs("daemon:command", "error", err);
     }
   })();
 };

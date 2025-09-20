@@ -30,7 +30,7 @@ const commandPollInit = async (_client: any, interaction: any) => {
       });
       const message = await interaction.reply({
         embeds: [embed],
-        fetchReply: true,
+        withResponse: true,
         content: "Nouveau sondage ! ||@here||",
       });
       for (let j = 0; j < i; j++) {
@@ -41,11 +41,11 @@ const commandPollInit = async (_client: any, interaction: any) => {
 
         try {
           await message.react(first);
-        } catch (error: any) {
+        } catch (err: any) {
           try {
             await message.react(letter);
-          } catch (error: any) {
-            Logs("command:poll", "error", error);
+          } catch (err: any) {
+            Logs("command:poll", "error", err);
           }
         }
       }
