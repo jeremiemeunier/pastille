@@ -14,8 +14,8 @@ const commandRuleInit = async (_client: any, interaction: any) => {
     return;
   }
 
-  const rules = await getRules({ guild: interaction.guild });
-  const guildParams = await getParams({ guild: interaction.guild });
+  const rules = await getRules({ guild: interaction?.guild });
+  const guildParams = await getParams({ guild: interaction?.guild });
   const { options } = guildParams;
   const channel = interaction.channel;
 
@@ -66,7 +66,7 @@ const commandRuleInit = async (_client: any, interaction: any) => {
         flags: MessageFlags.Ephemeral,
       });
     } catch (err: any) {
-      Logs("rule:embed", "error", JSON.stringify(err), interaction.guild?.id);
+      Logs("rule:embed", "error", JSON.stringify(err), interaction?.guild?.id);
       console.log(err);
     }
   } else {

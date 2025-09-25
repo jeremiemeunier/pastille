@@ -26,10 +26,10 @@ const buttonDeleteMessage = async (
       return;
     }
 
-    const guildParams = await getParams(interaction.guild);
+    const guildParams = await getParams(interaction?.guild);
     const { moderation, options } = guildParams;
 
-    const guild = interaction.guild;
+    const guild = interaction?.guild;
     const reportChannel = guild.channels.cache.find(
       (channel: { id: any }) => channel?.id === moderation.channels.report
     );
@@ -71,7 +71,7 @@ const buttonDeleteMessage = async (
       });
     }
   } catch (err: any) {
-    Logs("button:delete_reported:base", "error", err, interaction.guild?.id);
+    Logs("button:delete_reported:base", "error", err, interaction?.guild?.id);
   }
 };
 

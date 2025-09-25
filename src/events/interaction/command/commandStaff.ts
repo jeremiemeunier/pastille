@@ -13,7 +13,7 @@ const commandStaffInit = async (_client: any, interaction: any) => {
     return;
   }
 
-  const guildParams = await getParams(interaction.guild);
+  const guildParams = await getParams(interaction?.guild);
   const { options } = guildParams;
 
   try {
@@ -36,7 +36,7 @@ const commandStaffInit = async (_client: any, interaction: any) => {
       withResponse: false,
     });
   } catch (err: any) {
-    Logs("command:staff", "error", err, interaction.guildId);
+    Logs("command:staff", "error", err, interaction?.guildId);
   }
 };
 

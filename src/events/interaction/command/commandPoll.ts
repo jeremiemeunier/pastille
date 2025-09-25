@@ -13,7 +13,7 @@ const commandPollInit = async (_client: any, interaction: any) => {
     return;
   }
 
-  const guildParams = await getParams(interaction.guild);
+  const guildParams = await getParams(interaction?.guild);
   const { options } = guildParams;
 
   let pollChoices = "";

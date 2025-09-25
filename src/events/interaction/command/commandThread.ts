@@ -8,7 +8,7 @@ const commandThreadInit = async (client: any, interaction: any) => {
     return;
   }
 
-  const guildParams = await getParams(interaction.guild);
+  const guildParams = await getParams(interaction?.guild);
   const { options } = guildParams;
 
   const channel = client.channels.cache.find(

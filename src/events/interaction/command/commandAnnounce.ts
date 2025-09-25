@@ -8,7 +8,7 @@ const commandAnnounceInit = async (client: Client, interaction: any) => {
     return;
   }
 
-  const guildParams = await getParams(interaction.guild);
+  const guildParams = await getParams(interaction?.guild);
   const { options } = guildParams;
 
   try {
