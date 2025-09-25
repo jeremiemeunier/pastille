@@ -31,14 +31,14 @@ const modalReportUser = async (
   const { moderation } = guildParams;
 
   const reportChannel = guild.channels.cache.find(
-    (channel: { id: any }) => channel.id === moderation.channels.report
+    (channel: { id: any }) => channel?.id === moderation.channels.report
   );
   const reporterUser = guild.members.cache.find(
-    (user: { id: any }) => user.id === interaction.user.id
+    (user: { id: any }) => user?.id === interaction.user?.id
   );
   const reportedUser = guild.members.cache.find(
     (user: { id: any }) =>
-      user.id === interaction.fields.getTextInputValue("reportedUser")
+      user?.id === interaction.fields.getTextInputValue("reportedUser")
   );
   const shortReportReason =
     interaction.fields.getTextInputValue("shortReportReason");
@@ -52,12 +52,12 @@ const modalReportUser = async (
       fields: [
         {
           name: "Signalement par",
-          value: `<@${reporterUser.id}>`,
+          value: `<@${reporterUser?.id}>`,
           inline: true,
         },
         {
           name: "Signalement de",
-          value: `<@${reportedUser.id}>`,
+          value: `<@${reportedUser?.id}>`,
           inline: true,
         },
       ],

@@ -131,7 +131,7 @@ export const joinAllVoiceThread = async ({
 
     if (thread) {
       channel.members.map(async (member: GuildMember) => {
-        if (member.id !== user) {
+        if (member?.id !== user) {
           try {
             await thread.members.add(member);
             const embed = new EmbedBuilder({

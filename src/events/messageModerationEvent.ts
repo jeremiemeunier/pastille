@@ -34,13 +34,13 @@ export const automod = (client: any) => {
         message.mentions.roles.map((x: any) => x).length +
         message.mentions.users.map((x: any) => x).length;
       const user = guild.members.cache.find(
-        (user: { id: any }) => user.id === message.author.id
+        (user: { id: any }) => user?.id === message.author?.id
       );
       const infractionChannel = guild.channels.cache.find(
-        (channel: { id: any }) => channel.id === message.channelId
+        (channel: { id: any }) => channel?.id === message.channelId
       );
       const automod = guild.channels.cache.find(
-        (channel: { id: any }) => channel.id === moderation.channels.automod
+        (channel: { id: any }) => channel?.id === moderation.channels.automod
       );
 
       const regexDiscordInvitation = new RegExp(/https:\/\/discord.gg/gm);
@@ -75,11 +75,11 @@ export const automod = (client: any) => {
               embeds: [embedSanction, embedProof],
             });
             await infractionChannel.send({
-              content: `<@${user.user.id.toString()}> you receive a warn`,
+              content: `<@${user.user?.id.toString()}> you receive a warn`,
               embeds: [embedSanction],
             });
             await user.send({
-              content: `<@${user.user.id.toString()}> you receive a warn`,
+              content: `<@${user.user?.id.toString()}> you receive a warn`,
               embeds: [embedSanction],
             });
             automodRegister(user, "limitMention", guild);
@@ -103,11 +103,11 @@ export const automod = (client: any) => {
             message.delete();
             await automod.send({ embeds: [embedSanction, embedProof] });
             await infractionChannel.send({
-              content: `<@${user.user.id.toString()}> receive a warn`,
+              content: `<@${user.user?.id.toString()}> receive a warn`,
               embeds: [embedSanction],
             });
             await user.send({
-              content: `<@${user.user.id.toString()}> you receive a warn`,
+              content: `<@${user.user?.id.toString()}> you receive a warn`,
               embeds: [embedSanction],
             });
             automodRegister(user, "mentionEveryone", guild);
@@ -135,11 +135,11 @@ export const automod = (client: any) => {
             message.delete();
             await automod.send({ embeds: [embedSanction, embedProof] });
             await infractionChannel.send({
-              content: `<@${user.user.id.toString()}> receive a warn`,
+              content: `<@${user.user?.id.toString()}> receive a warn`,
               embeds: [embedSanction],
             });
             await user.send({
-              content: `<@${user.user.id.toString()}> you receive a warn`,
+              content: `<@${user.user?.id.toString()}> you receive a warn`,
               embeds: [embedSanction],
             });
             automodRegister(user, "sendInvite", guild);
@@ -164,8 +164,8 @@ export const isImune = (
 
   if (imune) {
     userRoles.map((role: { id: any }) => {
-      if (imune.indexOf(role.id) !== -1) {
-        imunised.push(role.id);
+      if (imune.indexOf(role?.id) !== -1) {
+        imunised.push(role?.id);
       }
     });
   }

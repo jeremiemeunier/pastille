@@ -30,10 +30,10 @@ const buttonAcceptRuleInit = async (
     (guild: { id: any }) => guild?.id === interaction.guildId
   );
   const member = guild.members.cache.find(
-    (member: { id: any }) => member.id === interaction.user.id
+    (member: { id: any }) => member?.id === interaction.user?.id
   );
   const role = guild.roles.cache.find(
-    (role: { id: any }) => role.id === moderation.roles.rule
+    (role: { id: any }) => role?.id === moderation.roles.rule
   );
 
   try {

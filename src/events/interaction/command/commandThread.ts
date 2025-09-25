@@ -12,7 +12,7 @@ const commandThreadInit = async (client: any, interaction: any) => {
   const { options } = guildParams;
 
   const channel = client.channels.cache.find(
-    (channel: any) => channel.id === interaction.channelId
+    (channel: any) => channel?.id === interaction.channelId
   );
 
   try {
@@ -22,7 +22,7 @@ const commandThreadInit = async (client: any, interaction: any) => {
       reason: interaction.options.getString("title"),
       type: ChannelType.PrivateThread,
     });
-    await thread.members.add(interaction.user.id);
+    await thread.members.add(interaction.user?.id);
     await interaction.reply({
       content: `Tu as maintenant accès au thread ${thread}`,
       flags: MessageFlags.Ephemeral,

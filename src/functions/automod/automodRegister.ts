@@ -3,7 +3,7 @@ import { automodSanction } from "./automodSanction";
 import pastilleAxios from "@libs/PastilleAxios";
 
 export const automodRegister = async (user: any, reason: any, guild: any) => {
-  const userId = user.user.id;
+  const userId = user.user?.id;
   const today = new Date();
 
   // On créer un nouveau register

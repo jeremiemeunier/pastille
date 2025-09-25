@@ -18,7 +18,7 @@ export const messageCreateEventInit = (client: any) => {
       (guild: { id: any }) => guild?.id === message.guildId
     );
     const channel = guild.channels.cache.find(
-      (channel: { id: any }) => channel.id === message.channelId
+      (channel: { id: any }) => channel?.id === message.channelId
     );
 
     const guildParams = await getParams({ guild: guild });

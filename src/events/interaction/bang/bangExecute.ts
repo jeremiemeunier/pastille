@@ -9,7 +9,7 @@ const bangExecute = async (message: any, guild: any, command: any) => {
 
   if (role_id || channel_id) {
     const user = guild.members.cache.find(
-      (u: any) => u.id === message.author.id
+      (u: any) => u?.id === message.author?.id
     );
     const userRoles = user.roles.cache;
 

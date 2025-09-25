@@ -33,7 +33,7 @@ const buttonOpenTicketInit = async (
     (guild: { id: any }) => guild?.id === interaction.guildId
   );
   const member = guild.members.cache.find(
-    (member: { id: any }) => member.id === interaction.user.id
+    (member: { id: any }) => member?.id === interaction.user?.id
   );
   const channel = await guild.channels.fetch(interaction.channelId);
 

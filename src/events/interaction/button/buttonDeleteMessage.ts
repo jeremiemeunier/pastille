@@ -31,23 +31,23 @@ const buttonDeleteMessage = async (
 
     const guild = interaction.guild;
     const reportChannel = guild.channels.cache.find(
-      (channel: { id: any }) => channel.id === moderation.channels.report
+      (channel: { id: any }) => channel?.id === moderation.channels.report
     );
     const reportMessage = reportChannel.messages.cache.find(
-      (message: { id: any }) => message.id === interaction.message.id
+      (message: { id: any }) => message?.id === interaction.message?.id
     );
     const reportData = reportMessage.embeds[0].data.fields;
 
     const embedActionDelete = new EmbedBuilder({
       color: parseInt(options.color, 16),
       description: `${time(new Date())} — <@${
-        interaction.user.id
+        interaction.user?.id
       }> — Suppression du message`,
     });
     const embedActionWarn = new EmbedBuilder({
       color: parseInt(options.color, 16),
       description: `${time(new Date())} — <@${
-        interaction.user.id
+        interaction.user?.id
       }> — Ajout d'un warn à l'auteur`,
     });
     reportMessage.embeds.push(embedActionDelete);
@@ -81,7 +81,7 @@ const deleteReportedMessage = async (
 ) => {
   try {
     const reportedChannel = guild.channels.cache.find(
-      (channel: { id: any }) => channel.id === data[3].value
+      (channel: { id: any }) => channel?.id === data[3].value
     );
     if (!reportedChannel) {
       return { err: true, message: "Channel has already deleted" };
@@ -96,7 +96,7 @@ const deleteReportedMessage = async (
       guild: guild,
       data: {
         reason: "reportedMessage",
-        user_id: reportedMessage.author.id,
+        user_id: reportedMessage.author?.id,
       },
     });
     await reportedMessage.delete();

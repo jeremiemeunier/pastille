@@ -17,7 +17,7 @@ const addRole = async (
     (guild: { id: any }) => guild?.id === reaction.message.guildId
   );
   const member = guild.members.cache.find(
-    (member: { id: any }) => member.id === user.id
+    (member: { id: any }) => member?.id === user?.id
   );
 
   const roles = await getRoles({ guild: guild });
@@ -27,7 +27,7 @@ const addRole = async (
 
     if (reaction.emoji.name === emote) {
       const roleItem = guild.roles.cache.find(
-        (role: { id: any }) => role.id === item.role
+        (role: { id: any }) => role?.id === item.role
       );
 
       try {
@@ -55,7 +55,7 @@ const removeRole = async (
     (guild: { id: any }) => guild?.id === reaction.message.guildId
   );
   const member = guild.members.cache.find(
-    (member: { id: any }) => member.id === user.id
+    (member: { id: any }) => member?.id === user?.id
   );
 
   const roles = await getRoles({ guild: guild });
@@ -65,7 +65,7 @@ const removeRole = async (
 
     if (reaction.emoji.name === emote) {
       const roleItem = guild.roles.cache.find(
-        (role: { id: any }) => role.id === item.role
+        (role: { id: any }) => role?.id === item.role
       );
 
       try {

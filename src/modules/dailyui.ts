@@ -20,7 +20,7 @@ const addonsLoaded = async (guild: any, addonsParamsItem: any) => {
         });
         const { _id, title, description } = dailyUiChallenge.data.data;
         const addonsChannel = guild.channels.cache.find(
-          (channel: any) => channel.id === addonsParamsItem.channel
+          (channel: any) => channel?.id === addonsParamsItem.channel
         );
 
         try {

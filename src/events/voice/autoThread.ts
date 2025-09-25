@@ -91,14 +91,14 @@ export const autoThread = async ({
     client.guilds.cache.find(
       (guild: { id: any }) => guild?.id === newState.guild?.id
     );
-  const user = oldState.member.user.id || newState.member.user.id;
+  const user = oldState.member.user?.id || newState.member.user?.id;
 
   try {
     if (newState.channelId === null) {
       // user disconnected from channel
       // find channel
       const voiceChannel = guild.channels.cache.find(
-        (voiceChannel: { id: any }) => voiceChannel.id === oldState.channelId
+        (voiceChannel: { id: any }) => voiceChannel?.id === oldState.channelId
       );
       // count members and find textual parent linked
       const connected = await countMembers({
@@ -115,7 +115,7 @@ export const autoThread = async ({
     } else if (oldState.channelId === null) {
       // user connect for first time
       const voiceChannel = guild.channels.cache.find(
-        (voiceChannel: { id: any }) => voiceChannel.id === newState.channelId
+        (voiceChannel: { id: any }) => voiceChannel?.id === newState.channelId
       );
       const connected = await countMembers({
         channel: voiceChannel,
@@ -149,11 +149,11 @@ export const autoThread = async ({
       // user switch two voice channel
       const oldVoiceChannel = guild.channels.cache.find(
         (oldVoiceChannel: { id: any }) =>
-          oldVoiceChannel.id === oldState.channelId
+          oldVoiceChannel?.id === oldState.channelId
       );
       const newVoiceChannel = guild.channels.cache.find(
         (newVoiceChannel: { id: any }) =>
-          newVoiceChannel.id === newState.channelId
+          newVoiceChannel?.id === newState.channelId
       );
       const oldConnected = await countMembers({
         channel: oldVoiceChannel,

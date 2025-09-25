@@ -102,7 +102,7 @@ const pastilleBooter = async () => {
   }
 
   client.on(Events.GuildCreate, (event) => {
-    Logs("events:new_guild", null, "join a new guild", event.id);
+    Logs("events:new_guild", null, "join a new guild", event?.id);
     guildStarter(event);
     setStatus();
   });

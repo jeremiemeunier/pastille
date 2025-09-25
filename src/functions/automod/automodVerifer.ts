@@ -59,7 +59,7 @@ export const automodRemove = async (guild: any, user: any) => {
   const { moderation } = guildParams;
 
   const sanctionRole = guild.roles.cache.find(
-    (role: any) => role.id === moderation.roles.muted
+    (role: any) => role?.id === moderation.roles.muted
   );
   const embedSanction = new EmbedBuilder({
     color: 32768,
@@ -83,11 +83,11 @@ export const automodApply = async (guild: any, user: any, timer: any) => {
   const { moderation } = guildParams;
 
   const alertChannel = guild.channels.cache.find(
-    (channel: any) => channel.id === moderation.channels.alert
+    (channel: any) => channel?.id === moderation.channels.alert
   );
   const textualDuration = durationFormater(timer);
   const sanctionRole = guild.roles.cache.find(
-    (role: any) => role.id === moderation.roles.muted
+    (role: any) => role?.id === moderation.roles.muted
   );
   const embedSanction = new EmbedBuilder({
     color: 16711680,
@@ -103,7 +103,7 @@ export const automodApply = async (guild: any, user: any, timer: any) => {
 
   try {
     await user.send({
-      content: `<@${user.id.toString()}> tu as été sanctionné(e) sur **__${
+      content: `<@${user?.id.toString()}> tu as été sanctionné(e) sur **__${
         guild.name
       }__**`,
       embeds: [embedSanction],
@@ -153,7 +153,7 @@ export const automodVerifier = async (guild: any) => {
           };
           const user = await userFetch();
           const sanctionRole = guild.roles.cache.find(
-            (role: any) => role.id === moderation.roles.muted
+            (role: any) => role?.id === moderation.roles.muted
           );
 
           if (!user) {

@@ -72,10 +72,10 @@ const buttonStaffRequest = async (
     (guild: { id: any }) => guild?.id === interaction.guildId
   );
   const member = guild.members.cache.find(
-    (member: { id: any }) => member.id === interaction.user.id
+    (member: { id: any }) => member?.id === interaction.user?.id
   );
   const channel = guild.channels.cache.find(
-    (channel: { id: any }) => channel.id === interaction.channelId
+    (channel: { id: any }) => channel?.id === interaction.channelId
   );
 
   const guildParams = await getParams({ guild: guild });
@@ -123,7 +123,7 @@ const buttonStaffRequest = async (
       components: [lockButton],
     });
     if (await lockableThread(staffThread, guild)) {
-      await staffThread.members.add(member.id);
+      await staffThread.members.add(member?.id);
       await interaction.reply({
         content: `Ta demande de contact à été créée. Tu as maintenant accès au fil ${staffThread}`,
         flags: MessageFlags.Ephemeral,

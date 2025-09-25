@@ -10,7 +10,7 @@ const commandClearInit = async (client: any, interaction: any) => {
   if (interaction.options.getSubcommand() === "thread") {
     try {
       const interactChannel = client.channels.cache.find(
-        (channel: any) => channel.id === interaction.channelId
+        (channel: any) => channel?.id === interaction.channelId
       );
       const threadsMap = interactChannel.threads.cache;
 
@@ -37,7 +37,7 @@ const commandClearInit = async (client: any, interaction: any) => {
 
   if (interaction.options.getSubcommand() === "messages") {
     const interactChannel = client.channels.cache.find(
-      (channel: any) => channel.id === interaction.channelId
+      (channel: any) => channel?.id === interaction.channelId
     );
 
     await interactChannel.messages.fetch().then((messages: any) => {

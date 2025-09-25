@@ -20,7 +20,7 @@ const pollReactions = async (
 ) => {
   const userReactions = reaction.message.reactions.cache.filter(
     (reaction: { users: { cache: { has: (arg0: any) => any } } }) =>
-      reaction.users.cache.has(user.id)
+      reaction.users.cache.has(user?.id)
   );
   const botReactThis = reaction.users.cache.find(
     (user: { bot: boolean }) => user.bot === true
