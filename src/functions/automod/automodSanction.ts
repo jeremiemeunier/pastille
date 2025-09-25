@@ -65,7 +65,7 @@ export const automodSanction = async (user: any, size: any, guild: any) => {
   } else {
     automodApply(guild, user, evaluation.duration);
     sanctionRegister(
-      user.user.id,
+      user.user?.id,
       evaluation.decision,
       evaluation.start,
       evaluation.end,

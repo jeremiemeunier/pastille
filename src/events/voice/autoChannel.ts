@@ -30,7 +30,7 @@ const getGuild = ({
 };
 
 const getUser = ({ guild, user }: { guild: any; user: String }) => {
-  return guild.members.cache.find((member: User) => member.id === user);
+  return guild.members.cache.find((member: User) => member?.id === user);
 };
 
 export const autoChannel = async ({
@@ -55,12 +55,12 @@ export const autoChannel = async ({
     oldState: oldState,
     newState: newState,
   });
-  const guildUser = getUser({ guild: guild, user: newState.member.user.id });
+  const guildUser = getUser({ guild: guild, user: newState.member.user?.id });
   const channel = guild.channels.cache.find(
-    (voice: VoiceChannel) => voice.id === newState.channelId
+    (voice: VoiceChannel) => voice?.id === newState.channelId
   );
   const parent = guild.channels.cache.find(
-    (p: CategoryChannel) => p.id === channel.parentId
+    (p: CategoryChannel) => p?.id === channel.parentId
   );
 
   // making channel
@@ -100,9 +100,9 @@ export const autoRemoveChannel = async ({
     oldState: oldState,
     newState: newState,
   });
-  const guildUser = getUser({ guild: guild, user: oldState.member.user.id });
+  const guildUser = getUser({ guild: guild, user: oldState.member.user?.id });
   const channel = guild.channels.cache.find(
-    (voice: VoiceChannel) => voice.id === oldState.channelId
+    (voice: VoiceChannel) => voice?.id === oldState.channelId
   );
 
   if (channel && channel.name.startsWith("Voice of ")) {

@@ -16,10 +16,10 @@ const bangStatus = async (
   guild: { members: { cache: any[] }; channels: { cache: any[] }; id: any }
 ) => {
   const user = guild.members.cache.find(
-    (user: { id: any }) => user.id === message.author.id
+    (user: { id: any }) => user?.id === message.author?.id
   );
   const voiceChannelUser = guild.channels.cache.find(
-    (channel: { id: any }) => channel.id === user.voice.channelId
+    (channel: { id: any }) => channel?.id === user.voice.channelId
   );
   const statusText = message.content.substring(8);
 

@@ -23,7 +23,7 @@ const bangRule = async (
   const { options } = guildParams;
 
   const channel = guild.channels.cache.find(
-    (channel: { id: any }) => channel.id === message.channelId
+    (channel: { id: any }) => channel?.id === message.channelId
   );
 
   try {

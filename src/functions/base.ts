@@ -16,7 +16,7 @@ export const getAddons = async ({ guild }: { guild: any }) => {
     return guildAddons;
   } catch (err: any) {
     if (err.http_response === 404) {
-      Logs("addon:load:guild", "warning", err, guild?.id);
+      Logs("addon:load:guild", null, err, guild?.id);
       return false;
     } else {
       Logs("addon:load:guild", "error", err, guild?.id);

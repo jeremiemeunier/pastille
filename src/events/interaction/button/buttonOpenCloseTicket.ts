@@ -1,6 +1,6 @@
 import { getParams } from "@functions/base";
 import Logs from "@libs/Logs";
-import { Events } from "discord.js";
+import { Events, MessageFlags } from "discord.js";
 
 const buttonOpenTicketInit = async (
   client: {
@@ -33,21 +33,24 @@ const buttonOpenTicketInit = async (
     (guild: { id: any }) => guild?.id === interaction.guildId
   );
   const member = guild.members.cache.find(
-    (member: { id: any }) => member.id === interaction.user.id
+    (member: { id: any }) => member?.id === interaction.user?.id
   );
   const channel = await guild.channels.fetch(interaction.channelId);
 
   if (!member.roles.cache.has(moderation.roles.staff)) {
     await interaction.reply({
       content: "Seul les membres du staff peuvent fermer un ticket",
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
     return;
   }
 
   try {
     channel.setLocked(true);
-    await interaction.reply({ content: "Channel, now lock", ephemeral: true });
+    await interaction.reply({
+      content: "Channel, now lock",
+      flags: MessageFlags.Ephemeral,
+    });
   } catch (err: any) {
     Logs("close:staff:channel", "error", err, guild?.id);
   }

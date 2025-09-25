@@ -32,7 +32,7 @@ const AddonTwitch = async (client: any) => {
                   type: "stream.online",
                   version: 1,
                   condition: {
-                    broadcaster_user_id: streamer.id,
+                    broadcaster_user_id: streamer?.id,
                   },
                   transport: {
                     method: "webhook",
@@ -104,15 +104,15 @@ const AddonTwitch = async (client: any) => {
                         (guild: any) => guild?.id === recipient.guild_id
                       );
                       const channel = guild.channels.cache.find(
-                        (channel: any) => channel.id === recipient.channel_id
+                        (channel: any) => channel?.id === recipient.channel_id
                       );
                       const role = guild.roles.cache.find(
-                        (role: any) => role.id === recipient.role_id
+                        (role: any) => role?.id === recipient.role_id
                       );
 
                       // get stream infos
                       const stream = await requestStreamerState(
-                        live.id,
+                        live?.id,
                         authToken
                       );
 
@@ -150,7 +150,7 @@ const AddonTwitch = async (client: any) => {
                       } else {
                         try {
                           await Streamers.findOneAndUpdate(
-                            { id: live.id },
+                            { id: live?.id },
                             { isLive: false }
                           );
                         } catch (err: any) {
@@ -172,7 +172,7 @@ const AddonTwitch = async (client: any) => {
                     value.map(async (item) => {
                       try {
                         await Streamers.findOneAndUpdate(
-                          { id: item.id },
+                          { id: item?.id },
                           { isAnnounce: true }
                         );
                       } catch (err: any) {
@@ -215,7 +215,7 @@ const AddonTwitch = async (client: any) => {
                     type: "stream.online",
                     version: 1,
                     condition: {
-                      broadcaster_user_id: streamer.id,
+                      broadcaster_user_id: streamer?.id,
                     },
                     transport: {
                       method: "webhook",

@@ -1,4 +1,5 @@
 import Logs from "@libs/Logs";
+import { MessageFlags } from "discord.js";
 
 const commandClearInit = async (client: any, interaction: any) => {
   const { commandName } = interaction;
@@ -9,7 +10,7 @@ const commandClearInit = async (client: any, interaction: any) => {
   if (interaction.options.getSubcommand() === "thread") {
     try {
       const interactChannel = client.channels.cache.find(
-        (channel: any) => channel.id === interaction.channelId
+        (channel: any) => channel?.id === interaction.channelId
       );
       const threadsMap = interactChannel.threads.cache;
 
@@ -23,12 +24,12 @@ const commandClearInit = async (client: any, interaction: any) => {
 
       interaction.reply({
         content: `Tout les threads ont été supprimés`,
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     } catch (err: any) {
       interaction.reply({
         content: "Une erreur est survenue, veuillez réessayer plus tard",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
       Logs("command:clear:threads", "error", err);
     }
@@ -36,7 +37,7 @@ const commandClearInit = async (client: any, interaction: any) => {
 
   if (interaction.options.getSubcommand() === "messages") {
     const interactChannel = client.channels.cache.find(
-      (channel: any) => channel.id === interaction.channelId
+      (channel: any) => channel?.id === interaction.channelId
     );
 
     await interactChannel.messages.fetch().then((messages: any) => {
@@ -51,7 +52,7 @@ const commandClearInit = async (client: any, interaction: any) => {
 
     interaction.reply({
       content: `Tout les messages ont été supprimés`,
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
   }
 };

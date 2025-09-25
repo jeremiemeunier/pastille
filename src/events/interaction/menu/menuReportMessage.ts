@@ -5,6 +5,7 @@ import {
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
+  MessageFlags,
 } from "discord.js";
 
 const contextReportMessage = async (client: any, interaction: any) => {
@@ -20,16 +21,16 @@ const contextReportMessage = async (client: any, interaction: any) => {
   const { moderation } = guildParams;
 
   const reporterUser = guild.members.cache.find(
-    (user: any) => user.id === interaction.user.id
+    (user: any) => user?.id === interaction.user?.id
   );
   const reportedChannel = guild.channels.cache.find(
-    (channel: any) => channel.id === interaction.channelId
+    (channel: any) => channel?.id === interaction.channelId
   );
   const reportedMessage = reportedChannel.messages.cache.find(
-    (message: any) => message.id === interaction.targetId
+    (message: any) => message?.id === interaction.targetId
   );
   const reportChannel = guild.channels.cache.find(
-    (channel: any) => channel.id === moderation.channels.report
+    (channel: any) => channel?.id === moderation.channels.report
   );
 
   try {
@@ -39,15 +40,15 @@ const contextReportMessage = async (client: any, interaction: any) => {
       fields: [
         {
           name: "Auteur",
-          value: `<@${reportedMessage.author.id}>`,
+          value: `<@${reportedMessage.author?.id}>`,
           inline: true,
         },
         {
           name: "Signalement par",
-          value: `<@${reporterUser.id}>`,
+          value: `<@${reporterUser?.id}>`,
           inline: true,
         },
-        { name: "Message id", value: reportedMessage.id, inline: true },
+        { name: "Message id", value: reportedMessage?.id, inline: true },
         { name: "Channel id", value: reportedMessage.channelId, inline: true },
       ],
     });
@@ -66,7 +67,7 @@ const contextReportMessage = async (client: any, interaction: any) => {
     });
     await interaction.reply({
       content: "Le signalement à bien été transmis à l'équipe de modération",
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
   } catch (err: any) {
     Logs("command:report:message", "error", err, guild?.id);

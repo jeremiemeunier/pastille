@@ -40,8 +40,6 @@ export const AddonsRegister = async (addons: any, guild: any) => {
     } catch (err: any) {
       Logs("daemon:addons:map", "error", err);
     }
-  } else {
-    Logs("daemon:addons", null, "no addons", guild?.id);
   }
 };
 
