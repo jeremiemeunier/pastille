@@ -7,6 +7,7 @@ import {
   ChannelType,
   EmbedBuilder,
   Events,
+  MessageFlags,
 } from "discord.js";
 
 const lockableThread = async (thread: { locked: any }, guild: any) => {
@@ -89,7 +90,7 @@ const buttonStaffRequest = async (
   if (activeRequest) {
     await interaction.reply({
       content: `Une demande est déjà en cours. ${activeRequest}`,
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
     return;
   }
@@ -125,7 +126,7 @@ const buttonStaffRequest = async (
       await staffThread.members.add(member.id);
       await interaction.reply({
         content: `Ta demande de contact à été créée. Tu as maintenant accès au fil ${staffThread}`,
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     } else {
       try {
@@ -138,7 +139,7 @@ const buttonStaffRequest = async (
     Logs("staff:button:thread", "error", err, guild?.id);
     await interaction.reply({
       content: `Une erreur s'est produite.`,
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
   }
 };

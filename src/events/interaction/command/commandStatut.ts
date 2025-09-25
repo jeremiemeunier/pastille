@@ -1,5 +1,5 @@
 import Logs from "@libs/Logs";
-import { ActivityType } from "discord.js";
+import { ActivityType, MessageFlags } from "discord.js";
 
 const commandStatutInit = async (client: any, interaction: any) => {
   const { commandName } = interaction;
@@ -18,7 +18,7 @@ const commandStatutInit = async (client: any, interaction: any) => {
     });
     await interaction.reply({
       content: `Le nouveau nouveau statut de ${client.user} a été définis`,
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
   } catch (err: any) {
     Logs("command:status", "error", err);

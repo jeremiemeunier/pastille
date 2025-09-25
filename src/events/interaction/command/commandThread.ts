@@ -1,6 +1,6 @@
 import { getParams } from "@functions/base";
 import Logs from "@libs/Logs";
-import { ChannelType, EmbedBuilder } from "discord.js";
+import { ChannelType, EmbedBuilder, MessageFlags } from "discord.js";
 
 const commandThreadInit = async (client: any, interaction: any) => {
   const { commandName } = interaction;
@@ -25,7 +25,7 @@ const commandThreadInit = async (client: any, interaction: any) => {
     await thread.members.add(interaction.user.id);
     await interaction.reply({
       content: `Tu as maintenant accès au thread ${thread}`,
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
 
     let embed = new EmbedBuilder({

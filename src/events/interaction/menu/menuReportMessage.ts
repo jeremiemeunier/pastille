@@ -5,6 +5,7 @@ import {
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
+  MessageFlags,
 } from "discord.js";
 
 const contextReportMessage = async (client: any, interaction: any) => {
@@ -66,7 +67,7 @@ const contextReportMessage = async (client: any, interaction: any) => {
     });
     await interaction.reply({
       content: "Le signalement à bien été transmis à l'équipe de modération",
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
   } catch (err: any) {
     Logs("command:report:message", "error", err, guild?.id);

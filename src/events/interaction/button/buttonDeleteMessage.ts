@@ -1,7 +1,7 @@
 import { time } from "@discordjs/builders";
 import { getParams, postWarnUser } from "@functions/base";
 import Logs from "@libs/Logs";
-import { Events, EmbedBuilder } from "discord.js";
+import { Events, EmbedBuilder, MessageFlags } from "discord.js";
 
 const buttonDeleteMessage = async (
   _client: {
@@ -55,11 +55,14 @@ const buttonDeleteMessage = async (
 
     const action = await deleteReportedMessage(reportData, guild);
     if (action.err) {
-      await interaction.reply({ content: action.message, ephemeral: true });
+      await interaction.reply({
+        content: action.message,
+        flags: MessageFlags.Ephemeral,
+      });
     } else {
       await interaction.reply({
         content: "Le message à été supprimé",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
       await reportMessage.edit({
         content: reportMessage.content,

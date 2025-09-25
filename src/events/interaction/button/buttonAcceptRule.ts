@@ -1,6 +1,6 @@
 import { getParams } from "@functions/base";
 import Logs from "@libs/Logs";
-import { Events } from "discord.js";
+import { Events, MessageFlags } from "discord.js";
 
 const buttonAcceptRuleInit = async (
   client: {
@@ -40,10 +40,13 @@ const buttonAcceptRuleInit = async (
     await member.roles.add(role);
     interaction.reply({
       content: "Tu as bien accepté les règles",
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
   } catch (err: any) {
-    interaction.reply({ content: "Une erreur est survenue", ephemeral: true });
+    interaction.reply({
+      content: "Une erreur est survenue",
+      flags: MessageFlags.Ephemeral,
+    });
     Logs("event:accept_rule", "error", err);
     return;
   }

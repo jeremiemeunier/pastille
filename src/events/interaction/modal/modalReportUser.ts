@@ -1,6 +1,6 @@
 import { getParams } from "@functions/base";
 import Logs from "@libs/Logs";
-import { EmbedBuilder, Events } from "discord.js";
+import { EmbedBuilder, Events, MessageFlags } from "discord.js";
 
 const modalReportUser = async (
   client: {
@@ -68,7 +68,7 @@ const modalReportUser = async (
     });
     await interaction.reply({
       content: "Votre signalement à bien été transmis à la modération",
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
   } catch (err: any) {
     await interaction.reply({
