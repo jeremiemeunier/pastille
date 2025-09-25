@@ -102,8 +102,6 @@ const pastilleBooter = async () => {
   }
 
   client.on(Events.GuildCreate, (event) => {
-    console.log(event);
-
     Logs("events:new_guild", null, "join a new guild", event.id);
     guildStarter(event);
     setStatus();
@@ -111,7 +109,7 @@ const pastilleBooter = async () => {
 };
 
 try {
-  client.on("ready", pastilleBooter);
+  client.on("clientReady", pastilleBooter);
   client.login(process.env.BOT_TOKEN);
 } catch (err: any) {
   Logs("client:connect", "error", err);
