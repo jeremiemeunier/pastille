@@ -20,7 +20,7 @@ const composeState: (
 ) => {
   switch (data) {
     case "error":
-      return "[\x1b[41m err \x1b[0m]";
+      return "[\x1b[41m ERROR \x1b[0m]";
     case "success":
       return "[\x1b[42mSUCCESS\x1b[0m]";
     case "warning":
@@ -60,14 +60,14 @@ const Logs: (
   } else {
     details
       ? console.log(
-          `${composeTime()}[${node.padEnd(20, ".")}]${composeState(
+          `${composeTime()}[${node.padEnd(30, ".")}]${composeState(
             state
           )}(${details}) » ${
             typeof content === "string" ? content : JSON.stringify(content)
           }`
         )
       : console.log(
-          `${composeTime()}[${node.padEnd(20, ".")}]${composeState(state)} » ${
+          `${composeTime()}[${node.padEnd(30, ".")}]${composeState(state)} » ${
             typeof content === "string" ? content : JSON.stringify(content)
           }`
         );
