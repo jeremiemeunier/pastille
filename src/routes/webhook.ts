@@ -45,21 +45,22 @@ router.post(
 
         // handle event
         if (message_type === "webhook_callback_verification") {
-          Logs("webhook", null, notif, "validating");
+          Logs("webhook.twitch", null, notif, "validating");
 
           // updating streamers docs to valid him
           try {
             await Streamers.findOneAndUpdate(
               {
-                id: { $eq: notif.event.broadcaster_user_id },
+                id: { $eq: notif.condition.broadcaster_user_id },
               },
               {
                 isValid: true,
+                apiSubscriptionId: notif.subscription.id,
               },
               { new: true }
             );
           } catch (err: any) {
-            Logs("webhook", "error", err, "valid_subscription");
+            Logs("webhook.twitch", "error", err, "valid_subscription");
           }
 
           res
@@ -81,7 +82,7 @@ router.post(
                 { new: true }
               );
             } catch (err: any) {
-              Logs("webhook", "error", err);
+              Logs("webhook.twitch", "error", err);
             }
           }
 
@@ -130,7 +131,7 @@ router.post(
           Buffer.from(signature, "hex")
         );
       } catch (err: any) {
-        Logs("webhook:discord", "error", err);
+        Logs("webhook.discord", "error", err);
         return false;
       }
     })();

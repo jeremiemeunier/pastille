@@ -10,6 +10,7 @@ const schema = new Schema<StreamerTypes>({
   isAnnounce: { type: Boolean, required: true, default: false },
   isValid: { type: Boolean, required: true, default: false },
   announcer: [],
+  apiSubscriptionId: { type: String, default: null },
 });
 
 export default models.Streaming || model("Streaming", schema);

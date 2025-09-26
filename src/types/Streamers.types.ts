@@ -6,6 +6,7 @@ export interface StreamerTypes {
   isAnnounce: boolean;
   isValid: boolean;
   announcer: StreamerAnnouncerTypes[];
+  apiSubscriptionId: string;
 }
 
 export interface StreamerAnnouncerTypes {
