@@ -18,9 +18,7 @@ export const voiceEventInit = (client: any) => {
         member: { user: { id: any } };
       }
     ) => {
-      if (newState.channelId === oldState.channelId) {
-        return;
-      }
+      if (newState.channelId === oldState.channelId) return;
 
       const guild =
         client.guilds.cache.find(
