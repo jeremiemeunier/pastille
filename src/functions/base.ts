@@ -7,19 +7,19 @@ import pastilleAxios from "@libs/PastilleAxios";
  * @param {object} guild Discord guild item
  * @returns {boolean|object} false on err | A json object with all registred addons for guild on success
  */
-export const getAddons = async ({ guild }: { guild: string }) => {
+export const getAddons = async ({ guild }: { guild: any }) => {
   try {
     const guildAddonsRequest = await pastilleAxios.get("/addons", {
-      params: { guild_id: guild },
+      params: { guild_id: guild.id },
     });
     const guildAddons = guildAddonsRequest.data.data;
     return guildAddons;
   } catch (err: any) {
     if (err.http_response === 404) {
-      Logs("addon:load:guild", null, err, guild);
+      Logs("addon:load:guild", null, err, guild.id);
       return false;
     } else {
-      Logs("addon:load:guild", "error", err, guild);
+      Logs("addon:load:guild", "error", err, guild.id);
       return false;
     }
   }

@@ -11,7 +11,7 @@ import {
 } from "discord.js";
 
 const lockableThread = async (thread: { locked: any }, guild: any) => {
-  const guildParams = await getParams({ guild: guild });
+  const guildParams = await getParams({ guild: guild.id });
   if (!guildParams) return;
 
   if (!thread.locked) {
@@ -64,9 +64,7 @@ const buttonStaffRequest = async (
   }
 ) => {
   const { customId } = interaction;
-  if (customId !== "requestStaff") {
-    return;
-  }
+  if (customId !== "requestStaff") return;
 
   const guild = client.guilds.cache.find(
     (guild: { id: any }) => guild?.id === interaction?.guildId
