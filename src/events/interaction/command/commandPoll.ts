@@ -9,9 +9,7 @@ const alphabetLetters = JSON.parse(
 
 const commandPollInit = async (_client: any, interaction: any) => {
   const { commandName } = interaction;
-  if (commandName !== "poll") {
-    return;
-  }
+  if (commandName !== "poll") return;
 
   const guildParams = await getParams({ guild: interaction?.guildId });
   if (!guildParams) return;

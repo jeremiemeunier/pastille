@@ -9,9 +9,7 @@ import {
 
 const commandStaffInit = async (_client: any, interaction: any) => {
   const { commandName } = interaction;
-  if (commandName !== "staff") {
-    return;
-  }
+  if (commandName !== "staff") return;
 
   const guildParams = await getParams({ guild: interaction?.guildId });
   if (!guildParams) return;
