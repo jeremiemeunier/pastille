@@ -10,12 +10,14 @@ import {
 
 const commandRuleInit = async (_client: any, interaction: any) => {
   const { commandName } = interaction;
-  if (commandName !== "rule") {
-    return;
-  }
+  if (commandName !== "rule") return;
 
-  const rules = await getRules({ guild: interaction?.guild });
-  const guildParams = await getParams({ guild: interaction?.guild });
+  const guildParams = await getParams({ guild: interaction?.guildId });
+  if (!guildParams) return;
+
+  const rules = await getRules({ guild: interaction?.guildId });
+  if (!rules) return;
+
   const { options } = guildParams;
   const channel = interaction.channel;
 
@@ -39,20 +41,29 @@ const commandRuleInit = async (_client: any, interaction: any) => {
       );
 
       const rulesEmbed = new EmbedBuilder({
-        color: parseInt(options.color, 16),
+        color:
+          options.color !== ""
+            ? parseInt(options.color, 16)
+            : parseInt("E84A95", 16),
         title: "Règles du serveur",
         description:
           "Les règles du serveur sont simples.\r\nEn utilisant ce serveur discord, l'utilisateur accepte d'emblée le réglement.\r\n\r\nIl est possible pour n'importe quel membres de signaler, un message ou utilisateur en faisant un clic droit sur celui-ci puis __Applications » Signaler__",
         fields: rulesField,
       });
       const modosEmbed = new EmbedBuilder({
-        color: parseInt(options.color, 16),
+        color:
+          options.color !== ""
+            ? parseInt(options.color, 16)
+            : parseInt("E84A95", 16),
         title: "Modérations",
         description:
           "Les décisions des modérateur et de l'équipe du serveur ne sont pas discutable. Pour accompagner et faciliter le travail de la modération, un automod est présent sur ce discord.",
       });
       const updateEmbed = new EmbedBuilder({
-        color: parseInt(options.color, 16),
+        color:
+          options.color !== ""
+            ? parseInt(options.color, 16)
+            : parseInt("E84A95", 16),
         description:
           "Les modérateurs ou les admins du serveur peuvent à tout moment et sans communication supplémentaire faire évoluer le réglement.",
       });
@@ -66,8 +77,7 @@ const commandRuleInit = async (_client: any, interaction: any) => {
         flags: MessageFlags.Ephemeral,
       });
     } catch (err: any) {
-      Logs("rule:embed", "error", JSON.stringify(err), interaction?.guild?.id);
-      console.log(err);
+      Logs("rule:embed", "error", JSON.stringify(err), interaction?.guildId);
     }
   } else {
     interaction.reply({

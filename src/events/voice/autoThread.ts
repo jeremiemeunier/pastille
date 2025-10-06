@@ -29,7 +29,9 @@ export const getTextualChannel = async (
   channel: { parentId: null },
   guild: { channels: { cache: any[] }; id: any }
 ) => {
-  const guildParams = await getParams({ guild: guild });
+  const guildParams = await getParams({ guild: guild.id });
+  if (!guildParams) return;
+
   const { channels } = guildParams.options;
 
   try {
@@ -80,9 +82,7 @@ export const autoThread = async ({
   };
   client: any;
 }) => {
-  if (newState.channelId === oldState.channelId) {
-    return;
-  }
+  if (newState.channelId === oldState.channelId) return;
 
   const guild =
     client.guilds.cache.find(

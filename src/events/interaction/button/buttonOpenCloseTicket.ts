@@ -26,7 +26,9 @@ const buttonOpenTicketInit = async (
     return;
   }
 
-  const guildParams = await getParams(interaction?.guild);
+  const guildParams = await getParams({ guild: interaction?.guildId });
+  if (!guildParams) return;
+
   const { moderation } = guildParams;
 
   const guild = client.guilds.cache.find(

@@ -21,18 +21,18 @@ export const messageCreateEventInit = (client: any) => {
       (channel: { id: any }) => channel?.id === message.channelId
     );
 
-    const guildParams = await getParams({ guild: guild });
+    const guildParams = await getParams({ guild: guild.id });
+    if (!guildParams) return;
+
     const { options } = guildParams;
 
     const splitedMsg = content.split(" ");
     const cmd = splitedMsg?.shift()?.slice(1);
 
-    if (message.author.bot === true) {
-      return;
-    }
+    if (message.author.bot === true) return;
 
-    if (content.startsWith(options.bang)) {
-      const guildCommands = await getCommands({ guild: guild });
+    if (options.bang && content.startsWith(options.bang)) {
+      const guildCommands = await getCommands({ guild: guild.id });
 
       if (cmd === "regles") {
         bangRule(message, guild);

@@ -18,8 +18,12 @@ const bangRule = async (
   },
   guild: { channels: { cache: any[] }; id: any }
 ) => {
-  const guildParams = await getParams({ guild: guild });
-  const rules = await getRules({ guild: guild });
+  const guildParams = await getParams({ guild: guild.id });
+  if (!guildParams) return;
+
+  const rules = await getRules({ guild: guild.id });
+  if (!rules) return;
+
   const { options } = guildParams;
 
   const channel = guild.channels.cache.find(
@@ -38,7 +42,10 @@ const bangRule = async (
       });
 
       const rulesEmbed = new EmbedBuilder({
-        color: parseInt(options.color, 16),
+        color:
+          options.color !== ""
+            ? parseInt(options.color, 16)
+            : parseInt("E84A95", 16),
         title: "Règles du serveur",
         fields: rulesField,
       });

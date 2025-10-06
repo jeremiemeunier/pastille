@@ -36,10 +36,15 @@ export const durationFormater = (time: any) => {
 
 export const automodFinalNotify = async (guild: any, user: any) => {
   const guildParams = await getParams({ guild: guild });
+  if (!guildParams) return;
+
   const { options } = guildParams;
 
   const embedSanction = new EmbedBuilder({
-    color: parseInt(options.color, 16),
+    color:
+      options.color !== ""
+        ? parseInt(options.color, 16)
+        : parseInt("E84A95", 16),
     title: "Banissement définitif du serveur",
     description: `Tu as été banni de manière définitive du serveur suite à de multiple infraction aux règle de ce serveur : **__${guild.name}__**`,
   });
@@ -56,6 +61,8 @@ export const automodFinalNotify = async (guild: any, user: any) => {
 
 export const automodRemove = async (guild: any, user: any) => {
   const guildParams = await getParams({ guild: guild });
+  if (!guildParams) return;
+
   const { moderation } = guildParams;
 
   const sanctionRole = guild.roles.cache.find(
@@ -80,6 +87,8 @@ export const automodRemove = async (guild: any, user: any) => {
 
 export const automodApply = async (guild: any, user: any, timer: any) => {
   const guildParams = await getParams({ guild: guild });
+  if (!guildParams) return;
+
   const { moderation } = guildParams;
 
   const alertChannel = guild.channels.cache.find(
@@ -137,6 +146,8 @@ export const automodVerifier = async (guild: any) => {
 
     const allGuildSanctions = allGuildSanctionsRequest.data.data;
     const guildParams = await getParams({ guild: guild });
+    if (!guildParams) return;
+
     const { moderation } = guildParams;
 
     if (allGuildSanctions && allGuildSanctions.length > 0) {

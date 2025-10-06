@@ -22,7 +22,7 @@ router.post(
         premium_end: premium_end || null,
         options: {
           bang: options.bang || "!",
-          color: options.color || "E7BB41",
+          color: options.color !== "" || "E7BB41",
           channels: {
             announce: options.channels.announce || "annonce",
             help: options.channels.help || "support",

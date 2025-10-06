@@ -40,7 +40,9 @@ export const createVoiceThread = async (
   threadChannel: any,
   user: any
 ) => {
-  const guildParams = await getParams({ guild: guild });
+  const guildParams = await getParams({ guild: guild.id });
+  if (!guildParams) return;
+
   const { options } = guildParams;
   const threadAlreadyExist = await haveVoiceThread({
     channel: channel,
@@ -60,7 +62,10 @@ export const createVoiceThread = async (
         await thread.members.add(user);
 
         const embedExplicative = new EmbedBuilder({
-          color: parseInt(options.color, 16),
+          color:
+            options.color !== ""
+              ? parseInt(options.color, 16)
+              : parseInt("E84A95", 16),
           title: "Ce salon est dédié à votre channel vocal actuel.",
           description: `- Il sera automatiquement supprimé une fois que tout le monde aura quitté le channel.\n- Chaque personne qui rejoint est automatiquement ajoutée au fil.\n- Chaque personne qui quitte le channel vocal est retirée du fil automatiquement.\n- L'automodération est toujours présente même ici. Tu **doit** donc respecter les règles du serveur.\n**Les commandes**\n- Pour un rappel des règles tu peux faire **!regles** directement depuis ce fil`,
         });
@@ -183,8 +188,8 @@ export const deleteVoiceThread = async (
   channel: any,
   threadChannel: any
 ) => {
-  const guildParams = await getParams({ guild: guild });
-  const { options } = guildParams;
+  const guildParams = await getParams({ guild: guild.id });
+  if (!guildParams) return;
 
   try {
     const thread = threadChannel.threads.cache.find(

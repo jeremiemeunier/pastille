@@ -27,7 +27,10 @@ export const voiceEventInit = (client: any) => {
         client.guilds.cache.find(
           (guild: { id: any }) => guild?.id === newState.guild?.id
         );
-      const guildParams = await getParams({ guild: guild });
+
+      const guildParams = await getParams({ guild: guild.id });
+      if (!guildParams) return;
+
       const { channels } = guildParams.options;
 
       if (
