@@ -13,7 +13,9 @@ const commandStaffInit = async (_client: any, interaction: any) => {
     return;
   }
 
-  const guildParams = await getParams(interaction.guild);
+  const guildParams = await getParams({ guild: interaction?.guildId });
+  if (!guildParams) return;
+
   const { options } = guildParams;
 
   try {
@@ -25,7 +27,10 @@ const commandStaffInit = async (_client: any, interaction: any) => {
       })
     );
     const embed = new EmbedBuilder({
-      color: parseInt(options.color, 16),
+      color:
+        options.color !== ""
+          ? parseInt(options.color, 16)
+          : parseInt("E84A95", 16),
       title: "Demande de support",
       description:
         "Comment pouvons-nous t'aider ? Si tu as des questions ou des demandes clique sur le bouton pour contacter le staff",
@@ -36,7 +41,7 @@ const commandStaffInit = async (_client: any, interaction: any) => {
       withResponse: false,
     });
   } catch (err: any) {
-    Logs("command:staff", "error", err, interaction.guildId);
+    Logs("command:staff", "error", err, interaction?.guildId);
   }
 };
 

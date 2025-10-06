@@ -13,7 +13,9 @@ const commandPollInit = async (_client: any, interaction: any) => {
     return;
   }
 
-  const guildParams = await getParams(interaction.guild);
+  const guildParams = await getParams({ guild: interaction?.guildId });
+  if (!guildParams) return;
+
   const { options } = guildParams;
 
   let pollChoices = "";
@@ -24,11 +26,14 @@ const commandPollInit = async (_client: any, interaction: any) => {
       null
     ) {
       const embed = new EmbedBuilder({
-        color: parseInt(options.color, 16),
+        color:
+          options.color !== ""
+            ? parseInt(options.color, 16)
+            : parseInt("E84A95", 16),
         title: interaction.options.getString("question"),
         description: pollChoices,
       });
-      const message = await interaction.reply({
+      const response = await interaction.reply({
         embeds: [embed],
         withResponse: true,
         content: "Nouveau sondage ! ||@here||",
@@ -40,10 +45,10 @@ const commandPollInit = async (_client: any, interaction: any) => {
         let letter = alphabetLetters[j].emoji;
 
         try {
-          await message.react(first);
+          await response.resource.message.react(first);
         } catch (err: any) {
           try {
-            await message.react(letter);
+            await response.resource.message.react(letter);
           } catch (err: any) {
             Logs("command:poll", "error", err);
           }

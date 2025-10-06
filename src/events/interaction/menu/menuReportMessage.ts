@@ -15,9 +15,11 @@ const contextReportMessage = async (client: any, interaction: any) => {
   }
 
   const guild = client.guilds.cache.find(
-    (guild: any) => guild?.id === interaction.guildId
+    (guild: any) => guild?.id === interaction?.guildId
   );
-  const guildParams = await getParams({ guild: guild });
+  const guildParams = await getParams({ guild: guild.id });
+  if (!guildParams) return;
+
   const { moderation } = guildParams;
 
   const reporterUser = guild.members.cache.find(

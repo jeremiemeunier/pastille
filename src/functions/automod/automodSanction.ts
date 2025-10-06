@@ -5,6 +5,8 @@ import Logs from "@libs/Logs";
 
 export const automodSanctionEvalute = async (size: any, guild: any) => {
   const guildParams = await getParams({ guild: guild });
+  if (!guildParams) return;
+
   const { moderation } = guildParams;
   const { sanctions } = moderation;
 
@@ -55,6 +57,7 @@ export const automodSanctionEvalute = async (size: any, guild: any) => {
 export const automodSanction = async (user: any, size: any, guild: any) => {
   const { count } = size.data;
   const evaluation = await automodSanctionEvalute(count, guild);
+  if (!evaluation) return;
 
   if (evaluation.decision === "nothing") {
     return;

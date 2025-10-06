@@ -23,11 +23,13 @@ const buttonAcceptRuleInit = async (
   const { customId } = interaction;
   if (customId !== "acceptedRules") return;
 
-  const guildParams = await getParams(interaction.guild);
+  const guildParams = await getParams({ guild: interaction?.guildId });
+  if (!guildParams) return;
+
   const { moderation } = guildParams;
 
   const guild = client.guilds.cache.find(
-    (guild: { id: any }) => guild?.id === interaction.guildId
+    (guild: { id: any }) => guild?.id === interaction?.guildId
   );
   const member = guild.members.cache.find(
     (member: { id: any }) => member?.id === interaction.user?.id

@@ -8,12 +8,17 @@ const commandAnnounceInit = async (client: Client, interaction: any) => {
     return;
   }
 
-  const guildParams = await getParams(interaction.guild);
+  const guildParams = await getParams({ guild: interaction?.guildId });
+  if (!guildParams) return;
+
   const { options } = guildParams;
 
   try {
     const embed = new EmbedBuilder({
-      color: parseInt(options.color, 16),
+      color:
+        options.color !== ""
+          ? parseInt(options.color, 16)
+          : parseInt("E84A95", 16),
       title: interaction.options.getString("title"),
       description: interaction.options.getString("content"),
     });

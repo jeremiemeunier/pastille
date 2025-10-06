@@ -7,29 +7,18 @@ const buttonDeleteMessage = async (
   _client: {
     on: (arg0: Events, arg1: (interaction: any) => Promise<void>) => void;
   },
-  interaction: {
-    isButton?: () => any;
-    isChatInputCommand?: () => any;
-    isUserContextMenuCommand?: () => any;
-    isMessageContextMenuCommand?: () => any;
-    isModalSubmit?: () => any;
-    guild?: any;
-    message?: any;
-    user?: any;
-    reply?: any;
-    customId?: any;
-  }
+  interaction: any
 ) => {
   try {
     const { customId } = interaction;
-    if (customId !== "deleteReportedMessage") {
-      return;
-    }
+    if (customId !== "deleteReportedMessage") return;
 
-    const guildParams = await getParams(interaction.guild);
+    const guildParams = await getParams({ guild: interaction?.guildId });
+    if (!guildParams) return;
+
     const { moderation, options } = guildParams;
 
-    const guild = interaction.guild;
+    const guild = interaction?.guildId;
     const reportChannel = guild.channels.cache.find(
       (channel: { id: any }) => channel?.id === moderation.channels.report
     );
@@ -39,13 +28,19 @@ const buttonDeleteMessage = async (
     const reportData = reportMessage.embeds[0].data.fields;
 
     const embedActionDelete = new EmbedBuilder({
-      color: parseInt(options.color, 16),
+      color:
+        options.color !== ""
+          ? parseInt(options.color, 16)
+          : parseInt("E84A95", 16),
       description: `${time(new Date())} — <@${
         interaction.user?.id
       }> — Suppression du message`,
     });
     const embedActionWarn = new EmbedBuilder({
-      color: parseInt(options.color, 16),
+      color:
+        options.color !== ""
+          ? parseInt(options.color, 16)
+          : parseInt("E84A95", 16),
       description: `${time(new Date())} — <@${
         interaction.user?.id
       }> — Ajout d'un warn à l'auteur`,
@@ -71,7 +66,7 @@ const buttonDeleteMessage = async (
       });
     }
   } catch (err: any) {
-    Logs("button:delete_reported:base", "error", err, interaction.guild?.id);
+    Logs("button:delete_reported:base", "error", err, interaction?.guildId);
   }
 };
 
@@ -93,7 +88,7 @@ const deleteReportedMessage = async (
     }
 
     await postWarnUser({
-      guild: guild,
+      guild: guild.id,
       data: {
         reason: "reportedMessage",
         user_id: reportedMessage.author?.id,

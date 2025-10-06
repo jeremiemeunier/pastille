@@ -26,7 +26,9 @@ export const automod = (client: any) => {
         (guild: { id: any }) => guild?.id === message.guildId
       );
 
-      const guildParams = await getParams({ guild: guild });
+      const guildParams = await getParams({ guild: guild.id });
+      if (!guildParams) return;
+
       const { options, moderation } = guildParams;
       const { limit } = moderation;
 
@@ -61,11 +63,17 @@ export const automod = (client: any) => {
         if (mentions > limit.mention && mentions > 0 && limit.mention > -1) {
           try {
             const embedProof = new EmbedBuilder({
-              color: parseInt(options.color, 16),
+              color:
+                options.color !== ""
+                  ? parseInt(options.color, 16)
+                  : parseInt("E84A95", 16),
               description: message.content,
             });
             const embedSanction = new EmbedBuilder({
-              color: parseInt(options.color, 16),
+              color:
+                options.color !== ""
+                  ? parseInt(options.color, 16)
+                  : parseInt("E84A95", 16),
               title: `${user.user.username} [${user.user.globalName}] a reçu un avertissement`,
               description: "**Raison** : Trop de mentions",
             });
@@ -92,11 +100,17 @@ export const automod = (client: any) => {
         if (message.mentions.everyone === true) {
           try {
             const embedProof = new EmbedBuilder({
-              color: parseInt(options.color, 16),
+              color:
+                options.color !== ""
+                  ? parseInt(options.color, 16)
+                  : parseInt("E84A95", 16),
               description: message.content,
             });
             const embedSanction = new EmbedBuilder({
-              color: parseInt(options.color, 16),
+              color:
+                options.color !== ""
+                  ? parseInt(options.color, 16)
+                  : parseInt("E84A95", 16),
               title: `${user.user.username} [${user.user.globalName}] a reçu un avertissement`,
               description: "**Raison** : Mentionne @everyone",
             });
@@ -123,11 +137,17 @@ export const automod = (client: any) => {
         ) {
           try {
             const embedProof = new EmbedBuilder({
-              color: parseInt(options.color, 16),
+              color:
+                options.color !== ""
+                  ? parseInt(options.color, 16)
+                  : parseInt("E84A95", 16),
               description: message.content,
             });
             const embedSanction = new EmbedBuilder({
-              color: parseInt(options.color, 16),
+              color:
+                options.color !== ""
+                  ? parseInt(options.color, 16)
+                  : parseInt("E84A95", 16),
               title: `${user.user.username} [${user.user.globalName}] a reçu un avertissement`,
               description: "**Raison** : Envoie d'une invitation de serveur",
             });

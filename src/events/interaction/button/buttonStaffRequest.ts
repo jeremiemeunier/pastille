@@ -12,7 +12,7 @@ import {
 
 const lockableThread = async (thread: { locked: any }, guild: any) => {
   const guildParams = await getParams({ guild: guild });
-  const { options } = guildParams;
+  if (!guildParams) return;
 
   if (!thread.locked) {
     try {
@@ -69,7 +69,7 @@ const buttonStaffRequest = async (
   }
 
   const guild = client.guilds.cache.find(
-    (guild: { id: any }) => guild?.id === interaction.guildId
+    (guild: { id: any }) => guild?.id === interaction?.guildId
   );
   const member = guild.members.cache.find(
     (member: { id: any }) => member?.id === interaction.user?.id
@@ -78,7 +78,9 @@ const buttonStaffRequest = async (
     (channel: { id: any }) => channel?.id === interaction.channelId
   );
 
-  const guildParams = await getParams({ guild: guild });
+  const guildParams = await getParams({ guild: guild.id });
+  if (!guildParams) return;
+
   const { options, moderation } = guildParams;
 
   const activeRequest = channel.threads.cache.find(
@@ -105,7 +107,10 @@ const buttonStaffRequest = async (
     });
 
     const staffCall = new EmbedBuilder({
-      color: parseInt(options.color, 16),
+      color:
+        options.color !== ""
+          ? parseInt(options.color, 16)
+          : parseInt("E84A95", 16),
       title: "Nouvelle demande de contact",
       description: `Nouvelle demande de **__${member.user.username}__**`,
     });
