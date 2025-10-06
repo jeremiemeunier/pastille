@@ -4,11 +4,9 @@ import { Client, EmbedBuilder } from "discord.js";
 
 const commandAnnounceInit = async (client: Client, interaction: any) => {
   const { commandName } = interaction;
-  if (commandName !== "announce") {
-    return;
-  }
+  if (commandName !== "announce") return;
 
-  const guildParams = await getParams(interaction?.guildId);
+  const guildParams = await getParams({ guild: interaction?.guildId });
   if (!guildParams) return;
 
   const { options } = guildParams;

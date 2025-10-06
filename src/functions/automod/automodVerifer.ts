@@ -35,7 +35,7 @@ export const durationFormater = (time: any) => {
 };
 
 export const automodFinalNotify = async (guild: any, user: any) => {
-  const guildParams = await getParams({ guild: guild });
+  const guildParams = await getParams({ guild: guild.id });
   if (!guildParams) return;
 
   const { options } = guildParams;
@@ -60,7 +60,7 @@ export const automodFinalNotify = async (guild: any, user: any) => {
 };
 
 export const automodRemove = async (guild: any, user: any) => {
-  const guildParams = await getParams({ guild: guild });
+  const guildParams = await getParams({ guild: guild.id });
   if (!guildParams) return;
 
   const { moderation } = guildParams;
@@ -86,7 +86,7 @@ export const automodRemove = async (guild: any, user: any) => {
 };
 
 export const automodApply = async (guild: any, user: any, timer: any) => {
-  const guildParams = await getParams({ guild: guild });
+  const guildParams = await getParams({ guild: guild.id });
   if (!guildParams) return;
 
   const { moderation } = guildParams;
@@ -145,7 +145,7 @@ export const automodVerifier = async (guild: any) => {
     });
 
     const allGuildSanctions = allGuildSanctionsRequest.data.data;
-    const guildParams = await getParams({ guild: guild });
+    const guildParams = await getParams({ guild: guild.id });
     if (!guildParams) return;
 
     const { moderation } = guildParams;

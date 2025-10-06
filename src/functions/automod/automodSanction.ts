@@ -4,7 +4,7 @@ import { automodApply, automodFinalNotify } from "./automodVerifer";
 import Logs from "@libs/Logs";
 
 export const automodSanctionEvalute = async (size: any, guild: any) => {
-  const guildParams = await getParams({ guild: guild });
+  const guildParams = await getParams({ guild: guild.id });
   if (!guildParams) return;
 
   const { moderation } = guildParams;
