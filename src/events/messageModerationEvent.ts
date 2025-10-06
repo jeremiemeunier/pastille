@@ -27,7 +27,7 @@ export const automod = (client: any) => {
       );
 
       const guildParams = await getParams({ guild: guild.id });
-      if (guildParams) return;
+      if (!guildParams) return;
 
       const { options, moderation } = guildParams;
       const { limit } = moderation;
