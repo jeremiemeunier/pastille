@@ -82,6 +82,8 @@ export const messageCreateEventInit = (client: any) => {
     }
 
     if (message.mentions.has(client.user)) {
+      if (message.mentions.everyone) return;
+
       try {
         const req = await axios.post(
           "https://ollama.jeremiemeunier.fr/api/chat/",
