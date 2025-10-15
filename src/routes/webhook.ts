@@ -45,13 +45,11 @@ router.post(
 
         // handle event
         if (message_type === "webhook_callback_verification") {
-          Logs("webhook.twitch", null, notif, "validating");
-
           // updating streamers docs to valid him
           try {
             await Streamers.findOneAndUpdate(
               {
-                id: { $eq: notif.condition.broadcaster_user_id },
+                id: { $eq: notif.subscription.condition.broadcaster_user_id },
               },
               {
                 isValid: true,
