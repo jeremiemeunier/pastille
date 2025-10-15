@@ -43,8 +43,6 @@ const Logs: (
   content: string | {},
   details?: string
 ) => {
-  console.log(typeof content);
-
   if (state === "sql" || state === "req") {
     if (node === "cron") {
       console.log(
