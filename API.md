@@ -681,7 +681,7 @@ Update addon configuration.
 - `id` must be a valid MongoDB ObjectId
 - All fields required with correct types
 
-**Response** `200 OK`
+**Response** `201 Created`
 ```json
 {
   "_id": "507f1f77bcf86cd799439011",
