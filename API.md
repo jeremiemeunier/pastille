@@ -74,18 +74,15 @@ Create a new infraction record for a user.
 }
 ```
 
-**Response** `200 OK`
+**Response** `201 Created`
 ```json
 {
-  "message": "New infraction items created",
-  "data": {
-    "_id": "507f1f77bcf86cd799439011",
-    "user_id": "123456789012345678",
-    "guild_id": "987654321098765432",
-    "warn": {
-      "reason": "Spam in general chat",
-      "date": "2024-01-15T10:30:00.000Z"
-    }
+  "_id": "507f1f77bcf86cd799439011",
+  "user_id": "123456789012345678",
+  "guild_id": "987654321098765432",
+  "warn": {
+    "reason": "Spam in general chat",
+    "date": "2024-01-15T10:30:00.000Z"
   }
 }
 ```
@@ -102,10 +99,7 @@ Get the total count of infractions for a user in a guild.
 
 **Response** `200 OK`
 ```json
-{
-  "message": "Infractions find",
-  "count": 3
-}
+3
 ```
 
 ---
@@ -131,23 +125,9 @@ Create a new sanction for a user.
 }
 ```
 
-**Response** `200 OK`
-```json
-{
-  "message": "New sanction items created",
-  "data": {
-    "_id": "507f1f77bcf86cd799439011",
-    "user_id": "123456789012345678",
-    "guild_id": "987654321098765432",
-    "sanction": {
-      "level": 1,
-      "date": "2024-01-15T10:30:00.000Z",
-      "ending": "2024-01-15T11:30:00.000Z"
-    },
-    "checkable": true
-  }
-}
-```
+**Response** `204 No Content`
+
+No response body.
 
 ### Get Active Sanctions
 
@@ -160,22 +140,19 @@ Get all active (checkable) sanctions for a guild.
 
 **Response** `200 OK`
 ```json
-{
-  "message": "Sanction find",
-  "data": [
-    {
-      "_id": "507f1f77bcf86cd799439011",
-      "user_id": "123456789012345678",
-      "guild_id": "987654321098765432",
-      "sanction": {
-        "level": 1,
-        "date": "2024-01-15T10:30:00.000Z",
-        "ending": "2024-01-15T11:30:00.000Z"
-      },
-      "checkable": true
-    }
-  ]
-}
+[
+  {
+    "_id": "507f1f77bcf86cd799439011",
+    "user_id": "123456789012345678",
+    "guild_id": "987654321098765432",
+    "sanction": {
+      "level": 1,
+      "date": "2024-01-15T10:30:00.000Z",
+      "ending": "2024-01-15T11:30:00.000Z"
+    },
+    "checkable": true
+  }
+]
 ```
 
 ### Update Sanction
@@ -187,15 +164,9 @@ Mark a sanction as checked (no longer active).
 **Query Parameters**
 - `id` (string, required) - Sanction MongoDB ObjectId
 
-**Response** `200 OK`
-```json
-{
-  "data": {
-    "_id": "507f1f77bcf86cd799439011",
-    "checkable": false
-  }
-}
-```
+**Response** `204 No Content`
+
+No response body.
 
 ---
 
@@ -228,14 +199,11 @@ Create a new daily UI challenge.
 **Response** `200 OK`
 ```json
 {
-  "message": "New daily challenge added",
-  "data": {
-    "_id": "507f1f77bcf86cd799439011",
-    "guild_id": "987654321098765432",
-    "available": true,
-    "title": "Design a Login Page",
-    "description": "Create a modern login page with social auth options"
-  }
+  "_id": "507f1f77bcf86cd799439011",
+  "guild_id": "987654321098765432",
+  "available": true,
+  "title": "Design a Login Page",
+  "description": "Create a modern login page with social auth options"
 }
 ```
 
@@ -263,7 +231,7 @@ Bulk create daily UI challenges.
 }
 ```
 
-**Response** `200 OK`
+**Response** `201 Created`
 ```json
 {
   "message": "New daily challenge added"
@@ -282,14 +250,11 @@ Get the next available (unsent) daily UI challenge for a guild.
 **Response** `200 OK`
 ```json
 {
-  "message": "DailyUi available",
-  "data": {
-    "_id": "507f1f77bcf86cd799439011",
-    "guild_id": "987654321098765432",
-    "available": true,
-    "title": "Design a Login Page",
-    "description": "Create a modern login page"
-  }
+  "_id": "507f1f77bcf86cd799439011",
+  "guild_id": "987654321098765432",
+  "available": true,
+  "title": "Design a Login Page",
+  "description": "Create a modern login page"
 }
 ```
 
@@ -316,11 +281,11 @@ Mark a daily UI challenge as sent (no longer available).
 **Response** `201 Created`
 ```json
 {
-  "message": "State updated for DailyUi",
-  "data": {
-    "_id": "507f1f77bcf86cd799439011",
-    "available": false
-  }
+  "_id": "507f1f77bcf86cd799439011",
+  "guild_id": "987654321098765432",
+  "available": false,
+  "title": "Design a Login Page",
+  "description": "Create a modern login page"
 }
 ```
 
@@ -428,12 +393,9 @@ Mark a streamer as validated (EventSub subscription confirmed).
 **URL Parameters**
 - `id` (string, required) - Streamer MongoDB ObjectId
 
-**Response** `200 OK`
-```json
-{
-  "message": "streamers entry has been updated"
-}
-```
+**Response** `204 No Content`
+
+No response body.
 
 ### Remove Streamer Notification
 
@@ -449,13 +411,9 @@ Remove an announcement recipient from a streamer, or delete the streamer if it's
 }
 ```
 
-**Response** `201 Created` - If updating (multiple recipients remain)
-**Response** `200 OK` - If deleting (last recipient removed)
-```json
-{
-  "message": "Document has been removed successfully"
-}
-```
+**Response** `204 No Content`
+
+No response body.
 
 ### Twitch Webhook (EventSub)
 
@@ -493,17 +451,15 @@ Get all rules for a guild.
 
 **Response** `200 OK`
 ```json
-{
-  "data": [
-    {
-      "_id": "507f1f77bcf86cd799439011",
-      "guild_id": "987654321098765432",
-      "name": "No Spam",
-      "description": "Do not spam messages in any channel",
-      "active": true
-    }
-  ]
-}
+[
+  {
+    "_id": "507f1f77bcf86cd799439011",
+    "guild_id": "987654321098765432",
+    "name": "No Spam",
+    "description": "Do not spam messages in any channel",
+    "active": true
+  }
+]
 ```
 
 **Response** `404 Not Found`
@@ -535,13 +491,11 @@ Create a new rule for a guild.
 **Response** `201 Created`
 ```json
 {
-  "data": {
-    "_id": "507f1f77bcf86cd799439011",
-    "guild_id": "987654321098765432",
-    "name": "No Spam",
-    "description": "Do not spam messages in any channel",
-    "active": true
-  }
+  "_id": "507f1f77bcf86cd799439011",
+  "guild_id": "987654321098765432",
+  "name": "No Spam",
+  "description": "Do not spam messages in any channel",
+  "active": true
 }
 ```
 
@@ -569,13 +523,11 @@ Update an existing rule.
 **Response** `200 OK`
 ```json
 {
-  "data": {
-    "_id": "507f1f77bcf86cd799439011",
-    "guild_id": "987654321098765432",
-    "name": "No Spam (Updated)",
-    "description": "Updated description",
-    "active": false
-  }
+  "_id": "507f1f77bcf86cd799439011",
+  "guild_id": "987654321098765432",
+  "name": "No Spam (Updated)",
+  "description": "Updated description",
+  "active": false
 }
 ```
 
@@ -596,18 +548,16 @@ Get all reaction roles for a guild.
 
 **Response** `200 OK`
 ```json
-{
-  "data": [
-    {
-      "_id": "507f1f77bcf86cd799439011",
-      "guild_id": "987654321098765432",
-      "name": "Gamer",
-      "description": "Get notified about gaming events",
-      "role": "role_id_here",
-      "emote": "🎮"
-    }
-  ]
-}
+[
+  {
+    "_id": "507f1f77bcf86cd799439011",
+    "guild_id": "987654321098765432",
+    "name": "Gamer",
+    "description": "Get notified about gaming events",
+    "role": "role_id_here",
+    "emote": "🎮"
+  }
+]
 ```
 
 ### Create Role
@@ -672,18 +622,16 @@ Get all configured addons for a guild.
 
 **Response** `200 OK`
 ```json
-{
-  "data": [
-    {
-      "_id": "507f1f77bcf86cd799439011",
-      "guild_id": "987654321098765432",
-      "name": "twitch",
-      "active": true,
-      "channel": "channel_id",
-      "role": "role_id"
-    }
-  ]
-}
+[
+  {
+    "_id": "507f1f77bcf86cd799439011",
+    "guild_id": "987654321098765432",
+    "name": "twitch",
+    "active": true,
+    "channel": "channel_id",
+    "role": "role_id"
+  }
+]
 ```
 
 ### Register Addon
@@ -703,11 +651,15 @@ Register and configure an addon for a guild.
 }
 ```
 
-**Response** `200 OK`
+**Response** `201 Created`
 ```json
 {
-  "message": "New addons registered",
-  "data": { ... }
+  "_id": "507f1f77bcf86cd799439011",
+  "guild_id": "987654321098765432",
+  "name": "twitch",
+  "active": true,
+  "channel": "channel_id",
+  "role": "role_id"
 }
 ```
 
@@ -736,8 +688,12 @@ Update addon configuration.
 **Response** `200 OK`
 ```json
 {
-  "message": "Addons has being updated",
-  "data": { ... }
+  "_id": "507f1f77bcf86cd799439011",
+  "guild_id": "987654321098765432",
+  "name": "twitch",
+  "active": false,
+  "channel": "new_channel_id",
+  "role": "new_role_id"
 }
 ```
 
@@ -756,7 +712,9 @@ Get configuration settings for a guild.
 **Query Parameters**
 - `guild_id` (string, required) - Discord guild ID
 
-**Response** `200 OK` - Returns full settings object
+**Response** `200 OK`
+
+Returns the full settings object.
 **Response** `404 Not Found`
 ```json
 {
@@ -793,13 +751,9 @@ Create initial settings for a guild.
 }
 ```
 
-**Response** `200 OK`
-```json
-{
-  "message": "New settings registered",
-  "data": { ... }
-}
-```
+**Response** `201 Created`
+
+Returns the full settings object that was created.
 
 ---
 
@@ -818,17 +772,15 @@ Get all custom commands for a guild.
 
 **Response** `200 OK`
 ```json
-{
-  "data": [
-    {
-      "_id": "507f1f77bcf86cd799439011",
-      "guild_id": "987654321098765432",
-      "terms": "!help",
-      "response": "Need help? Contact staff!",
-      "role_id": ""
-    }
-  ]
-}
+[
+  {
+    "_id": "507f1f77bcf86cd799439011",
+    "guild_id": "987654321098765432",
+    "terms": "!help",
+    "response": "Need help? Contact staff!",
+    "role_id": ""
+  }
+]
 ```
 
 ### Get Command by ID
@@ -846,12 +798,10 @@ Get a specific command by its ID.
 **Response** `200 OK`
 ```json
 {
-  "data": {
-    "_id": "507f1f77bcf86cd799439011",
-    "guild_id": "987654321098765432",
-    "terms": "!help",
-    "response": "Need help? Contact staff!"
-  }
+  "_id": "507f1f77bcf86cd799439011",
+  "guild_id": "987654321098765432",
+  "terms": "!help",
+  "response": "Need help? Contact staff!"
 }
 ```
 
@@ -883,11 +833,14 @@ Create a new custom command.
 - `guild_id`, `terms`, `response` must be strings
 - `role_id` is optional
 
-**Response** `200 OK`
+**Response** `201 Created`
 ```json
 {
-  "message": "New command added",
-  "data": { ... }
+  "_id": "507f1f77bcf86cd799439011",
+  "guild_id": "987654321098765432",
+  "terms": "!help",
+  "response": "Need help? Contact staff!",
+  "role_id": ""
 }
 ```
 
@@ -909,11 +862,9 @@ Get the emote for a specific letter.
 **Response** `200 OK`
 ```json
 {
-  "data": {
-    "_id": "507f1f77bcf86cd799439011",
-    "letter": "A",
-    "emote": "🅰️"
-  }
+  "_id": "507f1f77bcf86cd799439011",
+  "letter": "A",
+  "emote": "🅰️"
 }
 ```
 
@@ -936,12 +887,10 @@ Get all letter emotes, optionally limited.
 
 **Response** `200 OK`
 ```json
-{
-  "data": [
-    { "_id": "...", "letter": "A", "emote": "🅰️" },
-    { "_id": "...", "letter": "B", "emote": "🅱️" }
-  ]
-}
+[
+  { "_id": "...", "letter": "A", "emote": "🅰️" },
+  { "_id": "...", "letter": "B", "emote": "🅱️" }
+]
 ```
 
 ### Add Multiple Emotes
