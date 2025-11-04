@@ -263,7 +263,7 @@ Bulk create daily UI challenges.
 }
 ```
 
-**Response** `200 OK`
+**Response** `201 Created`
 ```json
 {
   "message": "New daily challenge added"
@@ -509,7 +509,7 @@ Get all rules for a guild.
 **Response** `404 Not Found`
 ```json
 {
-  "message": "No rules",
+  "message": "No rules found",
   "http_response": 404
 }
 ```
@@ -610,6 +610,13 @@ Get all reaction roles for a guild.
 }
 ```
 
+**Response** `404 Not Found`
+```json
+{
+  "message": "No roles found"
+}
+```
+
 ### Create Role
 
 **POST** `/roles/add`
@@ -630,6 +637,18 @@ Create a new reaction role.
 **Validation** - All fields required
 
 **Response** `201 Created`
+```json
+{
+  "data": {
+    "_id": "507f1f77bcf86cd799439011",
+    "guild_id": "987654321098765432",
+    "name": "Gamer",
+    "description": "Get notified about gaming events",
+    "role": "role_id_here",
+    "emote": "🎮"
+  }
+}
+```
 
 ### Update Role
 
@@ -654,6 +673,18 @@ Update an existing reaction role.
 - All fields required with correct types
 
 **Response** `200 OK`
+```json
+{
+  "data": {
+    "_id": "507f1f77bcf86cd799439011",
+    "guild_id": "987654321098765432",
+    "name": "Gamer (Updated)",
+    "description": "Updated description",
+    "role": "role_id_here",
+    "emote": "🎮"
+  }
+}
+```
 
 ---
 
@@ -756,7 +787,21 @@ Get configuration settings for a guild.
 **Query Parameters**
 - `guild_id` (string, required) - Discord guild ID
 
-**Response** `200 OK` - Returns full settings object
+**Response** `200 OK`
+```json
+{
+  "message": "Settings found",
+  "data": {
+    "_id": "507f1f77bcf86cd799439011",
+    "guild_id": "987654321098765432",
+    "premium": false,
+    "premium_end": null,
+    "options": { ... },
+    "moderation": { ... }
+  }
+}
+```
+
 **Response** `404 Not Found`
 ```json
 {
@@ -920,8 +965,7 @@ Get the emote for a specific letter.
 **Response** `404 Not Found`
 ```json
 {
-  "message": "No emotes",
-  "http_response": 404
+  "message": "No emotes found"
 }
 ```
 
