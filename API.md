@@ -261,8 +261,7 @@ Get the next available (unsent) daily UI challenge for a guild.
 **Response** `404 Not Found`
 ```json
 {
-  "message": "No dailyui available",
-  "http_response": 404
+  "message": "No dailyui available"
 }
 ```
 
@@ -326,8 +325,7 @@ Get all streamers pending validation.
 **Response** `404 Not Found`
 ```json
 {
-  "message": "No streamer found",
-  "http_response": 404
+  "message": "No streamer found"
 }
 ```
 
@@ -354,8 +352,7 @@ Get all live streamers that haven't been announced yet.
 **Response** `404 Not Found`
 ```json
 {
-  "message": "No live to be announced",
-  "http_response": 404
+  "message": "No live to be announced"
 }
 ```
 
@@ -465,8 +462,7 @@ Get all rules for a guild.
 **Response** `404 Not Found`
 ```json
 {
-  "message": "No rules",
-  "http_response": 404
+  "message": "No rules found"
 }
 ```
 
@@ -718,8 +714,7 @@ Returns the full settings object.
 **Response** `404 Not Found`
 ```json
 {
-  "message": "No settings found",
-  "http_response": 404
+  "message": "No settings found"
 }
 ```
 
@@ -808,8 +803,7 @@ Get a specific command by its ID.
 **Response** `404 Not Found`
 ```json
 {
-  "message": "No command with this _id",
-  "http_response": 404
+  "message": "No command with this _id"
 }
 ```
 
@@ -871,8 +865,7 @@ Get the emote for a specific letter.
 **Response** `404 Not Found`
 ```json
 {
-  "message": "No emotes",
-  "http_response": 404
+  "message": "No emotes found"
 }
 ```
 
@@ -955,8 +948,7 @@ Receive Discord interaction webhooks.
 ### 404 Not Found
 ```json
 {
-  "message": "This route do not exist",
-  "http_response": 404
+  "message": "This route do not exist"
 }
 ```
 
