@@ -13,6 +13,11 @@ router.put(
   async (req: Request, res: Response) => {
     const { id } = req.query;
 
+    if (!id || typeof id !== 'string') {
+      res.status(400).json({ message: "Invalid Id provided" });
+      return;
+    }
+
     try {
       const updateSanction = await Sanction.findByIdAndUpdate(
         id,

@@ -76,7 +76,7 @@ router.put(
       typeof name !== "string" ||
       !description ||
       typeof description !== "string" ||
-      !active ||
+      active === undefined ||
       typeof active !== "boolean"
     ) {
       res.status(400).json({ message: "You must provide all input" });
