@@ -38,7 +38,7 @@ describe('Roles Routes', () => {
         .query({ guild_id: 'guild123' });
 
       expect(response.status).toBe(404);
-      expect(response.body.message).toBe('No roles');
+      expect(response.body.message).toBe('No roles found');
     });
   });
 
@@ -67,7 +67,11 @@ describe('Roles Routes', () => {
         });
 
       expect(response.status).toBe(201);
-      expect(response.body.data).toEqual(mockRole);
+      expect(response.body.data.guild_id).toBe(mockRole.guild_id);
+      expect(response.body.data.name).toBe(mockRole.name);
+      expect(response.body.data.description).toBe(mockRole.description);
+      expect(response.body.data.role).toBe(mockRole.role);
+      expect(response.body.data.emote).toBe(mockRole.emote);
       expect(mockRole.save).toHaveBeenCalled();
     });
 

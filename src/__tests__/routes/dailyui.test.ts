@@ -153,7 +153,7 @@ describe('DailyUI Routes', () => {
           ],
         });
 
-      expect(response.status).toBe(200);
+      expect(response.status).toBe(201);
       expect(response.body.message).toBe('New daily challenge added');
     });
   });

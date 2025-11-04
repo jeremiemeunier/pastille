@@ -20,7 +20,16 @@ router.post(
     const hmac_prefix = "sha256=";
 
     const CheckingSig = (hmac: any, messageSig: any) => {
-      return crypto.timingSafeEqual(Buffer.from(hmac), Buffer.from(messageSig));
+      try {
+        const hmacBuffer = Buffer.from(hmac);
+        const sigBuffer = Buffer.from(messageSig);
+        if (hmacBuffer.length !== sigBuffer.length) {
+          return false;
+        }
+        return crypto.timingSafeEqual(hmacBuffer, sigBuffer);
+      } catch {
+        return false;
+      }
     };
 
     const BuildMessage = (

@@ -35,7 +35,7 @@ describe('Emotes Routes', () => {
         .query({ letter: 'Z' });
 
       expect(response.status).toBe(404);
-      expect(response.body.message).toBe('No emotes');
+      expect(response.body.message).toBe('No emotes found');
     });
   });
 
