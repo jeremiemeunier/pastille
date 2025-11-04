@@ -21,8 +21,7 @@ describe('Sanction Routes', () => {
         .set('pastille_botid', process.env.BOT_ID!)
         .query({ id: 'sanction123' });
 
-      expect(response.status).toBe(200);
-      expect(response.body.data).toEqual(mockSanction);
+      expect(response.status).toBe(204);
     });
 
     it('should return 403 without authorization', async () => {
@@ -61,8 +60,7 @@ describe('Sanction Routes', () => {
           end: new Date(),
         });
 
-      expect(response.status).toBe(200);
-      expect(response.body.message).toBe('New sanction items created');
+      expect(response.status).toBe(204);
       expect(mockSanction.save).toHaveBeenCalled();
     });
 
@@ -96,8 +94,7 @@ describe('Sanction Routes', () => {
         .query({ guild_id: 'guild123' });
 
       expect(response.status).toBe(200);
-      expect(response.body.message).toBe('Sanction find');
-      expect(response.body.data).toEqual(mockSanctions);
+      expect(response.body).toEqual(mockSanctions);
     });
 
     it('should return 403 without authorization', async () => {

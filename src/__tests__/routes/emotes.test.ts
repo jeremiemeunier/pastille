@@ -23,7 +23,7 @@ describe('Emotes Routes', () => {
         .query({ letter: 'A' });
 
       expect(response.status).toBe(200);
-      expect(response.body.data).toEqual(mockEmote);
+      expect(response.body).toEqual(mockEmote);
     });
 
     it('should return 404 when emote not found', async () => {
@@ -35,7 +35,7 @@ describe('Emotes Routes', () => {
         .query({ letter: 'Z' });
 
       expect(response.status).toBe(404);
-      expect(response.body.message).toBe('No emotes');
+      expect(response.body.message).toBe('No emotes found');
     });
   });
 
@@ -57,7 +57,7 @@ describe('Emotes Routes', () => {
         .set('pastille_botid', process.env.BOT_ID!);
 
       expect(response.status).toBe(200);
-      expect(response.body.data).toEqual(mockEmotes);
+      expect(response.body).toEqual(mockEmotes);
     });
 
     it('should return limited emotes', async () => {
@@ -77,7 +77,7 @@ describe('Emotes Routes', () => {
         .query({ limit: '1' });
 
       expect(response.status).toBe(200);
-      expect(response.body.data).toEqual(mockEmotes);
+      expect(response.body).toEqual(mockEmotes);
     });
 
     it('should return 404 when no emotes found', async () => {

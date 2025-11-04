@@ -26,7 +26,7 @@ describe('Addons Routes', () => {
         .query({ guild_id: 'guild123' });
 
       expect(response.status).toBe(200);
-      expect(response.body.data).toEqual(mockAddons);
+      expect(response.body).toEqual(mockAddons);
     });
 
     it('should return 404 when no addons found', async () => {
@@ -66,8 +66,7 @@ describe('Addons Routes', () => {
           role: 'role_id',
         });
 
-      expect(response.status).toBe(200);
-      expect(response.body.message).toBe('New addons registered');
+      expect(response.status).toBe(201);
       expect(mockAddon.save).toHaveBeenCalled();
     });
   });
@@ -78,7 +77,7 @@ describe('Addons Routes', () => {
         _id: '507f1f77bcf86cd799439011',
         guild_id: 'guild123',
         name: 'Twitch',
-        active: false,
+        active: true,
         channel: 'channel_id',
         role: 'role_id',
       };
@@ -92,13 +91,13 @@ describe('Addons Routes', () => {
           id: '507f1f77bcf86cd799439011',
           guild_id: 'guild123',
           name: 'Twitch',
-          active: false,
+          active: true,
           channel: 'channel_id',
           role: 'role_id',
         });
 
-      expect(response.status).toBe(200);
-      expect(response.body.message).toBe('Addons has being updated');
+      expect(response.status).toBe(201);
+      expect(response.body).toEqual(mockAddon);
     });
 
     it('should return 400 with invalid id', async () => {

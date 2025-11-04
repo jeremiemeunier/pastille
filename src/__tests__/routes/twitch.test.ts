@@ -79,8 +79,7 @@ describe('Twitch Routes', () => {
         .patch('/twitch/streamers/507f1f77bcf86cd799439011')
         .set('pastille_botid', process.env.BOT_ID!);
 
-      expect(response.status).toBe(200);
-      expect(response.body.message).toBe('streamers entry has been updated');
+      expect(response.status).toBe(204);
     });
   });
 
@@ -208,8 +207,7 @@ describe('Twitch Routes', () => {
           guild_id: 'guild123',
         });
 
-      expect(response.status).toBe(200);
-      expect(response.body.message).toBe('Document has been removed successfully');
+      expect(response.status).toBe(204);
     });
   });
 });

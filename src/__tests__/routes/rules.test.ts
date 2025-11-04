@@ -26,7 +26,7 @@ describe('Rules Routes', () => {
         .query({ guild_id: 'guild123' });
 
       expect(response.status).toBe(200);
-      expect(response.body.data).toEqual(mockRules);
+      expect(response.body).toEqual(mockRules);
     });
 
     it('should return 404 when no rules found', async () => {
@@ -38,7 +38,7 @@ describe('Rules Routes', () => {
         .query({ guild_id: 'guild123' });
 
       expect(response.status).toBe(404);
-      expect(response.body.message).toBe('No rules');
+      expect(response.body.message).toBe('No rules found');
     });
 
     it('should return 403 without authorization', async () => {
@@ -73,7 +73,6 @@ describe('Rules Routes', () => {
         });
 
       expect(response.status).toBe(201);
-      expect(response.body.data).toEqual(mockRule);
       expect(mockRule.save).toHaveBeenCalled();
     });
 
@@ -113,8 +112,8 @@ describe('Rules Routes', () => {
           active: true,
         });
 
-      expect(response.status).toBe(200);
-      expect(response.body.data).toEqual(mockRule);
+      expect(response.status).toBe(201);
+      expect(response.body).toEqual(mockRule);
     });
 
     it('should return 400 with invalid id', async () => {

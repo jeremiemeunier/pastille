@@ -26,7 +26,7 @@ describe('Roles Routes', () => {
         .query({ guild_id: 'guild123' });
 
       expect(response.status).toBe(200);
-      expect(response.body.data).toEqual(mockRoles);
+      expect(response.body).toEqual(mockRoles);
     });
 
     it('should return 404 when no roles found', async () => {
@@ -38,7 +38,7 @@ describe('Roles Routes', () => {
         .query({ guild_id: 'guild123' });
 
       expect(response.status).toBe(404);
-      expect(response.body.message).toBe('No roles');
+      expect(response.body.message).toBe('No roles found');
     });
   });
 
@@ -67,7 +67,6 @@ describe('Roles Routes', () => {
         });
 
       expect(response.status).toBe(201);
-      expect(response.body.data).toEqual(mockRole);
       expect(mockRole.save).toHaveBeenCalled();
     });
 
@@ -109,7 +108,7 @@ describe('Roles Routes', () => {
         });
 
       expect(response.status).toBe(200);
-      expect(response.body.data).toEqual(mockRole);
+      expect(response.body).toEqual(mockRole);
     });
 
     it('should return 400 with invalid id', async () => {

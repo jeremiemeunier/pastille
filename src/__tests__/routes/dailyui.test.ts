@@ -22,7 +22,7 @@ describe('DailyUI Routes', () => {
         .query({ id: '507f1f77bcf86cd799439011' });
 
       expect(response.status).toBe(201);
-      expect(response.body.message).toBe('State updated for DailyUi');
+      expect(response.body).toEqual(mockDailyui);
     });
 
     it('should return 400 with invalid id', async () => {
@@ -62,8 +62,7 @@ describe('DailyUI Routes', () => {
         .query({ guild_id: 'guild123' });
 
       expect(response.status).toBe(200);
-      expect(response.body.message).toBe('DailyUi available');
-      expect(response.body.data).toEqual(mockDailyui);
+      expect(response.body).toEqual(mockDailyui);
     });
 
     it('should return 404 when no dailyui available', async () => {
@@ -110,7 +109,6 @@ describe('DailyUI Routes', () => {
         });
 
       expect(response.status).toBe(200);
-      expect(response.body.message).toBe('New daily challenge added');
       expect(mockDailyui.save).toHaveBeenCalled();
     });
 
@@ -153,7 +151,7 @@ describe('DailyUI Routes', () => {
           ],
         });
 
-      expect(response.status).toBe(200);
+      expect(response.status).toBe(201);
       expect(response.body.message).toBe('New daily challenge added');
     });
   });

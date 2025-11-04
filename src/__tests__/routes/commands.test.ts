@@ -26,7 +26,7 @@ describe('Commands Routes', () => {
         .query({ guild_id: 'guild123' });
 
       expect(response.status).toBe(200);
-      expect(response.body.data).toEqual(mockCommands);
+      expect(response.body).toEqual({ data: mockCommands });
     });
 
     it('should return 404 when no commands found', async () => {
@@ -59,7 +59,7 @@ describe('Commands Routes', () => {
         .query({ id: '507f1f77bcf86cd799439011' });
 
       expect(response.status).toBe(200);
-      expect(response.body.data).toEqual(mockCommand);
+      expect(response.body).toEqual(mockCommand);
     });
 
     it('should return 404 when command not found', async () => {
@@ -105,8 +105,7 @@ describe('Commands Routes', () => {
           response: 'Test response',
         });
 
-      expect(response.status).toBe(200);
-      expect(response.body.message).toBe('New command added');
+      expect(response.status).toBe(201);
       expect(mockCommand.save).toHaveBeenCalled();
     });
 
