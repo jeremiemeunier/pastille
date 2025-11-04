@@ -8,7 +8,7 @@ export const automodRegister = async (user: any, reason: any, guild: any) => {
 
   // On créer un nouveau register
   try {
-    const addNewInfraction = await pastilleAxios.post("/infraction", {
+    await pastilleAxios.post("/infraction", {
       user_id: userId,
       reason: reason,
       date: today,
