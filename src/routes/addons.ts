@@ -81,7 +81,7 @@ router.put(
       typeof guild_id !== "string" ||
       !name ||
       typeof name !== "string" ||
-      active === undefined ||
+      active == null ||
       typeof active !== "boolean" ||
       !channel ||
       typeof channel !== "string" ||
