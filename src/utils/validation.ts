@@ -13,7 +13,7 @@ export const validateFields = (
   data: any
 ): boolean => {
   for (const [field, expectedType] of Object.entries(fields)) {
-    if (!data[field]) {
+    if (data[field] === undefined || data[field] === null) {
       return false;
     }
     

@@ -15,14 +15,13 @@ import webhookRoute from '@routes/webhook';
 export const createTestApp = () => {
   const app = express();
 
-  // Middleware setup
-  app.use((req: Request, _res: Response, next: NextFunction) => {
-    if (req.path.startsWith('/twitch/webhook')) {
-      app.use(raw({ type: 'application/json' }));
+  // Middleware setup - use conditional parsing based on route
+  app.use((req: Request, res: Response, next: NextFunction) => {
+    if (req.path.startsWith('/twitch/webhook') || req.path.startsWith('/discord/webhook')) {
+      raw({ type: 'application/json' })(req, res, next);
     } else {
-      app.use(json());
+      json()(req, res, next);
     }
-    next();
   });
 
   // Routes

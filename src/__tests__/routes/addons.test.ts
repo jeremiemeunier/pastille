@@ -67,7 +67,7 @@ describe('Addons Routes', () => {
         });
 
       expect(response.status).toBe(200);
-      expect(response.body.message).toBe('New addons registred');
+      expect(response.body.message).toBe('New addons registered');
       expect(mockAddon.save).toHaveBeenCalled();
     });
   });

@@ -706,7 +706,7 @@ Register and configure an addon for a guild.
 **Response** `200 OK`
 ```json
 {
-  "message": "New addons registred",
+  "message": "New addons registered",
   "data": { ... }
 }
 ```
@@ -796,7 +796,7 @@ Create initial settings for a guild.
 **Response** `200 OK`
 ```json
 {
-  "message": "New settings registred",
+  "message": "New settings registered",
   "data": { ... }
 }
 ```

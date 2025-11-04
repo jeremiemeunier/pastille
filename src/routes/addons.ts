@@ -51,7 +51,7 @@ router.post("/addons/add", isPastille, rateLimiter, async (req, res) => {
 
     res
       .status(200)
-      .json({ message: "New addons registred", data: newAddonsRegister });
+      .json({ message: "New addons registered", data: newAddonsRegister });
   } catch (err: any) {
     res.status(500).end();
     Logs("api:addons:post", "error", err, guild_id);

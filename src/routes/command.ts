@@ -80,7 +80,7 @@ router.post(
       try {
         const newCommandsRegister = new Command({
           guild_id: guild_id,
-          role_id: role_id || "",
+          role_id: role_id ?? "",
           terms: terms,
           response: response,
         });

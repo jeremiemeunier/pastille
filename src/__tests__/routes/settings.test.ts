@@ -170,7 +170,7 @@ describe('Settings Routes', () => {
         });
 
       expect(response.status).toBe(200);
-      expect(response.body.message).toBe('New settings registred');
+      expect(response.body.message).toBe('New settings registered');
       expect(mockSettings.save).toHaveBeenCalled();
     });
   });
