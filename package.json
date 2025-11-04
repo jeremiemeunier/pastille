@@ -8,7 +8,10 @@
   },
   "scripts": {
     "prod": "infisical --env=\"prod\" --path=\"/pastille\" run --projectId 1a946831-528f-4a11-8380-73cc3f859668 -- ts-node -r dotenv/config -r tsconfig-paths/register src/server.ts",
-    "dev": "infisical --path=\"/pastille\" run --projectId 1a946831-528f-4a11-8380-73cc3f859668 -- nodemon --exec \"ts-node -r dotenv/config -r tsconfig-paths/register src/server.ts\""
+    "dev": "infisical --path=\"/pastille\" run --projectId 1a946831-528f-4a11-8380-73cc3f859668 -- nodemon --exec \"ts-node -r dotenv/config -r tsconfig-paths/register src/server.ts\"",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
   },
   "author": "",
   "license": "ISC",
@@ -31,11 +34,16 @@
     "@types/cookie-parser": "^1.4.9",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
+    "@types/jest": "^30.0.0",
     "@types/node": "^24.5.2",
     "@types/node-cron": "^3.0.11",
+    "@types/supertest": "^6.0.3",
     "discord-api-types": "^0.38.26",
     "dotenv": "^17.2.2",
+    "jest": "^30.2.0",
     "nodemon": "^3.1.10",
+    "supertest": "^7.1.4",
+    "ts-jest": "^29.4.5",
     "ts-node": "^10.9.2"
   }
 }

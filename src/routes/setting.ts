@@ -69,7 +69,7 @@ router.post(
 
       res
         .status(200)
-        .json({ message: "New settings registred", data: newSettingsRegistre });
+        .json({ message: "New settings registered", data: newSettingsRegistre });
     } catch (err: any) {
       res.status(500).end();
       Logs("api:settings:post", "error", err, guild_id);

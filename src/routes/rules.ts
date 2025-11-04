@@ -76,20 +76,21 @@ router.put(
       typeof name !== "string" ||
       !description ||
       typeof description !== "string" ||
-      !active ||
+      active === undefined ||
       typeof active !== "boolean"
     ) {
       res.status(400).json({ message: "You must provide all input" });
     } else {
       try {
         const updatedRulesItem = await Rule.findByIdAndUpdate(
-          { _id: { $eq: id } },
+          id,
           {
-            guild_id: { $eq: guild_id },
+            guild_id: guild_id,
             name: name,
             description: description,
             active: active,
-          }
+          },
+          { new: true }
         );
 
         res.status(200).json({ data: updatedRulesItem });

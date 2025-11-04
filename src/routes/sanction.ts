@@ -13,10 +13,16 @@ router.put(
   async (req: Request, res: Response) => {
     const { id } = req.query;
 
+    if (!id || typeof id !== 'string') {
+      res.status(400).json({ message: "Invalid Id provided" });
+      return;
+    }
+
     try {
       const updateSanction = await Sanction.findByIdAndUpdate(
-        { _id: { $eq: id } },
-        { checkable: false }
+        id,
+        { checkable: false },
+        { new: true }
       );
       res.status(200).json({ data: updateSanction });
     } catch (err: any) {
