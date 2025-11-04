@@ -15,15 +15,16 @@ router.get(
     const { guild_id } = req.query;
 
     try {
-      const allRolesRequest = await Role.find({ guild_id: { $eq: guild_id } });
+      const q_list = await Role.find({ guild_id: { $eq: guild_id } });
 
-      if (allRolesRequest.length === 0) {
-        res.status(404).json({ message: "No roles", http_response: 404 });
-      } else {
-        res.status(200).json({ data: allRolesRequest });
+      if (q_list.length > 0) {
+        res.status(200).json(q_list);
+        return;
       }
+
+      res.status(404).json({ message: "No roles found" });
     } catch (err: any) {
-      res.status(500).end();
+      res.status(500).json({ message: "Internal server error", error: err });
       Logs("api:roles:get", "error", err, guild_id as string);
     }
   }
@@ -40,7 +41,7 @@ router.post(
       res.status(400).json({ message: "You must provide all input" });
     } else {
       try {
-        const newRoleRegistre = new Role({
+        const q_make = new Role({
           guild_id: guild_id,
           name: name,
           role: role,
@@ -48,10 +49,10 @@ router.post(
           description: description,
         });
 
-        await newRoleRegistre.save();
-        res.status(201).json({ data: newRoleRegistre });
+        await q_make.save();
+        res.status(201).json(q_make);
       } catch (err: any) {
-        res.status(500).end();
+        res.status(500).json({ message: "Internal server error", error: err });
         Logs("api:roles:post", "error", err, guild_id as string);
       }
     }
@@ -85,7 +86,7 @@ router.put(
       res.status(400).json({ message: "You must provide all input" });
     } else {
       try {
-        const updatedRoleItem = await Role.findByIdAndUpdate(
+        const q_update = await Role.findByIdAndUpdate(
           id,
           {
             guild_id: guild_id,
@@ -97,9 +98,9 @@ router.put(
           { new: true }
         );
 
-        res.status(200).json({ data: updatedRoleItem });
+        res.status(200).json(q_update);
       } catch (err: any) {
-        res.status(500).end();
+        res.status(500).json({ message: "Internal server error", error: err });
         Logs("api:roles:put", "error", err, guild_id as string);
       }
     }

@@ -16,7 +16,7 @@ router.post(
     const { low, medium, hight } = sanctions;
 
     try {
-      const newSettingsRegistre = new Setting({
+      const q_make = new Setting({
         guild_id: guild_id,
         premium: premium || false,
         premium_end: premium_end || null,
@@ -65,13 +65,11 @@ router.post(
           },
         },
       });
-      await newSettingsRegistre.save();
+      await q_make.save();
 
-      res
-        .status(200)
-        .json({ message: "New settings registered", data: newSettingsRegistre });
+      res.status(201).json(q_make);
     } catch (err: any) {
-      res.status(500).end();
+      res.status(500).json({ message: "Internal server error", error: err });
       Logs("api:settings:post", "error", err, guild_id);
     }
   }
@@ -85,21 +83,17 @@ router.get(
     const { guild_id } = req.query;
 
     try {
-      const guildSettings = await Setting.findOne({
+      const q_get = await Setting.findOne({
         guild_id: { $eq: guild_id },
       });
 
-      if (!guildSettings) {
-        res
-          .status(404)
-          .json({ message: "No settings found", http_response: 404 });
-      } else {
-        res
-          .status(200)
-          .json({ message: "Settings found", data: guildSettings });
+      if (q_get) {
+        res.status(200).json(q_get);
+        return;
       }
+      res.status(404).json({ message: "No settings found" });
     } catch (err: any) {
-      res.status(500).end();
+      res.status(500).json({ message: "Internal server error", error: err });
       Logs("api:settings:get", "error", err, guild_id as string);
     }
   }

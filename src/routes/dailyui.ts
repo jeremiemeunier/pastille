@@ -21,16 +21,14 @@ router.put(
     }
 
     try {
-      const updateDailyUi = await Dailyui.findByIdAndUpdate(
+      const q_update = await Dailyui.findByIdAndUpdate(
         id,
         { available: false },
         { new: true }
       );
-      res
-        .status(201)
-        .json({ message: "State updated for DailyUi", data: updateDailyUi });
+      res.status(201).json(q_update);
     } catch (err: any) {
-      res.status(500).end();
+      res.status(500).json({ message: "Internal server error", error: err });
       Logs("api:dailyui:put", "error", err);
     }
   }
@@ -49,22 +47,19 @@ router.get(
     }
 
     try {
-      const dailyuiNotSend = await Dailyui.findOne({
+      const q_dailyui = await Dailyui.findOne({
         available: true,
         guild_id: { $eq: guild_id },
       });
 
-      if (!dailyuiNotSend) {
-        res
-          .status(404)
-          .json({ message: "No dailyui available", http_response: 404 });
-      } else {
-        res
-          .status(200)
-          .json({ message: "DailyUi available", data: dailyuiNotSend });
+      if (q_dailyui) {
+        res.status(200).json(q_dailyui);
+        return;
       }
+
+      res.status(404).json({ message: "No dailyui available" });
     } catch (err: any) {
-      res.status(500).end();
+      res.status(500).json({ message: "Internal server error", error: err });
       Logs("api:dailyui:get", "error", err, guild_id as string);
     }
   }
@@ -85,22 +80,20 @@ router.post(
       !description ||
       typeof description !== "string"
     ) {
-      res.status(400).json({ message: "Complete all input", data: req.body });
+      res.status(400).json({ message: "Complete all input" });
     } else {
       try {
-        const newDailyUi = new Dailyui({
+        const q_make = new Dailyui({
           guild_id: guild_id,
           available: state ?? true,
           title: title,
           description: description,
         });
-        await newDailyUi.save();
+        await q_make.save();
 
-        res
-          .status(200)
-          .json({ message: "New daily challenge added", data: newDailyUi });
+        res.status(200).json(q_make);
       } catch (err: any) {
-        res.status(500).end();
+        res.status(500).json({ message: "Internal server error", error: err });
         Logs("api:dailyui:add", "error", err, guild_id);
       }
     }
@@ -117,19 +110,19 @@ router.post(
     try {
       await Promise.all(
         data.map(async (dailychallenge: DailyUiTypes) => {
-          const newDailyUi = new Dailyui({
+          const q_make = new Dailyui({
             available: true,
             guild_id: dailychallenge.guild_id,
             title: dailychallenge.title,
             description: dailychallenge.description,
           });
-          await newDailyUi.save();
+          await q_make.save();
         })
       );
 
-      res.status(200).json({ message: "New daily challenge added" });
+      res.status(201).json({ message: "New daily challenge added" });
     } catch (err: any) {
-      res.status(500).end();
+      res.status(500).json({ message: "Internal server error", error: err });
       Logs("api:dailyui:mass", "error", err);
     }
   }

@@ -74,10 +74,9 @@ router.post(
             try {
               // find a streamer with this id
               // update him to indicate is live and unannounced
-              const req = await Streamers.findOneAndUpdate(
+              await Streamers.findOneAndUpdate(
                 { id: { $eq: broadcaster_user_id } },
-                { isLive: true, isAnnounce: false },
-                { new: true }
+                { isLive: true, isAnnounce: false }
               );
             } catch (err: any) {
               Logs("webhook.twitch", "error", err);

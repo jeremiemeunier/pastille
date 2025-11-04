@@ -15,15 +15,16 @@ router.get(
     const { guild_id } = req.query;
 
     try {
-      const allRulesRequest = await Rule.find({ guild_id: { $eq: guild_id } });
+      const q_list = await Rule.find({ guild_id: { $eq: guild_id } });
 
-      if (allRulesRequest.length === 0) {
-        res.status(404).json({ message: "No rules", http_response: 404 });
-      } else {
-        res.status(200).json({ data: allRulesRequest });
+      if (q_list.length > 0) {
+        res.status(200).json(q_list);
+        return;
       }
+
+      res.status(404).json({ message: "No rules found" });
     } catch (err: any) {
-      res.status(500).end();
+      res.status(500).json({ message: "Internal server error", error: err });
       Logs("api:rules:get", "error", err);
     }
   }
@@ -40,17 +41,17 @@ router.post(
       res.status(400).json({ message: "You must provide all input" });
     } else {
       try {
-        const newRulesRegistre = new Rule({
+        const q_make = new Rule({
           guild_id: guild_id,
           name: name,
           description: description,
           active: active,
         });
 
-        await newRulesRegistre.save();
-        res.status(201).json({ data: newRulesRegistre });
+        await q_make.save();
+        res.status(201).json(q_make);
       } catch (err: any) {
-        res.status(500).end();
+        res.status(500).json({ message: "Internal server error", error: err });
         Logs("api:rules:post", "error", err, guild_id);
       }
     }
@@ -82,7 +83,7 @@ router.put(
       res.status(400).json({ message: "You must provide all input" });
     } else {
       try {
-        const updatedRulesItem = await Rule.findByIdAndUpdate(
+        const q_update = await Rule.findByIdAndUpdate(
           id,
           {
             guild_id: guild_id,
@@ -93,9 +94,9 @@ router.put(
           { new: true }
         );
 
-        res.status(200).json({ data: updatedRulesItem });
+        res.status(201).json(q_update);
       } catch (err: any) {
-        res.status(500).end();
+        res.status(500).json({ message: "Internal server error", error: err });
         Logs("api:rules:put", "error", err, guild_id);
       }
     }

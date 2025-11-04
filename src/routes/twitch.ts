@@ -13,18 +13,16 @@ router.get(
   rateLimiter,
   async (_req: Request, res: Response) => {
     try {
-      const streamers = await Streamers.find({ isValid: false });
+      const q_list = await Streamers.find({ isValid: false });
 
-      if (streamers.length > 0) {
-        res.status(200).json(streamers);
-      } else {
-        res
-          .status(404)
-          .json({ message: "No streamer found", http_response: 404 });
+      if (q_list.length > 0) {
+        res.status(200).json(q_list);
+        return;
       }
+      res.status(404).json({ message: "No streamer found" });
     } catch (err: any) {
-      res.status(500).end();
-      Logs("", "error", err);
+      res.status(500).json({ message: "Internal server error", error: err });
+      Logs("twitch", "error", err);
     }
   }
 );
@@ -35,17 +33,15 @@ router.get(
   rateLimiter,
   async (_req: Request, res: Response) => {
     try {
-      const query = await Streamers.find({ isLive: true, isAnnounce: false });
+      const q_get = await Streamers.find({ isLive: true, isAnnounce: false });
 
-      if (query && query.length > 0) {
-        res.status(200).json(query);
-      } else {
-        res
-          .status(404)
-          .json({ message: "No live to be announced", http_response: 404 });
+      if (q_get && q_get.length > 0) {
+        res.status(200).json(q_get);
+        return;
       }
+      res.status(404).json({ message: "No live to be announced" });
     } catch (err: any) {
-      res.status(500).end();
+      res.status(500).json({ message: "Internal server error", error: err });
       Logs("twitch", "error", err);
     }
   }
@@ -67,9 +63,9 @@ router.patch(
         { new: true }
       );
 
-      res.status(200).json({ message: "streamers entry has been updated" });
+      res.status(204).end();
     } catch (err: any) {
-      res.status(500).end();
+      res.status(500).json({ message: "Internal server error", error: err });
       Logs("twitch", "error", err);
     }
   }
@@ -91,12 +87,12 @@ router.post(
     } = req.body;
 
     try {
-      const isRegistred = await Streamers.findOne({ id: streamer_id });
+      const q_exist = await Streamers.findOne({ id: streamer_id });
 
-      if (isRegistred) {
+      if (q_exist) {
         // we already have this streamer
         // add new recipient
-        const recipients = isRegistred.announcer;
+        const recipients = q_exist.announcer;
         recipients.push({
           guild_id: guild_id,
           channel_id: channel_id,
@@ -106,7 +102,7 @@ router.post(
         });
 
         // updating document
-        const updatedDoc = await Streamers.findOneAndUpdate(
+        const q_update = await Streamers.findOneAndUpdate(
           {
             id: streamer_id,
           },
@@ -115,10 +111,10 @@ router.post(
           },
           { new: true }
         );
-        res.status(201).json(updatedDoc);
+        res.status(201).json(q_update);
       } else {
         // add new streamer
-        const newDocs = new Streamers({
+        const q_make = new Streamers({
           id: streamer_id,
           name: streamer_name,
           isLive: false,
@@ -135,11 +131,11 @@ router.post(
           ],
         });
 
-        await newDocs.save();
-        res.status(201).json(newDocs);
+        await q_make.save();
+        res.status(201).json(q_make);
       }
     } catch (err: any) {
-      res.status(500).end();
+      res.status(500).json({ message: "Internal server error", error: err });
       Logs("", "error", err, "post_listener");
     }
   }
@@ -153,33 +149,31 @@ router.delete(
     const { streamer_id, guild_id } = req.body;
 
     try {
-      const isRegistred = await Streamers.findOne({
+      const q_exist = await Streamers.findOne({
         id: streamer_id,
         announcer: { $in: [{ guild_id: guild_id }] },
       });
 
-      if (isRegistred.announcer.length > 1) {
+      if (q_exist.announcer.length > 1) {
         // we have many announcer
-        const announcers = isRegistred.announcer;
+        const announcers = q_exist.announcer;
         const newAnnouncer = announcers.filter(
           (item: StreamerAnnouncerTypes) => item.guild_id !== guild_id
         );
 
-        const updatedDoc = await Streamers.findOneAndUpdate(
+        const q_update = await Streamers.findOneAndUpdate(
           { id: streamer_id },
           { announcer: newAnnouncer },
           { new: true }
         );
-        res.status(201).json(updatedDoc);
+        res.status(201).json(q_update);
       } else {
         // we have only one announcer
         await Streamers.deleteOne({ id: streamer_id });
-        res
-          .status(200)
-          .json({ message: "Document has been removed successfully" });
+        res.status(204).end();
       }
     } catch (err: any) {
-      res.status(500).end();
+      res.status(500).json({ message: "Internal server error", error: err });
       Logs("", "error", err, "post_listener");
     }
   }
