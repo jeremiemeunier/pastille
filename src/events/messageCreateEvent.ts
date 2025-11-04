@@ -8,7 +8,7 @@ import {
   getParams,
   hoursParser,
 } from "@functions/base";
-import { buildConversationContext } from "@functions/messageContext";
+import { buildConversationContext, removeMentions } from "@functions/messageContext";
 import Logs from "@libs/Logs";
 import axios from "axios";
 
@@ -101,7 +101,7 @@ export const messageCreateEventInit = (client: any) => {
           ...conversationHistory,
           { 
             role: "user", 
-            content: message.content.replace(/<@!?\d+>/g, "").trim() // Remove mentions from current message
+            content: removeMentions(message.content)
           },
         ];
 

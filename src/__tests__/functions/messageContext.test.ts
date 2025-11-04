@@ -1,5 +1,22 @@
-import { buildConversationContext } from "@functions/messageContext";
+import { buildConversationContext, removeMentions } from "@functions/messageContext";
 import { Message } from "discord.js";
+
+describe("removeMentions", () => {
+  it("should remove mentions from content", () => {
+    expect(removeMentions("Hello <@123456789>!")).toBe("Hello !");
+    expect(removeMentions("Hi <@!987654321> how are you?")).toBe("Hi  how are you?");
+    expect(removeMentions("<@123> <@!456> test")).toBe("test");
+  });
+
+  it("should handle content with no mentions", () => {
+    expect(removeMentions("Hello world!")).toBe("Hello world!");
+  });
+
+  it("should trim whitespace", () => {
+    expect(removeMentions("  <@123456789>  ")).toBe("");
+    expect(removeMentions("  Hello  ")).toBe("Hello");
+  });
+});
 
 describe("buildConversationContext", () => {
   const mockBotId = "123456789";

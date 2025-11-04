@@ -7,6 +7,21 @@ interface ChatMessage {
 }
 
 /**
+ * Regular expression to match Discord user mentions
+ * Matches patterns like <@123456789> and <@!123456789>
+ */
+const MENTION_REGEX = /<@!?\d+>/g;
+
+/**
+ * Remove Discord mentions from message content
+ * @param content - The message content to clean
+ * @returns The content with mentions removed and trimmed
+ */
+export const removeMentions = (content: string): string => {
+  return content.replace(MENTION_REGEX, "").trim();
+};
+
+/**
  * Build conversation context by fetching message history from reply chain
  * When a user replies to a bot message, this function traces back the conversation
  * and builds an array of messages for AI context
@@ -44,7 +59,7 @@ export const buildConversationContext = async (
           const role = referencedMessage.author.id === botUserId ? "assistant" : "user";
           conversationMessages.unshift({
             role,
-            content: referencedMessage.content.replace(/<@!?\d+>/g, "").trim(), // Remove mentions
+            content: removeMentions(referencedMessage.content),
           });
           
           // Move to the next message in the chain
