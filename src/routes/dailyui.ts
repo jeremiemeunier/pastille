@@ -22,8 +22,9 @@ router.put(
 
     try {
       const updateDailyUi = await Dailyui.findByIdAndUpdate(
-        { _id: { $eq: id } },
-        { available: false }
+        id,
+        { available: false },
+        { new: true }
       );
       res
         .status(201)
@@ -88,8 +89,8 @@ router.post(
     } else {
       try {
         const newDailyUi = new Dailyui({
-          guild_id: { $eq: guild_id },
-          available: state || true,
+          guild_id: guild_id,
+          available: state ?? true,
           title: title,
           description: description,
         });

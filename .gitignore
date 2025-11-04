@@ -4,5 +4,21 @@ node_modules
 bin
 dist
 
+# Test coverage
+coverage
+*.lcov
+
+# Error logs
 *error*
 *infisical*
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db

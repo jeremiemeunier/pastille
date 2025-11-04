@@ -86,14 +86,15 @@ router.put(
     } else {
       try {
         const updatedRoleItem = await Role.findByIdAndUpdate(
-          { _id: { $eq: id } },
+          id,
           {
-            guild_id: { $eq: guild_id },
+            guild_id: guild_id,
             name: name,
             description: description,
             role: role,
             emote: emote,
-          }
+          },
+          { new: true }
         );
 
         res.status(200).json({ data: updatedRoleItem });

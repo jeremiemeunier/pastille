@@ -44,7 +44,7 @@ router.get(
     }
 
     try {
-      const commandRequest = await Command.findById({ _id: { $eq: id } });
+      const commandRequest = await Command.findById(id);
 
       if (!commandRequest) {
         res
@@ -79,8 +79,8 @@ router.post(
     } else {
       try {
         const newCommandsRegister = new Command({
-          guild_id: { $eq: guild_id },
-          role_id: role_id ? role_id : "",
+          guild_id: guild_id,
+          role_id: role_id || "",
           terms: terms,
           response: response,
         });

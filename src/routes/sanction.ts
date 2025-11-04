@@ -15,8 +15,9 @@ router.put(
 
     try {
       const updateSanction = await Sanction.findByIdAndUpdate(
-        { _id: { $eq: id } },
-        { checkable: false }
+        id,
+        { checkable: false },
+        { new: true }
       );
       res.status(200).json({ data: updateSanction });
     } catch (err: any) {
