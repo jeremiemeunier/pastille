@@ -113,21 +113,24 @@ router.post(
   async (req: Request, res: Response) => {
     const data = req.body.data;
 
-    data.map(async (dailychallenge: DailyUiTypes) => {
-      try {
-        const newDailyUi = new Dailyui({
-          available: true,
-          guild_id: dailychallenge.guild_id,
-          title: dailychallenge.title,
-          description: dailychallenge.description,
-        });
-        await newDailyUi.save();
-      } catch (err: any) {
-        Logs("api:dailyui:mass", "error", err);
-      }
-    });
+    try {
+      await Promise.all(
+        data.map(async (dailychallenge: DailyUiTypes) => {
+          const newDailyUi = new Dailyui({
+            available: true,
+            guild_id: dailychallenge.guild_id,
+            title: dailychallenge.title,
+            description: dailychallenge.description,
+          });
+          await newDailyUi.save();
+        })
+      );
 
-    res.status(200).json({ message: "New daily challenge added" });
+      res.status(200).json({ message: "New daily challenge added" });
+    } catch (err: any) {
+      res.status(500).end();
+      Logs("api:dailyui:mass", "error", err);
+    }
   }
 );
 

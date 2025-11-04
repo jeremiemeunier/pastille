@@ -69,18 +69,15 @@ router.post(
     const { emotes } = req.body;
 
     try {
-      emotes.map(async (item: EmoteTypes) => {
-        const emoteRegister = new Emote({
-          letter: item.letter,
-          emote: item.emote,
-        });
-
-        try {
+      await Promise.all(
+        emotes.map(async (item: EmoteTypes) => {
+          const emoteRegister = new Emote({
+            letter: item.letter,
+            emote: item.emote,
+          });
           await emoteRegister.save();
-        } catch (err: any) {
-          Logs("api:emotes:post:save", "error", err);
-        }
-      });
+        })
+      );
       res.status(201).json({ message: "Emotes added" });
     } catch (err: any) {
       res.status(500).end();
