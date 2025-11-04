@@ -19,7 +19,10 @@ router.get(
         guild_id: { $eq: guild_id },
       });
 
-      if (q_list.length > 0) res.status(200).json(q_list);
+      if (q_list.length > 0) {
+        res.status(200).json({ data: q_list });
+        return;
+      }
 
       res.status(404).json({ message: "No addons" });
     } catch (err: any) {
@@ -50,7 +53,7 @@ router.post("/addons/add", isPastille, rateLimiter, async (req, res) => {
     });
     await q_make.save();
 
-    res.status(201).json(q_make);
+    res.status(200).json({ message: "New addons registered", data: q_make });
   } catch (err: any) {
     res.status(500).json({
       message: "Internal server error",
@@ -102,7 +105,7 @@ router.put(
         { new: true }
       );
 
-      res.status(201).json(q_update);
+      res.status(200).json({ message: "Addons has being updated", data: q_update });
     } catch (err: any) {
       res.status(500).json({
         message: "Internal server error",

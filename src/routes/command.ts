@@ -52,7 +52,7 @@ router.get(
       const q_command = await Command.findById(id);
 
       if (q_command) {
-        res.status(200).json(q_command);
+        res.status(200).json({ data: q_command });
         return;
       }
 
@@ -93,7 +93,7 @@ router.post(
         });
 
         await newCommandsRegister.save();
-        res.status(201).json(newCommandsRegister);
+        res.status(200).json({ message: "New command added", data: newCommandsRegister });
       } catch (err: any) {
         res.status(500).json({
           message: "Internal server error",

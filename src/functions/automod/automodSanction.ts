@@ -55,7 +55,7 @@ export const automodSanctionEvalute = async (size: any, guild: any) => {
 };
 
 export const automodSanction = async (user: any, size: any, guild: any) => {
-  const { count } = size.data;
+  const count = size.data.count;
   const evaluation = await automodSanctionEvalute(count, guild);
   if (!evaluation) return;
 

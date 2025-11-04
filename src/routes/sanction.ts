@@ -24,7 +24,7 @@ router.put(
         { checkable: false },
         { new: true }
       );
-      res.status(204).end();
+      res.status(200).json({ data: q_update });
     } catch (err: any) {
       res.status(500).json({ message: "Internal server error", error: err });
       Logs("api:sanction:put", "error", err);
@@ -52,7 +52,7 @@ router.post(
       });
       await q_make.save();
 
-      res.status(204).end();
+      res.status(200).json({ message: "New sanction items created", data: q_make });
     } catch (err: any) {
       res.status(500).json({ message: "Internal server error", error: err });
       Logs("api:sanction:register:post", "error", err, guild_id);
@@ -72,7 +72,7 @@ router.get(
         guild_id: { $eq: guild_id },
         checkable: true,
       });
-      res.status(200).json(q_list);
+      res.status(200).json({ message: "Sanction find", data: q_list });
     } catch (err: any) {
       res.status(500).json({ message: "Internal server error", error: err });
       Logs("api:sanction:get:all", "error", err, guild_id as string);

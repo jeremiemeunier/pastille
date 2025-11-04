@@ -67,7 +67,7 @@ router.post(
       });
       await q_make.save();
 
-      res.status(201).json(q_make);
+      res.status(200).json({ message: "New settings registered", data: q_make });
     } catch (err: any) {
       res.status(500).json({ message: "Internal server error", error: err });
       Logs("api:settings:post", "error", err, guild_id);
@@ -88,7 +88,7 @@ router.get(
       });
 
       if (q_get) {
-        res.status(200).json(q_get);
+        res.status(200).json({ message: "Settings found", data: q_get });
         return;
       }
       res.status(404).json({ message: "No settings found" });

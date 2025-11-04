@@ -24,7 +24,7 @@ router.post(
       });
       await q_make.save();
 
-      res.status(201).json(q_make);
+      res.status(200).json({ message: "New infraction items created", data: q_make });
     } catch (err: any) {
       res.status(500).json({ message: "Internal server error", error: err });
       Logs("api:infraction:post", "error", err, guild_id);
@@ -44,7 +44,7 @@ router.get(
         user_id: { $eq: user_id },
         guild_id: { $eq: guild_id },
       });
-      res.status(200).json(q_list);
+      res.status(200).json({ message: "Infractions find", count: q_list });
     } catch (err: any) {
       res.status(500).json({ message: "Internal server error", error: err });
       Logs("api:infraction:get:all", "error", err, guild_id as string);
