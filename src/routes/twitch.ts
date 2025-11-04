@@ -63,7 +63,7 @@ router.patch(
         { new: true }
       );
 
-      res.status(204).end();
+      res.status(200).json({ message: "streamers entry has been updated" });
     } catch (err: any) {
       res.status(500).json({ message: "Internal server error", error: err });
       Logs("twitch", "error", err);
@@ -170,7 +170,7 @@ router.delete(
       } else {
         // we have only one announcer
         await Streamers.deleteOne({ id: streamer_id });
-        res.status(204).end();
+        res.status(200).json({ message: "Document has been removed successfully" });
       }
     } catch (err: any) {
       res.status(500).json({ message: "Internal server error", error: err });

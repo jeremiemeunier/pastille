@@ -31,7 +31,12 @@ router.post(
       return message_id + message_timestamp + body;
     };
 
-    if (message_timestamp && message_id && message_signature) {
+    if (!message_timestamp || !message_id || !message_signature) {
+      res.status(400).json({ message: "Missing required headers" });
+      return;
+    }
+
+    try {
       const hmacMessage = BuildMessage(req.body, message_id, message_timestamp);
       const hmac = `${hmac_prefix}${crypto
         .createHmac("sha256", process.env.BOT_SECRET_SIG as string)
@@ -91,6 +96,9 @@ router.post(
       } else {
         res.status(403).json({ message: "Invalid signature" });
       }
+    } catch (err: any) {
+      res.status(500).json({ message: "Internal server error", error: err });
+      Logs("webhook.twitch", "error", err);
     }
   }
 );

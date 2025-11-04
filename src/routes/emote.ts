@@ -18,7 +18,7 @@ router.get(
       const q_list = await Emote.findOne({ letter: { $eq: letter } });
 
       if (q_list) {
-        res.status(200).json(q_list);
+        res.status(200).json({ data: q_list });
         return;
       }
 
@@ -49,7 +49,7 @@ router.get(
       }
 
       if (q_list.length > 0) {
-        res.status(200).json(q_list);
+        res.status(200).json({ data: q_list });
         return;
       }
 
