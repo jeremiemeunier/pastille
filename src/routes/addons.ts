@@ -19,7 +19,10 @@ router.get(
         guild_id: { $eq: guild_id },
       });
 
-      if (q_list.length > 0) res.status(200).json(q_list);
+      if (q_list.length > 0) {
+        res.status(200).json(q_list);
+        return;
+      }
 
       res.status(404).json({ message: "No addons" });
     } catch (err: any) {
