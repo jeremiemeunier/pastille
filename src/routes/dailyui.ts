@@ -21,8 +21,8 @@ router.put(
     }
 
     try {
-      const q_update = await Dailyui.findByIdAndUpdate(
-        id,
+      const q_update = await Dailyui.findOneAndUpdate(
+        { _id: { $eq: id } },
         { available: false },
         { new: true }
       );
