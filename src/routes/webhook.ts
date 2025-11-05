@@ -46,18 +46,16 @@ router.post(
         // handle event
         if (message_type === "webhook_callback_verification") {
           // updating streamers docs to valid him
-          const broadcasterId = notif.subscription.condition.broadcaster_user_id;
+          const broadcasterId =
+            notif.subscription.condition.broadcaster_user_id;
           if (typeof broadcasterId !== "string") {
-            res.status(400).json({ message: "Invalid broadcaster_user_id type" });
+            res
+              .status(400)
+              .json({ message: "Invalid broadcaster_user_id type" });
             return;
           }
-          
+
           try {
-            const broadcasterId = notif.subscription.condition.broadcaster_user_id;
-            if (!broadcasterId || typeof broadcasterId !== "string") {
-              res.status(400).json({ message: "Invalid broadcaster_user_id type" });
-              return;
-            }
             await Streamers.findOneAndUpdate(
               {
                 id: { $eq: broadcasterId },
