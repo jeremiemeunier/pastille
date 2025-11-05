@@ -36,8 +36,7 @@ describe('Infraction Routes', () => {
           date: new Date(),
         });
 
-      expect(response.status).toBe(200);
-      expect(response.body.message).toBe('New infraction items created');
+      expect(response.status).toBe(201);
       expect(mockInfraction.save).toHaveBeenCalled();
     });
 
@@ -69,8 +68,7 @@ describe('Infraction Routes', () => {
         });
 
       expect(response.status).toBe(200);
-      expect(response.body.message).toBe('Infractions find');
-      expect(response.body.count).toBe(5);
+      expect(response.body).toBe(5);
     });
 
     it('should return 403 without valid authorization', async () => {

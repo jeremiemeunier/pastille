@@ -63,8 +63,7 @@ describe('Settings Routes', () => {
         .query({ guild_id: 'guild123' });
 
       expect(response.status).toBe(200);
-      expect(response.body.message).toBe('Settings found');
-      expect(response.body.data).toEqual(mockSettings);
+      expect(response.body).toEqual(mockSettings);
     });
 
     it('should return 404 when no settings found', async () => {
@@ -169,8 +168,7 @@ describe('Settings Routes', () => {
           },
         });
 
-      expect(response.status).toBe(200);
-      expect(response.body.message).toBe('New settings registered');
+      expect(response.status).toBe(201);
       expect(mockSettings.save).toHaveBeenCalled();
     });
   });
