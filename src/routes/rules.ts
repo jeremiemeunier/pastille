@@ -65,7 +65,11 @@ router.put(
   async (req: Request, res: Response) => {
     const { guild_id, name, description, active, id } = req.body;
 
-    if (!id || !isValidObjectId(id)) {
+    if (
+      !id ||
+      typeof id !== "string" ||
+      !isValidObjectId(id)
+    ) {
       res.status(400).json({ message: "Invalid Id provided" });
       return;
     }
