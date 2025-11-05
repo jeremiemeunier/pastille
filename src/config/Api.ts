@@ -44,9 +44,7 @@ const Api = () => {
   });
 
   App.all(/(.*)/, (_req: Request, res: Response) => {
-    res
-      .status(404)
-      .json({ message: "This route do not exist", http_response: 404 });
+    res.status(404).json({ message: "This route do not exist" });
   });
 
   App.listen(3000, () => {

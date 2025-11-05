@@ -15,13 +15,9 @@ export const getAddons = async ({ guild }: { guild: any }) => {
       })
     ).data;
   } catch (err: any) {
-    if (err.http_response === 404) {
-      Logs("addon:load:guild", null, err, guild.id);
-      return false;
-    } else {
-      Logs("addon:load:guild", "error", err, guild.id);
-      return false;
-    }
+    if (err.status === 404) return false;
+    Logs("addon:load:guild", "error", err, guild.id);
+    return false;
   }
 };
 
@@ -40,13 +36,9 @@ export const getBanWord = async ({ guild }: { guild: string }) => {
       })
     ).data;
   } catch (err: any) {
-    if (err.http_response === 404) {
-      Logs("automod:load:banword", "warning", err, guild);
-      return false;
-    } else {
-      Logs("automod:load:banword", "error", err, guild);
-      return false;
-    }
+    if (err.status === 404) return false;
+    Logs("automod:load:banword", "error", err, guild);
+    return false;
   }
 };
 
@@ -85,13 +77,9 @@ export const getRoles = async ({ guild }: { guild: string }) => {
       })
     ).data;
   } catch (err: any) {
-    if (err.http_response === 404) {
-      Logs("roles:load:guild", "warning", err, guild);
-      return false;
-    } else {
-      Logs("roles:load:guild", "error", err, guild);
-      return false;
-    }
+    if (err.status === 404) return false;
+    Logs("roles:load:guild", "error", err, guild);
+    return false;
   }
 };
 
