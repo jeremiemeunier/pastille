@@ -11,7 +11,7 @@ router.get(
   "/twitch/streamers",
   isPastille,
   rateLimiter,
-  async (_req: Request, res: Response) => {
+  async (_, res: Response) => {
     try {
       const q_list = await Streamers.find({ isValid: false });
 
@@ -19,6 +19,7 @@ router.get(
         res.status(200).json(q_list);
         return;
       }
+
       res.status(404).json({ message: "No streamer found" });
     } catch (err: any) {
       res.status(500).json({ message: "Internal server error", error: err });
