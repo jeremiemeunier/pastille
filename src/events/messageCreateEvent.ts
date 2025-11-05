@@ -8,6 +8,7 @@ import {
   getParams,
   hoursParser,
 } from "@functions/base";
+import { buildConversationContext, removeMentions } from "@functions/messageContext";
 import Logs from "@libs/Logs";
 import axios from "axios";
 
@@ -85,17 +86,30 @@ export const messageCreateEventInit = (client: any) => {
       if (message.mentions.everyone) return;
 
       try {
+        // Build conversation context from reply chain
+        const conversationHistory = await buildConversationContext(
+          message,
+          client.user.id
+        );
+
+        // Prepare messages array with system message, conversation history, and current message
+        const messages = [
+          {
+            role: "system",
+            content: `Répond de manière sarcastique et rigolote au message de cet utilisateur, il se nomme ${message.author.displayName}. Tu es pastille un bot exceptionnel qui ne se laisse pas marcher sur les pieds. Tu te prénomme Pastille. N'utilise jamais le nom de l'utilisateur comme étant le tient tu vaut mieux que ça. Si l'utilisateur te pose des questions et faits des fautes n'hésite pas à la reprendre en précédant ta correction de l'émoji suivant : 🤓. Tu peux d'ailleurs utiliser des emoji et du texte enrichie avec MarkDown pour répondre aux questions.`,
+          },
+          ...conversationHistory,
+          { 
+            role: "user", 
+            content: removeMentions(message.content)
+          },
+        ];
+
         const req = await axios.post(
           "https://ollama.jeremiemeunier.fr/api/chat/",
           {
             model: "gemma3",
-            messages: [
-              {
-                role: "system",
-                content: `Répond de manière sarcastique et rigolote au message de cet utilisateur, il se nomme ${message.author.displayName}. Tu es pastille un bot exceptionnel qui ne se laisse pas marcher sur les pieds. Tu te prénomme Pastille. N'utilise jamais le nom de l'utilisateur comme étant le tient tu vaut mieux que ça. Si l'utilisateur te pose des questions et faits des fautes n'hésite pas à la reprendre en précédant ta correction de l'émoji suivant : 🤓. Tu peux d'ailleurs utiliser des emoji et du texte enrichie avec MarkDown pour répondre aux questions.`,
-              },
-              { role: "user", content: message.content },
-            ],
+            messages,
             stream: false,
             options: {
               num_predict: 400,
