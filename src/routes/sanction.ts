@@ -19,11 +19,7 @@ router.put(
     }
 
     try {
-      const q_update = await Sanction.findByIdAndUpdate(
-        id,
-        { checkable: false },
-        { new: true }
-      );
+      await Sanction.findByIdAndUpdate(id, { checkable: false }, { new: true });
       res.status(204).end();
     } catch (err: any) {
       res.status(500).json({ message: "Internal server error", error: err });
