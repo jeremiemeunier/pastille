@@ -87,7 +87,7 @@ router.post(
     } = req.body;
 
     try {
-      const q_exist = await Streamers.findOne({ id: streamer_id });
+      const q_exist = await Streamers.findOne({ id: { $eq: streamer_id } });
 
       if (q_exist) {
         // we already have this streamer
@@ -104,7 +104,7 @@ router.post(
         // updating document
         const q_update = await Streamers.findOneAndUpdate(
           {
-            id: streamer_id,
+            id: { $eq: streamer_id },
           },
           {
             announcer: recipients,
