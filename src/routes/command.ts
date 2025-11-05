@@ -28,7 +28,6 @@ router.get(
     } catch (err: any) {
       res.status(500).json({
         message: "Internal server error",
-
         error: err,
       });
       Logs("api:commands:get", "error", err);

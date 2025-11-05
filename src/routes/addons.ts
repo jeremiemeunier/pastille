@@ -57,7 +57,6 @@ router.post("/addons/add", isPastille, rateLimiter, async (req, res) => {
   } catch (err: any) {
     res.status(500).json({
       message: "Internal server error",
-
       error: err,
     });
     Logs("api:addons:post", "error", err, guild_id);
@@ -109,7 +108,6 @@ router.put(
     } catch (err: any) {
       res.status(500).json({
         message: "Internal server error",
-
         error: err,
       });
       Logs("api:addons:put", "error", err, guild_id);
