@@ -1,10 +1,15 @@
-import { buildConversationContext, removeMentions } from "@functions/messageContext";
+import {
+  buildConversationContext,
+  removeMentions,
+} from "@functions/messageContext";
 import { Message } from "discord.js";
 
 describe("removeMentions", () => {
   it("should remove mentions from content", () => {
     expect(removeMentions("Hello <@123456789>!")).toBe("Hello !");
-    expect(removeMentions("Hi <@!987654321> how are you?")).toBe("Hi  how are you?");
+    expect(removeMentions("Hi <@!987654321> how are you?")).toBe(
+      "Hi  how are you?"
+    );
     expect(removeMentions("<@123> <@!456> test")).toBe("test");
   });
 
@@ -20,7 +25,7 @@ describe("removeMentions", () => {
 
 describe("buildConversationContext", () => {
   const mockBotId = "123456789";
-  
+
   it("should return empty array when message has no reference", async () => {
     const mockMessage = {
       id: "msg1",
@@ -37,7 +42,7 @@ describe("buildConversationContext", () => {
     } as unknown as Message;
 
     const result = await buildConversationContext(mockMessage, mockBotId);
-    
+
     expect(result).toEqual([]);
     expect(mockMessage.channel.messages.fetch).not.toHaveBeenCalled();
   });
@@ -69,7 +74,7 @@ describe("buildConversationContext", () => {
     } as unknown as Message;
 
     const result = await buildConversationContext(mockMessage, mockBotId);
-    
+
     expect(result).toHaveLength(1);
     expect(result[0].role).toBe("assistant");
     expect(result[0].content).toBe("Hi there!");
@@ -113,7 +118,8 @@ describe("buildConversationContext", () => {
       },
       channel: {
         messages: {
-          fetch: jest.fn()
+          fetch: jest
+            .fn()
             .mockResolvedValueOnce(mockMessage2)
             .mockResolvedValueOnce(mockMessage3),
         },
@@ -121,7 +127,7 @@ describe("buildConversationContext", () => {
     } as unknown as Message;
 
     const result = await buildConversationContext(mockMessage1, mockBotId);
-    
+
     expect(result.length).toBeGreaterThan(0);
     expect(result[0].role).toBe("assistant");
     expect(result[0].content).toBe("That's great!");
@@ -154,7 +160,7 @@ describe("buildConversationContext", () => {
     } as unknown as Message;
 
     const result = await buildConversationContext(mockMessage, mockBotId);
-    
+
     expect(result).toHaveLength(1);
     expect(result[0].content).toBe("Hello  how can I help?");
   });
@@ -177,7 +183,7 @@ describe("buildConversationContext", () => {
     } as unknown as Message;
 
     const result = await buildConversationContext(mockMessage, mockBotId);
-    
+
     expect(result).toEqual([]);
   });
 
@@ -222,7 +228,7 @@ describe("buildConversationContext", () => {
     } as unknown as Message;
 
     const result = await buildConversationContext(mockMessage, mockBotId);
-    
+
     expect(result.length).toBeLessThanOrEqual(10);
   });
 
@@ -265,8 +271,11 @@ describe("buildConversationContext", () => {
       },
     } as unknown as Message;
 
-    const result = await buildConversationContext(mockMessageCurrent, mockBotId);
-    
+    const result = await buildConversationContext(
+      mockMessageCurrent,
+      mockBotId
+    );
+
     // Should not throw and should have some messages
     expect(Array.isArray(result)).toBe(true);
   });
