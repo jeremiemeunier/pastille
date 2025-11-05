@@ -5,7 +5,10 @@ const TwitchAxios = axios.create({});
 TwitchAxios.interceptors.response.use(
   (response) => response,
   (err) => {
-    return Promise.reject(err.response.data);
+    return Promise.reject({
+      data: err.response.data,
+      status: err.response.status,
+    });
   }
 );
 

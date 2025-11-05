@@ -14,11 +14,13 @@ import Streamers from "@models/Streamers";
 const AddonTwitch = async (client: any) => {
   Logs("addons:twitch:start", "start", "Starting twitch addons");
 
+  console.log("Starting Twitch Addon...");
   try {
     // getting auth token from twitch
     let authToken = await requestAuthenticator();
 
     // getting streamer id list from api
+    console.log("Registering webhooks...");
     try {
       const streamerList = await pastilleAxios.get("/twitch/streamers");
 
@@ -76,10 +78,11 @@ const AddonTwitch = async (client: any) => {
           })
       );
     } catch (err: any) {
-      if (err.status === 404) return;
-      Logs("addon:twitch", "error", err, "get_streamers");
+      if (err.status !== 404)
+        Logs("addon:twitch", "error", err, "get_streamers");
     }
 
+    console.log("Starting cron task...");
     // now launch cron task
     cron.schedule("* * * * *", async () => {
       // handling gesture of live
@@ -88,6 +91,8 @@ const AddonTwitch = async (client: any) => {
         const req = await pastilleAxios.get("/twitch/live");
 
         if (!authToken) authToken = await requestAuthenticator();
+
+        console.log(req.data);
 
         if (req.data && req.data.length > 0) {
           // map list
@@ -196,8 +201,7 @@ const AddonTwitch = async (client: any) => {
           );
         }
       } catch (err: any) {
-        if (err.status === 404) return;
-        Logs("module:twitch", "error", err);
+        if (err.status !== 404) Logs("module:twitch", "error", err);
       }
 
       // handling gesture of new streamers
@@ -236,14 +240,14 @@ const AddonTwitch = async (client: any) => {
                 Logs("addon:twitch", null, req.data, "subscription.created");
                 resolve("subscription.created");
               } catch (err: any) {
-                if (err.status === 404) return;
-                Logs("addon:twitch", "error", err, "event_subscription");
+                if (err.status !== 404)
+                  Logs("addon:twitch", "error", err, "event_subscription");
               }
             })
         );
       } catch (err: any) {
-        if (err.status === 404) return;
-        Logs("addons:twitch", "error", err, "register_webhook");
+        if (err.status !== 404)
+          Logs("addons:twitch", "error", err, "register_webhook");
       }
     });
   } catch (err: any) {
