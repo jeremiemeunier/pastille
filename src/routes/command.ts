@@ -15,17 +15,21 @@ router.get(
     const { guild_id } = req.query;
 
     try {
-      const allCommandsRequest = await Command.find({
+      const q_commands = await Command.find({
         guild_id: { $eq: guild_id },
       });
 
-      if (allCommandsRequest.length === 0) {
-        res.status(404).json({ message: "No commands", http_response: 404 });
-      } else {
-        res.status(200).json({ data: allCommandsRequest });
+      if (q_commands.length > 0) {
+        res.status(200).json({ data: q_commands });
+        return;
       }
+
+      res.status(404).json({ message: "No commands" });
     } catch (err: any) {
-      res.status(500).end();
+      res.status(500).json({
+        message: "Internal server error",
+        error: err,
+      });
       Logs("api:commands:get", "error", err);
     }
   }
@@ -44,17 +48,19 @@ router.get(
     }
 
     try {
-      const commandRequest = await Command.findById({ _id: { $eq: id } });
+      const q_command = await Command.findById(id);
 
-      if (!commandRequest) {
-        res
-          .status(404)
-          .json({ message: "No command with this _id", http_response: 404 });
-      } else {
-        res.status(200).json({ data: commandRequest });
+      if (q_command) {
+        res.status(200).json(q_command);
+        return;
       }
+
+      res.status(404).json({ message: "No command with this _id" });
     } catch (err: any) {
-      res.status(500).end();
+      res.status(500).json({
+        message: "Internal server error",
+        error: err,
+      });
       Logs("api:commands:get", "error", err);
     }
   }
@@ -79,18 +85,19 @@ router.post(
     } else {
       try {
         const newCommandsRegister = new Command({
-          guild_id: { $eq: guild_id },
-          role_id: role_id ? role_id : "",
+          guild_id: guild_id,
+          role_id: role_id ?? "",
           terms: terms,
           response: response,
         });
 
         await newCommandsRegister.save();
-        res
-          .status(200)
-          .json({ message: "New command added", data: newCommandsRegister });
+        res.status(201).json(newCommandsRegister);
       } catch (err: any) {
-        res.status(500).end();
+        res.status(500).json({
+          message: "Internal server error",
+          error: err,
+        });
         Logs("api:commands:add", "error", err, guild_id);
       }
     }

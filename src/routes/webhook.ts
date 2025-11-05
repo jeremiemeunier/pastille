@@ -46,10 +46,19 @@ router.post(
         // handle event
         if (message_type === "webhook_callback_verification") {
           // updating streamers docs to valid him
+          const broadcasterId =
+            notif.subscription.condition.broadcaster_user_id;
+          if (typeof broadcasterId !== "string") {
+            res
+              .status(400)
+              .json({ message: "Invalid broadcaster_user_id type" });
+            return;
+          }
+
           try {
             await Streamers.findOneAndUpdate(
               {
-                id: { $eq: notif.subscription.condition.broadcaster_user_id },
+                id: { $eq: broadcasterId },
               },
               {
                 isValid: true,
@@ -74,10 +83,9 @@ router.post(
             try {
               // find a streamer with this id
               // update him to indicate is live and unannounced
-              const req = await Streamers.findOneAndUpdate(
+              await Streamers.findOneAndUpdate(
                 { id: { $eq: broadcaster_user_id } },
-                { isLive: true, isAnnounce: false },
-                { new: true }
+                { isLive: true, isAnnounce: false }
               );
             } catch (err: any) {
               Logs("webhook.twitch", "error", err);

@@ -1,6 +1,6 @@
 import { EmbedBuilder } from "discord.js";
 import pastilleAxios from "@libs/PastilleAxios";
-import logs from "@functions/logs";
+import Logs from "@libs/Logs";
 
 const addonsLoaded = async (guild: any, addonsParamsItem: any) => {
   const { role, params, guild_id } = addonsParamsItem;
@@ -18,7 +18,7 @@ const addonsLoaded = async (guild: any, addonsParamsItem: any) => {
           headers: { pastille_botid: process.env.BOT_ID },
           params: { guild_id: guild_id },
         });
-        const { _id, title, description } = dailyUiChallenge.data.data;
+        const { _id, title, description } = dailyUiChallenge.data;
         const addonsChannel = guild.channels.cache.find(
           (channel: any) => channel?.id === addonsParamsItem.channel
         );
@@ -38,14 +38,14 @@ const addonsLoaded = async (guild: any, addonsParamsItem: any) => {
           // On change aussi le topic du channel
           try {
             addonsChannel.setTopic(`**DailyUi → ${title}** | ${description}`);
-            const thread = await message.startThread({
+            await message.startThread({
               name: `${title}`,
               autoArchiveDuration: 60,
               reason: "Need a separate thread for daily dailyui",
             });
 
             try {
-              const dailyUiChallenge = await pastilleAxios.put(
+              await pastilleAxios.put(
                 "/dailyui",
                 {},
                 {
@@ -54,16 +54,16 @@ const addonsLoaded = async (guild: any, addonsParamsItem: any) => {
                 }
               );
             } catch (err: any) {
-              logs("error", "dailyui:update", err);
+              Logs("dailyui:update", "error", err);
             }
           } catch (err: any) {
-            logs("error", "dailyui:topics", err);
+            Logs("dailyui:topics", "error", err);
           }
         } catch (err: any) {
-          logs("error", "dailyui:embed", err);
+          Logs("dailyui:embed", "error", err);
         }
       } catch (err: any) {
-        logs("error", "dailyui:request", err);
+        Logs("dailyui:request", "error", err);
       }
     }
   }, 60000);

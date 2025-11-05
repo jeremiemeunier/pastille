@@ -14,7 +14,7 @@ router.post(
     const { user_id, reason, date, guild_id } = req.body;
 
     try {
-      const newInfraction = new Infraction({
+      const q_make = new Infraction({
         user_id: user_id,
         guild_id: guild_id,
         warn: {
@@ -22,13 +22,11 @@ router.post(
           date: date,
         },
       });
-      await newInfraction.save();
+      await q_make.save();
 
-      res
-        .status(200)
-        .json({ message: "New infraction items created", data: newInfraction });
+      res.status(201).json(q_make);
     } catch (err: any) {
-      res.status(500).end();
+      res.status(500).json({ message: "Internal server error", error: err });
       Logs("api:infraction:post", "error", err, guild_id);
     }
   }
@@ -42,15 +40,13 @@ router.get(
     const { user_id, guild_id } = req.query;
 
     try {
-      const allInfractions = await Infraction.countDocuments({
+      const q_list = await Infraction.countDocuments({
         user_id: { $eq: user_id },
         guild_id: { $eq: guild_id },
       });
-      res
-        .status(200)
-        .json({ message: "Infractions find", count: allInfractions });
+      res.status(200).json(q_list);
     } catch (err: any) {
-      res.status(500).end();
+      res.status(500).json({ message: "Internal server error", error: err });
       Logs("api:infraction:get:all", "error", err, guild_id as string);
     }
   }

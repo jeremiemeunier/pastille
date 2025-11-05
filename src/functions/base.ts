@@ -9,19 +9,15 @@ import pastilleAxios from "@libs/PastilleAxios";
  */
 export const getAddons = async ({ guild }: { guild: any }) => {
   try {
-    const guildAddonsRequest = await pastilleAxios.get("/addons", {
-      params: { guild_id: guild.id },
-    });
-    const guildAddons = guildAddonsRequest.data.data;
-    return guildAddons;
+    return (
+      await pastilleAxios.get("/addons", {
+        params: { guild_id: guild.id },
+      })
+    ).data;
   } catch (err: any) {
-    if (err.http_response === 404) {
-      Logs("addon:load:guild", null, err, guild.id);
-      return false;
-    } else {
-      Logs("addon:load:guild", "error", err, guild.id);
-      return false;
-    }
+    if (err.status === 404) return false;
+    Logs("addon:load:guild", "error", err, guild.id);
+    return false;
   }
 };
 
@@ -33,20 +29,16 @@ export const getAddons = async ({ guild }: { guild: any }) => {
  */
 export const getBanWord = async ({ guild }: { guild: string }) => {
   try {
-    const guildBanWordsRequest = await pastilleAxios.get("/banwords", {
-      params: { guild_id: guild },
-      headers: { pastille_botid: process.env.BOT_ID },
-    });
-    const guildBanWords = guildBanWordsRequest.data.data;
-    return guildBanWords;
+    return (
+      await pastilleAxios.get("/banwords", {
+        params: { guild_id: guild },
+        headers: { pastille_botid: process.env.BOT_ID },
+      })
+    ).data;
   } catch (err: any) {
-    if (err.http_response === 404) {
-      Logs("automod:load:banword", "warning", err, guild);
-      return false;
-    } else {
-      Logs("automod:load:banword", "error", err, guild);
-      return false;
-    }
+    if (err.status === 404) return false;
+    Logs("automod:load:banword", "error", err, guild);
+    return false;
   }
 };
 
@@ -58,13 +50,12 @@ export const getBanWord = async ({ guild }: { guild: string }) => {
  */
 export const getStreamers = async ({ guild }: { guild: string }) => {
   try {
-    const guildStreamersRequest = await pastilleAxios.get("/twitch", {
-      params: { guild_id: guild },
-      headers: { pastille_botid: process.env.BOT_ID },
-    });
-    const guildStreamersList = guildStreamersRequest.data.data;
-
-    return guildStreamersList;
+    return (
+      await pastilleAxios.get("/twitch", {
+        params: { guild_id: guild },
+        headers: { pastille_botid: process.env.BOT_ID },
+      })
+    ).data;
   } catch (err: any) {
     Logs("global:get:streamer_list", "error", err, guild);
     return false;
@@ -79,20 +70,16 @@ export const getStreamers = async ({ guild }: { guild: string }) => {
  */
 export const getRoles = async ({ guild }: { guild: string }) => {
   try {
-    const guildRolesrequest = await pastilleAxios.get("/roles", {
-      params: { guild_id: guild },
-      headers: { pastille_botid: process.env.BOT_ID },
-    });
-    const guildRoles = guildRolesrequest.data.data;
-    return guildRoles;
+    return (
+      await pastilleAxios.get("/roles", {
+        params: { guild_id: guild },
+        headers: { pastille_botid: process.env.BOT_ID },
+      })
+    ).data;
   } catch (err: any) {
-    if (err.http_response === 404) {
-      Logs("roles:load:guild", "warning", err, guild);
-      return false;
-    } else {
-      Logs("roles:load:guild", "error", err, guild);
-      return false;
-    }
+    if (err.status === 404) return false;
+    Logs("roles:load:guild", "error", err, guild);
+    return false;
   }
 };
 
@@ -104,20 +91,15 @@ export const getRoles = async ({ guild }: { guild: string }) => {
  */
 export const getRules = async ({ guild }: { guild: string }) => {
   try {
-    const guildRulesRequest = await pastilleAxios.get("/rules", {
-      params: { guild_id: guild },
-      headers: { pastille_botid: process.env.BOT_ID },
-    });
-    const guildRules = guildRulesRequest.data.data;
-    return guildRules;
+    return (
+      await pastilleAxios.get("/rules", {
+        params: { guild_id: guild },
+        headers: { pastille_botid: process.env.BOT_ID },
+      })
+    ).data;
   } catch (err: any) {
-    if (err.http_response === 404) {
-      Logs("rules:load:guild", "warning", err, guild);
-      return false;
-    } else {
-      Logs("rules:load:guild", "error", err, guild);
-      return false;
-    }
+    Logs("rules:load:guild", "error", err, guild);
+    return false;
   }
 };
 
@@ -130,36 +112,26 @@ export const getCommands = async ({
 }) => {
   if (id) {
     try {
-      const guildCommandsRequest = await pastilleAxios.get("/commands/id", {
-        params: { id: id },
-      });
-      const guildCommands = guildCommandsRequest.data.data;
-      return guildCommands;
+      return (
+        await pastilleAxios.get("/commands/id", {
+          params: { id: id },
+        })
+      ).data;
     } catch (err: any) {
-      if (err.http_response === 404) {
-        Logs("cmd:load:guild", "warning", err, guild);
-        return false;
-      } else {
-        Logs("cmd:load:guild", "error", err, guild);
-        return false;
-      }
+      Logs("cmd:load:guild", "error", err, guild);
+      return false;
     }
   } else {
     try {
-      const guildCommandsRequest = await pastilleAxios.get("/commands", {
-        params: { guild_id: guild },
-        headers: { pastille_botid: process.env.BOT_ID },
-      });
-      const guildCommands = guildCommandsRequest.data.data;
-      return guildCommands;
+      return (
+        await pastilleAxios.get("/commands", {
+          params: { guild_id: guild },
+          headers: { pastille_botid: process.env.BOT_ID },
+        })
+      ).data;
     } catch (err: any) {
-      if (err.http_response === 404) {
-        Logs("cmds:load:guild", "warning", err, guild);
-        return false;
-      } else {
-        Logs("cmds:load:guild", "error", err, guild);
-        return false;
-      }
+      Logs("cmds:load:guild", "error", err, guild);
+      return false;
     }
   }
 };
@@ -172,20 +144,15 @@ export const getCommands = async ({
  */
 export const getParams = async ({ guild }: { guild: string }) => {
   try {
-    const guildParamsRequest = await pastilleAxios.get("/settings", {
-      params: { guild_id: guild },
-      headers: { pastille_botid: process.env.BOT_ID },
-    });
-    const guildParams = guildParamsRequest.data.data;
-    return guildParams;
+    return (
+      await pastilleAxios.get("/settings", {
+        params: { guild_id: guild },
+        headers: { pastille_botid: process.env.BOT_ID },
+      })
+    ).data;
   } catch (err: any) {
-    if (err.http_response === 404) {
-      Logs("params:load:guild", "warning", err, guild);
-      return false;
-    } else {
-      Logs("params:load:guild", "error", err, guild);
-      return false;
-    }
+    Logs("params:load:guild", "error", err, guild);
+    return false;
   }
 };
 
@@ -204,18 +171,18 @@ export const postWarnUser = async ({
   data: any;
 }) => {
   try {
-    const warnUserRequest = await pastilleAxios.post(
-      "/infraction",
-      {
-        user_id: data.user_id,
-        reason: data.reason,
-        date: new Date(),
-        guild_id: guild,
-      },
-      { headers: { pastille_botid: process.env.BOT_ID } }
-    );
-
-    return warnUserRequest.data.data;
+    return (
+      await pastilleAxios.post(
+        "/infraction",
+        {
+          user_id: data.user_id,
+          reason: data.reason,
+          date: new Date(),
+          guild_id: guild,
+        },
+        { headers: { pastille_botid: process.env.BOT_ID } }
+      )
+    ).data;
   } catch (err: any) {
     Logs("automod:add:warn", "error", err, guild);
     return false;

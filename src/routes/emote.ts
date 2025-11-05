@@ -15,15 +15,16 @@ router.get(
     const { letter } = req.query;
 
     try {
-      const letterRequest = await Emote.findOne({ letter: { $eq: letter } });
+      const q_list = await Emote.findOne({ letter: { $eq: letter } });
 
-      if (!letterRequest) {
-        res.status(404).json({ message: "No emotes", http_response: 404 });
-      } else {
-        res.status(200).json({ data: letterRequest });
+      if (q_list) {
+        res.status(200).json(q_list);
+        return;
       }
+
+      res.status(404).json({ message: "No emotes found" });
     } catch (err: any) {
-      res.status(500).end();
+      res.status(500).json({ message: "Internal server error", error: err });
       Logs("api:emotes:get", "error", err);
     }
   }
@@ -37,25 +38,24 @@ router.get(
     const { limit } = req.query;
 
     try {
-      let allLettersRequest;
+      let q_list;
 
       if (limit && parseInt(limit as string) > 0) {
-        allLettersRequest = await Emote.find()
+        q_list = await Emote.find()
           .limit(parseInt(limit as string))
           .sort({ letter: "asc" });
       } else {
-        allLettersRequest = await Emote.find().sort({ letter: "asc" });
+        q_list = await Emote.find().sort({ letter: "asc" });
       }
 
-      if (allLettersRequest.length > 0) {
-        res.status(200).json({ data: allLettersRequest });
-      } else {
-        res
-          .status(404)
-          .json({ message: "No letters found", http_response: 404 });
+      if (q_list.length > 0) {
+        res.status(200).json(q_list);
+        return;
       }
+
+      res.status(404).json({ message: "No letters found" });
     } catch (err: any) {
-      res.status(500).end();
+      res.status(500).json({ message: "Internal server error", error: err });
       Logs("api:emotes:get:all", "error", err);
     }
   }
@@ -69,21 +69,18 @@ router.post(
     const { emotes } = req.body;
 
     try {
-      emotes.map(async (item: EmoteTypes) => {
-        const emoteRegister = new Emote({
-          letter: item.letter,
-          emote: item.emote,
-        });
-
-        try {
-          await emoteRegister.save();
-        } catch (err: any) {
-          Logs("api:emotes:post:save", "error", err);
-        }
-      });
+      await Promise.all(
+        emotes.map(async (item: EmoteTypes) => {
+          const q_make = new Emote({
+            letter: item.letter,
+            emote: item.emote,
+          });
+          await q_make.save();
+        })
+      );
       res.status(201).json({ message: "Emotes added" });
     } catch (err: any) {
-      res.status(500).end();
+      res.status(500).json({ message: "Internal server error", error: err });
       Logs("api:emotes:post:mass", "error", err);
     }
   }
