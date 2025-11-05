@@ -90,8 +90,8 @@ router.put(
     }
 
     try {
-      const q_update = await Addons.findByIdAndUpdate(
-        id,
+      const q_update = await Addons.findOneAndUpdate(
+        { _id: { $eq: id } },
         {
           guild_id: guild_id,
           name: name,
