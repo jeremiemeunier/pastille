@@ -14,13 +14,11 @@ import Streamers from "@models/Streamers";
 const AddonTwitch = async (client: any) => {
   Logs("addons:twitch:start", "start", "Starting twitch addons");
 
-  console.log("Starting Twitch Addon...");
   try {
     // getting auth token from twitch
     let authToken = await requestAuthenticator();
 
     // getting streamer id list from api
-    console.log("Registering webhooks...");
     try {
       const streamerList = await pastilleAxios.get("/twitch/streamers");
 
@@ -82,7 +80,6 @@ const AddonTwitch = async (client: any) => {
         Logs("addon:twitch", "error", err, "get_streamers");
     }
 
-    console.log("Starting cron task...");
     // now launch cron task
     cron.schedule("* * * * *", async () => {
       // handling gesture of live
@@ -91,8 +88,6 @@ const AddonTwitch = async (client: any) => {
         const req = await pastilleAxios.get("/twitch/live");
 
         if (!authToken) authToken = await requestAuthenticator();
-
-        console.log(req.data);
 
         if (req.data && req.data.length > 0) {
           // map list
