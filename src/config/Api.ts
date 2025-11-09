@@ -14,6 +14,7 @@ import { default as commandsRoute } from "@routes/command";
 import { default as emotesRoute } from "@routes/emote";
 import { default as webhookRoute } from "@routes/webhook";
 import { default as authRoute } from "@routes/auth";
+import { default as userRoute } from "@routes/user";
 
 const Api = () => {
   // API
@@ -40,6 +41,7 @@ const Api = () => {
   App.use(emotesRoute);
   App.use(webhookRoute);
   App.use(authRoute);
+  App.use(userRoute);
 
   App.get("/", (_req: Request, res: Response) => {
     res.status(200).json({ message: "This is pastille" });
