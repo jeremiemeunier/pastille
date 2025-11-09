@@ -1,4 +1,5 @@
 import express, { json, NextFunction, raw, Request, Response } from "express";
+import cookieParser from "cookie-parser";
 import infractionRoute from "@routes/infraction";
 import sanctionRoute from "@routes/sanction";
 import dailyuiRoute from "@routes/dailyui";
@@ -10,10 +11,15 @@ import settingsRoute from "@routes/setting";
 import commandsRoute from "@routes/command";
 import emotesRoute from "@routes/emote";
 import webhookRoute from "@routes/webhook";
+import authRoute from "@routes/auth";
+import userRoute from "@routes/user";
 
 // Create Express app for testing
 export const createTestApp = () => {
   const app = express();
+
+  // Add cookie parser for testing
+  app.use(cookieParser());
 
   // Middleware setup - use conditional parsing based on route
   app.use((req: Request, res: Response, next: NextFunction) => {
@@ -39,6 +45,8 @@ export const createTestApp = () => {
   app.use(commandsRoute);
   app.use(emotesRoute);
   app.use(webhookRoute);
+  app.use(authRoute);
+  app.use(userRoute);
 
   app.get("/", (_req: Request, res: Response) => {
     res.status(200).json({ message: "This is pastille" });

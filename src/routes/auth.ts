@@ -4,6 +4,9 @@ import { rateLimiter } from "@libs/RateLimiter";
 import axios from "axios";
 import User from "@models/User";
 import DiscordAxios from "@utils/DiscordAxios";
+import { createSession, revokeSession, revokeAllUserSessions } from "@utils/TokenManager";
+import { isAuthenticated } from "@middlewares/isAuthenticated";
+import { sanitizeUser } from "@utils/UserSanitizer";
 
 const router = Router();
 router.use(json());
@@ -89,9 +92,27 @@ router.post("/auth/login", rateLimiter, async (req: Request, res: Response) => {
           },
         });
 
-        /**
-         * @todo create session token and send it as cookie
-         */
+        // Create session token and send it as cookie
+        const session = await createSession(
+          q_user._id.toString(),
+          data.id,
+          req.ip,
+          req.headers["user-agent"]
+        );
+
+        // Set secure httpOnly cookie
+        res.cookie("pastille_token", session.accessToken, {
+          httpOnly: true,
+          secure: process.env.DEV !== "1", // Use secure in production
+          sameSite: "strict",
+          maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+        });
+
+        res.status(200).json({
+          message: "Login successful",
+          user: sanitizeUser(q_user),
+          expiresAt: session.expiresAt,
+        });
       } catch (err: any) {
         Logs("auth.update.user", "error", err);
         res.status(500).json({ message: "Internal server error" });
@@ -130,9 +151,27 @@ router.post("/auth/login", rateLimiter, async (req: Request, res: Response) => {
 
         await q_make.save();
 
-        /**
-         * @todo create session token and send it as cookie
-         */
+        // Create session token and send it as cookie
+        const session = await createSession(
+          q_make._id.toString(),
+          data.id,
+          req.ip,
+          req.headers["user-agent"]
+        );
+
+        // Set secure httpOnly cookie
+        res.cookie("pastille_token", session.accessToken, {
+          httpOnly: true,
+          secure: process.env.DEV !== "1", // Use secure in production
+          sameSite: "strict",
+          maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+        });
+
+        res.status(201).json({
+          message: "Account created successfully",
+          user: sanitizeUser(q_make),
+          expiresAt: session.expiresAt,
+        });
       } catch (err: any) {
         Logs("auth.make.user", "error", err);
         res.status(500).json({ message: "Internal server error" });
@@ -150,6 +189,67 @@ router.post("/auth/login", rateLimiter, async (req: Request, res: Response) => {
       .status(500)
       .json({ message: "Internal server error", error: err?.error });
     return;
+  }
+});
+
+// Get current user information
+router.get("/auth/me", isAuthenticated, async (req: Request, res: Response) => {
+  try {
+    const user = await User.findById(req.user?.user_id);
+
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+
+    res.status(200).json({
+      user: sanitizeUser(user),
+    });
+  } catch (err: any) {
+    Logs("auth.me", "error", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// Logout endpoint
+router.post("/auth/logout", isAuthenticated, async (req: Request, res: Response) => {
+  try {
+    // Get token from cookie or header
+    let token: string | undefined;
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+      token = authHeader.substring(7);
+    }
+    if (!token && req.cookies && req.cookies.pastille_token) {
+      token = req.cookies.pastille_token;
+    }
+
+    if (token) {
+      await revokeSession(token);
+    }
+
+    // Clear cookie
+    res.clearCookie("pastille_token");
+    res.status(200).json({ message: "Logged out successfully" });
+  } catch (err: any) {
+    Logs("auth.logout", "error", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// Logout from all devices
+router.post("/auth/logout/all", isAuthenticated, async (req: Request, res: Response) => {
+  try {
+    if (req.user?.user_id) {
+      await revokeAllUserSessions(req.user.user_id);
+    }
+
+    // Clear cookie
+    res.clearCookie("pastille_token");
+    res.status(200).json({ message: "Logged out from all devices" });
+  } catch (err: any) {
+    Logs("auth.logout.all", "error", err);
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 
