@@ -24,7 +24,13 @@ export const createTestApp = () => {
   app.use(cookieParser());
 
   // Add session and CSRF token middleware
-  app.use(session({ secret: "test_secret", resave: false, saveUninitialized: true }));
+  // NOTE: cookie.secure: false is required for tests (HTTP); use true in production!
+  app.use(session({
+    secret: "test_secret",
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false } // For test only! Set to true in production when using HTTPS.
+  }));
   app.use(lusca.csrf());
 
   // Middleware setup - use conditional parsing based on route
