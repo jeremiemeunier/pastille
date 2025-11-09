@@ -1,10 +1,13 @@
 import { Request, Response, Router, json } from "express";
 import Logs from "@libs/Logs";
 import { rateLimiter } from "@libs/RateLimiter";
-import axios from "axios";
 import User from "@models/User";
 import DiscordAxios from "@utils/DiscordAxios";
-import { createSession, revokeSession, revokeAllUserSessions } from "@utils/TokenManager";
+import {
+  createSession,
+  revokeSession,
+  revokeAllUserSessions,
+} from "@utils/TokenManager";
 import { isAuthenticated } from "@middlewares/isAuthenticated";
 import { sanitizeUser } from "@utils/UserSanitizer";
 import { ensureCsrfToken } from "@middlewares/csrfProtection";
@@ -105,18 +108,15 @@ router.post("/auth/login", rateLimiter, async (req: Request, res: Response) => {
         );
 
         // Set secure httpOnly cookie
-        res.cookie("pastille_token", session.accessToken, {
-          httpOnly: true,
-          secure: process.env.DEV !== "1", // Use secure in production
-          sameSite: "strict",
-          maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-        });
-
-        res.status(200).json({
-          message: "Login successful",
-          user: sanitizeUser(q_user),
-          expiresAt: session.expiresAt,
-        });
+        res
+          .cookie("pastille_token", session.accessToken, {
+            httpOnly: true,
+            secure: process.env.DEV !== "1", // Use secure in production
+            sameSite: "strict",
+            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+          })
+          .status(204)
+          .end();
       } catch (err: any) {
         Logs("auth.update.user", "error", err);
         res.status(500).json({ message: "Internal server error" });
@@ -164,18 +164,15 @@ router.post("/auth/login", rateLimiter, async (req: Request, res: Response) => {
         );
 
         // Set secure httpOnly cookie
-        res.cookie("pastille_token", session.accessToken, {
-          httpOnly: true,
-          secure: process.env.DEV !== "1", // Use secure in production
-          sameSite: "strict",
-          maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-        });
-
-        res.status(201).json({
-          message: "Account created successfully",
-          user: sanitizeUser(q_make),
-          expiresAt: session.expiresAt,
-        });
+        res
+          .cookie("pastille_token", session.accessToken, {
+            httpOnly: true,
+            secure: process.env.DEV !== "1", // Use secure in production
+            sameSite: "strict",
+            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+          })
+          .status(204)
+          .end();
       } catch (err: any) {
         Logs("auth.make.user", "error", err);
         res.status(500).json({ message: "Internal server error" });
@@ -197,114 +194,150 @@ router.post("/auth/login", rateLimiter, async (req: Request, res: Response) => {
 });
 
 // Get current user information
-router.get("/auth/me", rateLimiter, isAuthenticated, async (req: Request, res: Response) => {
-  try {
-    const user = await User.findById(req.user?.user_id);
+router.get(
+  "/auth/me",
+  rateLimiter,
+  isAuthenticated,
+  async (req: Request, res: Response) => {
+    try {
+      const user = await User.findById(req.user?.user_id);
 
-    if (!user) {
-      res.status(404).json({ message: "User not found" });
-      return;
+      if (!user) {
+        res.status(404).json({ message: "User not found" });
+        return;
+      }
+
+      res.status(200).json({
+        user: sanitizeUser(user),
+      });
+    } catch (err: any) {
+      Logs("auth.me", "error", err);
+      res.status(500).json({ message: "Internal server error" });
     }
-
-    res.status(200).json({
-      user: sanitizeUser(user),
-    });
-  } catch (err: any) {
-    Logs("auth.me", "error", err);
-    res.status(500).json({ message: "Internal server error" });
   }
-});
+);
 
 // Logout endpoint
-router.post("/auth/logout", rateLimiter, isAuthenticated, async (req: Request, res: Response) => {
-  try {
-    // Get token from cookie or header
-    let token: string | undefined;
-    const authHeader = req.headers.authorization;
-    if (authHeader && authHeader.startsWith("Bearer ")) {
-      token = authHeader.substring(7);
-    }
-    if (!token && req.cookies && req.cookies.pastille_token) {
-      token = req.cookies.pastille_token;
-    }
+router.post(
+  "/auth/logout",
+  rateLimiter,
+  isAuthenticated,
+  async (req: Request, res: Response) => {
+    try {
+      // Get token from cookie or header
+      let token: string | undefined;
+      const authHeader = req.headers.authorization;
+      if (authHeader && authHeader.startsWith("Bearer ")) {
+        token = authHeader.substring(7);
+      }
+      if (!token && req.cookies && req.cookies.pastille_token) {
+        token = req.cookies.pastille_token;
+      }
 
-    if (token) {
-      await revokeSession(token);
-    }
+      if (token) {
+        await revokeSession(token);
+      }
 
-    // Clear cookie
-    res.clearCookie("pastille_token");
-    res.status(200).json({ message: "Logged out successfully" });
-  } catch (err: any) {
-    Logs("auth.logout", "error", err);
-    res.status(500).json({ message: "Internal server error" });
+      // Clear cookie
+      res.clearCookie("pastille_token");
+      res.status(200).json({ message: "Logged out successfully" });
+    } catch (err: any) {
+      Logs("auth.logout", "error", err);
+      res.status(500).json({ message: "Internal server error" });
+    }
   }
-});
+);
 
 // Logout from all devices
-router.post("/auth/logout/all", rateLimiter, isAuthenticated, async (req: Request, res: Response) => {
-  try {
-    if (req.user?.user_id) {
-      await revokeAllUserSessions(req.user.user_id);
-    }
+router.post(
+  "/auth/logout/all",
+  rateLimiter,
+  isAuthenticated,
+  async (req: Request, res: Response) => {
+    try {
+      if (req.user?.user_id) {
+        await revokeAllUserSessions(req.user.user_id);
+      }
 
-    // Clear cookie
-    res.clearCookie("pastille_token");
-    res.status(200).json({ message: "Logged out from all devices" });
-  } catch (err: any) {
-    Logs("auth.logout.all", "error", err);
-    res.status(500).json({ message: "Internal server error" });
+      // Clear cookie
+      res.clearCookie("pastille_token");
+      res.status(200).json({ message: "Logged out from all devices" });
+    } catch (err: any) {
+      Logs("auth.logout.all", "error", err);
+      res.status(500).json({ message: "Internal server error" });
+    }
   }
-});
+);
 
 // Get user's Discord guilds where they can add bots
-router.get("/auth/guilds", rateLimiter, isAuthenticated, async (req: Request, res: Response) => {
-  try {
-    const user = await User.findById(req.user?.user_id);
+router.get(
+  "/auth/guilds",
+  rateLimiter,
+  isAuthenticated,
+  async (req: Request, res: Response) => {
+    try {
+      const user = await User.findById(req.user?.user_id);
 
-    if (!user) {
-      res.status(404).json({ message: "User not found" });
-      return;
-    }
+      if (!user) {
+        res.status(404).json({ message: "User not found" });
+        return;
+      }
 
-    // Fetch user's guilds from Discord API
-    const guildsResponse = await DiscordAxios.get("/users/@me/guilds", {
-      headers: {
-        Authorization: `${user.credentials.token_type} ${user.credentials.token}`,
-      },
-    });
-
-    if (!guildsResponse.data) {
-      res.status(500).json({ message: "Unable to fetch guilds" });
-      return;
-    }
-
-    // Filter guilds where user has MANAGE_GUILD permission (0x00000020 = 32)
-    // This is the permission required to add bots to a server
-    const MANAGE_GUILD = 0x00000020;
-    const guildsWhereUserCanAddBot = guildsResponse.data.filter((guild: any) => {
-      // Check if user has MANAGE_GUILD permission
-      // permissions is a string representation of a bitfield
-      const permissions = parseInt(guild.permissions);
-      return (permissions & MANAGE_GUILD) === MANAGE_GUILD;
-    });
-
-    res.status(200).json({ guilds: guildsWhereUserCanAddBot });
-  } catch (err: any) {
-    Logs("auth.guilds", "error", err);
-    
-    // Check if the error is due to invalid/expired Discord token
-    if (err?.code === 0 || err?.message === "401: Unauthorized") {
-      res.status(401).json({ 
-        message: "Discord token expired or invalid",
-        error: "unauthorized",
-        details: "Please log in again to refresh your Discord token"
+      // Fetch user's guilds from Discord API
+      const guildsResponse = await DiscordAxios.get("/users/@me/guilds", {
+        headers: {
+          Authorization: `${user.credentials.token_type} ${user.credentials.token}`,
+        },
       });
-      return;
-    }
 
-    res.status(500).json({ message: "Internal server error" });
+      if (!guildsResponse.data) {
+        res.status(500).json({ message: "Unable to fetch guilds" });
+        return;
+      }
+
+      // Filter guilds where user has MANAGE_GUILD permission (0x00000020 = 32)
+      // This is the permission required to add bots to a server
+      const MANAGE_GUILD = 0x00000020;
+      const guildsWhereUserCanAddBot = guildsResponse.data.filter(
+        (guild: any) => {
+          // Check if user has MANAGE_GUILD permission
+          // permissions is a string representation of a bitfield
+          const permissions = parseInt(guild.permissions);
+          return (permissions & MANAGE_GUILD) === MANAGE_GUILD;
+        }
+      );
+
+      // Map guilds to include only necessary information
+      const mappedGuilds = guildsWhereUserCanAddBot.map((guild: any) => ({
+        id: guild.id,
+        name: guild.name,
+        icon: guild.icon,
+        description: guild.description,
+        owner: guild.owner,
+      }));
+
+      // Add guild to user
+      await User.findByIdAndUpdate(user._id, {
+        guilds: mappedGuilds,
+      });
+
+      res.status(200).json(mappedGuilds);
+    } catch (err: any) {
+      Logs("auth.guilds", "error", err);
+
+      // Check if the error is due to invalid/expired Discord token
+      if (err?.code === 0 || err?.message === "401: Unauthorized") {
+        res.status(401).json({
+          message: "Discord token expired or invalid",
+          error: "unauthorized",
+          details: "Please log in again to refresh your Discord token",
+        });
+        return;
+      }
+
+      res.status(500).json({ message: "Internal server error" });
+    }
   }
-});
+);
 
 export default router;
