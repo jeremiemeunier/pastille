@@ -24,6 +24,15 @@ const schema = new Schema<UserTypes>({
     expires_in: { type: Number, required: true },
     token_type: { type: String, required: true },
   },
+  guilds: [
+    {
+      id: { type: String, required: true },
+      name: { type: String, required: true },
+      icon: String,
+      description: String,
+      owner: Boolean,
+    },
+  ],
 });
 
 export default models.User || model("User", schema);

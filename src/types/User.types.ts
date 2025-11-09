@@ -20,4 +20,11 @@ export interface UserTypes {
     expires_in: number;
     token_type: string;
   };
+  guilds: Array<{
+    id: string;
+    name: string;
+    icon?: string;
+    description?: string;
+    owner: boolean;
+  }>;
 }
