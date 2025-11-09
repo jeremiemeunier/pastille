@@ -292,6 +292,17 @@ router.get("/auth/guilds", rateLimiter, isAuthenticated, async (req: Request, re
     res.status(200).json({ guilds: guildsWhereUserCanAddBot });
   } catch (err: any) {
     Logs("auth.guilds", "error", err);
+    
+    // Check if the error is due to invalid/expired Discord token
+    if (err?.code === 0 || err?.message === "401: Unauthorized") {
+      res.status(401).json({ 
+        message: "Discord token expired or invalid",
+        error: "unauthorized",
+        details: "Please log in again to refresh your Discord token"
+      });
+      return;
+    }
+
     res.status(500).json({ message: "Internal server error" });
   }
 });

@@ -303,5 +303,56 @@ describe("Auth Routes", () => {
       expect(response.status).toBe(500);
       expect(response.body.message).toBe("Internal server error");
     });
+
+    it("should return 401 if Discord token is expired or invalid", async () => {
+      const mockUser = {
+        _id: "user123",
+        discord_id: "discord123",
+        personal: {
+          username: "testuser",
+          global_name: "Test User",
+          email: "test@example.com",
+          avatar: "avatar_hash",
+          verified: true,
+        },
+        credentials: {
+          token: "expired_discord_token",
+          refresh_token: "discord_refresh",
+          expires_in: 604800,
+          token_type: "Bearer",
+        },
+        private: {
+          last_login: new Date().toISOString(),
+          signup_date: new Date().toISOString(),
+        },
+      };
+
+      const mockSession = {
+        user_id: "user123",
+        token: "valid_jwt_token",
+        expires_at: new Date(Date.now() + 86400000),
+      };
+
+      (User.findById as jest.Mock).mockResolvedValue(mockUser);
+      (Session.findOne as jest.Mock).mockResolvedValue(mockSession);
+      (DiscordAxios.get as jest.Mock).mockRejectedValue({
+        code: 0,
+        message: "401: Unauthorized"
+      });
+
+      jest.spyOn(TokenManager, "verifyToken").mockReturnValue({
+        user_id: "user123",
+        discord_id: "discord123",
+      });
+      jest.spyOn(TokenManager, "validateSession").mockResolvedValue(true);
+
+      const response = await request(app)
+        .get("/auth/guilds")
+        .set("Authorization", "Bearer valid_jwt_token");
+
+      expect(response.status).toBe(401);
+      expect(response.body.message).toBe("Discord token expired or invalid");
+      expect(response.body.error).toBe("unauthorized");
+    });
   });
 });

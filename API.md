@@ -224,10 +224,19 @@ Get Discord guilds where the authenticated user has permission to add bots (MANA
 
 **Note**: Only returns guilds where the user has MANAGE_GUILD permission (0x00000020), which is required to add bots to servers.
 
-**Response** `401 Unauthorized`
+**Response** `401 Unauthorized` (Missing JWT token)
 ```json
 {
   "message": "Authentication required"
+}
+```
+
+**Response** `401 Unauthorized` (Expired Discord token)
+```json
+{
+  "message": "Discord token expired or invalid",
+  "error": "unauthorized",
+  "details": "Please log in again to refresh your Discord token"
 }
 ```
 
