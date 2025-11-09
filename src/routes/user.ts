@@ -4,9 +4,13 @@ import { rateLimiter } from "@libs/RateLimiter";
 import User from "@models/User";
 import { isAuthenticated } from "@middlewares/isAuthenticated";
 import { sanitizeUser, sanitizeUserPublic } from "@utils/UserSanitizer";
+import { ensureCsrfToken } from "@middlewares/csrfProtection";
 
 const router = Router();
 router.use(json());
+
+// Ensure CSRF token is set for all user routes
+router.use(ensureCsrfToken);
 
 // Get user profile by Discord ID (public info only)
 router.get("/user/:discord_id", rateLimiter, async (req: Request, res: Response) => {
@@ -34,7 +38,7 @@ router.get("/user/:discord_id", rateLimiter, async (req: Request, res: Response)
 });
 
 // Update user profile (authenticated)
-router.put("/user/profile", isAuthenticated, rateLimiter, async (req: Request, res: Response) => {
+router.put("/user/profile", rateLimiter, isAuthenticated, async (req: Request, res: Response) => {
   try {
     const user = await User.findById(req.user?.user_id);
 
@@ -75,7 +79,7 @@ router.put("/user/profile", isAuthenticated, rateLimiter, async (req: Request, r
 });
 
 // Delete user account (authenticated)
-router.delete("/user/account", isAuthenticated, rateLimiter, async (req: Request, res: Response) => {
+router.delete("/user/account", rateLimiter, isAuthenticated, async (req: Request, res: Response) => {
   try {
     const user = await User.findById(req.user?.user_id);
 

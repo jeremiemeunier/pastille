@@ -1,5 +1,6 @@
 import express, { json, NextFunction, raw, Request, Response } from "express";
 import cookieParser from "cookie-parser";
+import { ensureCsrfToken } from "@middlewares/csrfProtection";
 import infractionRoute from "@routes/infraction";
 import sanctionRoute from "@routes/sanction";
 import dailyuiRoute from "@routes/dailyui";
@@ -20,6 +21,9 @@ export const createTestApp = () => {
 
   // Add cookie parser for testing
   app.use(cookieParser());
+
+  // Add CSRF token middleware
+  app.use(ensureCsrfToken);
 
   // Middleware setup - use conditional parsing based on route
   app.use((req: Request, res: Response, next: NextFunction) => {

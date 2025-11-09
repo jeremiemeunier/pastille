@@ -7,9 +7,13 @@ import DiscordAxios from "@utils/DiscordAxios";
 import { createSession, revokeSession, revokeAllUserSessions } from "@utils/TokenManager";
 import { isAuthenticated } from "@middlewares/isAuthenticated";
 import { sanitizeUser } from "@utils/UserSanitizer";
+import { ensureCsrfToken } from "@middlewares/csrfProtection";
 
 const router = Router();
 router.use(json());
+
+// Ensure CSRF token is set for all auth routes
+router.use(ensureCsrfToken);
 
 router.post("/auth/login", rateLimiter, async (req: Request, res: Response) => {
   if (!req.body) {
@@ -193,7 +197,7 @@ router.post("/auth/login", rateLimiter, async (req: Request, res: Response) => {
 });
 
 // Get current user information
-router.get("/auth/me", isAuthenticated, async (req: Request, res: Response) => {
+router.get("/auth/me", rateLimiter, isAuthenticated, async (req: Request, res: Response) => {
   try {
     const user = await User.findById(req.user?.user_id);
 
@@ -212,7 +216,7 @@ router.get("/auth/me", isAuthenticated, async (req: Request, res: Response) => {
 });
 
 // Logout endpoint
-router.post("/auth/logout", isAuthenticated, async (req: Request, res: Response) => {
+router.post("/auth/logout", rateLimiter, isAuthenticated, async (req: Request, res: Response) => {
   try {
     // Get token from cookie or header
     let token: string | undefined;
@@ -238,7 +242,7 @@ router.post("/auth/logout", isAuthenticated, async (req: Request, res: Response)
 });
 
 // Logout from all devices
-router.post("/auth/logout/all", isAuthenticated, async (req: Request, res: Response) => {
+router.post("/auth/logout/all", rateLimiter, isAuthenticated, async (req: Request, res: Response) => {
   try {
     if (req.user?.user_id) {
       await revokeAllUserSessions(req.user.user_id);
