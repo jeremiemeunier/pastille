@@ -24,12 +24,12 @@ export const createTestApp = () => {
   app.use(cookieParser());
 
   // Add session and CSRF token middleware
-  // NOTE: cookie.secure: false is required for tests (HTTP); use true in production!
+  // NOTE: cookie.secure: false is allowed ONLY in tests (HTTP). In production, always use HTTPS and cookie.secure: true!
   app.use(session({
     secret: "test_secret",
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false } // For test only! Set to true in production when using HTTPS.
+    cookie: { secure: process.env.NODE_ENV === "production" } // In production, cookies are only sent over HTTPS.
   }));
   app.use(lusca.csrf());
 
