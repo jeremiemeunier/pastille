@@ -3,6 +3,7 @@ import { createTestApp } from "../testApp";
 import User from "@models/User";
 import Session from "@models/Session";
 import * as TokenManager from "@utils/TokenManager";
+import DiscordAxios from "@utils/DiscordAxios";
 
 // Mock the models
 jest.mock("@models/User");
@@ -145,6 +146,162 @@ describe("Auth Routes", () => {
 
       expect(response.status).toBe(200);
       expect(response.body.message).toBe("Logged out from all devices");
+    });
+  });
+
+  describe("GET /auth/guilds", () => {
+    it("should return guilds where user can add bots", async () => {
+      const mockUser = {
+        _id: "user123",
+        discord_id: "discord123",
+        personal: {
+          username: "testuser",
+          global_name: "Test User",
+          email: "test@example.com",
+          avatar: "avatar_hash",
+          verified: true,
+        },
+        credentials: {
+          token: "discord_access_token",
+          refresh_token: "discord_refresh",
+          expires_in: 604800,
+          token_type: "Bearer",
+        },
+        private: {
+          last_login: new Date().toISOString(),
+          signup_date: new Date().toISOString(),
+        },
+      };
+
+      const mockSession = {
+        user_id: "user123",
+        token: "valid_jwt_token",
+        expires_at: new Date(Date.now() + 86400000),
+      };
+
+      const mockGuilds = [
+        {
+          id: "guild1",
+          name: "Guild 1",
+          icon: "icon1",
+          owner: false,
+          permissions: "2147483647", // All permissions including MANAGE_GUILD
+        },
+        {
+          id: "guild2",
+          name: "Guild 2",
+          icon: "icon2",
+          owner: false,
+          permissions: "0", // No permissions
+        },
+        {
+          id: "guild3",
+          name: "Guild 3",
+          icon: "icon3",
+          owner: true,
+          permissions: "2147483647", // Owner has all permissions
+        },
+      ];
+
+      (User.findById as jest.Mock).mockResolvedValue(mockUser);
+      (Session.findOne as jest.Mock).mockResolvedValue(mockSession);
+      (DiscordAxios.get as jest.Mock).mockResolvedValue({ data: mockGuilds });
+
+      jest.spyOn(TokenManager, "verifyToken").mockReturnValue({
+        user_id: "user123",
+        discord_id: "discord123",
+      });
+      jest.spyOn(TokenManager, "validateSession").mockResolvedValue(true);
+
+      const response = await request(app)
+        .get("/auth/guilds")
+        .set("Authorization", "Bearer valid_jwt_token");
+
+      expect(response.status).toBe(200);
+      expect(response.body.guilds).toBeDefined();
+      expect(Array.isArray(response.body.guilds)).toBe(true);
+      // Should only return guilds where user has MANAGE_GUILD permission
+      expect(response.body.guilds.length).toBe(2);
+      expect(response.body.guilds[0].id).toBe("guild1");
+      expect(response.body.guilds[1].id).toBe("guild3");
+    });
+
+    it("should return 401 without token", async () => {
+      const response = await request(app).get("/auth/guilds");
+
+      expect(response.status).toBe(401);
+      expect(response.body.message).toBe("Authentication required");
+    });
+
+    it("should return 404 if user not found", async () => {
+      const mockSession = {
+        user_id: "user123",
+        token: "valid_jwt_token",
+        expires_at: new Date(Date.now() + 86400000),
+      };
+
+      (User.findById as jest.Mock).mockResolvedValue(null);
+      (Session.findOne as jest.Mock).mockResolvedValue(mockSession);
+
+      jest.spyOn(TokenManager, "verifyToken").mockReturnValue({
+        user_id: "user123",
+        discord_id: "discord123",
+      });
+      jest.spyOn(TokenManager, "validateSession").mockResolvedValue(true);
+
+      const response = await request(app)
+        .get("/auth/guilds")
+        .set("Authorization", "Bearer valid_jwt_token");
+
+      expect(response.status).toBe(404);
+      expect(response.body.message).toBe("User not found");
+    });
+
+    it("should return 500 if Discord API fails", async () => {
+      const mockUser = {
+        _id: "user123",
+        discord_id: "discord123",
+        personal: {
+          username: "testuser",
+          global_name: "Test User",
+          email: "test@example.com",
+          avatar: "avatar_hash",
+          verified: true,
+        },
+        credentials: {
+          token: "discord_access_token",
+          refresh_token: "discord_refresh",
+          expires_in: 604800,
+          token_type: "Bearer",
+        },
+        private: {
+          last_login: new Date().toISOString(),
+          signup_date: new Date().toISOString(),
+        },
+      };
+
+      const mockSession = {
+        user_id: "user123",
+        token: "valid_jwt_token",
+        expires_at: new Date(Date.now() + 86400000),
+      };
+
+      (User.findById as jest.Mock).mockResolvedValue(mockUser);
+      (Session.findOne as jest.Mock).mockResolvedValue(mockSession);
+      (DiscordAxios.get as jest.Mock).mockRejectedValue(new Error("Discord API error"));
+
+      jest.spyOn(TokenManager, "verifyToken").mockReturnValue({
+        user_id: "user123",
+        discord_id: "discord123",
+      });
+      jest.spyOn(TokenManager, "validateSession").mockResolvedValue(true);
+
+      const response = await request(app)
+        .get("/auth/guilds")
+        .set("Authorization", "Bearer valid_jwt_token");
+
+      expect(response.status).toBe(500);
+      expect(response.body.message).toBe("Internal server error");
     });
   });
 });

@@ -190,6 +190,61 @@ Logout from all devices/sessions.
 }
 ```
 
+### Get User Guilds 🔒
+
+**GET** `/auth/guilds`
+
+Get Discord guilds where the authenticated user has permission to add bots (MANAGE_GUILD permission).
+
+**Headers**
+- `Authorization: Bearer <token>` OR
+- Cookie: `pastille_token`
+
+**Response** `200 OK`
+```json
+{
+  "guilds": [
+    {
+      "id": "987654321098765432",
+      "name": "My Server",
+      "icon": "icon_hash",
+      "owner": false,
+      "permissions": "2147483647"
+    },
+    {
+      "id": "123456789012345678",
+      "name": "Another Server",
+      "icon": "another_icon_hash",
+      "owner": true,
+      "permissions": "2147483647"
+    }
+  ]
+}
+```
+
+**Note**: Only returns guilds where the user has MANAGE_GUILD permission (0x00000020), which is required to add bots to servers.
+
+**Response** `401 Unauthorized`
+```json
+{
+  "message": "Authentication required"
+}
+```
+
+**Response** `404 Not Found`
+```json
+{
+  "message": "User not found"
+}
+```
+
+**Response** `500 Internal Server Error`
+```json
+{
+  "message": "Internal server error"
+}
+```
+
 ---
 
 ## User Management

@@ -257,4 +257,43 @@ router.post("/auth/logout/all", rateLimiter, isAuthenticated, async (req: Reques
   }
 });
 
+// Get user's Discord guilds where they can add bots
+router.get("/auth/guilds", rateLimiter, isAuthenticated, async (req: Request, res: Response) => {
+  try {
+    const user = await User.findById(req.user?.user_id);
+
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+
+    // Fetch user's guilds from Discord API
+    const guildsResponse = await DiscordAxios.get("/users/@me/guilds", {
+      headers: {
+        Authorization: `${user.credentials.token_type} ${user.credentials.token}`,
+      },
+    });
+
+    if (!guildsResponse.data) {
+      res.status(500).json({ message: "Unable to fetch guilds" });
+      return;
+    }
+
+    // Filter guilds where user has MANAGE_GUILD permission (0x00000020 = 32)
+    // This is the permission required to add bots to a server
+    const MANAGE_GUILD = 0x00000020;
+    const guildsWhereUserCanAddBot = guildsResponse.data.filter((guild: any) => {
+      // Check if user has MANAGE_GUILD permission
+      // permissions is a string representation of a bitfield
+      const permissions = parseInt(guild.permissions);
+      return (permissions & MANAGE_GUILD) === MANAGE_GUILD;
+    });
+
+    res.status(200).json({ guilds: guildsWhereUserCanAddBot });
+  } catch (err: any) {
+    Logs("auth.guilds", "error", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 export default router;
