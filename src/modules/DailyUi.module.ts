@@ -54,16 +54,16 @@ const addonsLoaded = async (guild: any, addonsParamsItem: any) => {
                 }
               );
             } catch (err: any) {
-              Logs("dailyui:update", "error", err);
+              Logs(["dailyui", "update"], "error", err);
             }
           } catch (err: any) {
-            Logs("dailyui:topics", "error", err);
+            Logs(["dailyui", "topics"], "error", err);
           }
         } catch (err: any) {
-          Logs("dailyui:embed", "error", err);
+          Logs(["dailyui", "embed"], "error", err);
         }
       } catch (err: any) {
-        Logs("dailyui:request", "error", err);
+        Logs(["dailyui", "request"], "error", err);
       }
     }
   }, 60000);
