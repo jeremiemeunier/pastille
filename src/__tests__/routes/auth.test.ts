@@ -1,9 +1,9 @@
 import request from "supertest";
 import { createTestApp } from "../testApp";
-import User from "@models/User";
-import Session from "@models/Session";
-import * as TokenManager from "@utils/TokenManager";
-import DiscordAxios from "@utils/DiscordAxios";
+import User from "@models/User.model";
+import Session from "@models/Session.model";
+import * as TokenManager from "@utils/TokenManager.utils";
+import DiscordAxios from "@utils/DiscordAxios.utils";
 
 // Mock the models
 jest.mock("@models/User");
@@ -288,7 +288,9 @@ describe("Auth Routes", () => {
 
       (User.findById as jest.Mock).mockResolvedValue(mockUser);
       (Session.findOne as jest.Mock).mockResolvedValue(mockSession);
-      (DiscordAxios.get as jest.Mock).mockRejectedValue(new Error("Discord API error"));
+      (DiscordAxios.get as jest.Mock).mockRejectedValue(
+        new Error("Discord API error")
+      );
 
       jest.spyOn(TokenManager, "verifyToken").mockReturnValue({
         user_id: "user123",
@@ -337,7 +339,7 @@ describe("Auth Routes", () => {
       (Session.findOne as jest.Mock).mockResolvedValue(mockSession);
       (DiscordAxios.get as jest.Mock).mockRejectedValue({
         code: 0,
-        message: "401: Unauthorized"
+        message: "401: Unauthorized",
       });
 
       jest.spyOn(TokenManager, "verifyToken").mockReturnValue({

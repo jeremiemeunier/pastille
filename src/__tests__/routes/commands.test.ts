@@ -1,6 +1,6 @@
 import request from "supertest";
 import { createTestApp } from "../testApp";
-import Command from "@models/Command";
+import Command from "@models/Command.model";
 
 jest.mock("@models/Command");
 

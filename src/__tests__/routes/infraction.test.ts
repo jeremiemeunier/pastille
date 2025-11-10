@@ -1,6 +1,6 @@
 import request from "supertest";
 import { createTestApp } from "../testApp";
-import Infraction from "@models/Infraction";
+import Infraction from "@models/Infraction.model";
 
 // Mock the Infraction model
 jest.mock("@models/Infraction");

@@ -1,8 +1,8 @@
 import request from "supertest";
 import { createTestApp } from "../testApp";
-import User from "@models/User";
-import Session from "@models/Session";
-import * as TokenManager from "@utils/TokenManager";
+import User from "@models/User.model";
+import Session from "@models/Session.model";
+import * as TokenManager from "@utils/TokenManager.utils";
 
 // Mock the models
 jest.mock("@models/User");
