@@ -15,13 +15,13 @@ const database = new Sequelize(db, username, password, {
 try {
   const connect = async () => {
     await database.authenticate({
-      logging: (sql: any) => Logs("", "sql", sql),
+      logging: (sql: any) => Logs(["sql"], "sql", sql),
     });
-    Logs("god", "start", "Connection has been established successfully");
+    Logs(["god"], "start", "Connection has been established successfully");
   };
   connect();
 } catch (err: any) {
-  Logs("global", "error", err);
+  Logs(["global"], "error", err);
 }
 
 export default database;

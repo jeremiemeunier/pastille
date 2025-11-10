@@ -2,19 +2,19 @@ import { json, NextFunction, raw, Request, Response } from "express";
 import Logs from "@libs/Logs";
 import App from "@libs/App";
 
-import { default as infractionRoute } from "@routes/infraction";
-import { default as sanctionRoute } from "@routes/sanction";
-import { default as dailyuiRoute } from "@routes/dailyui";
-import { default as twitchpingRoute } from "@routes/twitch";
-import { default as addonsRoute } from "@routes/addons";
-import { default as rulesRoute } from "@routes/rules";
-import { default as rolesRoute } from "@routes/roles";
-import { default as settingsRoute } from "@routes/setting";
-import { default as commandsRoute } from "@routes/command";
-import { default as emotesRoute } from "@routes/emote";
-import { default as webhookRoute } from "@routes/webhook";
-import { default as authRoute } from "@routes/auth";
-import { default as userRoute } from "@routes/user";
+import { default as infractionRoute } from "@routes/Infraction.route";
+import { default as sanctionRoute } from "@routes/Sanction.route";
+import { default as dailyuiRoute } from "@routes/DailyUi.route";
+import { default as twitchpingRoute } from "@routes/Twitch.route";
+import { default as addonsRoute } from "@routes/Addon.route";
+import { default as rulesRoute } from "@routes/Rule.route";
+import { default as rolesRoute } from "@routes/Role.route";
+import { default as settingsRoute } from "@routes/Setting.route";
+import { default as commandsRoute } from "@routes/Command.route";
+import { default as emotesRoute } from "@routes/Emote.route";
+import { default as webhookRoute } from "@routes/Webhook.route";
+import { default as authRoute } from "@routes/Auth.route";
+import { default as userRoute } from "@routes/User.route";
 
 const Api = () => {
   // API
@@ -52,7 +52,7 @@ const Api = () => {
   });
 
   App.listen(3000, () => {
-    Logs("api", "start", `Started on port 3000`);
+    Logs(["api"], "start", `Started on port 3000`);
   });
 };
 
