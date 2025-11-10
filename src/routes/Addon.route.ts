@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 import { isPastille } from "../middlewares/isPastille";
-import Addons from "@models/Addons";
+import Addons from "@models/Addons.model";
 import Logs from "@libs/Logs";
 import { rateLimiter } from "@libs/RateLimiter";
 import { isValidObjectId } from "mongoose";
@@ -30,7 +30,7 @@ router.get(
         message: "Internal server error",
         error: err,
       });
-      Logs("api:addons:get", "error", err, guild_id as string);
+      Logs(["api", "addons", "get"], "error", err, guild_id as string);
     }
   }
 );
@@ -59,7 +59,7 @@ router.post("/addons/add", isPastille, rateLimiter, async (req, res) => {
       message: "Internal server error",
       error: err,
     });
-    Logs("api:addons:post", "error", err, guild_id);
+    Logs(["api", "addons", "post"], "error", err, guild_id);
   }
 });
 
@@ -110,7 +110,7 @@ router.put(
         message: "Internal server error",
         error: err,
       });
-      Logs("api:addons:put", "error", err, guild_id);
+      Logs(["api", "addons", "put"], "error", err, guild_id);
     }
   }
 );

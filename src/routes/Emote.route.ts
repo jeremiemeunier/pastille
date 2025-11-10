@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 import { isPastille } from "../middlewares/isPastille";
-import Emote from "@models/Emote";
+import Emote from "@models/Emote.model";
 import { EmoteTypes } from "@/types/Emote.types";
 import Logs from "@libs/Logs";
 import { rateLimiter } from "@libs/RateLimiter";
@@ -25,7 +25,7 @@ router.get(
       res.status(404).json({ message: "No emotes found" });
     } catch (err: any) {
       res.status(500).json({ message: "Internal server error", error: err });
-      Logs("api:emotes:get", "error", err);
+      Logs(["api", "emotes", "get"], "error", err);
     }
   }
 );
@@ -56,7 +56,7 @@ router.get(
       res.status(404).json({ message: "No letters found" });
     } catch (err: any) {
       res.status(500).json({ message: "Internal server error", error: err });
-      Logs("api:emotes:get:all", "error", err);
+      Logs(["api", "emotes", "get", "all"], "error", err);
     }
   }
 );
@@ -81,7 +81,7 @@ router.post(
       res.status(201).json({ message: "Emotes added" });
     } catch (err: any) {
       res.status(500).json({ message: "Internal server error", error: err });
-      Logs("api:emotes:post:mass", "error", err);
+      Logs(["api", "emotes", "post", "mass"], "error", err);
     }
   }
 );

@@ -1,15 +1,15 @@
 import { Request, Response, Router, json } from "express";
 import Logs from "@libs/Logs";
 import { rateLimiter } from "@libs/RateLimiter";
-import User from "@models/User";
-import DiscordAxios from "@utils/DiscordAxios";
+import User from "@models/User.model";
+import DiscordAxios from "@utils/DiscordAxios.utils";
 import {
   createSession,
   revokeSession,
   revokeAllUserSessions,
-} from "@utils/TokenManager";
+} from "@utils/TokenManager.utils";
 import { isAuthenticated } from "@middlewares/isAuthenticated";
-import { sanitizeUser } from "@utils/UserSanitizer";
+import { sanitizeUser } from "@utils/UserSanitizer.utils";
 import { ensureCsrfToken } from "@middlewares/csrfProtection";
 
 const router = Router();
@@ -118,7 +118,7 @@ router.post("/auth/login", rateLimiter, async (req: Request, res: Response) => {
           .status(204)
           .end();
       } catch (err: any) {
-        Logs("auth.update.user", "error", err);
+        Logs(["auth", "update", "user"], "error", err);
         res.status(500).json({ message: "Internal server error" });
       }
     } else {
@@ -174,12 +174,12 @@ router.post("/auth/login", rateLimiter, async (req: Request, res: Response) => {
           .status(204)
           .end();
       } catch (err: any) {
-        Logs("auth.make.user", "error", err);
+        Logs(["auth", "make", "user"], "error", err);
         res.status(500).json({ message: "Internal server error" });
       }
     }
   } catch (err: any) {
-    Logs("auth.login.user", "error", err);
+    Logs(["auth", "login", "user"], "error", err);
 
     if (err?.error === "invalid_grant") {
       res.status(400).json({ message: "Invalid code", error: err?.error });
@@ -211,7 +211,7 @@ router.get(
         user: sanitizeUser(user),
       });
     } catch (err: any) {
-      Logs("auth.me", "error", err);
+      Logs(["auth", "me"], "error", err);
       res.status(500).json({ message: "Internal server error" });
     }
   }
@@ -242,7 +242,7 @@ router.post(
       res.clearCookie("pastille_token");
       res.status(200).json({ message: "Logged out successfully" });
     } catch (err: any) {
-      Logs("auth.logout", "error", err);
+      Logs(["auth", "logout"], "error", err);
       res.status(500).json({ message: "Internal server error" });
     }
   }
@@ -263,7 +263,7 @@ router.post(
       res.clearCookie("pastille_token");
       res.status(200).json({ message: "Logged out from all devices" });
     } catch (err: any) {
-      Logs("auth.logout.all", "error", err);
+      Logs(["auth", "logout", "all"], "error", err);
       res.status(500).json({ message: "Internal server error" });
     }
   }
@@ -323,7 +323,7 @@ router.get(
 
       res.status(200).json(mappedGuilds);
     } catch (err: any) {
-      Logs("auth.guilds", "error", err);
+      Logs(["auth", "guilds"], "error", err);
 
       // Check if the error is due to invalid/expired Discord token
       if (err?.code === 0 || err?.message === "401: Unauthorized") {

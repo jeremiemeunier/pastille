@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 import { isPastille } from "../middlewares/isPastille";
-import Rule from "@models/Rule";
+import Role from "@models/Role.model";
 import Logs from "@libs/Logs";
 import { rateLimiter } from "@libs/RateLimiter";
 import { isValidObjectId } from "mongoose";
@@ -8,68 +8,65 @@ import { isValidObjectId } from "mongoose";
 const router = Router();
 
 router.get(
-  "/rules",
+  "/roles",
   isPastille,
   rateLimiter,
   async (req: Request, res: Response) => {
     const { guild_id } = req.query;
 
     try {
-      const q_list = await Rule.find({ guild_id: { $eq: guild_id } });
+      const q_list = await Role.find({ guild_id: { $eq: guild_id } });
 
       if (q_list.length > 0) {
         res.status(200).json(q_list);
         return;
       }
 
-      res.status(404).json({ message: "No rules found" });
+      res.status(404).json({ message: "No roles found" });
     } catch (err: any) {
       res.status(500).json({ message: "Internal server error", error: err });
-      Logs("api:rules:get", "error", err);
+      Logs(["api", "roles", "get"], "error", err, guild_id as string);
     }
   }
 );
 
 router.post(
-  "/rules/add",
+  "/roles/add",
   isPastille,
   rateLimiter,
   async (req: Request, res: Response) => {
-    const { guild_id, name, description, active } = req.body;
+    const { guild_id, name, description, role, emote } = req.body;
 
-    if (!guild_id || !name || !description || !active) {
+    if (!guild_id || !name || !description || !role || !emote) {
       res.status(400).json({ message: "You must provide all input" });
     } else {
       try {
-        const q_make = new Rule({
+        const q_make = new Role({
           guild_id: guild_id,
           name: name,
+          role: role,
+          emote: emote,
           description: description,
-          active: active,
         });
 
         await q_make.save();
         res.status(201).json(q_make);
       } catch (err: any) {
         res.status(500).json({ message: "Internal server error", error: err });
-        Logs("api:rules:post", "error", err, guild_id);
+        Logs(["api", "roles", "post"], "error", err, guild_id as string);
       }
     }
   }
 );
 
 router.put(
-  "/rules/update",
+  "/roles/update",
   isPastille,
   rateLimiter,
   async (req: Request, res: Response) => {
-    const { guild_id, name, description, active, id } = req.body;
+    const { guild_id, name, description, role, id, emote } = req.body;
 
-    if (
-      !id ||
-      typeof id !== "string" ||
-      !isValidObjectId(id)
-    ) {
+    if (!id || !isValidObjectId(id) || typeof id !== "string") {
       res.status(400).json({ message: "Invalid Id provided" });
       return;
     }
@@ -81,27 +78,30 @@ router.put(
       typeof name !== "string" ||
       !description ||
       typeof description !== "string" ||
-      active === undefined ||
-      typeof active !== "boolean"
+      !role ||
+      typeof role !== "string" ||
+      !emote ||
+      typeof emote !== "string"
     ) {
       res.status(400).json({ message: "You must provide all input" });
     } else {
       try {
-        const q_update = await Rule.findByIdAndUpdate(
+        const q_update = await Role.findByIdAndUpdate(
           id,
           {
             guild_id: guild_id,
             name: name,
             description: description,
-            active: active,
+            role: role,
+            emote: emote,
           },
           { new: true }
         );
 
-        res.status(201).json(q_update);
+        res.status(200).json(q_update);
       } catch (err: any) {
         res.status(500).json({ message: "Internal server error", error: err });
-        Logs("api:rules:put", "error", err, guild_id);
+        Logs(["api", "roles", "put"], "error", err, guild_id as string);
       }
     }
   }

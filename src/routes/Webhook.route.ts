@@ -1,7 +1,7 @@
 import { raw, Request, Response, Router } from "express";
 import crypto from "crypto";
 import Logs from "@libs/Logs";
-import Streamers from "@models/Streamers";
+import Streamers from "@models/Streamer.model";
 import { rateLimiter } from "@libs/RateLimiter";
 
 const router = Router();
@@ -67,7 +67,7 @@ router.post(
               { new: true }
             );
           } catch (err: any) {
-            Logs("webhook.twitch", "error", err, "valid_subscription");
+            Logs(["webhook", "twitch"], "error", err, "valid_subscription");
           }
 
           res
@@ -88,7 +88,7 @@ router.post(
                 { isLive: true, isAnnounce: false }
               );
             } catch (err: any) {
-              Logs("webhook.twitch", "error", err);
+              Logs(["webhook", "twitch"], "error", err);
             }
           }
 
@@ -137,7 +137,7 @@ router.post(
           Buffer.from(signature, "hex")
         );
       } catch (err: any) {
-        Logs("webhook.discord", "error", err);
+        Logs(["webhook", "discord"], "error", err);
         return false;
       }
     })();
