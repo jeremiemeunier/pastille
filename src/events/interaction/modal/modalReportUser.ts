@@ -1,47 +1,49 @@
 import { getParams } from "@functions/Base.function";
 import Logs from "@libs/Logs";
-import { EmbedBuilder, Events, MessageFlags } from "discord.js";
+import {
+  Client,
+  EmbedBuilder,
+  Events,
+  MessageFlags,
+  ModalSubmitInteraction,
+  TextChannel,
+} from "discord.js";
 
-const modalReportUser = async (
-  client: {
-    on?: (arg0: Events, arg1: (interaction: any) => Promise<void>) => void;
-    guilds?: any;
-  },
-  interaction: {
-    isButton?: () => any;
-    isChatInputCommand?: () => any;
-    isUserContextMenuCommand?: () => any;
-    isMessageContextMenuCommand?: () => any;
-    isModalSubmit?: () => any;
-    customId?: any;
-    guildId?: any;
-    user?: any;
-    fields?: any;
-    reply?: any;
-  }
-) => {
-  if (interaction.customId !== "modalReportUser") {
-    return;
-  }
+const modalReportUser = async ({
+  client,
+  interaction,
+}: {
+  client: Client;
+  interaction: ModalSubmitInteraction;
+}) => {
+  if (interaction.customId !== "modalReportUser") return;
 
   const guild = client.guilds.cache.find(
     (guild: { id: any }) => guild?.id === interaction?.guildId
   );
-  const guildParams = await getParams({ guild: guild.id });
+  if (!guild) return;
+
+  const guildParams = await getParams({ guild: guild });
   if (!guildParams) return;
 
   const { moderation } = guildParams;
 
   const reportChannel = guild.channels.cache.find(
     (channel: { id: any }) => channel?.id === moderation.channels.report
-  );
+  ) as TextChannel;
+  if (!reportChannel) return;
+
   const reporterUser = guild.members.cache.find(
     (user: { id: any }) => user?.id === interaction.user?.id
   );
+  if (!reporterUser) return;
+
   const reportedUser = guild.members.cache.find(
     (user: { id: any }) =>
       user?.id === interaction.fields.getTextInputValue("reportedUser")
   );
+  if (!reportedUser) return;
+
   const shortReportReason =
     interaction.fields.getTextInputValue("shortReportReason");
   const largeReportReason =

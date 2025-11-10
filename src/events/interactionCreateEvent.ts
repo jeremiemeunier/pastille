@@ -1,4 +1,4 @@
-import { Client, ClientUser, Events } from "discord.js";
+import { Client, Events, Interaction } from "discord.js";
 
 import { commandPollInit } from "./interaction/command/commandPoll";
 import { commandRuleInit } from "./interaction/command/commandRule";
@@ -20,73 +20,64 @@ import Logs from "@libs/Logs";
 import { commandJusticeInit } from "./interaction/command/commandJustice";
 
 export const interactionCreateEventInit = (client: Client) => {
-  client.on(
-    Events.InteractionCreate,
-    async (interaction: {
-      isButton: () => any;
-      isChatInputCommand: () => any;
-      isUserContextMenuCommand: () => any;
-      isMessageContextMenuCommand: () => any;
-      isModalSubmit: () => any;
-    }) => {
-      if (interaction.isButton()) {
-        //Buttons
-        try {
-          buttonAcceptRuleInit(client, interaction);
-          buttonStaffRequest(client, interaction);
-          buttonOpenTicketInit(client, interaction);
-          buttonDeleteMessage(client, interaction);
-        } catch (err: any) {
-          Logs(["interaction", "button"], "error", err);
-        }
+  client.on(Events.InteractionCreate, async (interaction: Interaction) => {
+    if (interaction.isButton()) {
+      //Buttons
+      try {
+        buttonAcceptRuleInit({ client, interaction });
+        buttonStaffRequest({ client, interaction });
+        buttonOpenTicketInit({ client, interaction });
+        buttonDeleteMessage({ client, interaction });
+      } catch (err: any) {
+        Logs(["interaction", "button"], "error", err);
       }
-
-      if (interaction.isChatInputCommand()) {
-        // Commands
-        try {
-          commandPollInit(client, interaction);
-          commandRuleInit(client, interaction);
-          commandStaffInit(client, interaction);
-          commandAnnounceInit(client, interaction);
-          commandRoleInit(client, interaction);
-          commandThreadInit(client, interaction);
-          commandStatutInit(client, interaction);
-          commandClearInit(client, interaction);
-          commandJusticeInit(client, interaction);
-        } catch (err: any) {
-          Logs(["interaction", "slash_command"], "error", err);
-        }
-      }
-
-      if (interaction.isUserContextMenuCommand()) {
-        // Context user
-        try {
-          contextReportUser(client, interaction);
-          contextReportMessage(client, interaction);
-        } catch (err: any) {
-          Logs(["interaction", "context_user"], "error", err);
-        }
-      }
-
-      if (interaction.isMessageContextMenuCommand()) {
-        // Context message
-        try {
-          contextReportMessage(client, interaction);
-        } catch (err: any) {
-          Logs(["interaction", "context_message"], "error", err);
-        }
-      }
-
-      if (interaction.isModalSubmit()) {
-        // Modal
-        try {
-          modalReportUser(client, interaction);
-        } catch (err: any) {
-          Logs(["interaction", "modal"], "error", err);
-        }
-      }
-
-      return;
     }
-  );
+
+    if (interaction.isChatInputCommand()) {
+      // Commands
+      try {
+        commandPollInit({ client, interaction });
+        commandRuleInit({ client, interaction });
+        commandStaffInit({ client, interaction });
+        commandAnnounceInit({ client, interaction });
+        commandRoleInit({ client, interaction });
+        commandThreadInit({ client, interaction });
+        commandStatutInit({ client, interaction });
+        commandClearInit({ client, interaction });
+        commandJusticeInit({ client, interaction });
+      } catch (err: any) {
+        Logs(["interaction", "slash_command"], "error", err);
+      }
+    }
+
+    if (interaction.isUserContextMenuCommand()) {
+      // Context user
+      try {
+        contextReportUser({ client, interaction });
+        contextReportMessage({ client, interaction });
+      } catch (err: any) {
+        Logs(["interaction", "context_user"], "error", err);
+      }
+    }
+
+    if (interaction.isMessageContextMenuCommand()) {
+      // Context message
+      try {
+        contextReportMessage({ client, interaction });
+      } catch (err: any) {
+        Logs(["interaction", "context_message"], "error", err);
+      }
+    }
+
+    if (interaction.isModalSubmit()) {
+      // Modal
+      try {
+        modalReportUser({ client, interaction });
+      } catch (err: any) {
+        Logs(["interaction", "modal"], "error", err);
+      }
+    }
+
+    return;
+  });
 };

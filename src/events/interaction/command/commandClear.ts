@@ -1,7 +1,18 @@
 import Logs from "@libs/Logs";
-import { MessageFlags } from "discord.js";
+import {
+  ChatInputCommandInteraction,
+  Client,
+  MessageFlags,
+  TextChannel,
+} from "discord.js";
 
-const commandClearInit = async (client: any, interaction: any) => {
+const commandClearInit = async ({
+  client,
+  interaction,
+}: {
+  client: Client;
+  interaction: ChatInputCommandInteraction;
+}) => {
   const { commandName } = interaction;
   if (commandName !== "clear") {
     return;
@@ -11,10 +22,11 @@ const commandClearInit = async (client: any, interaction: any) => {
     try {
       const interactChannel = client.channels.cache.find(
         (channel: any) => channel?.id === interaction.channelId
-      );
-      const threadsMap = interactChannel.threads.cache;
+      ) as TextChannel;
 
-      await threadsMap.map(async (thread: any) => {
+      const threadsMap = interactChannel!.threads.cache;
+
+      threadsMap.map(async (thread: any) => {
         try {
           await thread.delete();
         } catch (err: any) {
@@ -38,9 +50,9 @@ const commandClearInit = async (client: any, interaction: any) => {
   if (interaction.options.getSubcommand() === "messages") {
     const interactChannel = client.channels.cache.find(
       (channel: any) => channel?.id === interaction.channelId
-    );
+    ) as TextChannel;
 
-    await interactChannel.messages.fetch().then((messages: any) => {
+    await interactChannel!.messages.fetch().then((messages: any) => {
       messages.map(async (message: any) => {
         try {
           await message.delete();

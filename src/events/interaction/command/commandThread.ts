@@ -1,27 +1,38 @@
 import { getParams } from "@functions/Base.function";
 import Logs from "@libs/Logs";
-import { ChannelType, EmbedBuilder, MessageFlags } from "discord.js";
+import {
+  ChannelType,
+  ChatInputCommandInteraction,
+  Client,
+  EmbedBuilder,
+  MessageFlags,
+  TextChannel,
+} from "discord.js";
 
-const commandThreadInit = async (client: any, interaction: any) => {
+const commandThreadInit = async ({
+  client,
+  interaction,
+}: {
+  client: Client;
+  interaction: ChatInputCommandInteraction;
+}) => {
   const { commandName } = interaction;
-  if (commandName !== "fils") {
-    return;
-  }
+  if (commandName !== "fils") return;
 
-  const guildParams = await getParams({ guild: interaction?.guildId });
+  const guildParams = await getParams({ guild: interaction?.guild! });
   if (!guildParams) return;
 
   const { options } = guildParams;
 
   const channel = client.channels.cache.find(
     (channel: any) => channel?.id === interaction.channelId
-  );
+  ) as TextChannel;
 
   try {
     const thread = await channel.threads.create({
-      name: interaction.options.getString("title"),
+      name: interaction.options.getString("title")!,
       autoArchiveDuration: 60,
-      reason: interaction.options.getString("title"),
+      reason: interaction.options.getString("title")!,
       type: ChannelType.PrivateThread,
     });
     await thread.members.add(interaction.user?.id);

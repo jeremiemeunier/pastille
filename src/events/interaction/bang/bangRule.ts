@@ -1,6 +1,6 @@
 import { getParams, getRules } from "@functions/Base.function";
 import Logs from "@libs/Logs";
-import { EmbedBuilder } from "discord.js";
+import { EmbedBuilder, Guild } from "discord.js";
 
 const bangRule = async (
   message: {
@@ -16,12 +16,12 @@ const bangRule = async (
     }) => any;
     reply?: any;
   },
-  guild: { channels: { cache: any[] }; id: any }
+  guild: Guild
 ) => {
-  const guildParams = await getParams({ guild: guild.id });
+  const guildParams = await getParams({ guild });
   if (!guildParams) return;
 
-  const rules = await getRules({ guild: guild.id });
+  const rules = await getRules({ guild });
   if (!rules) return;
 
   const { options } = guildParams;

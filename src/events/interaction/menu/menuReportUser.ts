@@ -4,9 +4,17 @@ import {
   TextInputBuilder,
   TextInputStyle,
   ActionRowBuilder,
+  Client,
+  ContextMenuCommandInteraction,
 } from "discord.js";
 
-const contextReportUser = async (client: any, interaction: any) => {
+const contextReportUser = async ({
+  client,
+  interaction,
+}: {
+  client: Client;
+  interaction: ContextMenuCommandInteraction;
+}) => {
   const { commandName } = interaction;
   if (commandName !== "Signaler") {
     return;

@@ -1,13 +1,8 @@
 import Logs from "@libs/Logs";
-import { Events } from "discord.js";
+import { Client } from "discord.js";
 
 const pollReactions = async (
-  client: {
-    on: (
-      arg0: Events,
-      arg1: (reaction: any, user: any) => Promise<void>
-    ) => void;
-  },
+  client: Client,
   reaction: {
     partial?: any;
     fetch?: () => any;

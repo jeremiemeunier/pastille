@@ -3,20 +3,22 @@ import Logs from "@libs/Logs";
 import {
   ActionRowBuilder,
   ButtonBuilder,
+  ButtonInteraction,
   ButtonStyle,
   ChannelType,
+  Client,
   EmbedBuilder,
-  Events,
   MessageFlags,
+  TextChannel,
 } from "discord.js";
 
 const lockableThread = async (thread: { locked: any }, guild: any) => {
-  const guildParams = await getParams({ guild: guild.id });
+  const guildParams = await getParams({ guild });
   if (!guildParams) return;
 
   if (!thread.locked) {
     try {
-      const lockButton = new ActionRowBuilder().addComponents(
+      const lockButton = new ActionRowBuilder<ButtonBuilder>().addComponents(
         new ButtonBuilder({
           label: "Fermer le ticket",
           style: ButtonStyle.Primary,
@@ -45,44 +47,38 @@ const lockableThread = async (thread: { locked: any }, guild: any) => {
   }
 };
 
-const buttonStaffRequest = async (
-  client: {
-    on?: (arg0: Events, arg1: (interaction: any) => Promise<void>) => void;
-    guilds?: any;
-  },
-  interaction: {
-    isButton?: () => any;
-    isChatInputCommand?: () => any;
-    isUserContextMenuCommand?: () => any;
-    isMessageContextMenuCommand?: () => any;
-    isModalSubmit?: () => any;
-    guildId?: any;
-    user?: any;
-    channelId?: any;
-    reply?: any;
-    customId?: any;
-  }
-) => {
+const buttonStaffRequest = async ({
+  client,
+  interaction,
+}: {
+  client: Client;
+  interaction: ButtonInteraction;
+}) => {
   const { customId } = interaction;
   if (customId !== "requestStaff") return;
 
   const guild = client.guilds.cache.find(
     (guild: { id: any }) => guild?.id === interaction?.guildId
   );
+
+  if (!guild) return;
+
   const member = guild.members.cache.find(
     (member: { id: any }) => member?.id === interaction.user?.id
   );
   const channel = guild.channels.cache.find(
     (channel: { id: any }) => channel?.id === interaction.channelId
-  );
+  ) as TextChannel;
 
-  const guildParams = await getParams({ guild: guild.id });
+  if (!channel || !member) return;
+
+  const guildParams = await getParams({ guild });
   if (!guildParams) return;
 
   const { options, moderation } = guildParams;
 
   const activeRequest = channel.threads.cache.find(
-    (thread: { name: string; locked: boolean }) =>
+    (thread) =>
       thread.name === `Ticket pour ${member.user.username}` &&
       thread.locked === false
   );
@@ -112,7 +108,7 @@ const buttonStaffRequest = async (
       title: "Nouvelle demande de contact",
       description: `Nouvelle demande de **__${member.user.username}__**`,
     });
-    const lockButton = new ActionRowBuilder().addComponents(
+    const lockButton = new ActionRowBuilder<ButtonBuilder>().addComponents(
       new ButtonBuilder({
         label: "Fermer le ticket",
         style: ButtonStyle.Primary,

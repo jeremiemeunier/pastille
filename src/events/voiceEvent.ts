@@ -28,7 +28,7 @@ export const voiceEventInit = (client: any) => {
           (guild: { id: any }) => guild?.id === newState.guild?.id
         );
 
-      const guildParams = await getParams({ guild: guild.id });
+      const guildParams = await getParams({ guild });
       if (!guildParams) return;
 
       const { channels } = guildParams.options;

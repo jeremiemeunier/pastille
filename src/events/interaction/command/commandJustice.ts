@@ -1,12 +1,15 @@
-import { getParams } from "@functions/Base.function";
 import Logs from "@libs/Logs";
-import { Client, EmbedBuilder } from "discord.js";
+import { ChatInputCommandInteraction, Client, EmbedBuilder } from "discord.js";
 
-const commandJusticeInit = async (client: Client, interaction: any) => {
+const commandJusticeInit = async ({
+  client,
+  interaction,
+}: {
+  client: Client;
+  interaction: ChatInputCommandInteraction;
+}) => {
   const { commandName } = interaction;
-  if (commandName !== "justice") {
-    return;
-  }
+  if (commandName !== "justice") return;
 
   try {
     const embed = new EmbedBuilder({

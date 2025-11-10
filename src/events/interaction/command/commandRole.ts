@@ -1,16 +1,22 @@
 import { getParams, getRoles } from "@functions/Base.function";
 import Logs from "@libs/Logs";
-import { EmbedBuilder } from "discord.js";
+import { ChatInputCommandInteraction, Client, EmbedBuilder } from "discord.js";
 
-const commandRoleInit = async (_client: any, interaction: any) => {
+const commandRoleInit = async ({
+  client,
+  interaction,
+}: {
+  client?: Client;
+  interaction: ChatInputCommandInteraction;
+}) => {
   const { commandName } = interaction;
   if (commandName !== "role") return;
 
-  const guildParams = await getParams({ guild: interaction?.guildId });
+  const guildParams = await getParams({ guild: interaction?.guild! });
   if (!guildParams) return;
 
   const { options } = guildParams;
-  const roles = await getRoles({ guild: interaction?.guildId });
+  const roles = await getRoles({ guild: interaction?.guild! });
   if (!roles) return;
 
   const fields: any[] = [];
@@ -40,13 +46,18 @@ const commandRoleInit = async (_client: any, interaction: any) => {
 
     roles.map(async (item: any) => {
       try {
-        await response.resource.message.react(item.emote);
+        await response.resource!.message!.react(item.emote);
       } catch (err: any) {
-        Logs(["command", "role", "react"], "error", err, interaction?.guildId);
+        Logs(
+          ["command", "role", "react"],
+          "error",
+          err,
+          interaction?.guild!.id!
+        );
       }
     });
   } catch (err: any) {
-    Logs(["command", "role", "send"], "error", err, interaction?.guildId);
+    Logs(["command", "role", "send"], "error", err, interaction?.guild!.id!);
   }
 };
 
