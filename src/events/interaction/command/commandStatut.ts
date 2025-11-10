@@ -21,7 +21,7 @@ const commandStatutInit = async (client: any, interaction: any) => {
       flags: MessageFlags.Ephemeral,
     });
   } catch (err: any) {
-    Logs("command:status", "error", err);
+    Logs(["command", "status"], "error", err);
   }
 };
 

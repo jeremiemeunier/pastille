@@ -1,4 +1,4 @@
-import { getParams } from "@functions/base";
+import { getParams } from "@functions/Base.function";
 import Logs from "@libs/Logs";
 import { ChannelType, EmbedBuilder, MessageFlags } from "discord.js";
 
@@ -39,7 +39,7 @@ const commandThreadInit = async (client: any, interaction: any) => {
     });
     const msg = await thread.send({ embeds: [embed] });
   } catch (err: any) {
-    Logs("command:thread", "error", err);
+    Logs(["command", "thread"], "error", err);
   }
 };
 

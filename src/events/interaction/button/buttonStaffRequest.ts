@@ -1,4 +1,4 @@
-import { getParams } from "@functions/base";
+import { getParams } from "@functions/Base.function";
 import Logs from "@libs/Logs";
 import {
   ActionRowBuilder,
@@ -25,7 +25,7 @@ const lockableThread = async (thread: { locked: any }, guild: any) => {
       );
       return lockButton;
     } catch (err: any) {
-      Logs("reaction:thread:lock", "error", err);
+      Logs(["reaction", "thread", "lock"], "error", err);
       return false;
     }
   } else {
@@ -39,7 +39,7 @@ const lockableThread = async (thread: { locked: any }, guild: any) => {
       );
       return unlockButton;
     } catch (err: any) {
-      Logs("reaction:thread:lock", "error", err);
+      Logs(["reaction", "thread", "unlock"], "error", err);
       return false;
     }
   }
@@ -135,11 +135,11 @@ const buttonStaffRequest = async (
       try {
         await staffThread.delete();
       } catch (err: any) {
-        Logs("staff:thread:delete", "error", err, guild?.id);
+        Logs(["staff", "thread", "delete"], "error", err, guild?.id);
       }
     }
   } catch (err: any) {
-    Logs("staff:button:thread", "error", err, guild?.id);
+    Logs(["staff", "button", "thread"], "error", err, guild?.id);
     await interaction.reply({
       content: `Une erreur s'est produite.`,
       flags: MessageFlags.Ephemeral,

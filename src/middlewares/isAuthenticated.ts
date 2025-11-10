@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { verifyToken, validateSession } from "@utils/TokenManager";
+import { verifyToken, validateSession } from "@utils/TokenManager.utils";
 import Logs from "@libs/Logs";
 
 // Extend Express Request to include user data
@@ -68,7 +68,7 @@ export const isAuthenticated = async (
 
     next();
   } catch (err: any) {
-    Logs("middleware:isAuthenticated", "error", err);
+    Logs(["middleware", "isAuthenticated"], "error", err);
     res.status(500).json({ message: "Authentication error" });
   }
 };
@@ -112,7 +112,7 @@ export const optionalAuth = async (
 
     next();
   } catch (err: any) {
-    Logs("middleware:optionalAuth", "error", err);
+    Logs(["middleware", "optionalAuth"], "error", err);
     next(); // Continue even on error for optional auth
   }
 };

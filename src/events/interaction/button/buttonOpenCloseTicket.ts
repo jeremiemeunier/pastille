@@ -1,4 +1,4 @@
-import { getParams } from "@functions/base";
+import { getParams } from "@functions/Base.function";
 import Logs from "@libs/Logs";
 import { Events, MessageFlags } from "discord.js";
 
@@ -54,7 +54,7 @@ const buttonOpenTicketInit = async (
       flags: MessageFlags.Ephemeral,
     });
   } catch (err: any) {
-    Logs("close:staff:channel", "error", err, guild?.id);
+    Logs(["close", "staff", "channel"], "error", err, guild?.id);
   }
 };
 

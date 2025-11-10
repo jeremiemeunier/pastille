@@ -4,14 +4,14 @@ import Logs from "@libs/Logs";
 
 /**
  * CSRF Protection Middleware using Double Submit Cookie pattern
- * 
+ *
  * For state-changing operations (POST, PUT, DELETE) when using cookies,
  * this middleware verifies CSRF tokens to prevent cross-site request forgery.
- * 
+ *
  * Token is expected in:
  * - Header: X-CSRF-Token
  * - Cookie: pastille_csrf (set automatically)
- * 
+ *
  * Note: Bearer token authentication (Authorization header) is exempt from CSRF checks
  * as it's not susceptible to CSRF attacks.
  */
@@ -50,7 +50,7 @@ export const ensureCsrfToken = (
 
 /**
  * Middleware to verify CSRF token for state-changing operations
- * 
+ *
  * Exempt from CSRF when:
  * - Using Bearer token authentication (not susceptible to CSRF)
  * - Safe methods (GET, HEAD, OPTIONS)
@@ -84,16 +84,16 @@ export const verifyCsrfToken = (
   }
 
   if (!headerToken) {
-    res.status(403).json({ 
+    res.status(403).json({
       message: "CSRF token required in header",
-      hint: `Include '${CSRF_HEADER_NAME}' header with value from '${CSRF_COOKIE_NAME}' cookie`
+      hint: `Include '${CSRF_HEADER_NAME}' header with value from '${CSRF_COOKIE_NAME}' cookie`,
     });
     return;
   }
 
   // Verify tokens match
   if (cookieToken !== headerToken) {
-    Logs("csrf:verification", "error", "CSRF token mismatch");
+    Logs(["csrf", "verification"], "error", "CSRF token mismatch");
     res.status(403).json({ message: "Invalid CSRF token" });
     return;
   }

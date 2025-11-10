@@ -1,4 +1,4 @@
-import { getParams, getRules } from "@functions/base";
+import { getParams, getRules } from "@functions/Base.function";
 import Logs from "@libs/Logs";
 import {
   EmbedBuilder,
@@ -77,7 +77,12 @@ const commandRuleInit = async (_client: any, interaction: any) => {
         flags: MessageFlags.Ephemeral,
       });
     } catch (err: any) {
-      Logs("rule:embed", "error", JSON.stringify(err), interaction?.guildId);
+      Logs(
+        ["rule", "embed"],
+        "error",
+        JSON.stringify(err),
+        interaction?.guildId
+      );
     }
   } else {
     interaction.reply({

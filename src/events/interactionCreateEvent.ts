@@ -37,7 +37,7 @@ export const interactionCreateEventInit = (client: Client) => {
           buttonOpenTicketInit(client, interaction);
           buttonDeleteMessage(client, interaction);
         } catch (err: any) {
-          Logs("interaction:button", "error", err);
+          Logs(["interaction", "button"], "error", err);
         }
       }
 
@@ -54,7 +54,7 @@ export const interactionCreateEventInit = (client: Client) => {
           commandClearInit(client, interaction);
           commandJusticeInit(client, interaction);
         } catch (err: any) {
-          Logs("interaction:slash_command", "error", err);
+          Logs(["interaction", "slash_command"], "error", err);
         }
       }
 
@@ -64,7 +64,7 @@ export const interactionCreateEventInit = (client: Client) => {
           contextReportUser(client, interaction);
           contextReportMessage(client, interaction);
         } catch (err: any) {
-          Logs("interaction:context_user", "error", err);
+          Logs(["interaction", "context_user"], "error", err);
         }
       }
 
@@ -73,7 +73,7 @@ export const interactionCreateEventInit = (client: Client) => {
         try {
           contextReportMessage(client, interaction);
         } catch (err: any) {
-          Logs("interaction:context_message", "error", err);
+          Logs(["interaction", "context_message"], "error", err);
         }
       }
 
@@ -82,7 +82,7 @@ export const interactionCreateEventInit = (client: Client) => {
         try {
           modalReportUser(client, interaction);
         } catch (err: any) {
-          Logs("interaction:modal", "error", err);
+          Logs(["interaction", "modal"], "error", err);
         }
       }
 

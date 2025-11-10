@@ -1,6 +1,6 @@
 import { Events } from "discord.js";
 import { autoThread } from "./voice/autoThread";
-import { getParams } from "@functions/base";
+import { getParams } from "@functions/Base.function";
 import { autoChannel, autoRemoveChannel } from "./voice/autoChannel";
 
 export const voiceEventInit = (client: any) => {

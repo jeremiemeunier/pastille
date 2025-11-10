@@ -1,4 +1,4 @@
-import { getParams } from "@functions/base";
+import { getParams } from "@functions/Base.function";
 import Logs from "@libs/Logs";
 import { Client, EmbedBuilder } from "discord.js";
 
@@ -19,7 +19,7 @@ const commandJusticeInit = async (client: Client, interaction: any) => {
       content: `Voici un résumé de tes sanctions et avertissement gérer par ${client.user?.displayName}`,
     });
   } catch (err: any) {
-    Logs("command:justice", "error", err);
+    Logs(["command", "justice"], "error", err);
   }
 };
 

@@ -1,4 +1,4 @@
-import { getParams } from "@functions/base";
+import { getParams } from "@functions/Base.function";
 import Logs from "@libs/Logs";
 import {
   EmbedBuilder,
@@ -72,7 +72,7 @@ const contextReportMessage = async (client: any, interaction: any) => {
       flags: MessageFlags.Ephemeral,
     });
   } catch (err: any) {
-    Logs("command:report:message", "error", err, guild?.id);
+    Logs(["command", "report", "message"], "error", err, guild?.id);
   }
 };
 

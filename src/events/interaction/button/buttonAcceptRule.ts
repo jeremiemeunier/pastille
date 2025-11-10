@@ -1,4 +1,4 @@
-import { getParams } from "@functions/base";
+import { getParams } from "@functions/Base.function";
 import Logs from "@libs/Logs";
 import { Events, MessageFlags } from "discord.js";
 
@@ -49,7 +49,7 @@ const buttonAcceptRuleInit = async (
       content: "Une erreur est survenue",
       flags: MessageFlags.Ephemeral,
     });
-    Logs("event:accept_rule", "error", err);
+    Logs(["event", "accept_rule"], "error", err);
     return;
   }
 };

@@ -1,5 +1,5 @@
-import { EmbedBuilder } from "discord.js";
-import { getParams } from "../base";
+import { EmbedBuilder, Guild, GuildMember } from "discord.js";
+import { getParams } from "../Base.function";
 import pastilleAxios from "@libs/PastilleAxios";
 import { SanctionTypes } from "@/types/Sanction.types";
 import Logs from "@libs/Logs";
@@ -34,8 +34,8 @@ export const durationFormater = (time: any) => {
   }
 };
 
-export const automodFinalNotify = async (guild: any, user: any) => {
-  const guildParams = await getParams({ guild: guild.id });
+export const automodFinalNotify = async (guild: Guild, user: GuildMember) => {
+  const guildParams = await getParams({ guild });
   if (!guildParams) return;
 
   const { options } = guildParams;
@@ -55,12 +55,12 @@ export const automodFinalNotify = async (guild: any, user: any) => {
       embeds: [embedSanction],
     });
   } catch (err: any) {
-    Logs("automod:remove", "error", err, guild?.id);
+    Logs(["automod", "remove"], "error", err, guild?.id);
   }
 };
 
-export const automodRemove = async (guild: any, user: any) => {
-  const guildParams = await getParams({ guild: guild.id });
+export const automodRemove = async (guild: Guild, user: GuildMember) => {
+  const guildParams = await getParams({ guild });
   if (!guildParams) return;
 
   const { moderation } = guildParams;
@@ -74,6 +74,8 @@ export const automodRemove = async (guild: any, user: any) => {
     description: `Ta sanction sur **__${guild.name}__** vient de prendre fin. Tu peux à nouveau profiter pleinement du serveur.`,
   });
 
+  if (!sanctionRole) return;
+
   try {
     await user.roles.remove(sanctionRole);
     await user.send({
@@ -81,7 +83,7 @@ export const automodRemove = async (guild: any, user: any) => {
       embeds: [embedSanction],
     });
   } catch (err: any) {
-    Logs("automod:remove", "error", err, guild?.id);
+    Logs(["automod", "remove"], "error", err, guild?.id);
   }
 };
 
@@ -120,7 +122,7 @@ export const automodApply = async (guild: any, user: any, timer: any) => {
     await user.roles.add(sanctionRole);
     await alertChannel.send({ embeds: [embedDecision] });
   } catch (err: any) {
-    Logs("automod:sanction:notice", "error", err, guild?.id);
+    Logs(["automod", "sanction", "notice"], "error", err, guild?.id);
   }
 
   const applySanction = setTimeout(async () => {
@@ -133,10 +135,15 @@ export const automodApply = async (guild: any, user: any, timer: any) => {
  *
  * @param {*} guild A discord guild item
  */
-export const automodVerifier = async (guild: any) => {
+export const automodVerifier = async (guild: Guild) => {
   const now = Date.parse(new Date().toString());
 
-  Logs("automod:verifier", null, "start sanctions verifications", guild?.id);
+  Logs(
+    ["automod", "verifier"],
+    null,
+    "start sanctions verifications",
+    guild?.id
+  );
 
   try {
     const allGuildSanctionsRequest = await pastilleAxios.get("/sanction", {
@@ -145,7 +152,7 @@ export const automodVerifier = async (guild: any) => {
     });
 
     const allGuildSanctions = allGuildSanctionsRequest.data.data;
-    const guildParams = await getParams({ guild: guild.id });
+    const guildParams = await getParams({ guild });
     if (!guildParams) return;
 
     const { moderation } = guildParams;
@@ -159,7 +166,12 @@ export const automodVerifier = async (guild: any) => {
             try {
               return await guild.members.fetch(user_id);
             } catch (err: any) {
-              Logs("automode:verifier:fetch_user", "error", err, guild?.id);
+              Logs(
+                ["automod", "verifier", "fetch_user"],
+                "error",
+                err,
+                guild?.id
+              );
             }
           };
           const user = await userFetch();
@@ -178,10 +190,10 @@ export const automodVerifier = async (guild: any) => {
                 }
               );
             } catch (err: any) {
-              Logs("automod:rebind:update", "error", err, guild?.id);
+              Logs(["automod", "rebind", "update"], "error", err, guild?.id);
             }
             Logs(
-              "automod:verifier:rebind",
+              ["automod", "verifier", "rebind"],
               "warning",
               `user not find : ${user_id}`,
               guild?.id
@@ -190,7 +202,7 @@ export const automodVerifier = async (guild: any) => {
           }
           if (!sanctionRole) {
             Logs(
-              "automod:verifier:rebind",
+              ["automod", "verifier", "rebind"],
               "warning",
               `role not find : ${moderation.roles.muted}`,
               guild?.id
@@ -202,7 +214,7 @@ export const automodVerifier = async (guild: any) => {
             try {
               await user.roles.remove(sanctionRole);
             } catch (err: any) {
-              Logs("sanction:verifier:remove", "error", err, guild?.id);
+              Logs(["sanction", "verifier", "remove"], "error", err, guild?.id);
             }
           } else {
             const newTimer = ending - now;
@@ -212,17 +224,22 @@ export const automodVerifier = async (guild: any) => {
                 automodRemove(guild, user);
               }, newTimer);
             } catch (err: any) {
-              Logs("sanction:verifier:remove:timer", "error", err, guild?.id);
+              Logs(
+                ["sanction", "verifier", "remove", "timer"],
+                "error",
+                err,
+                guild?.id
+              );
             }
           }
         });
       } catch (err: any) {
-        Logs("automod:verifier", "error", err, guild?.id);
+        Logs(["automod", "verifier"], "error", err, guild?.id);
       }
     }
   } catch (err: any) {
-    Logs("automod:verifier", "error", err);
+    Logs(["automod", "verifier"], "error", err);
   }
 
-  Logs("automod:verifier", null, "end sanctions verifications", guild?.id);
+  Logs(["automod", "verifier"], null, "end sanctions verifications", guild?.id);
 };

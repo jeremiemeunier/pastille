@@ -22,7 +22,7 @@ export const reactionRemoveEventInit = (client: {
         try {
           await reaction.fetch();
         } catch (err: any) {
-          Logs("reaction:remove:fetch", "error", err);
+          Logs(["reaction", "remove", "fetch"], "error", err);
           return;
         }
       }

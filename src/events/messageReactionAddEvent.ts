@@ -23,7 +23,7 @@ export const reactionAddEventInit = (client: {
         try {
           await reaction.fetch();
         } catch (err: any) {
-          Logs(`An error occurred on fetch`, "error", err);
+          Logs(["message", "reaction", "fetch"], "error", err);
           return;
         }
       }

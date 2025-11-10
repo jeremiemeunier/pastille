@@ -1,4 +1,4 @@
-import { getParams } from "@functions/base";
+import { getParams } from "@functions/Base.function";
 import Logs from "@libs/Logs";
 import { Client, EmbedBuilder } from "discord.js";
 
@@ -26,7 +26,7 @@ const commandAnnounceInit = async (client: Client, interaction: any) => {
       content: "📢 **Annonce** ||@everyone||",
     });
   } catch (err: any) {
-    Logs("command:announce", "error", err);
+    Logs(["command", "announce"], "error", err);
   }
 };
 

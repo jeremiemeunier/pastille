@@ -30,7 +30,7 @@ const pollReactions = async (
     try {
       await reaction.users.remove(user);
     } catch (err: any) {
-      Logs("reaction:poll:remove", "error", err, reaction.guildId);
+      Logs(["reaction", "poll", "remove"], "error", err, reaction.guildId);
       return;
     }
   } else {
@@ -43,7 +43,12 @@ const pollReactions = async (
           try {
             await react.users.remove(user);
           } catch (err: any) {
-            Logs("reaction:poll:remove_2", "error", err, reaction.guildId);
+            Logs(
+              ["reaction", "poll", "remove_2"],
+              "error",
+              err,
+              reaction.guildId
+            );
             return;
           }
         }
