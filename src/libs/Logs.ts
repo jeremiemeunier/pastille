@@ -33,18 +33,18 @@ const composeState: (
 };
 
 const Logs: (
-  node: string,
+  node: string[],
   state: "error" | "success" | "warning" | "start" | "sql" | "req" | null,
   content: string | {},
   details?: string
 ) => void = async (
-  node: string,
+  node: string[],
   state: "error" | "success" | "warning" | "start" | "sql" | "req" | null,
   content: string | {},
   details?: string
 ) => {
   if (state === "sql" || state === "req") {
-    if (node === "cron") {
+    if (node[0] === "cron") {
       console.log(
         `${composeTime()}[ \x1b[43m ${state.toUpperCase()} \x1b[0m ][ \x1b[42m CRON \x1b[0m ] » \x1b[33m${content
           .toString()
@@ -60,14 +60,16 @@ const Logs: (
   } else {
     details
       ? console.log(
-          `${composeTime()}[${node.padEnd(30, ".")}]${composeState(
+          `${composeTime()}[${node.join(".").padEnd(30, ".")}]${composeState(
             state
           )}(${details}) » ${
             typeof content === "string" ? content : JSON.stringify(content)
           }`
         )
       : console.log(
-          `${composeTime()}[${node.padEnd(30, ".")}]${composeState(state)} » ${
+          `${composeTime()}[${node.join(".").padEnd(30, ".")}]${composeState(
+            state
+          )} » ${
             typeof content === "string" ? content : JSON.stringify(content)
           }`
         );
