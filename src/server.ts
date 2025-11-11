@@ -26,6 +26,7 @@ import AutomodDaemon from "@functions/automod/Automod";
 import Start from "@libs/Start";
 import { CommandRegisterDaemon } from "./daemon/Command.daemon";
 import { AddonRegisterDaemon } from "./daemon/Addon.daemon";
+import { AddonTwitch } from "@modules/Twitch.module";
 
 const client = new Client({
   intents: [
@@ -82,6 +83,7 @@ const pastilleBooter = async () => {
   try {
     // API
     Api();
+    AddonTwitch(client);
 
     try {
       const allGuilds = client.guilds.cache;
