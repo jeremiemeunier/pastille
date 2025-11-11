@@ -1,12 +1,14 @@
 import request from "supertest";
 import { createTestApp } from "../testApp";
 import User from "@models/User.model";
+import Guild from "@models/Guild.model";
 import Session from "@models/Session.model";
 import * as TokenManager from "@utils/TokenManager.utils";
 import DiscordAxios from "@utils/DiscordAxios.utils";
 
 // Mock the models
 jest.mock("@models/User");
+jest.mock("@models/Guild");
 jest.mock("@models/Session");
 jest.mock("@utils/DiscordAxios");
 
@@ -150,7 +152,7 @@ describe("Auth Routes", () => {
   });
 
   describe("GET /auth/guilds", () => {
-    it("should return guilds where user can add bots", async () => {
+    it("should return guilds where user can add bots with botAdded indicator", async () => {
       const mockUser = {
         _id: "user123",
         discord_id: "discord123",
@@ -203,9 +205,18 @@ describe("Auth Routes", () => {
         },
       ];
 
+      // Mock that bot is only in guild1
+      const mockBotGuilds = [
+        { id: "guild1" },
+      ];
+
       (User.findById as jest.Mock).mockResolvedValue(mockUser);
+      (User.findByIdAndUpdate as jest.Mock).mockResolvedValue(mockUser);
       (Session.findOne as jest.Mock).mockResolvedValue(mockSession);
       (DiscordAxios.get as jest.Mock).mockResolvedValue({ data: mockGuilds });
+      (Guild.find as jest.Mock).mockReturnValue({
+        select: jest.fn().mockResolvedValue(mockBotGuilds),
+      });
 
       jest.spyOn(TokenManager, "verifyToken").mockReturnValue({
         user_id: "user123",
@@ -218,12 +229,13 @@ describe("Auth Routes", () => {
         .set("Authorization", "Bearer valid_jwt_token");
 
       expect(response.status).toBe(200);
-      expect(response.body.guilds).toBeDefined();
-      expect(Array.isArray(response.body.guilds)).toBe(true);
+      expect(Array.isArray(response.body)).toBe(true);
       // Should only return guilds where user has MANAGE_GUILD permission
-      expect(response.body.guilds.length).toBe(2);
-      expect(response.body.guilds[0].id).toBe("guild1");
-      expect(response.body.guilds[1].id).toBe("guild3");
+      expect(response.body.length).toBe(2);
+      expect(response.body[0].id).toBe("guild1");
+      expect(response.body[0].botAdded).toBe(true);
+      expect(response.body[1].id).toBe("guild3");
+      expect(response.body[1].botAdded).toBe(false);
     });
 
     it("should return 401 without token", async () => {

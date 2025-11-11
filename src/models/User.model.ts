@@ -31,6 +31,7 @@ const schema = new Schema<UserTypes>({
       icon: String,
       description: String,
       owner: Boolean,
+      botAdded: Boolean,
     },
   ],
 });
