@@ -26,5 +26,6 @@ export interface UserTypes {
     icon?: string;
     description?: string;
     owner: boolean;
+    botAdded?: boolean;
   }>;
 }

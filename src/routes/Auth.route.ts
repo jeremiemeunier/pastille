@@ -2,6 +2,7 @@ import { Request, Response, Router, json } from "express";
 import Logs from "@libs/Logs";
 import { rateLimiter } from "@libs/RateLimiter";
 import User from "@models/User.model";
+import Guild from "@models/Guild.model";
 import DiscordAxios from "@utils/DiscordAxios.utils";
 import {
   createSession,
@@ -307,13 +308,21 @@ router.get(
         }
       );
 
-      // Map guilds to include only necessary information
+      // Check which guilds the bot is already in
+      const botGuildIds = await Guild.find({
+        id: { $in: guildsWhereUserCanAddBot.map((g: any) => g.id) }
+      }).select('id');
+      
+      const botGuildIdsSet = new Set(botGuildIds.map(g => g.id));
+
+      // Map guilds to include only necessary information and bot presence
       const mappedGuilds = guildsWhereUserCanAddBot.map((guild: any) => ({
         id: guild.id,
         name: guild.name,
         icon: guild.icon,
         description: guild.description,
         owner: guild.owner,
+        botAdded: botGuildIdsSet.has(guild.id),
       }));
 
       // Add guild to user
