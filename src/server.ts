@@ -27,6 +27,8 @@ import Start from "@libs/Start";
 import { CommandRegisterDaemon } from "./daemon/Command.daemon";
 import { AddonRegisterDaemon } from "./daemon/Addon.daemon";
 import { AddonTwitch } from "@modules/Twitch.module";
+import GuildModel from "@models/Guild.model";
+import pastilleAxios from "@libs/PastilleAxios";
 
 const client = new Client({
   intents: [
@@ -41,7 +43,7 @@ const client = new Client({
 
 // ##### APP ##### \\
 
-const guildStarter = (guild: Guild) => {
+const guildStarter = async (guild: Guild) => {
   try {
     Logs(
       ["booter", "guild_starter"],
@@ -52,9 +54,12 @@ const guildStarter = (guild: Guild) => {
     AutomodDaemon(guild);
     CommandRegisterDaemon(guild);
     AddonRegisterDaemon(guild);
-  } catch (err: any) {
-    Logs(["booter", "guild_starter"], "error", err, guild?.id);
-  }
+
+    // adding to database if not exists
+    try {
+      await pastilleAxios.post("/guild/join", guild.toJSON());
+    } catch (err: any) {}
+  } catch (err: any) {}
 };
 
 const setStatus = async () => {

@@ -15,6 +15,7 @@ import { default as emotesRoute } from "@routes/Emote.route";
 import { default as webhookRoute } from "@routes/Webhook.route";
 import { default as authRoute } from "@routes/Auth.route";
 import { default as userRoute } from "@routes/User.route";
+import { default as guildRoute } from "@routes/Guild.route";
 
 const Api = () => {
   // API
@@ -42,6 +43,7 @@ const Api = () => {
   App.use(webhookRoute);
   App.use(authRoute);
   App.use(userRoute);
+  App.use(guildRoute);
 
   App.get("/", (_req: Request, res: Response) => {
     res.status(200).json({ message: "This is pastille" });
