@@ -88,6 +88,10 @@ export const messageCreateEventInit = (client: any) => {
     if (message.mentions.has(client.user)) {
       if (message.mentions.everyone) return;
 
+      const msg = await message.reply({
+        content: "Attend un peu je réfléchis...",
+      });
+
       try {
         // Build conversation context from reply chain
         const conversationHistory = await buildConversationContext(
@@ -122,7 +126,7 @@ export const messageCreateEventInit = (client: any) => {
 
         if (req.data.message) {
           try {
-            await message.reply({ content: req.data.message.content });
+            await msg.edit({ content: req.data.message.content });
           } catch (err: any) {
             Logs(["message", "event", "ai", "reply"], "error", err);
           }
