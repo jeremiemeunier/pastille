@@ -1,79 +1,92 @@
+type Label =
+  | "error"
+  | "success"
+  | "warning"
+  | "start"
+  | "sql"
+  | "req"
+  | "cron"
+  | null;
+type Logs = (
+  node: string[],
+  state: Label,
+  content: string | {},
+  details?: string
+) => void;
+
 const composeTime: () => string = () => {
   const now = new Date();
-
-  const day = now.getDate().toString().padStart(2, "0");
-  const month = (now.getMonth() + 1).toString().padStart(2, "0");
-  const year = now.getFullYear();
-
-  const hours = now.getHours().toString().padStart(2, "0");
-  const minutes = now.getMinutes().toString().padStart(2, "0");
-  const seconds = now.getSeconds().toString().padStart(2, "0");
   const miliseconds = now.getMilliseconds().toString().padStart(3, "0");
 
-  return `[${day}/${month}/${year} ${hours}:${minutes}:${seconds}.${miliseconds}]`;
+  return `[${now.toLocaleDateString("fr-FR")}][${now.toLocaleTimeString(
+    "fr-FR"
+  )}.${miliseconds}]`;
 };
 
-const composeState: (
-  data: "error" | "success" | "warning" | "start" | "sql" | "req" | null
-) => string = (
-  data: "error" | "success" | "warning" | "start" | "sql" | "req" | null
-) => {
+const composeState: (data: Label) => string = (data) => {
+  const string: string[] = [];
+
   switch (data) {
     case "error":
-      return "[\x1b[41m ERROR \x1b[0m]";
+      string.push("\x1b[31m");
+      break;
     case "success":
-      return "[\x1b[42mSUCCESS\x1b[0m]";
+      string.push("\x1b[32m");
+      break;
     case "warning":
-      return "[\x1b[33mWARNING\x1b[0m]";
+      string.push("\x1b[33m");
+      break;
     case "start":
-      return "[\x1b[47m START \x1b[0m]";
+      string.push("\x1b[32m");
+      break;
+    case "cron":
+      string.push("\x1b[32m");
+      break;
+    case "sql":
+      string.push("\x1b[32m");
+      break;
     default:
-      return "[\x1b[34m INFOS \x1b[0m]";
+      string.push("\x1b[34m");
+      break;
   }
+
+  if (!data) string.push("INFO".padEnd(8, " "));
+  else string.push(data.toUpperCase().padEnd(8, " "));
+
+  string.push("\x1b[0m");
+
+  return string.join("");
 };
 
-const Logs: (
-  node: string[],
-  state: "error" | "success" | "warning" | "start" | "sql" | "req" | null,
-  content: string | {},
-  details?: string
-) => void = async (
-  node: string[],
-  state: "error" | "success" | "warning" | "start" | "sql" | "req" | null,
-  content: string | {},
-  details?: string
-) => {
-  if (state === "sql" || state === "req") {
-    if (node[0] === "cron") {
-      console.log(
-        `${composeTime()}[ \x1b[43m ${state.toUpperCase()} \x1b[0m ][ \x1b[42m CRON \x1b[0m ] » \x1b[33m${content
-          .toString()
-          .replace("Executing (default): ", "")}\x1b[0m`
-      );
-    } else {
-      console.log(
-        `${composeTime()}[ \x1b[43m ${state.toUpperCase()} \x1b[0m ] » \x1b[33m${content
-          .toString()
-          .replace("Executing (default): ", "")}\x1b[0m`
-      );
-    }
-  } else {
-    details
-      ? console.log(
-          `${composeTime()}[${node.join(".").padEnd(30, ".")}]${composeState(
-            state
-          )}(${details}) » ${
-            typeof content === "string" ? content : JSON.stringify(content)
-          }`
-        )
-      : console.log(
-          `${composeTime()}[${node.join(".").padEnd(30, ".")}]${composeState(
-            state
-          )} » ${
-            typeof content === "string" ? content : JSON.stringify(content)
-          }`
-        );
+const composeNode = (node: string[]): string => {
+  return `${node.join(".").padEnd(30, " ")}`;
+};
+
+const composeDetails = (details: string | undefined): string => {
+  return `\n└───    (${details})`.padEnd(39, " ");
+};
+
+const Logs: Logs = (node, state, content, details) => {
+  const string: string[] = [
+    composeState(state),
+    composeNode(node),
+    composeTime(),
+  ];
+
+  // add " » "
+  string.push(" » ");
+
+  if (content instanceof Error) {
+    console.log("error object detected");
   }
+
+  string.push(
+    typeof content === "string" ? content : JSON.stringify(content, null, 2)
+  );
+
+  if (details) string.push(composeDetails(details));
+
+  console.log(string.join(""));
 };
 
 export default Logs;
