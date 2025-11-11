@@ -133,6 +133,17 @@ export const messageCreateEventInit = (client: any) => {
         }
       } catch (err: any) {
         Logs(["message", "event", "ai"], "error", err);
+
+        try {
+          await msg.delete();
+        } catch (err: any) {
+          Logs(["message", "event", "ai", "reply", "delete"], "error", err);
+        }
+
+        await message.reply({
+          content:
+            "Désolé, j'ai un peu de mal à réfléchir en ce moment. Réessaie plus tard !",
+        });
       }
     }
 
