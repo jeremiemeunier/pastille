@@ -194,7 +194,7 @@ Logout from all devices/sessions.
 
 **GET** `/auth/guilds`
 
-Get Discord guilds where the authenticated user has permission to add bots (MANAGE_GUILD permission).
+Get Discord guilds where the authenticated user has permission to add bots (MANAGE_GUILD permission), with an indicator showing if the bot is already added to each guild.
 
 **Headers**
 - `Authorization: Bearer <token>` OR
@@ -202,25 +202,33 @@ Get Discord guilds where the authenticated user has permission to add bots (MANA
 
 **Response** `200 OK`
 ```json
-{
-  "guilds": [
-    {
-      "id": "987654321098765432",
-      "name": "My Server",
-      "icon": "icon_hash",
-      "owner": false,
-      "permissions": "2147483647"
-    },
-    {
-      "id": "123456789012345678",
-      "name": "Another Server",
-      "icon": "another_icon_hash",
-      "owner": true,
-      "permissions": "2147483647"
-    }
-  ]
-}
+[
+  {
+    "id": "987654321098765432",
+    "name": "My Server",
+    "icon": "icon_hash",
+    "description": "A cool server",
+    "owner": false,
+    "botAdded": true
+  },
+  {
+    "id": "123456789012345678",
+    "name": "Another Server",
+    "icon": "another_icon_hash",
+    "description": null,
+    "owner": true,
+    "botAdded": false
+  }
+]
 ```
+
+**Response Fields**
+- `id`: Discord guild ID
+- `name`: Guild name
+- `icon`: Guild icon hash (or null)
+- `description`: Guild description (or null)
+- `owner`: Whether the user owns the guild
+- `botAdded`: Whether the Pastille bot is already added to this guild
 
 **Note**: Only returns guilds where the user has MANAGE_GUILD permission (0x00000020), which is required to add bots to servers.
 
