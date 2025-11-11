@@ -12,11 +12,11 @@ router.post(
   rateLimiter,
   async (req: Request, res: Response) => {
     try {
-      const q_exist = await Guild.findOne({ id: req.body.id });
+      const q_exist = await Guild.findOne({ id: { $eq: req.body.id } });
 
       if (q_exist) {
         try {
-          await Guild.updateOne({ id: req.body.id }, { data: req.body });
+          await Guild.updateOne({ id: { $eq: req.body.id } }, { data: req.body });
           res.status(409).json({ message: "Guild already exists" });
           return;
         } catch (err: any) {
