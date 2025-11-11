@@ -8,7 +8,7 @@ import {
   leaveVoiceThread,
 } from "@functions/Voice.function";
 import Logs from "@libs/Logs";
-import { Guild, VoiceChannel } from "discord.js";
+import { Guild, TextChannel, VoiceChannel } from "discord.js";
 
 export const countMembers = async ({
   channel,
@@ -26,10 +26,10 @@ export const countMembers = async ({
 };
 
 export const getTextualChannel = async (
-  channel: { parentId: null },
-  guild: { channels: { cache: any[] }; id: any }
+  channel: VoiceChannel,
+  guild: Guild
 ) => {
-  const guildParams = await getParams({ guild: guild.id });
+  const guildParams = await getParams({ guild });
   if (!guildParams) return;
 
   const { channels } = guildParams.options;
@@ -40,13 +40,13 @@ export const getTextualChannel = async (
         (textual: { name: any; parentId: any }) =>
           textual.name === channels.voiceText &&
           textual.parentId === channel.parentId
-      );
+      ) as TextChannel;
 
       if (textual === undefined) {
         const textualGlobal = guild.channels.cache.find(
-          (textual: { name: any; parentId: null }) =>
+          (textual: any) =>
             textual.name === channels.voiceText && textual.parentId === null
-        );
+        ) as TextChannel;
 
         return textualGlobal;
       }
@@ -54,9 +54,9 @@ export const getTextualChannel = async (
       return textual;
     } else {
       const textual = guild.channels.cache.find(
-        (textual: { name: any; parentId: null }) =>
+        (textual: any) =>
           textual.name === channels.voiceText && textual.parentId === null
-      );
+      ) as TextChannel;
 
       return textual;
     }
@@ -107,6 +107,8 @@ export const autoThread = async ({
       });
       const textual = await getTextualChannel(voiceChannel, guild);
 
+      if (!textual) return;
+
       if (connected === 0) {
         deleteVoiceThread({
           guild: guild,
@@ -135,6 +137,8 @@ export const autoThread = async ({
         channel: voiceChannel,
         threadChannel: textual,
       });
+
+      if (!textual) return;
 
       if (connected === 1 || !threadAlreadyExist) {
         await createVoiceThread({
@@ -183,6 +187,8 @@ export const autoThread = async ({
         channel: newVoiceChannel,
         threadChannel: newTextual,
       });
+
+      if (!oldTextual || !newTextual) return;
 
       if (oldConnected === 0) {
         deleteVoiceThread({
