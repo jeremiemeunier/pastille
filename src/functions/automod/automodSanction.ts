@@ -1,5 +1,5 @@
 import pastilleAxios from "@libs/PastilleAxios";
-import { getParams } from "../base";
+import { getParams } from "../Base.function";
 import { automodApply, automodFinalNotify } from "./automodVerifer";
 import Logs from "@libs/Logs";
 
@@ -105,6 +105,6 @@ export const sanctionRegister = async (
       end: end,
     });
   } catch (err: any) {
-    Logs("automod:sanction:register:api", "error", err, guild);
+    Logs(["automod", "sanction", "register", "api"], "error", err, guild);
   }
 };

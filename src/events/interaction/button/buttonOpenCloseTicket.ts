@@ -1,32 +1,27 @@
-import { getParams } from "@functions/base";
+import { getParams } from "@functions/Base.function";
 import Logs from "@libs/Logs";
-import { Events, MessageFlags } from "discord.js";
+import {
+  ButtonInteraction,
+  Client,
+  MessageFlags,
+  ThreadChannel,
+} from "discord.js";
 
-const buttonOpenTicketInit = async (
-  client: {
-    on?: (arg0: Events, arg1: (interaction: any) => Promise<void>) => void;
-    guilds?: any;
-  },
-  interaction: {
-    isButton?: () => any;
-    isChatInputCommand?: () => any;
-    isUserContextMenuCommand?: () => any;
-    isMessageContextMenuCommand?: () => any;
-    isModalSubmit?: () => any;
-    guild?: any;
-    guildId?: any;
-    user?: any;
-    channelId?: any;
-    reply?: any;
-    customId?: any;
-  }
-) => {
+const buttonOpenTicketInit = async ({
+  client,
+  interaction,
+}: {
+  client: Client;
+  interaction: ButtonInteraction;
+}) => {
   const { customId } = interaction;
   if (customId !== "closeTicket") {
     return;
   }
 
-  const guildParams = await getParams({ guild: interaction?.guildId });
+  if (!interaction.guild) return;
+
+  const guildParams = await getParams({ guild: interaction.guild });
   if (!guildParams) return;
 
   const { moderation } = guildParams;
@@ -34,10 +29,17 @@ const buttonOpenTicketInit = async (
   const guild = client.guilds.cache.find(
     (guild: { id: any }) => guild?.id === interaction?.guildId
   );
+
+  if (!guild) return;
+
   const member = guild.members.cache.find(
     (member: { id: any }) => member?.id === interaction.user?.id
   );
-  const channel = await guild.channels.fetch(interaction.channelId);
+  const channel = (await guild.channels.fetch(
+    interaction.channelId
+  )) as ThreadChannel;
+
+  if (!channel || !member) return;
 
   if (!member.roles.cache.has(moderation.roles.staff)) {
     await interaction.reply({
@@ -54,7 +56,7 @@ const buttonOpenTicketInit = async (
       flags: MessageFlags.Ephemeral,
     });
   } catch (err: any) {
-    Logs("close:staff:channel", "error", err, guild?.id);
+    Logs(["close", "staff", "channel"], "error", err, guild?.id);
   }
 };
 

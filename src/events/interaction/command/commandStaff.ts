@@ -1,29 +1,38 @@
-import { getParams } from "@functions/base";
+import { getParams } from "@functions/Base.function";
 import Logs from "@libs/Logs";
 import {
   EmbedBuilder,
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
+  Client,
+  ChatInputCommandInteraction,
 } from "discord.js";
 
-const commandStaffInit = async (_client: any, interaction: any) => {
+const commandStaffInit = async ({
+  client,
+  interaction,
+}: {
+  client?: Client;
+  interaction: ChatInputCommandInteraction;
+}) => {
   const { commandName } = interaction;
   if (commandName !== "staff") return;
 
-  const guildParams = await getParams({ guild: interaction?.guildId });
+  const guildParams = await getParams({ guild: interaction?.guild! });
   if (!guildParams) return;
 
   const { options } = guildParams;
 
   try {
-    const requestStaffButton = new ActionRowBuilder().addComponents(
-      new ButtonBuilder({
-        label: "Contacter le staff",
-        style: ButtonStyle.Primary,
-        custom_id: "requestStaff",
-      })
-    );
+    const requestStaffButton =
+      new ActionRowBuilder<ButtonBuilder>().addComponents(
+        new ButtonBuilder({
+          label: "Contacter le staff",
+          style: ButtonStyle.Primary,
+          custom_id: "requestStaff",
+        })
+      );
     const embed = new EmbedBuilder({
       color:
         options.color !== ""
@@ -39,7 +48,7 @@ const commandStaffInit = async (_client: any, interaction: any) => {
       withResponse: false,
     });
   } catch (err: any) {
-    Logs("command:staff", "error", err, interaction?.guildId);
+    Logs(["command", "staff"], "error", err, interaction?.guild!.id!);
   }
 };
 

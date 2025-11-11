@@ -82,38 +82,83 @@ The following environment variables are required:
 | `BOT_TOKEN` | Discord bot token from [Discord Developers](https://discord.com/developers/applications) | Yes |
 | `BOT_ID` | Your Discord bot user ID | Yes |
 | `MONGO_URI` | MongoDB connection URI | Yes |
+| `JWT_SECRET` | Secret key for JWT token generation (64+ random characters recommended) | Yes |
+| `DISCORD_CLIENT` | Discord OAuth2 application client ID | For user authentication |
+| `DISCORD_SECRET` | Discord OAuth2 application client secret | For user authentication |
 | `TWITCH_SECRET` | Twitch application secret token from [Twitch Developers](https://dev.twitch.tv/console/apps/create) | For Twitch addon |
 | `TWITCH_CLIENT` | Twitch application client ID | For Twitch addon |
 | `BOT_SECRET_SIG` | Secret for Twitch webhook signature verification | For Twitch addon |
 | `DISCORD_PUBLIC_KEY` | Discord application public key for webhook verification | For Discord webhooks |
+| `DEV` | Set to "1" for development mode (affects cookie security and redirect URIs) | No |
 
 **Example .env file:**
 ```bash
 BOT_TOKEN=your_discord_bot_token
 BOT_ID=your_bot_user_id
 MONGO_URI=mongodb://localhost:27017/pastille
+JWT_SECRET=your_randomly_generated_secret_key_at_least_64_characters_long
+DISCORD_CLIENT=your_discord_client_id
+DISCORD_SECRET=your_discord_client_secret
 TWITCH_SECRET=your_twitch_secret
 TWITCH_CLIENT=your_twitch_client_id
 BOT_SECRET_SIG=your_webhook_secret
 DISCORD_PUBLIC_KEY=your_discord_public_key
+DEV=1
+```
+
+**Generating JWT_SECRET:**
+```bash
+# Generate a secure random secret key
+node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
 ```
 
 You can use [Infisical CLI](https://infisical.com) to manage and use secrets more securely.
 
 ## API Documentation
 
-Pastille exposes a REST API on port 3000 for managing bot data and integrations. All API routes require authentication via the `pastille_botid` header.
+Pastille exposes a REST API on port 3000 for managing bot data and integrations.
 
 ### Authentication
 
-All API requests must include the following header:
-```
-pastille_botid: YOUR_BOT_ID
-```
+The API supports two authentication methods:
+
+1. **Bot Authentication**: Internal API endpoints require the `pastille_botid` header
+   ```
+   pastille_botid: YOUR_BOT_ID
+   ```
+
+2. **User Authentication**: User-facing endpoints use JWT tokens for authentication
+   - Tokens are provided as httpOnly cookies after Discord OAuth login
+   - Can also be sent via `Authorization: Bearer <token>` header
+   - Token expiration: 7 days
+   - See [API.md](API.md) for detailed authentication flow
 
 ### Rate Limiting
 
 API endpoints are rate-limited to 100 requests per 15 minutes per IP address.
+
+## Security Features
+
+Pastille implements several security measures to protect user data and ensure system integrity:
+
+### Authentication & Authorization
+- **JWT-based session management** with secure token generation
+- **httpOnly cookies** to prevent XSS attacks
+- **Session validation** against database for real-time revocation
+- **Token expiration** (7 days) with automatic cleanup
+- **Multi-device session support** with ability to logout from all devices
+
+### Data Protection
+- **User data sanitization** - Sensitive fields (email, credentials, private data) are never exposed in API responses
+- **Separate public and authenticated views** - Public endpoints show minimal user information
+- **Field-level access control** - Users can only update non-sensitive profile fields
+- **MongoDB TTL indexes** - Automatic cleanup of expired sessions
+
+### Best Practices
+- **Rate limiting** on all endpoints to prevent abuse
+- **CORS configuration** for cross-origin request control
+- **Environment-based security** - Secure cookies in production, relaxed in development
+- **No credentials in responses** - Discord OAuth tokens are stored securely and never returned
 
 ### API Endpoints
 

@@ -10,13 +10,29 @@ http://localhost:3000
 
 ## Authentication
 
-All API endpoints require authentication via the `pastille_botid` header:
+The Pastille Bot API supports two authentication methods:
+
+### 1. Bot Authentication (for internal services)
+
+All internal API endpoints require authentication via the `pastille_botid` header:
 
 ```http
 pastille_botid: YOUR_BOT_ID
 ```
 
 Returns `403 Forbidden` if authentication fails.
+
+### 2. User Authentication (JWT)
+
+User-facing endpoints use JWT-based authentication. After logging in via Discord OAuth, users receive a JWT token as an httpOnly cookie or can use it as a Bearer token.
+
+**Token Methods:**
+- **Cookie**: `pastille_token` (httpOnly, secure in production)
+- **Header**: `Authorization: Bearer <token>`
+
+**Token Expiration**: 7 days
+
+**Protected Endpoints**: Endpoints marked with 🔒 require JWT authentication.
 
 ## Rate Limiting
 
@@ -49,6 +65,301 @@ Health check endpoint.
 ```json
 {
   "message": "This is pastille"
+}
+```
+
+---
+
+## Authentication & User Management
+
+### Discord OAuth Login
+
+**POST** `/auth/login`
+
+Authenticate user via Discord OAuth2 code and create a session.
+
+**Request Body**
+```json
+{
+  "code": "discord_oauth_code"
+}
+```
+
+**Response** `200 OK` (existing user) or `201 Created` (new user)
+```json
+{
+  "message": "Login successful",
+  "user": {
+    "_id": "user_mongo_id",
+    "discord_id": "123456789012345678",
+    "personal": {
+      "username": "testuser",
+      "global_name": "Test User",
+      "avatar": "avatar_hash",
+      "banner": "banner_hash",
+      "accent_color": "#5865F2",
+      "verified": true,
+      "email": ""
+    }
+  },
+  "expiresAt": "2024-01-22T10:30:00.000Z"
+}
+```
+
+**Note**: JWT token is automatically set as `pastille_token` httpOnly cookie.
+
+**Response** `400 Bad Request`
+```json
+{
+  "message": "You must provide a code"
+}
+```
+
+**Response** `500 Internal Server Error`
+```json
+{
+  "message": "Internal server error"
+}
+```
+
+### Get Current User 🔒
+
+**GET** `/auth/me`
+
+Get authenticated user's information.
+
+**Headers**
+- `Authorization: Bearer <token>` OR
+- Cookie: `pastille_token`
+
+**Response** `200 OK`
+```json
+{
+  "user": {
+    "_id": "user_mongo_id",
+    "discord_id": "123456789012345678",
+    "personal": {
+      "username": "testuser",
+      "global_name": "Test User",
+      "avatar": "avatar_hash",
+      "verified": true,
+      "email": ""
+    }
+  }
+}
+```
+
+**Response** `401 Unauthorized`
+```json
+{
+  "message": "Authentication required"
+}
+```
+
+### Logout 🔒
+
+**POST** `/auth/logout`
+
+Logout from current session.
+
+**Headers**
+- `Authorization: Bearer <token>` OR
+- Cookie: `pastille_token`
+
+**Response** `200 OK`
+```json
+{
+  "message": "Logged out successfully"
+}
+```
+
+### Logout All Devices 🔒
+
+**POST** `/auth/logout/all`
+
+Logout from all devices/sessions.
+
+**Headers**
+- `Authorization: Bearer <token>` OR
+- Cookie: `pastille_token`
+
+**Response** `200 OK`
+```json
+{
+  "message": "Logged out from all devices"
+}
+```
+
+### Get User Guilds 🔒
+
+**GET** `/auth/guilds`
+
+Get Discord guilds where the authenticated user has permission to add bots (MANAGE_GUILD permission), with an indicator showing if the bot is already added to each guild.
+
+**Headers**
+- `Authorization: Bearer <token>` OR
+- Cookie: `pastille_token`
+
+**Response** `200 OK`
+```json
+[
+  {
+    "id": "987654321098765432",
+    "name": "My Server",
+    "icon": "icon_hash",
+    "description": "A cool server",
+    "owner": false,
+    "botAdded": true
+  },
+  {
+    "id": "123456789012345678",
+    "name": "Another Server",
+    "icon": "another_icon_hash",
+    "description": null,
+    "owner": true,
+    "botAdded": false
+  }
+]
+```
+
+**Response Fields**
+- `id`: Discord guild ID
+- `name`: Guild name
+- `icon`: Guild icon hash (or null)
+- `description`: Guild description (or null)
+- `owner`: Whether the user owns the guild
+- `botAdded`: Whether the Pastille bot is already added to this guild
+
+**Note**: Only returns guilds where the user has MANAGE_GUILD permission (0x00000020), which is required to add bots to servers.
+
+**Response** `401 Unauthorized` (Missing JWT token)
+```json
+{
+  "message": "Authentication required"
+}
+```
+
+**Response** `401 Unauthorized` (Expired Discord token)
+```json
+{
+  "message": "Discord token expired or invalid",
+  "error": "unauthorized",
+  "details": "Please log in again to refresh your Discord token"
+}
+```
+
+**Response** `404 Not Found`
+```json
+{
+  "message": "User not found"
+}
+```
+
+**Response** `500 Internal Server Error`
+```json
+{
+  "message": "Internal server error"
+}
+```
+
+---
+
+## User Management
+
+### Get User Profile
+
+**GET** `/user/:discord_id`
+
+Get public user profile by Discord ID. No authentication required.
+
+**URL Parameters**
+- `discord_id` (string, required) - Discord user ID
+
+**Response** `200 OK`
+```json
+{
+  "user": {
+    "discord_id": "123456789012345678",
+    "personal": {
+      "username": "testuser",
+      "global_name": "Test User",
+      "avatar": "avatar_hash",
+      "accent_color": "#5865F2",
+      "verified": false,
+      "email": ""
+    }
+  }
+}
+```
+
+**Response** `404 Not Found`
+```json
+{
+  "message": "User not found"
+}
+```
+
+### Update User Profile 🔒
+
+**PUT** `/user/profile`
+
+Update authenticated user's profile. Only non-sensitive fields can be updated.
+
+**Headers**
+- `Authorization: Bearer <token>` OR
+- Cookie: `pastille_token`
+
+**Request Body**
+```json
+{
+  "global_name": "New Display Name",
+  "avatar": "new_avatar_hash",
+  "banner": "new_banner_hash",
+  "accent_color": "#FF5733"
+}
+```
+
+**Allowed Fields**: `global_name`, `avatar`, `banner`, `accent_color`
+
+**Response** `200 OK`
+```json
+{
+  "message": "Profile updated successfully",
+  "user": {
+    "_id": "user_mongo_id",
+    "discord_id": "123456789012345678",
+    "personal": {
+      "username": "testuser",
+      "global_name": "New Display Name",
+      "avatar": "new_avatar_hash",
+      "verified": true,
+      "email": ""
+    }
+  }
+}
+```
+
+**Response** `400 Bad Request`
+```json
+{
+  "message": "No valid fields to update"
+}
+```
+
+### Delete User Account 🔒
+
+**DELETE** `/user/account`
+
+Delete authenticated user's account permanently.
+
+**Headers**
+- `Authorization: Bearer <token>` OR
+- Cookie: `pastille_token`
+
+**Response** `200 OK`
+```json
+{
+  "message": "Account deleted successfully"
 }
 ```
 

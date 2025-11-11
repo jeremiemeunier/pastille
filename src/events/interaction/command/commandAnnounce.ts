@@ -1,12 +1,18 @@
-import { getParams } from "@functions/base";
+import { getParams } from "@functions/Base.function";
 import Logs from "@libs/Logs";
-import { Client, EmbedBuilder } from "discord.js";
+import { ChatInputCommandInteraction, Client, EmbedBuilder } from "discord.js";
 
-const commandAnnounceInit = async (client: Client, interaction: any) => {
+const commandAnnounceInit = async ({
+  client,
+  interaction,
+}: {
+  client: Client;
+  interaction: ChatInputCommandInteraction;
+}) => {
   const { commandName } = interaction;
   if (commandName !== "announce") return;
 
-  const guildParams = await getParams({ guild: interaction?.guildId });
+  const guildParams = await getParams({ guild: interaction.guild! });
   if (!guildParams) return;
 
   const { options } = guildParams;
@@ -17,8 +23,8 @@ const commandAnnounceInit = async (client: Client, interaction: any) => {
         options.color !== ""
           ? parseInt(options.color, 16)
           : parseInt("E84A95", 16),
-      title: interaction.options.getString("title"),
-      description: interaction.options.getString("content"),
+      title: interaction.options.getString("title")!,
+      description: interaction.options.getString("content")!,
     });
     const message = await interaction.reply({
       embeds: [embed],
@@ -26,7 +32,7 @@ const commandAnnounceInit = async (client: Client, interaction: any) => {
       content: "📢 **Annonce** ||@everyone||",
     });
   } catch (err: any) {
-    Logs("command:announce", "error", err);
+    Logs(["command", "announce"], "error", err);
   }
 };
 

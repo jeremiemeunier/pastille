@@ -6,7 +6,7 @@ import {
   TextChannel,
   VoiceChannel,
 } from "discord.js";
-import { getParams } from "./base";
+import { getParams } from "./Base.function";
 import Logs from "@libs/Logs";
 
 export const haveVoiceThread = async ({
@@ -14,7 +14,7 @@ export const haveVoiceThread = async ({
   threadChannel,
 }: {
   channel: VoiceChannel;
-  threadChannel: TextChannel;
+  threadChannel: any;
 }) => {
   try {
     const thread = threadChannel.threads.cache.find(
@@ -27,20 +27,25 @@ export const haveVoiceThread = async ({
 
     return false;
   } catch (err: any) {
-    Logs("voice:thread:join", "error", err);
+    Logs(["voice", "thread", "join"], "error", err);
   }
 };
 
 /**
  * Create a new thread on first join on voice channel
  */
-export const createVoiceThread = async (
-  guild: any,
-  channel: any,
-  threadChannel: any,
-  user: any
-) => {
-  const guildParams = await getParams({ guild: guild.id });
+export const createVoiceThread = async ({
+  guild,
+  channel,
+  threadChannel,
+  user,
+}: {
+  guild: Guild;
+  channel: VoiceChannel;
+  threadChannel: TextChannel;
+  user: GuildMember;
+}) => {
+  const guildParams = await getParams({ guild: guild });
   if (!guildParams) return;
 
   const { options } = guildParams;
@@ -77,11 +82,11 @@ export const createVoiceThread = async (
           embeds: [embed, embedExplicative],
         });
       } catch (err: any) {
-        Logs("voice:thread:create", "error", err);
+        Logs(["voice", "thread", "create"], "error", err);
       }
     }
   } catch (err: any) {
-    Logs("voice:thread:find:existing", "error", err);
+    Logs(["voice", "thread", "find", "existing"], "error", err);
   }
 };
 
@@ -113,7 +118,7 @@ export const joinVoiceThread = async ({
       await thread.send({ embeds: [embed] });
     }
   } catch (err: any) {
-    Logs("voice:thread:join", "error", err);
+    Logs(["voice", "thread", "join"], "error", err);
   }
 };
 
@@ -145,13 +150,13 @@ export const joinAllVoiceThread = async ({
             });
             await thread.send({ embeds: [embed] });
           } catch (err: any) {
-            Logs("voice:thread:join:all", "error", err);
+            Logs(["voice", "thread", "join", "all"], "error", err);
           }
         }
       });
     }
   } catch (err: any) {
-    Logs("voice:thread:join", "error", err);
+    Logs(["voice", "thread", "join"], "error", err);
   }
 };
 
@@ -159,48 +164,64 @@ export const joinAllVoiceThread = async ({
  * Remove user to thread on join voice channel
  */
 
-export const leaveVoiceThread = async (
-  guild: any,
-  channel: any,
-  threadChannel: any,
-  user: any
-) => {
+export const leaveVoiceThread = async ({
+  guild,
+  channel,
+  threadChannel,
+  user,
+}: {
+  guild: Guild;
+  channel: VoiceChannel;
+  threadChannel: TextChannel;
+  user: GuildMember;
+}) => {
   try {
     const thread = threadChannel.threads.cache.find(
-      (thread: any) => thread.name === `Voice : ${channel.name}`
+      (thread) => thread.name === `Voice : ${channel.name}`
     );
-    await thread.members.remove(user);
+
+    if (!thread) return;
+    if (!user) return;
+
+    await thread.members.remove(user.id);
     const embed = new EmbedBuilder({
       color: 16711680,
-      description: `<@${user}> a quitté ce salon vocal 💨`,
+      description: `<@${user.id}> a quitté ce salon vocal 💨`,
     });
     const message = await thread.send({ embeds: [embed] });
   } catch (err: any) {
-    Logs("voice:thread:leave", "error", err);
+    Logs(["voice", "thread", "leave"], "error", err);
   }
 };
 
 /**
  * Deleting thread on last user leave voice channel
  */
-export const deleteVoiceThread = async (
-  guild: any,
-  channel: any,
-  threadChannel: any
-) => {
-  const guildParams = await getParams({ guild: guild.id });
+export const deleteVoiceThread = async ({
+  guild,
+  channel,
+  threadChannel,
+}: {
+  guild: Guild;
+  channel: VoiceChannel;
+  threadChannel: TextChannel;
+}) => {
+  const guildParams = await getParams({ guild: guild });
   if (!guildParams) return;
 
   try {
     const thread = threadChannel.threads.cache.find(
       (thread: any) => thread.name === `Voice : ${channel.name}`
     );
+
+    if (!thread) return;
+
     try {
       await thread.delete();
     } catch (err: any) {
-      Logs("voice:thread:delete:timeout", "error", err);
+      Logs(["voice", "thread", "delete", "timeout"], "error", err);
     }
   } catch (err: any) {
-    Logs("voice:thread:delete", "error", err);
+    Logs(["voice", "thread", "delete"], "error", err);
   }
 };

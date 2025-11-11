@@ -1,6 +1,6 @@
 import { Events } from "discord.js";
 import { autoThread } from "./voice/autoThread";
-import { getParams } from "@functions/base";
+import { getParams } from "@functions/Base.function";
 import { autoChannel, autoRemoveChannel } from "./voice/autoChannel";
 
 export const voiceEventInit = (client: any) => {
@@ -28,7 +28,7 @@ export const voiceEventInit = (client: any) => {
           (guild: { id: any }) => guild?.id === newState.guild?.id
         );
 
-      const guildParams = await getParams({ guild: guild.id });
+      const guildParams = await getParams({ guild });
       if (!guildParams) return;
 
       const { channels } = guildParams.options;

@@ -1,4 +1,4 @@
-import { getParams } from "@functions/base";
+import { getParams } from "@functions/Base.function";
 import Logs from "@libs/Logs";
 import {
   EmbedBuilder,
@@ -6,9 +6,18 @@ import {
   ButtonBuilder,
   ButtonStyle,
   MessageFlags,
+  ContextMenuCommandInteraction,
+  Client,
+  TextChannel,
 } from "discord.js";
 
-const contextReportMessage = async (client: any, interaction: any) => {
+const contextReportMessage = async ({
+  client,
+  interaction,
+}: {
+  client: Client;
+  interaction: ContextMenuCommandInteraction;
+}) => {
   const { commandName } = interaction;
   if (commandName !== "Signaler") {
     return;
@@ -17,7 +26,10 @@ const contextReportMessage = async (client: any, interaction: any) => {
   const guild = client.guilds.cache.find(
     (guild: any) => guild?.id === interaction?.guildId
   );
-  const guildParams = await getParams({ guild: guild.id });
+
+  if (!guild) return;
+
+  const guildParams = await getParams({ guild: guild });
   if (!guildParams) return;
 
   const { moderation } = guildParams;
@@ -25,15 +37,21 @@ const contextReportMessage = async (client: any, interaction: any) => {
   const reporterUser = guild.members.cache.find(
     (user: any) => user?.id === interaction.user?.id
   );
+
   const reportedChannel = guild.channels.cache.find(
     (channel: any) => channel?.id === interaction.channelId
-  );
+  ) as TextChannel;
+  if (!reportedChannel) return;
+
   const reportedMessage = reportedChannel.messages.cache.find(
     (message: any) => message?.id === interaction.targetId
   );
+  if (!reportedMessage) return;
+
   const reportChannel = guild.channels.cache.find(
     (channel: any) => channel?.id === moderation.channels.report
-  );
+  ) as TextChannel;
+  if (!reportChannel) return;
 
   try {
     const reportEmbed = new EmbedBuilder({
@@ -54,7 +72,7 @@ const contextReportMessage = async (client: any, interaction: any) => {
         { name: "Channel id", value: reportedMessage.channelId, inline: true },
       ],
     });
-    const buttonDelete = new ActionRowBuilder().addComponents(
+    const buttonDelete = new ActionRowBuilder<ButtonBuilder>().addComponents(
       new ButtonBuilder({
         label: "Supprimer le message et ajouter un warn",
         style: ButtonStyle.Danger,
@@ -72,7 +90,7 @@ const contextReportMessage = async (client: any, interaction: any) => {
       flags: MessageFlags.Ephemeral,
     });
   } catch (err: any) {
-    Logs("command:report:message", "error", err, guild?.id);
+    Logs(["command", "report", "message"], "error", err, guild?.id);
   }
 };
 

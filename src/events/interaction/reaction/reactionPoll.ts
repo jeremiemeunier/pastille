@@ -1,13 +1,8 @@
 import Logs from "@libs/Logs";
-import { Events } from "discord.js";
+import { Client } from "discord.js";
 
 const pollReactions = async (
-  client: {
-    on: (
-      arg0: Events,
-      arg1: (reaction: any, user: any) => Promise<void>
-    ) => void;
-  },
+  client: Client,
   reaction: {
     partial?: any;
     fetch?: () => any;
@@ -30,7 +25,7 @@ const pollReactions = async (
     try {
       await reaction.users.remove(user);
     } catch (err: any) {
-      Logs("reaction:poll:remove", "error", err, reaction.guildId);
+      Logs(["reaction", "poll", "remove"], "error", err, reaction.guildId);
       return;
     }
   } else {
@@ -43,7 +38,12 @@ const pollReactions = async (
           try {
             await react.users.remove(user);
           } catch (err: any) {
-            Logs("reaction:poll:remove_2", "error", err, reaction.guildId);
+            Logs(
+              ["reaction", "poll", "remove_2"],
+              "error",
+              err,
+              reaction.guildId
+            );
             return;
           }
         }

@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 import { isPastille } from "../middlewares/isPastille";
-import Setting from "@models/Setting";
+import Setting from "@models/Setting.model";
 import Logs from "@libs/Logs";
 import { rateLimiter } from "@libs/RateLimiter";
 
@@ -70,7 +70,7 @@ router.post(
       res.status(201).json(q_make);
     } catch (err: any) {
       res.status(500).json({ message: "Internal server error", error: err });
-      Logs("api:settings:post", "error", err, guild_id);
+      Logs(["api", "settings", "post"], "error", err, guild_id);
     }
   }
 );
@@ -94,7 +94,7 @@ router.get(
       res.status(404).json({ message: "No settings found" });
     } catch (err: any) {
       res.status(500).json({ message: "Internal server error", error: err });
-      Logs("api:settings:get", "error", err, guild_id as string);
+      Logs(["api", "settings", "get"], "error", err, guild_id as string);
     }
   }
 );

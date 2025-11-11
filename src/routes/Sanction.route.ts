@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 import { isPastille } from "../middlewares/isPastille";
-import Sanction from "@models/Sanction";
+import Sanction from "@models/Sanction.model";
 import Logs from "@libs/Logs";
 import { rateLimiter } from "@libs/RateLimiter";
 
@@ -23,7 +23,7 @@ router.put(
       res.status(204).end();
     } catch (err: any) {
       res.status(500).json({ message: "Internal server error", error: err });
-      Logs("api:sanction:put", "error", err);
+      Logs(["api", "sanction", "put"], "error", err);
     }
   }
 );
@@ -51,7 +51,7 @@ router.post(
       res.status(204).end();
     } catch (err: any) {
       res.status(500).json({ message: "Internal server error", error: err });
-      Logs("api:sanction:register:post", "error", err, guild_id);
+      Logs(["api", "sanction", "register", "post"], "error", err, guild_id);
     }
   }
 );
@@ -71,7 +71,7 @@ router.get(
       res.status(200).json(q_list);
     } catch (err: any) {
       res.status(500).json({ message: "Internal server error", error: err });
-      Logs("api:sanction:get:all", "error", err, guild_id as string);
+      Logs(["api", "sanction", "get", "all"], "error", err, guild_id as string);
     }
   }
 );

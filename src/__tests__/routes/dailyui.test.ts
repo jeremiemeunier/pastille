@@ -1,6 +1,6 @@
 import request from "supertest";
 import { createTestApp } from "../testApp";
-import Dailyui from "@models/Dailyui";
+import Dailyui from "@models/Dailyui.model";
 
 jest.mock("@models/Dailyui");
 

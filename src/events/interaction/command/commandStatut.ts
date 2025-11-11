@@ -1,17 +1,26 @@
 import Logs from "@libs/Logs";
-import { ActivityType, MessageFlags } from "discord.js";
+import {
+  ActivityType,
+  ChatInputCommandInteraction,
+  Client,
+  MessageFlags,
+} from "discord.js";
 
-const commandStatutInit = async (client: any, interaction: any) => {
+const commandStatutInit = async ({
+  client,
+  interaction,
+}: {
+  client: Client;
+  interaction: ChatInputCommandInteraction;
+}) => {
   const { commandName } = interaction;
-  if (commandName !== "status") {
-    return;
-  }
+  if (commandName !== "status") return;
 
   try {
-    client.user.setPresence({
+    client.user!.setPresence({
       activities: [
         {
-          name: interaction.options.getString("content"),
+          name: interaction.options.getString("content")!,
           type: ActivityType.Custom,
         },
       ],
@@ -21,7 +30,7 @@ const commandStatutInit = async (client: any, interaction: any) => {
       flags: MessageFlags.Ephemeral,
     });
   } catch (err: any) {
-    Logs("command:status", "error", err);
+    Logs(["command", "status"], "error", err);
   }
 };
 

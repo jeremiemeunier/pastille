@@ -1,6 +1,6 @@
 import request from "supertest";
 import { createTestApp } from "../testApp";
-import Emote from "@models/Emote";
+import Emote from "@models/Emote.model";
 
 jest.mock("@models/Emote");
 

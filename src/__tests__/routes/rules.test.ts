@@ -1,6 +1,6 @@
 import request from "supertest";
 import { createTestApp } from "../testApp";
-import Rule from "@models/Rule";
+import Rule from "@models/Rule.model";
 
 jest.mock("@models/Rule");
 

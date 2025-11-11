@@ -1,6 +1,6 @@
 import request from "supertest";
 import { createTestApp } from "../testApp";
-import Role from "@models/Role";
+import Role from "@models/Role.model";
 
 jest.mock("@models/Role");
 

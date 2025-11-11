@@ -1,4 +1,4 @@
-import { getParams, getRules } from "@functions/base";
+import { getParams, getRules } from "@functions/Base.function";
 import Logs from "@libs/Logs";
 import {
   EmbedBuilder,
@@ -6,20 +6,29 @@ import {
   ButtonBuilder,
   ButtonStyle,
   MessageFlags,
+  Client,
+  ChatInputCommandInteraction,
+  TextChannel,
 } from "discord.js";
 
-const commandRuleInit = async (_client: any, interaction: any) => {
+const commandRuleInit = async ({
+  client,
+  interaction,
+}: {
+  client?: Client;
+  interaction: ChatInputCommandInteraction;
+}) => {
   const { commandName } = interaction;
   if (commandName !== "rule") return;
 
-  const guildParams = await getParams({ guild: interaction?.guildId });
+  const guildParams = await getParams({ guild: interaction?.guild! });
   if (!guildParams) return;
 
-  const rules = await getRules({ guild: interaction?.guildId });
+  const rules = await getRules({ guild: interaction?.guild! });
   if (!rules) return;
 
   const { options } = guildParams;
-  const channel = interaction.channel;
+  const channel = interaction.channel as TextChannel;
 
   if (rules) {
     try {
@@ -32,13 +41,14 @@ const commandRuleInit = async (_client: any, interaction: any) => {
         });
       });
 
-      const acceptRuleButton = new ActionRowBuilder().addComponents(
-        new ButtonBuilder({
-          label: "Accepter le réglement",
-          style: ButtonStyle.Primary,
-          custom_id: "acceptedRules",
-        })
-      );
+      const acceptRuleButton =
+        new ActionRowBuilder<ButtonBuilder>().addComponents(
+          new ButtonBuilder({
+            label: "Accepter le réglement",
+            style: ButtonStyle.Primary,
+            custom_id: "acceptedRules",
+          })
+        );
 
       const rulesEmbed = new EmbedBuilder({
         color:
@@ -77,7 +87,16 @@ const commandRuleInit = async (_client: any, interaction: any) => {
         flags: MessageFlags.Ephemeral,
       });
     } catch (err: any) {
-      Logs("rule:embed", "error", JSON.stringify(err), interaction?.guildId);
+      Logs(
+        ["rule", "embed"],
+        "error",
+        JSON.stringify(err),
+        interaction?.guild?.id
+      );
+      interaction.reply({
+        content: "Une erreur est survenue lors de l'envoi des règles",
+        flags: MessageFlags.Ephemeral,
+      });
     }
   } else {
     interaction.reply({

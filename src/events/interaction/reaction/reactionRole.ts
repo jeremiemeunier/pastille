@@ -1,24 +1,27 @@
-import { getRoles } from "@functions/base";
+import { getRoles } from "@functions/Base.function";
 import Logs from "@libs/Logs";
-import { Events } from "discord.js";
+import {
+  Client,
+  MessageReaction,
+  PartialMessageReaction,
+  PartialUser,
+  User,
+} from "discord.js";
 
 const addRole = async (
-  client: {
-    on?: (
-      arg0: Events,
-      arg1: (reaction: any, user: any) => Promise<void>
-    ) => void;
-    guilds?: any;
-  },
-  reaction: { partial?: any; fetch?: () => any; message: any; emoji?: any },
-  user: { bot?: boolean; id?: any }
+  client: Client,
+  reaction: MessageReaction | PartialMessageReaction,
+  user: User | PartialUser
 ) => {
   const guild = client.guilds.cache.find(
     (guild: { id: any }) => guild?.id === reaction.message.guildId
   );
+  if (!guild) return;
+
   const member = guild.members.cache.find(
     (member: { id: any }) => member?.id === user?.id
   );
+  if (!member) return;
 
   const roles = await getRoles({ guild: guild });
 
@@ -29,11 +32,17 @@ const addRole = async (
       const roleItem = guild.roles.cache.find(
         (role: { id: any }) => role?.id === item.role
       );
+      if (!roleItem) return;
 
       try {
         await member.roles.add(roleItem);
       } catch (err: any) {
-        Logs("reaction:role:add", "error", err, reaction.message.guildId);
+        Logs(
+          ["reaction", "role", "add"],
+          "error",
+          err,
+          reaction.message.guild!.id
+        );
         return;
       }
     }
@@ -41,22 +50,19 @@ const addRole = async (
 };
 
 const removeRole = async (
-  client: {
-    on?: (
-      arg0: Events,
-      arg1: (reaction: any, user: any) => Promise<void>
-    ) => void;
-    guilds?: any;
-  },
-  reaction: { partial?: any; fetch?: () => any; message: any; emoji?: any },
-  user: { bot?: boolean; id?: any }
+  client: Client,
+  reaction: MessageReaction | PartialMessageReaction,
+  user: User | PartialUser
 ) => {
   const guild = client.guilds.cache.find(
     (guild: { id: any }) => guild?.id === reaction.message.guildId
   );
+  if (!guild) return;
+
   const member = guild.members.cache.find(
     (member: { id: any }) => member?.id === user?.id
   );
+  if (!member) return;
 
   const roles = await getRoles({ guild: guild });
 
@@ -67,11 +73,17 @@ const removeRole = async (
       const roleItem = guild.roles.cache.find(
         (role: { id: any }) => role?.id === item.role
       );
+      if (!roleItem) return;
 
       try {
         await member.roles.remove(roleItem);
       } catch (err: any) {
-        Logs("reaction:role:remove", "error", err, reaction.message.guildId);
+        Logs(
+          ["reaction", "role", "remove"],
+          "error",
+          err,
+          reaction.message.guild!.id
+        );
         return;
       }
     }

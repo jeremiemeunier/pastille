@@ -1,7 +1,7 @@
 import { Request, Response, Router } from "express";
 import { isPastille } from "../middlewares/isPastille";
 import Logs from "@libs/Logs";
-import Streamers from "@models/Streamers";
+import Streamers from "@models/Streamer.model";
 import { StreamerAnnouncerTypes } from "@/types/Streamers.types";
 import { rateLimiter } from "@libs/RateLimiter";
 
@@ -23,7 +23,7 @@ router.get(
       res.status(404).json({ message: "No streamer found" });
     } catch (err: any) {
       res.status(500).json({ message: "Internal server error", error: err });
-      Logs("twitch", "error", err);
+      Logs(["twitch"], "error", err);
     }
   }
 );
@@ -43,7 +43,7 @@ router.get(
       res.status(404).json({ message: "No live to be announced" });
     } catch (err: any) {
       res.status(500).json({ message: "Internal server error", error: err });
-      Logs("twitch", "error", err);
+      Logs(["twitch"], "error", err);
     }
   }
 );
@@ -67,7 +67,7 @@ router.patch(
       res.status(204).end();
     } catch (err: any) {
       res.status(500).json({ message: "Internal server error", error: err });
-      Logs("twitch", "error", err);
+      Logs(["twitch"], "error", err);
     }
   }
 );
@@ -137,7 +137,7 @@ router.post(
       }
     } catch (err: any) {
       res.status(500).json({ message: "Internal server error", error: err });
-      Logs("", "error", err, "post_listener");
+      Logs(["twitch"], "error", err, "post_listener");
     }
   }
 );
@@ -175,7 +175,7 @@ router.delete(
       }
     } catch (err: any) {
       res.status(500).json({ message: "Internal server error", error: err });
-      Logs("", "error", err, "post_listener");
+      Logs(["twitch"], "error", err, "post_listener");
     }
   }
 );

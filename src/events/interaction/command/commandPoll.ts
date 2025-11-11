@@ -1,17 +1,25 @@
 import { readFileSync } from "node:fs";
-import { EmbedBuilder } from "discord.js";
+import { ChatInputCommandInteraction, Client, EmbedBuilder } from "discord.js";
 import { cwd } from "process";
-import { getParams } from "@functions/base";
+import { getParams } from "@functions/Base.function";
 import Logs from "@libs/Logs";
 const alphabetLetters = JSON.parse(
   readFileSync(cwd() + "/src/data/alphabet.json").toString()
 );
 
-const commandPollInit = async (_client: any, interaction: any) => {
+const commandPollInit = async ({
+  client,
+  interaction,
+}: {
+  client?: Client;
+  interaction: ChatInputCommandInteraction;
+}) => {
   const { commandName } = interaction;
-  if (commandName !== "poll") return;
 
-  const guildParams = await getParams({ guild: interaction?.guildId });
+  if (commandName !== "poll") return;
+  if (!interaction.guild) return;
+
+  const guildParams = await getParams({ guild: interaction?.guild });
   if (!guildParams) return;
 
   const { options } = guildParams;
@@ -28,7 +36,7 @@ const commandPollInit = async (_client: any, interaction: any) => {
           options.color !== ""
             ? parseInt(options.color, 16)
             : parseInt("E84A95", 16),
-        title: interaction.options.getString("question"),
+        title: interaction.options.getString("question")!,
         description: pollChoices,
       });
       const response = await interaction.reply({
@@ -37,18 +45,18 @@ const commandPollInit = async (_client: any, interaction: any) => {
         content: "Nouveau sondage ! ||@here||",
       });
       for (let j = 0; j < i; j++) {
-        let first = interaction.options
-          .getString(`choice_${alphabetLetters[j].letter}`)
+        let first = interaction
+          .options!.getString(`choice_${alphabetLetters[j].letter}`)!
           .split(" ")[0];
         let letter = alphabetLetters[j].emoji;
 
         try {
-          await response.resource.message.react(first);
+          await response.resource!.message!.react(first);
         } catch (err: any) {
           try {
-            await response.resource.message.react(letter);
+            await response.resource!.message!.react(letter);
           } catch (err: any) {
-            Logs("command:poll", "error", err);
+            Logs(["command", "poll"], "error", err);
           }
         }
       }

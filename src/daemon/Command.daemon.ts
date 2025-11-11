@@ -22,7 +22,7 @@ for (const folder of commandFolders) {
         userCmds.push(command.data);
       } else {
         Logs(
-          "commands:register",
+          ["commands", "register"],
           "warning",
           `the command at ${filePath} is missing a required "data" property.`
         );
@@ -36,7 +36,7 @@ for (const folder of commandFolders) {
         guildCmds.push(command.data);
       } else {
         Logs(
-          "commands:register",
+          ["commands", "register"],
           "warning",
           `the command at ${filePath} is missing a required "data" property.`
         );
@@ -50,7 +50,7 @@ export const CommandRegisterDaemon = async (guild: any) => {
   await (async () => {
     try {
       Logs(
-        "daemon:command",
+        ["daemon", "command"],
         null,
         `refreshing ${guildCmds.length} guilds commands`,
         guild?.id
@@ -63,18 +63,18 @@ export const CommandRegisterDaemon = async (guild: any) => {
         { body: guildCmds }
       );
       Logs(
-        "daemon:command",
+        ["daemon", "command"],
         null,
         `reloaded ${data.length} guilds commands`,
         guild?.id
       );
     } catch (err: any) {
-      Logs("daemon:command", "error", err, guild?.id);
+      Logs(["daemon", "command"], "error", err, guild?.id);
     }
 
     try {
       Logs(
-        "daemon:command",
+        ["daemon", "command"],
         null,
         `refreshing ${userCmds.length} global commands`
       );
@@ -82,9 +82,13 @@ export const CommandRegisterDaemon = async (guild: any) => {
         Routes.applicationCommands(process.env.BOT_ID as string),
         { body: userCmds }
       );
-      Logs("daemon:command", null, `reloaded ${data.length} global commands`);
+      Logs(
+        ["daemon", "command"],
+        null,
+        `reloaded ${data.length} global commands`
+      );
     } catch (err: any) {
-      Logs("daemon:command", "error", err);
+      Logs(["daemon", "command"], "error", err);
     }
   })();
 };

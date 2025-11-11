@@ -20,13 +20,15 @@ import { interactionCreateEventInit } from "@events/interactionCreateEvent";
 import { messageCreateEventInit } from "@events/messageCreateEvent";
 import { messageEditInit } from "@events/messageEditEvent";
 import { automod } from "@events/messageModerationEvent";
-import { AddonTwitch } from "@modules/twitch";
 import Logs from "@libs/Logs";
-import Api from "./config/Api";
+import Api from "./config/Api.config";
 import AutomodDaemon from "@functions/automod/Automod";
-import { CommandRegisterDaemon } from "@functions/CommandRegister";
-import { AddonRegisterDaemon } from "@functions/AddonsRegisterDaemon";
 import Start from "@libs/Start";
+import { CommandRegisterDaemon } from "./daemon/Command.daemon";
+import { AddonRegisterDaemon } from "./daemon/Addon.daemon";
+import { AddonTwitch } from "@modules/Twitch.module";
+import GuildModel from "@models/Guild.model";
+import pastilleAxios from "@libs/PastilleAxios";
 
 const client = new Client({
   intents: [
@@ -41,15 +43,23 @@ const client = new Client({
 
 // ##### APP ##### \\
 
-const guildStarter = (guild: Guild) => {
+const guildStarter = async (guild: Guild) => {
   try {
-    Logs("booter:guild_starter", "start", "start all functions", guild?.id);
+    Logs(
+      ["booter", "guild_starter"],
+      "start",
+      "start all functions",
+      guild?.id
+    );
     AutomodDaemon(guild);
     CommandRegisterDaemon(guild);
     AddonRegisterDaemon(guild);
-  } catch (err: any) {
-    Logs("booter:guild_starter", "error", err, guild?.id);
-  }
+
+    // adding to database if not exists
+    try {
+      await pastilleAxios.post("/guild/join", guild.toJSON());
+    } catch (err: any) {}
+  } catch (err: any) {}
 };
 
 const setStatus = async () => {
@@ -71,14 +81,14 @@ const setStatus = async () => {
 const pastilleBooter = async () => {
   Start();
 
-  Logs("booter", "start", "pastille has started successfully");
-  Logs("booter", null, `authenticated has ${client.user?.displayName}`);
+  Logs(["booter"], "start", "pastille has started successfully");
+  Logs(["booter"], null, `authenticated has ${client.user?.displayName}`);
   setStatus();
 
   try {
     // API
     Api();
-    AddonTwitch(client);
+    // AddonTwitch(client);
 
     try {
       const allGuilds = client.guilds.cache;
@@ -95,15 +105,30 @@ const pastilleBooter = async () => {
       messageEditInit(client);
       automod(client);
     } catch (err: any) {
-      Logs("booter", "error", err);
+      Logs(["booter"], "error", err);
     }
   } catch (err: any) {
-    Logs("api:server", "error", err);
+    Logs(["api", "server"], "error", err);
   }
 
   client.on(Events.GuildCreate, (event) => {
-    Logs("events:new_guild", null, "join a new guild", event?.id);
+    Logs(["events", "new_guild"], null, "join a new guild", event?.id);
     guildStarter(event);
+    setStatus();
+  });
+
+  client.on(Events.GuildDelete, async (event) => {
+    Logs(
+      ["events", "leave_guild"],
+      null,
+      "left or kicked from a guild",
+      event?.id
+    );
+    try {
+      await GuildModel.findOneAndDelete({ id: event.id });
+    } catch (err: any) {
+      Logs(["events", "leave_guild"], "error", err);
+    }
     setStatus();
   });
 };
@@ -112,5 +137,5 @@ try {
   client.on("clientReady", pastilleBooter);
   client.login(process.env.BOT_TOKEN);
 } catch (err: any) {
-  Logs("client:connect", "error", err);
+  Logs(["client", "connect"], "error", err);
 }

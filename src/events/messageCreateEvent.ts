@@ -7,8 +7,11 @@ import {
   getCommands,
   getParams,
   hoursParser,
-} from "@functions/base";
-import { buildConversationContext, removeMentions } from "@functions/messageContext";
+} from "@functions/Base.function";
+import {
+  buildConversationContext,
+  removeMentions,
+} from "@functions/messageContext";
 import Logs from "@libs/Logs";
 import axios from "axios";
 
@@ -22,7 +25,7 @@ export const messageCreateEventInit = (client: any) => {
       (channel: { id: any }) => channel?.id === message.channelId
     );
 
-    const guildParams = await getParams({ guild: guild.id });
+    const guildParams = await getParams({ guild });
     if (!guildParams) return;
 
     const { options } = guildParams;
@@ -66,7 +69,7 @@ export const messageCreateEventInit = (client: any) => {
             reason: "New screenshots posted",
           });
         } catch (err: any) {
-          Logs("thread:screenshots", "error", err);
+          Logs(["thread", "screenshots"], "error", err);
           return;
         }
       } else {
@@ -76,7 +79,7 @@ export const messageCreateEventInit = (client: any) => {
             "Tu es sur un channel dédié aux screenshots. Afin de garder de la clarté dans la lecture, tu peux commenter les posts des autres membres directement dans les fils liés."
           );
         } catch (err: any) {
-          Logs("delete:message:screenshots", "error", err);
+          Logs(["delete", "message", "screenshots"], "error", err);
           return;
         }
       }
@@ -84,6 +87,10 @@ export const messageCreateEventInit = (client: any) => {
 
     if (message.mentions.has(client.user)) {
       if (message.mentions.everyone) return;
+
+      const msg = await message.reply({
+        content: "Attend un peu je réfléchis...",
+      });
 
       try {
         // Build conversation context from reply chain
@@ -99,9 +106,9 @@ export const messageCreateEventInit = (client: any) => {
             content: `Répond de manière sarcastique et rigolote au message de cet utilisateur, il se nomme ${message.author.displayName}. Tu es pastille un bot exceptionnel qui ne se laisse pas marcher sur les pieds. Tu te prénomme Pastille. N'utilise jamais le nom de l'utilisateur comme étant le tient tu vaut mieux que ça. Si l'utilisateur te pose des questions et faits des fautes n'hésite pas à la reprendre en précédant ta correction de l'émoji suivant : 🤓. Tu peux d'ailleurs utiliser des emoji et du texte enrichie avec MarkDown pour répondre aux questions.`,
           },
           ...conversationHistory,
-          { 
-            role: "user", 
-            content: removeMentions(message.content)
+          {
+            role: "user",
+            content: removeMentions(message.content),
           },
         ];
 
@@ -119,13 +126,24 @@ export const messageCreateEventInit = (client: any) => {
 
         if (req.data.message) {
           try {
-            await message.reply({ content: req.data.message.content });
+            await msg.edit({ content: req.data.message.content });
           } catch (err: any) {
-            Logs("message:event:ai:reply", "error", err);
+            Logs(["message", "event", "ai", "reply"], "error", err);
           }
         }
       } catch (err: any) {
-        Logs("message:event:ai", "error", err);
+        Logs(["message", "event", "ai"], "error", err);
+
+        try {
+          await msg.delete();
+        } catch (err: any) {
+          Logs(["message", "event", "ai", "reply", "delete"], "error", err);
+        }
+
+        await message.reply({
+          content:
+            "Désolé, j'ai un peu de mal à réfléchir en ce moment. Réessaie plus tard !",
+        });
       }
     }
 

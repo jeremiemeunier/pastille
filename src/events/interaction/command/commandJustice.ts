@@ -1,12 +1,15 @@
-import { getParams } from "@functions/base";
 import Logs from "@libs/Logs";
-import { Client, EmbedBuilder } from "discord.js";
+import { ChatInputCommandInteraction, Client, EmbedBuilder } from "discord.js";
 
-const commandJusticeInit = async (client: Client, interaction: any) => {
+const commandJusticeInit = async ({
+  client,
+  interaction,
+}: {
+  client: Client;
+  interaction: ChatInputCommandInteraction;
+}) => {
   const { commandName } = interaction;
-  if (commandName !== "justice") {
-    return;
-  }
+  if (commandName !== "justice") return;
 
   try {
     const embed = new EmbedBuilder({
@@ -19,7 +22,7 @@ const commandJusticeInit = async (client: Client, interaction: any) => {
       content: `Voici un résumé de tes sanctions et avertissement gérer par ${client.user?.displayName}`,
     });
   } catch (err: any) {
-    Logs("command:justice", "error", err);
+    Logs(["command", "justice"], "error", err);
   }
 };
 

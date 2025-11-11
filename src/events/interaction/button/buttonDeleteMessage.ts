@@ -1,31 +1,53 @@
 import { time } from "@discordjs/builders";
-import { getParams, postWarnUser } from "@functions/base";
+import { getParams, postWarnUser } from "@functions/Base.function";
 import Logs from "@libs/Logs";
-import { Events, EmbedBuilder, MessageFlags } from "discord.js";
+import {
+  Events,
+  EmbedBuilder,
+  MessageFlags,
+  ButtonInteraction,
+  Client,
+  Guild,
+  TextChannel,
+  APIEmbedField,
+} from "discord.js";
 
-const buttonDeleteMessage = async (
-  _client: {
-    on: (arg0: Events, arg1: (interaction: any) => Promise<void>) => void;
-  },
-  interaction: any
-) => {
+const buttonDeleteMessage = async ({
+  client,
+  interaction,
+}: {
+  client: Client;
+  interaction: ButtonInteraction;
+}) => {
   try {
     const { customId } = interaction;
     if (customId !== "deleteReportedMessage") return;
 
-    const guildParams = await getParams({ guild: interaction?.guildId });
+    if (!interaction.guild) return;
+
+    const guildParams = await getParams({ guild: interaction.guild });
     if (!guildParams) return;
 
     const { moderation, options } = guildParams;
 
-    const guild = interaction?.guildId;
+    const guild = interaction?.guild;
+    if (!guild) return;
+
     const reportChannel = guild.channels.cache.find(
       (channel: { id: any }) => channel?.id === moderation.channels.report
-    );
+    ) as TextChannel;
+
+    if (!reportChannel) return;
+
     const reportMessage = reportChannel.messages.cache.find(
       (message: { id: any }) => message?.id === interaction.message?.id
     );
+
+    if (!reportMessage) return;
+
     const reportData = reportMessage.embeds[0].data.fields;
+
+    if (!reportData) return;
 
     const embedActionDelete = new EmbedBuilder({
       color:
@@ -45,8 +67,8 @@ const buttonDeleteMessage = async (
         interaction.user?.id
       }> — Ajout d'un warn à l'auteur`,
     });
-    reportMessage.embeds.push(embedActionDelete);
-    reportMessage.embeds.push(embedActionWarn);
+    reportMessage.embeds.push(embedActionDelete as any);
+    reportMessage.embeds.push(embedActionWarn as any);
 
     const action = await deleteReportedMessage(reportData, guild);
     if (action.err) {
@@ -66,18 +88,21 @@ const buttonDeleteMessage = async (
       });
     }
   } catch (err: any) {
-    Logs("button:delete_reported:base", "error", err, interaction?.guildId);
+    Logs(
+      ["button", "delete_reported", "base"],
+      "error",
+      err,
+      interaction?.guild?.id
+    );
   }
 };
 
-const deleteReportedMessage = async (
-  data: { value: any }[],
-  guild: { channels: { cache: any[] }; id: any }
-) => {
+const deleteReportedMessage = async (data: APIEmbedField[], guild: Guild) => {
   try {
     const reportedChannel = guild.channels.cache.find(
       (channel: { id: any }) => channel?.id === data[3].value
-    );
+    ) as TextChannel;
+
     if (!reportedChannel) {
       return { err: true, message: "Channel has already deleted" };
     }
@@ -88,7 +113,7 @@ const deleteReportedMessage = async (
     }
 
     await postWarnUser({
-      guild: guild.id,
+      guild: guild,
       data: {
         reason: "reportedMessage",
         user_id: reportedMessage.author?.id,
@@ -97,7 +122,7 @@ const deleteReportedMessage = async (
     await reportedMessage.delete();
     return { err: false };
   } catch (err: any) {
-    Logs("button:delete:reported_message", "error", err, guild?.id);
+    Logs(["button", "delete", "reported_message"], "error", err, guild?.id);
     return { err: true, message: "Somethings went wrong" };
   }
 };

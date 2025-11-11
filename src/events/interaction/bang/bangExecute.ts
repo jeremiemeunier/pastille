@@ -1,4 +1,4 @@
-import { getCommands } from "@functions/base";
+import { getCommands } from "@functions/Base.function";
 import Logs from "@libs/Logs";
 
 const bangExecute = async (message: any, guild: any, command: any) => {
@@ -22,26 +22,26 @@ const bangExecute = async (message: any, guild: any, command: any) => {
       try {
         await message.reply({ content: response });
       } catch (err: any) {
-        Logs("bang:guild:cmd:send", "error", err, guild?.id);
+        Logs(["bang", "guild", "cmd", "send"], "error", err, guild?.id);
       }
     } else if (!channel_id && role_id && params.role) {
       try {
         await message.reply({ content: response });
       } catch (err: any) {
-        Logs("bang:guild:cmd:send", "error", err, guild?.id);
+        Logs(["bang", "guild", "cmd", "send"], "error", err, guild?.id);
       }
     } else if (!role_id && channel_id && params.channel) {
       try {
         await message.reply({ content: response });
       } catch (err: any) {
-        Logs("bang:guild:cmd:send", "error", err, guild?.id);
+        Logs(["bang", "guild", "cmd", "send"], "error", err, guild?.id);
       }
     }
   } else {
     try {
       await message.reply({ content: response });
     } catch (err: any) {
-      Logs("bang:guild:cmd:send", "error", err, guild?.id);
+      Logs(["bang", "guild", "cmd", "send"], "error", err, guild?.id);
     }
   }
 };

@@ -1,4 +1,4 @@
-import { getParams } from "@functions/base";
+import { getParams } from "@functions/Base.function";
 import {
   createVoiceThread,
   deleteVoiceThread,
@@ -6,9 +6,9 @@ import {
   joinAllVoiceThread,
   joinVoiceThread,
   leaveVoiceThread,
-} from "@functions/voice";
+} from "@functions/Voice.function";
 import Logs from "@libs/Logs";
-import { Guild, VoiceChannel } from "discord.js";
+import { Guild, TextChannel, VoiceChannel } from "discord.js";
 
 export const countMembers = async ({
   channel,
@@ -21,15 +21,15 @@ export const countMembers = async ({
     const connected = channel.members.map((x: any) => x).length;
     return connected;
   } catch (err: any) {
-    Logs("voice:count_members", "error", err, guild?.id);
+    Logs(["voice", "count_members"], "error", err, guild?.id);
   }
 };
 
 export const getTextualChannel = async (
-  channel: { parentId: null },
-  guild: { channels: { cache: any[] }; id: any }
+  channel: VoiceChannel,
+  guild: Guild
 ) => {
-  const guildParams = await getParams({ guild: guild.id });
+  const guildParams = await getParams({ guild });
   if (!guildParams) return;
 
   const { channels } = guildParams.options;
@@ -40,13 +40,13 @@ export const getTextualChannel = async (
         (textual: { name: any; parentId: any }) =>
           textual.name === channels.voiceText &&
           textual.parentId === channel.parentId
-      );
+      ) as TextChannel;
 
       if (textual === undefined) {
         const textualGlobal = guild.channels.cache.find(
-          (textual: { name: any; parentId: null }) =>
+          (textual: any) =>
             textual.name === channels.voiceText && textual.parentId === null
-        );
+        ) as TextChannel;
 
         return textualGlobal;
       }
@@ -54,14 +54,14 @@ export const getTextualChannel = async (
       return textual;
     } else {
       const textual = guild.channels.cache.find(
-        (textual: { name: any; parentId: null }) =>
+        (textual: any) =>
           textual.name === channels.voiceText && textual.parentId === null
-      );
+      ) as TextChannel;
 
       return textual;
     }
   } catch (err: any) {
-    Logs("voice:search_textual", "error", err, guild?.id);
+    Logs(["voice", "search_textual"], "error", err, guild?.id);
   }
 };
 
@@ -107,10 +107,21 @@ export const autoThread = async ({
       });
       const textual = await getTextualChannel(voiceChannel, guild);
 
+      if (!textual) return;
+
       if (connected === 0) {
-        deleteVoiceThread(guild, voiceChannel, textual);
+        deleteVoiceThread({
+          guild: guild,
+          channel: voiceChannel,
+          threadChannel: textual,
+        });
       } else {
-        leaveVoiceThread(guild, voiceChannel, textual, user);
+        leaveVoiceThread({
+          guild: guild,
+          channel: voiceChannel,
+          threadChannel: textual,
+          user: user,
+        });
       }
     } else if (oldState.channelId === null) {
       // user connect for first time
@@ -127,8 +138,15 @@ export const autoThread = async ({
         threadChannel: textual,
       });
 
+      if (!textual) return;
+
       if (connected === 1 || !threadAlreadyExist) {
-        await createVoiceThread(guild, voiceChannel, textual, user);
+        await createVoiceThread({
+          guild,
+          channel: voiceChannel,
+          threadChannel: textual,
+          user,
+        });
 
         if (!threadAlreadyExist) {
           await joinAllVoiceThread({
@@ -170,13 +188,29 @@ export const autoThread = async ({
         threadChannel: newTextual,
       });
 
+      if (!oldTextual || !newTextual) return;
+
       if (oldConnected === 0) {
-        deleteVoiceThread(guild, oldVoiceChannel, oldTextual);
+        deleteVoiceThread({
+          guild: guild,
+          channel: oldVoiceChannel,
+          threadChannel: oldTextual,
+        });
       } else {
-        leaveVoiceThread(guild, oldVoiceChannel, oldTextual, user);
+        leaveVoiceThread({
+          guild: guild,
+          channel: oldVoiceChannel,
+          threadChannel: oldTextual,
+          user: user,
+        });
       }
       if (newConnected === 1 || !threadAlreadyExist) {
-        await createVoiceThread(guild, newVoiceChannel, newTextual, user);
+        await createVoiceThread({
+          guild: guild,
+          channel: newVoiceChannel,
+          threadChannel: newTextual,
+          user: user,
+        });
 
         if (!threadAlreadyExist) {
           await joinAllVoiceThread({
@@ -195,7 +229,7 @@ export const autoThread = async ({
       }
     }
   } catch (err: any) {
-    Logs("voice", "error", err);
+    Logs(["voice"], "error", err);
     return;
   }
 };

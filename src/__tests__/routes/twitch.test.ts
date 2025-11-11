@@ -1,6 +1,6 @@
 import request from "supertest";
 import { createTestApp } from "../testApp";
-import Streamers from "@models/Streamers";
+import Streamers from "@models/Streamer.model";
 
 jest.mock("@models/Streamers");
 

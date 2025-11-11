@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 import { isPastille } from "../middlewares/isPastille";
-import Command from "@models/Command";
+import Command from "@models/Command.model";
 import Logs from "@libs/Logs";
 import { rateLimiter } from "@libs/RateLimiter";
 import { isValidObjectId } from "mongoose";
@@ -30,7 +30,7 @@ router.get(
         message: "Internal server error",
         error: err,
       });
-      Logs("api:commands:get", "error", err);
+      Logs(["api", "commands", "get"], "error", err);
     }
   }
 );
@@ -61,7 +61,7 @@ router.get(
         message: "Internal server error",
         error: err,
       });
-      Logs("api:commands:get", "error", err);
+      Logs(["api", "commands", "get"], "error", err);
     }
   }
 );
@@ -98,7 +98,7 @@ router.post(
           message: "Internal server error",
           error: err,
         });
-        Logs("api:commands:add", "error", err, guild_id);
+        Logs(["api", "commands", "add"], "error", err, guild_id);
       }
     }
   }
