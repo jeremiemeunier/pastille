@@ -77,12 +77,15 @@ const Logs: Logs = (node, state, content, details) => {
   string.push(" » ");
 
   if (content instanceof Error) {
-    console.log("error object detected");
-  }
+    // console.log("error object detected");
+    // console.log(content.stack);
 
-  string.push(
-    typeof content === "string" ? content : JSON.stringify(content, null, 2)
-  );
+    string.push(content.message);
+  } else {
+    string.push(
+      typeof content === "string" ? content : JSON.stringify(content, null, 2)
+    );
+  }
 
   if (details) string.push(composeDetails(details));
 
