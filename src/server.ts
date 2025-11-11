@@ -88,7 +88,7 @@ const pastilleBooter = async () => {
   try {
     // API
     Api();
-    AddonTwitch(client);
+    // AddonTwitch(client);
 
     try {
       const allGuilds = client.guilds.cache;
@@ -114,6 +114,21 @@ const pastilleBooter = async () => {
   client.on(Events.GuildCreate, (event) => {
     Logs(["events", "new_guild"], null, "join a new guild", event?.id);
     guildStarter(event);
+    setStatus();
+  });
+
+  client.on(Events.GuildDelete, async (event) => {
+    Logs(
+      ["events", "leave_guild"],
+      null,
+      "left or kicked from a guild",
+      event?.id
+    );
+    try {
+      await GuildModel.findOneAndDelete({ id: event.id });
+    } catch (err: any) {
+      Logs(["events", "leave_guild"], "error", err);
+    }
     setStatus();
   });
 };
