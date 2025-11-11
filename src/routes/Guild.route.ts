@@ -16,7 +16,7 @@ router.post(
 
       if (q_exist) {
         try {
-          await Guild.updateOne({ id: { $eq: req.body.id } }, { data: req.body });
+          await Guild.updateOne({ id: { $eq: req.body.id } }, { $set: { data: req.body } });
           res.status(409).json({ message: "Guild already exists" });
           return;
         } catch (err: any) {
