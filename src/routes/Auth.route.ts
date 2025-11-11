@@ -308,12 +308,19 @@ router.get(
         }
       );
 
+      if (guildsWhereUserCanAddBot.length === 0) {
+        res
+          .status(404)
+          .json({ message: "No guilds found where you can add the bot" });
+        return;
+      }
+
       // Check which guilds the bot is already in
       const botGuildIds = await Guild.find({
-        id: { $in: guildsWhereUserCanAddBot.map((g: any) => g.id) }
-      }).select('id');
-      
-      const botGuildIdsSet = new Set(botGuildIds.map(g => g.id));
+        id: { $in: guildsWhereUserCanAddBot.map((g: any) => g.id) },
+      }).select("id");
+
+      const botGuildIdsSet = new Set(botGuildIds.map((g) => g.id));
 
       // Map guilds to include only necessary information and bot presence
       const mappedGuilds = guildsWhereUserCanAddBot.map((guild: any) => ({
