@@ -1,11 +1,17 @@
 import { getRoles } from "@functions/Base.function";
 import Logs from "@libs/Logs";
-import { Client, Events } from "discord.js";
+import {
+  Client,
+  MessageReaction,
+  PartialMessageReaction,
+  PartialUser,
+  User,
+} from "discord.js";
 
 const addRole = async (
   client: Client,
-  reaction: { partial?: any; fetch?: () => any; message: any; emoji?: any },
-  user: { bot?: boolean; id?: any }
+  reaction: MessageReaction | PartialMessageReaction,
+  user: User | PartialUser
 ) => {
   const guild = client.guilds.cache.find(
     (guild: { id: any }) => guild?.id === reaction.message.guildId
@@ -35,7 +41,7 @@ const addRole = async (
           ["reaction", "role", "add"],
           "error",
           err,
-          reaction.message.guildId
+          reaction.message.guild!.id
         );
         return;
       }
@@ -45,8 +51,8 @@ const addRole = async (
 
 const removeRole = async (
   client: Client,
-  reaction: { partial?: any; fetch?: () => any; message: any; emoji?: any },
-  user: { bot?: boolean; id?: any }
+  reaction: MessageReaction | PartialMessageReaction,
+  user: User | PartialUser
 ) => {
   const guild = client.guilds.cache.find(
     (guild: { id: any }) => guild?.id === reaction.message.guildId
@@ -76,7 +82,7 @@ const removeRole = async (
           ["reaction", "role", "remove"],
           "error",
           err,
-          reaction.message.guildId
+          reaction.message.guild!.id
         );
         return;
       }

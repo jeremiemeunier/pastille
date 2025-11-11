@@ -17,9 +17,8 @@ export const reactionAddEventInit = (client: Client) => {
       reaction: MessageReaction | PartialMessageReaction,
       user: User | PartialUser
     ) => {
-      if (user.bot === true) {
-        return;
-      }
+      if (user.bot === true) return;
+
       if (reaction.partial) {
         try {
           await reaction.fetch();
