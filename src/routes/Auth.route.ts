@@ -4,6 +4,7 @@ import { rateLimiter } from "@libs/RateLimiter";
 import User from "@models/User.model";
 import Guild from "@models/Guild.model";
 import DiscordAxios from "@utils/DiscordAxios.utils";
+import cachedDiscordAxios from "@utils/CachedDiscordAxios.utils";
 import {
   createSession,
   revokeSession,
@@ -49,15 +50,20 @@ router.post("/auth/login", rateLimiter, async (req: Request, res: Response) => {
   }
 
   try {
-    // fetching discord auth token
+    // fetching discord auth token (not cached - one-time use code)
     const request_auth = await DiscordAxios.post("/oauth2/token", params);
     const { access_token, token_type, expires_in, refresh_token, scope } =
       request_auth.data;
 
-    // fetching user data
-    const request_data = await DiscordAxios.get("/users/@me", {
+    // fetching user data (cached with encryption)
+    const request_data = await cachedDiscordAxios.get("/users/@me", {
       headers: {
         Authorization: `${token_type} ${access_token}`,
+      },
+      cache: {
+        enabled: true,
+        encrypt: true,
+        ttl: 5 * 60 * 1000, // 5 minutes
       },
     });
 
@@ -239,6 +245,11 @@ router.post(
         await revokeSession(token);
       }
 
+      // Invalidate Discord API cache for this user
+      if (req.user?.discord_id) {
+        cachedDiscordAxios.invalidateUserCache(req.user.discord_id);
+      }
+
       // Clear cookie
       res.clearCookie("pastille_token");
       res.status(200).json({ message: "Logged out successfully" });
@@ -258,6 +269,11 @@ router.post(
     try {
       if (req.user?.user_id) {
         await revokeAllUserSessions(req.user.user_id);
+      }
+
+      // Invalidate Discord API cache for this user
+      if (req.user?.discord_id) {
+        cachedDiscordAxios.invalidateUserCache(req.user.discord_id);
       }
 
       // Clear cookie
@@ -284,10 +300,16 @@ router.get(
         return;
       }
 
-      // Fetch user's guilds from Discord API
-      const guildsResponse = await DiscordAxios.get("/users/@me/guilds", {
+      // Fetch user's guilds from Discord API (cached)
+      const guildsResponse = await cachedDiscordAxios.get("/users/@me/guilds", {
         headers: {
           Authorization: `${user.credentials.token_type} ${user.credentials.token}`,
+        },
+        userId: user.discord_id, // For cache isolation
+        cache: {
+          enabled: true,
+          encrypt: false, // Guild list doesn't need encryption
+          ttl: 10 * 60 * 1000, // 10 minutes
         },
       });
 
