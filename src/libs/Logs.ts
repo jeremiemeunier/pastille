@@ -40,10 +40,9 @@ const composeState: (data: Label) => string = (data) => {
       string.push("\x1b[32m");
       break;
     case "cron":
-      string.push("\x1b[32m");
-      break;
     case "sql":
-      string.push("\x1b[32m");
+    case "req":
+      string.push("\x1b[35m");
       break;
     default:
       string.push("\x1b[34m");
@@ -53,7 +52,8 @@ const composeState: (data: Label) => string = (data) => {
   if (!data) string.push("INFO".padEnd(8, " "));
   else string.push(data.toUpperCase().padEnd(8, " "));
 
-  string.push("\x1b[0m");
+  if (data !== "cron" && data !== "sql" && data !== "req")
+    string.push("\x1b[0m");
 
   return string.join("");
 };
@@ -77,9 +77,6 @@ const Logs: Logs = (node, state, content, details) => {
   string.push(" » ");
 
   if (content instanceof Error) {
-    // console.log("error object detected");
-    // console.log(content.stack);
-
     string.push(content.message);
   } else {
     string.push(

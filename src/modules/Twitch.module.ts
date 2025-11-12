@@ -81,17 +81,18 @@ const AddonTwitch = async (client: any) => {
     }
 
     // now launch cron task
+    Logs(["addons", "twitch", "cron"], "start", "Launching cron task");
     cron.schedule("* * * * *", async () => {
       // handling gesture of live
       try {
         // getting all up and unannounced stream
-        const req = await pastilleAxios.get("/twitch/live");
+        const req = (await pastilleAxios.get("/twitch/live")).data;
 
         if (!authToken) authToken = await requestAuthenticator();
 
-        if (req.data && req.data.length > 0) {
+        if (req.length > 0) {
           // map list
-          const notifications = req.data.map(
+          const notifications = req.map(
             (live: StreamerTypes) =>
               new Promise(async (resolve, reject) => {
                 // parse all announcer
@@ -229,7 +230,7 @@ const AddonTwitch = async (client: any) => {
                     transport: {
                       method: "webhook",
                       callback:
-                        "https://pastille.api.jeremiemeunier.fr/twitch/webhook",
+                        "https://pastille.jeremiemeunier.fr/api/twitch/webhook",
                       secret: process.env.BOT_SECRET_SIG,
                     },
                   },
