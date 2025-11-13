@@ -363,7 +363,11 @@ router.post(
         id: req.body.id,
         data: req.body,
       });
+      const q_make_setting = new SettingModel({
+        guild_id: req.body.id,
+      });
       await q_make.save();
+      await q_make_setting.save();
 
       res.status(201).json({ message: "Guild added successfully" });
       return;
