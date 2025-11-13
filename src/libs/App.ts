@@ -2,6 +2,7 @@ import express, {
   Application,
   json,
   NextFunction,
+  raw,
   Request,
   Response,
 } from "express";
@@ -16,7 +17,6 @@ const App: Application = express();
 
 App.use(cors());
 App.use(cookieParser());
-App.use(json());
 
 App.use((req: Request, res: Response, next: NextFunction) => {
   morgan((tokens, req, res): any => {

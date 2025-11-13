@@ -99,6 +99,7 @@ router.post(
         }
       } else {
         res.status(403).json({ message: "Invalid signature" });
+        Logs(["webhook", "twitch"], "error", "Invalid signature");
       }
     }
   }
