@@ -88,7 +88,8 @@ const pastilleBooter = async () => {
   try {
     // API
     Api();
-    AddonTwitch(client);
+
+    if (process.env.DEV !== "1") AddonTwitch(client);
 
     try {
       const allGuilds = client.guilds.cache;
