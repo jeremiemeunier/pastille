@@ -64,13 +64,7 @@ class CachedDiscordAxios {
       return config.userId;
     }
 
-    // Try to extract from Authorization header
-    const authHeader = config?.headers?.Authorization as string;
-    if (authHeader) {
-      // Hash the auth header to use as identifier
-      return authHeader;
-    }
-
+    // Don't use authorization header as identifier - require explicit userId
     return null;
   }
 

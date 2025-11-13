@@ -238,7 +238,7 @@ describe("CachedDiscordAxios", () => {
       expect(discordCache.get).toHaveBeenCalledWith("user", "explicit-user-id");
     });
 
-    it("should extract user from Authorization header", async () => {
+    it("should not cache when userId is not provided (Authorization header alone is not enough)", async () => {
       const mockData = { id: "123" };
       const authHeader = "Bearer token123";
       (DiscordAxios.get as jest.Mock).mockResolvedValue({ data: mockData });
@@ -248,7 +248,8 @@ describe("CachedDiscordAxios", () => {
         headers: { Authorization: authHeader },
       });
 
-      expect(discordCache.get).toHaveBeenCalledWith("user", authHeader);
+      // Should not cache without explicit userId
+      expect(discordCache.set).not.toHaveBeenCalled();
     });
 
     it("should not cache when user identifier cannot be determined", async () => {

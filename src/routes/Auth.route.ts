@@ -55,15 +55,13 @@ router.post("/auth/login", rateLimiter, async (req: Request, res: Response) => {
     const { access_token, token_type, expires_in, refresh_token, scope } =
       request_auth.data;
 
-    // fetching user data (cached with encryption)
+    // fetching user data (not cached on login - userId not available yet)
     const request_data = await cachedDiscordAxios.get("/users/@me", {
       headers: {
         Authorization: `${token_type} ${access_token}`,
       },
       cache: {
-        enabled: true,
-        encrypt: true,
-        ttl: 5 * 60 * 1000, // 5 minutes
+        enabled: false, // Can't cache without userId
       },
     });
 
@@ -306,11 +304,6 @@ router.get(
           Authorization: `${user.credentials.token_type} ${user.credentials.token}`,
         },
         userId: user.discord_id, // For cache isolation
-        cache: {
-          enabled: true,
-          encrypt: false, // Guild list doesn't need encryption
-          ttl: 10 * 60 * 1000, // 10 minutes
-        },
       });
 
       if (!guildsResponse.data) {

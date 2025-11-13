@@ -37,12 +37,14 @@ class DiscordCache {
   };
 
   constructor() {
-    // Generate encryption key from JWT_SECRET or use a default
-    const secret = process.env.JWT_SECRET || "default-secret-key-for-cache";
-    this.encryptionKey = crypto
-      .createHash("sha256")
-      .update(secret)
-      .digest();
+    // Generate encryption key from JWT_SECRET or use a random key if not set
+    if (!process.env.JWT_SECRET) {
+      Logs(["cache", "init"], "warning", "JWT_SECRET not set - using temporary random key");
+      const secret = crypto.randomBytes(32).toString('hex');
+      this.encryptionKey = crypto.createHash("sha256").update(secret).digest();
+    } else {
+      this.encryptionKey = crypto.createHash("sha256").update(process.env.JWT_SECRET).digest();
+    }
 
     // Run cleanup every 5 minutes
     this.cleanupInterval = setInterval(() => {
@@ -50,7 +52,7 @@ class DiscordCache {
     }, 5 * 60 * 1000);
 
     // Ensure cleanup runs on process exit
-    process.on("beforeExit", () => {
+    process.once("beforeExit", () => {
       this.clear();
       clearInterval(this.cleanupInterval);
     });
@@ -63,7 +65,7 @@ class DiscordCache {
   private generateKey(namespace: string, identifier: string): string {
     const hash = crypto
       .createHash("sha256")
-      .update(`${namespace}:${identifier}:${this.encryptionKey.toString("hex").substring(0, 16)}`)
+      .update(`${namespace}:${identifier}:${this.encryptionKey.toString("hex")}`)
       .digest("hex");
     return hash;
   }
@@ -93,8 +95,21 @@ class DiscordCache {
    */
   private decrypt(encryptedData: string): any {
     try {
-      const [ivHex, encrypted] = encryptedData.split(":");
+      if (!encryptedData || typeof encryptedData !== "string" || !encryptedData.includes(":")) {
+        throw new Error("Invalid encrypted data format");
+      }
+      const parts = encryptedData.split(":");
+      if (parts.length !== 2) {
+        throw new Error("Invalid encrypted data format");
+      }
+      const [ivHex, encrypted] = parts;
+      if (!ivHex || !encrypted) {
+        throw new Error("Missing IV or encrypted data");
+      }
       const iv = Buffer.from(ivHex, "hex");
+      if (iv.length !== 16) {
+        throw new Error("Invalid IV length");
+      }
       const decipher = crypto.createDecipheriv(
         "aes-256-cbc",
         this.encryptionKey,
@@ -119,6 +134,11 @@ class DiscordCache {
     config?: CacheConfig
   ): void {
     try {
+      if (!namespace || !identifier) {
+        Logs(["cache", "set"], "error", "Namespace and identifier are required");
+        return;
+      }
+      
       const key = this.generateKey(namespace, identifier);
       const ttl = config?.ttl || this.DEFAULT_TTLS.USER_DATA;
       const encrypt = config?.encrypt ?? false;
@@ -150,6 +170,11 @@ class DiscordCache {
    */
   get(namespace: string, identifier: string): any | null {
     try {
+      if (!namespace || !identifier) {
+        Logs(["cache", "get"], "error", "Namespace and identifier are required");
+        return null;
+      }
+      
       const key = this.generateKey(namespace, identifier);
       const entry = this.cache.get(key);
 
@@ -170,8 +195,14 @@ class DiscordCache {
 
       // Return decrypted or plain data
       const data = entry.isEncrypted
-        ? this.decrypt(entry.encryptedData!)
+        ? (entry.encryptedData ? this.decrypt(entry.encryptedData) : null)
         : entry.data;
+
+      if (data === null && entry.isEncrypted) {
+        Logs(["cache", "get"], "error", "Encrypted data is missing");
+        this.cache.delete(key);
+        return null;
+      }
 
       Logs(
         ["cache", "get"],
@@ -191,6 +222,11 @@ class DiscordCache {
    */
   delete(namespace: string, identifier: string): void {
     try {
+      if (!namespace || !identifier) {
+        Logs(["cache", "delete"], "error", "Namespace and identifier are required");
+        return;
+      }
+      
       const key = this.generateKey(namespace, identifier);
       this.cache.delete(key);
       Logs(
@@ -254,7 +290,7 @@ class DiscordCache {
   } {
     return {
       size: this.cache.size,
-      entries: [],
+      entries: [], // Namespace stats not available due to hashed keys
     };
   }
 }
