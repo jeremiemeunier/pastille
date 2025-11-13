@@ -65,6 +65,11 @@ router.get(
   isAuthenticated,
   async (req: Request, res: Response) => {
     try {
+      // Validate guild ID: must be 17-19 digits (Discord snowflake)
+      if (!/^\d{17,19}$/.test(req.params.id)) {
+        res.status(400).json({ error: "Invalid guild ID format" });
+        return;
+      }
       const axios = require("axios");
       const response = await axios.get(
         `https://discord.com/api/v10/guilds/${req.params.id}/channels`,
