@@ -87,6 +87,7 @@ router.post("/auth/login", rateLimiter, async (req: Request, res: Response) => {
         await User.findByIdAndUpdate(q_user._id, {
           personal: {
             global_name: data.global_name,
+            username: data.username,
             avatar: data.avatar,
             banner: data.banner,
             accent_color: data.accent_color,
