@@ -5,8 +5,34 @@ import { rateLimiter } from "@libs/RateLimiter";
 import Guild from "@models/Guild.model";
 import SettingModel from "@models/Setting.model";
 import { isAuthenticated } from "@middlewares/isAuthenticated";
+import GuildModel from "@models/Guild.model";
 
 const router = Router();
+
+router.get(
+  "/guild/:id",
+  rateLimiter,
+  isAuthenticated,
+  async (req: Request, res: Response) => {
+    try {
+      const q_get = await GuildModel.findOne({
+        id: { $eq: req.params.id },
+      });
+
+      if (!q_get) {
+        res.status(404).json({ message: "Guild not found" });
+        return;
+      }
+
+      res.status(200).json(q_get);
+      return;
+    } catch (err: any) {
+      Logs(["api", "guild"], "error", err);
+      res.status(500).json({ error: "Internal server error" });
+      return;
+    }
+  }
+);
 
 router.get(
   "/guild/:id/settings",
