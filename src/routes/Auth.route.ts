@@ -61,7 +61,7 @@ router.post("/auth/login", rateLimiter, async (req: Request, res: Response) => {
         Authorization: `${token_type} ${access_token}`,
       },
       cache: {
-        enabled: false, // Can't cache without userId
+        enabled: false, // Always fetch fresh data on login (OAuth code is single-use)
       },
     });
 
