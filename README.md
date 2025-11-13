@@ -137,6 +137,18 @@ The API supports two authentication methods:
 
 API endpoints are rate-limited to 100 requests per 15 minutes per IP address.
 
+### Discord API Caching
+
+Pastille implements intelligent caching for Discord API requests to improve performance and prevent rate limiting:
+
+- **Cached Data**: User profiles and guild lists with configurable TTL
+- **Encryption**: Sensitive data encrypted with AES-256-CBC
+- **Auto-expiration**: User data (5 min), Guild data (10 min)
+- **Cache invalidation**: Automatic cleanup on logout
+- **Security**: Per-user isolation with secure key derivation
+
+See [API.md](API.md) for detailed caching documentation.
+
 ## Security Features
 
 Pastille implements several security measures to protect user data and ensure system integrity:
@@ -153,12 +165,15 @@ Pastille implements several security measures to protect user data and ensure sy
 - **Separate public and authenticated views** - Public endpoints show minimal user information
 - **Field-level access control** - Users can only update non-sensitive profile fields
 - **MongoDB TTL indexes** - Automatic cleanup of expired sessions
+- **Discord API caching** - Encrypted caching with automatic expiration and secure key generation
 
 ### Best Practices
 - **Rate limiting** on all endpoints to prevent abuse
 - **CORS configuration** for cross-origin request control
 - **Environment-based security** - Secure cookies in production, relaxed in development
 - **No credentials in responses** - Discord OAuth tokens are stored securely and never returned
+- **Cache isolation** - Per-user cache namespacing prevents data leakage
+- **Automatic cleanup** - Expired cache entries and sessions are removed automatically
 
 ### API Endpoints
 
