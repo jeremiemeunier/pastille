@@ -20,16 +20,6 @@ import { default as guildRoute } from "@routes/Guild.route";
 const Api = () => {
   // API
 
-  App.use((req: Request, _res: Response, next: NextFunction) => {
-    if (req.path.startsWith("/twitch/webhook")) {
-      App.use(raw({ type: "application/json" }));
-    } else {
-      App.use(json());
-    }
-
-    next();
-  });
-
   App.use(infractionRoute);
   App.use(sanctionRoute);
   App.use(dailyuiRoute);
