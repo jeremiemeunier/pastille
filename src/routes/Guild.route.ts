@@ -26,10 +26,14 @@ router.get(
 
       // Check if user has access to this guild
       const userGuilds = await cachedDiscordAxios.get("/users/@me/guilds", {
-        headers: { Authorization: `${user.credentials.token_type} ${user.credentials.token}` },
+        headers: {
+          Authorization: `${user.credentials.token_type} ${user.credentials.token}`,
+        },
         userId: user.discord_id,
       });
-      const hasAccess = userGuilds.data.some((g: any) => g.id === req.params.id);
+      const hasAccess = userGuilds.data.some(
+        (g: any) => g.id === req.params.id
+      );
       if (!hasAccess) {
         res.status(403).json({ message: "Access denied" });
         return;
@@ -69,10 +73,14 @@ router.get(
 
       // Check if user has access to this guild
       const userGuilds = await cachedDiscordAxios.get("/users/@me/guilds", {
-        headers: { Authorization: `${user.credentials.token_type} ${user.credentials.token}` },
+        headers: {
+          Authorization: `${user.credentials.token_type} ${user.credentials.token}`,
+        },
         userId: user.discord_id,
       });
-      const hasAccess = userGuilds.data.some((g: any) => g.id === req.params.id);
+      const hasAccess = userGuilds.data.some(
+        (g: any) => g.id === req.params.id
+      );
       if (!hasAccess) {
         res.status(403).json({ message: "Access denied" });
         return;
@@ -112,10 +120,14 @@ router.get(
 
       // Check if user has access to this guild
       const userGuilds = await cachedDiscordAxios.get("/users/@me/guilds", {
-        headers: { Authorization: `${user.credentials.token_type} ${user.credentials.token}` },
+        headers: {
+          Authorization: `${user.credentials.token_type} ${user.credentials.token}`,
+        },
         userId: user.discord_id,
       });
-      const hasAccess = userGuilds.data.some((g: any) => g.id === req.params.id);
+      const hasAccess = userGuilds.data.some(
+        (g: any) => g.id === req.params.id
+      );
       if (!hasAccess) {
         res.status(403).json({ message: "Access denied" });
         return;
@@ -159,6 +171,72 @@ router.get(
   }
 );
 
+router.get(
+  "/guild/:id/roles",
+  rateLimiter,
+  isAuthenticated,
+  async (req: Request, res: Response) => {
+    try {
+      // First verify the user has access to this guild
+      const user = await User.findById(req.user?.user_id);
+      if (!user) {
+        res.status(401).json({ message: "User not found" });
+        return;
+      }
+
+      // Check if user has access to this guild
+      const userGuilds = await cachedDiscordAxios.get("/users/@me/guilds", {
+        headers: {
+          Authorization: `${user.credentials.token_type} ${user.credentials.token}`,
+        },
+        userId: user.discord_id,
+      });
+      const hasAccess = userGuilds.data.some(
+        (g: any) => g.id === req.params.id
+      );
+      if (!hasAccess) {
+        res.status(403).json({ message: "Access denied" });
+        return;
+      }
+
+      // Validate guild ID: must be 17-19 digits (Discord snowflake)
+      if (!/^\d{17,19}$/.test(req.params.id)) {
+        res.status(400).json({ error: "Invalid guild ID format" });
+        return;
+      }
+
+      const response = await cachedDiscordAxios.get(
+        `https://discord.com/api/v10/guilds/${req.params.id}/roles`,
+        {
+          headers: {
+            Authorization: `Bot ${process.env.BOT_TOKEN}`,
+          },
+        }
+      );
+
+      res.status(200).json(response.data);
+      return;
+    } catch (err: any) {
+      Logs(["api", "guild", "roles"], "error", err);
+
+      if (err.response?.status === 404) {
+        res.status(404).json({ message: "Guild not found" });
+        return;
+      }
+
+      if (err.response?.status === 403) {
+        res
+          .status(403)
+          .json({ message: "Bot does not have access to this guild" });
+        return;
+      }
+
+      res.status(500).json({ error: "Internal server error" });
+      return;
+    }
+  }
+);
+
 router.patch(
   "/guild/:id/settings",
   rateLimiter,
@@ -174,10 +252,14 @@ router.patch(
 
       // Check if user has access to this guild
       const userGuilds = await cachedDiscordAxios.get("/users/@me/guilds", {
-        headers: { Authorization: `${user.credentials.token_type} ${user.credentials.token}` },
+        headers: {
+          Authorization: `${user.credentials.token_type} ${user.credentials.token}`,
+        },
         userId: user.discord_id,
       });
-      const hasAccess = userGuilds.data.some((g: any) => g.id === req.params.id);
+      const hasAccess = userGuilds.data.some(
+        (g: any) => g.id === req.params.id
+      );
       if (!hasAccess) {
         res.status(403).json({ message: "Access denied" });
         return;
@@ -216,7 +298,11 @@ router.patch(
       const flattenObject = (obj: any, prefix = ""): void => {
         for (const key in obj) {
           const fullKey = prefix ? `${prefix}.${key}` : key;
-          if (typeof obj[key] === "object" && obj[key] !== null && !Array.isArray(obj[key])) {
+          if (
+            typeof obj[key] === "object" &&
+            obj[key] !== null &&
+            !Array.isArray(obj[key])
+          ) {
             flattenObject(obj[key], fullKey);
           } else if (allowedFields.includes(fullKey)) {
             updates[fullKey] = obj[key];
