@@ -6,6 +6,8 @@ import Guild from "@models/Guild.model";
 import SettingModel from "@models/Setting.model";
 import { isAuthenticated } from "@middlewares/isAuthenticated";
 import GuildModel from "@models/Guild.model";
+import cachedDiscordAxios from "@utils/CachedDiscordAxios.utils";
+import User from "@models/User.model";
 
 const router = Router();
 
@@ -15,6 +17,24 @@ router.get(
   isAuthenticated,
   async (req: Request, res: Response) => {
     try {
+      // First verify the user has access to this guild
+      const user = await User.findById(req.user?.user_id);
+      if (!user) {
+        res.status(401).json({ message: "User not found" });
+        return;
+      }
+
+      // Check if user has access to this guild
+      const userGuilds = await cachedDiscordAxios.get("/users/@me/guilds", {
+        headers: { Authorization: `${user.credentials.token_type} ${user.credentials.token}` },
+        userId: user.discord_id,
+      });
+      const hasAccess = userGuilds.data.some((g: any) => g.id === req.params.id);
+      if (!hasAccess) {
+        res.status(403).json({ message: "Access denied" });
+        return;
+      }
+
       const q_get = await GuildModel.findOne({
         id: { $eq: req.params.id },
       });
@@ -40,6 +60,24 @@ router.get(
   isAuthenticated,
   async (req: Request, res: Response) => {
     try {
+      // First verify the user has access to this guild
+      const user = await User.findById(req.user?.user_id);
+      if (!user) {
+        res.status(401).json({ message: "User not found" });
+        return;
+      }
+
+      // Check if user has access to this guild
+      const userGuilds = await cachedDiscordAxios.get("/users/@me/guilds", {
+        headers: { Authorization: `${user.credentials.token_type} ${user.credentials.token}` },
+        userId: user.discord_id,
+      });
+      const hasAccess = userGuilds.data.some((g: any) => g.id === req.params.id);
+      if (!hasAccess) {
+        res.status(403).json({ message: "Access denied" });
+        return;
+      }
+
       const q_get = await SettingModel.findOne({
         guild_id: { $eq: req.params.id },
       });
@@ -65,13 +103,31 @@ router.get(
   isAuthenticated,
   async (req: Request, res: Response) => {
     try {
+      // First verify the user has access to this guild
+      const user = await User.findById(req.user?.user_id);
+      if (!user) {
+        res.status(401).json({ message: "User not found" });
+        return;
+      }
+
+      // Check if user has access to this guild
+      const userGuilds = await cachedDiscordAxios.get("/users/@me/guilds", {
+        headers: { Authorization: `${user.credentials.token_type} ${user.credentials.token}` },
+        userId: user.discord_id,
+      });
+      const hasAccess = userGuilds.data.some((g: any) => g.id === req.params.id);
+      if (!hasAccess) {
+        res.status(403).json({ message: "Access denied" });
+        return;
+      }
+
       // Validate guild ID: must be 17-19 digits (Discord snowflake)
       if (!/^\d{17,19}$/.test(req.params.id)) {
         res.status(400).json({ error: "Invalid guild ID format" });
         return;
       }
-      const axios = require("axios");
-      const response = await axios.get(
+
+      const response = await cachedDiscordAxios.get(
         `https://discord.com/api/v10/guilds/${req.params.id}/channels`,
         {
           headers: {
@@ -109,9 +165,74 @@ router.patch(
   isAuthenticated,
   async (req: Request, res: Response) => {
     try {
+      // First verify the user has access to this guild
+      const user = await User.findById(req.user?.user_id);
+      if (!user) {
+        res.status(401).json({ message: "User not found" });
+        return;
+      }
+
+      // Check if user has access to this guild
+      const userGuilds = await cachedDiscordAxios.get("/users/@me/guilds", {
+        headers: { Authorization: `${user.credentials.token_type} ${user.credentials.token}` },
+        userId: user.discord_id,
+      });
+      const hasAccess = userGuilds.data.some((g: any) => g.id === req.params.id);
+      if (!hasAccess) {
+        res.status(403).json({ message: "Access denied" });
+        return;
+      }
+
+      // Only allow specific fields to be updated
+      const allowedFields = [
+        "options.bang",
+        "options.color",
+        "options.channels.announce",
+        "options.channels.help",
+        "options.channels.voiceText",
+        "options.channels.screenshots",
+        "moderation.sharing",
+        "moderation.channels.alert",
+        "moderation.channels.report",
+        "moderation.channels.automod",
+        "moderation.limit.emoji",
+        "moderation.limit.mention",
+        "moderation.limit.link",
+        "moderation.limit.invite",
+        "moderation.imune",
+        "moderation.roles.muted",
+        "moderation.roles.rule",
+        "moderation.roles.staff",
+        "moderation.sanctions.low.duration",
+        "moderation.sanctions.low.unit",
+        "moderation.sanctions.medium.duration",
+        "moderation.sanctions.medium.unit",
+        "moderation.sanctions.hight.duration",
+        "moderation.sanctions.hight.unit",
+      ];
+
+      // Build updates object with only allowed fields
+      const updates: any = {};
+      const flattenObject = (obj: any, prefix = ""): void => {
+        for (const key in obj) {
+          const fullKey = prefix ? `${prefix}.${key}` : key;
+          if (typeof obj[key] === "object" && obj[key] !== null && !Array.isArray(obj[key])) {
+            flattenObject(obj[key], fullKey);
+          } else if (allowedFields.includes(fullKey)) {
+            updates[fullKey] = obj[key];
+          }
+        }
+      };
+      flattenObject(req.body);
+
+      if (Object.keys(updates).length === 0) {
+        res.status(400).json({ error: "No valid fields to update" });
+        return;
+      }
+
       const q_update = await SettingModel.updateOne(
         { guild_id: { $eq: req.params.id } },
-        { $set: req.body }
+        { $set: updates }
       );
 
       if (q_update.matchedCount === 0) {

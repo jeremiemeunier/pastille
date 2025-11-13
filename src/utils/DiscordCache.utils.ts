@@ -37,14 +37,11 @@ class DiscordCache {
   };
 
   constructor() {
-    // Generate encryption key from JWT_SECRET or use a random key if not set
+    // Require JWT_SECRET to be set for encryption
     if (!process.env.JWT_SECRET) {
-      Logs(["cache", "init"], "warning", "JWT_SECRET not set - using temporary random key");
-      const secret = crypto.randomBytes(32).toString('hex');
-      this.encryptionKey = crypto.createHash("sha256").update(secret).digest();
-    } else {
-      this.encryptionKey = crypto.createHash("sha256").update(process.env.JWT_SECRET).digest();
+      throw new Error("JWT_SECRET must be set for DiscordCache encryption to work reliably.");
     }
+    this.encryptionKey = crypto.createHash("sha256").update(process.env.JWT_SECRET).digest();
 
     // Run cleanup every 5 minutes
     this.cleanupInterval = setInterval(() => {
