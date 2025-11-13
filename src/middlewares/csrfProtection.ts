@@ -62,8 +62,13 @@ export const verifyCsrfToken = (
 ) => {
   // Skip CSRF check for safe methods
   const safeMethods = ["GET", "HEAD", "OPTIONS"];
-  if (safeMethods.includes(req.method)) {
+  const safePaths = ["/twitch/webhook", "/discord/webhook"];
+  if (safeMethods.includes(req.method) || safePaths.includes(req.path)) {
     next();
+
+    if (safePaths.includes(req.path))
+      Logs(["csrf", "skip"], null, `Skipping CSRF check for path: ${req.path}`);
+
     return;
   }
 
@@ -79,11 +84,13 @@ export const verifyCsrfToken = (
   const headerToken = req.headers[CSRF_HEADER_NAME] as string;
 
   if (!cookieToken) {
+    Logs(["csrf", "verification"], "error", "CSRF token missing in cookie");
     res.status(403).json({ message: "CSRF token missing" });
     return;
   }
 
   if (!headerToken) {
+    Logs(["csrf", "verification"], "error", "CSRF token missing in header");
     res.status(403).json({
       message: "CSRF token required in header",
       hint: `Include '${CSRF_HEADER_NAME}' header with value from '${CSRF_COOKIE_NAME}' cookie`,
