@@ -2,7 +2,7 @@ import request from "supertest";
 import { createTestApp } from "../testApp";
 import Setting from "@models/Setting.model";
 
-jest.mock("@models/Setting");
+jest.mock("@models/Setting.model");
 
 const app = createTestApp();
 
