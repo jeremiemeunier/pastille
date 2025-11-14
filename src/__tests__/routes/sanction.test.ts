@@ -2,7 +2,7 @@ import request from "supertest";
 import { createTestApp } from "../testApp";
 import Sanction from "@models/Sanction.model";
 
-jest.mock("@models/Sanction");
+jest.mock("@models/Sanction.model");
 
 const app = createTestApp();
 
