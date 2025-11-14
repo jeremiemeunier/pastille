@@ -87,13 +87,14 @@ const Logs: Logs = ({ node, state, content, details, devOnly }) => {
     string.push(content.message);
   } else {
     string.push(
-      typeof content === "string" ? content : JSON.stringify(content, null, 2)
+      typeof content === "string" ? content : JSON.stringify(content)
     );
   }
 
   if (details) string.push(composeDetails(details));
 
   // logging to console
+  if (process.env.DEV === "1" && devOnly) console.log(string.join(""));
   if (!devOnly) console.log(string.join(""));
 };
 
