@@ -69,7 +69,12 @@ const contextReportUser = async ({
     );
     await interaction.showModal(reportModal);
   } catch (err: any) {
-    Logs(["command", "report", "showmodal"], "error", err, guild?.id);
+    Logs({
+      node: ["command", "report", "showmodal"],
+      state: "error",
+      content: err,
+      details: guild?.id,
+    });
   }
 };
 

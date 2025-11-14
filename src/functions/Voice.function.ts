@@ -27,7 +27,12 @@ export const haveVoiceThread = async ({
 
     return false;
   } catch (err: any) {
-    Logs(["voice", "thread", "join"], "error", err);
+    Logs({
+      node: ["voice", "thread", "find", "existing"],
+      state: "error",
+      content: err,
+      details: channel.id,
+    });
   }
 };
 
@@ -82,11 +87,21 @@ export const createVoiceThread = async ({
           embeds: [embed, embedExplicative],
         });
       } catch (err: any) {
-        Logs(["voice", "thread", "create"], "error", err);
+        Logs({
+          node: ["voice", "thread", "create"],
+          state: "error",
+          content: err,
+          details: channel.id,
+        });
       }
     }
   } catch (err: any) {
-    Logs(["voice", "thread", "find", "existing"], "error", err);
+    Logs({
+      node: ["voice", "thread", "find", "existing"],
+      state: "error",
+      content: err,
+      details: channel.id,
+    });
   }
 };
 
@@ -118,7 +133,12 @@ export const joinVoiceThread = async ({
       await thread.send({ embeds: [embed] });
     }
   } catch (err: any) {
-    Logs(["voice", "thread", "join"], "error", err);
+    Logs({
+      node: ["voice", "thread", "join"],
+      state: "error",
+      content: err,
+      details: channel.id,
+    });
   }
 };
 
@@ -150,13 +170,23 @@ export const joinAllVoiceThread = async ({
             });
             await thread.send({ embeds: [embed] });
           } catch (err: any) {
-            Logs(["voice", "thread", "join", "all"], "error", err);
+            Logs({
+              node: ["voice", "thread", "join", "all"],
+              state: "error",
+              content: err,
+              details: channel.id,
+            });
           }
         }
       });
     }
   } catch (err: any) {
-    Logs(["voice", "thread", "join"], "error", err);
+    Logs({
+      node: ["voice", "thread", "join"],
+      state: "error",
+      content: err,
+      details: channel.id,
+    });
   }
 };
 
@@ -190,7 +220,12 @@ export const leaveVoiceThread = async ({
     });
     const message = await thread.send({ embeds: [embed] });
   } catch (err: any) {
-    Logs(["voice", "thread", "leave"], "error", err);
+    Logs({
+      node: ["voice", "thread", "leave"],
+      state: "error",
+      content: err,
+      details: channel.id,
+    });
   }
 };
 
@@ -219,9 +254,19 @@ export const deleteVoiceThread = async ({
     try {
       await thread.delete();
     } catch (err: any) {
-      Logs(["voice", "thread", "delete", "timeout"], "error", err);
+      Logs({
+        node: ["voice", "thread", "delete", "timeout"],
+        state: "error",
+        content: err,
+        details: channel.id,
+      });
     }
   } catch (err: any) {
-    Logs(["voice", "thread", "delete"], "error", err);
+    Logs({
+      node: ["voice", "thread", "delete"],
+      state: "error",
+      content: err,
+      details: channel.id,
+    });
   }
 };

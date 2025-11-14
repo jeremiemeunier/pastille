@@ -48,16 +48,21 @@ const commandRoleInit = async ({
       try {
         await response.resource!.message!.react(item.emote);
       } catch (err: any) {
-        Logs(
-          ["command", "role", "react"],
-          "error",
-          err,
-          interaction?.guild!.id!
-        );
+        Logs({
+          node: ["command", "role", "react"],
+          state: "error",
+          content: err,
+          details: interaction?.guild!.id!,
+        });
       }
     });
   } catch (err: any) {
-    Logs(["command", "role", "send"], "error", err, interaction?.guild!.id!);
+    Logs({
+      node: ["command", "role", "send"],
+      state: "error",
+      content: err,
+      details: interaction?.guild!.id!,
+    });
   }
 };
 

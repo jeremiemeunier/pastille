@@ -72,7 +72,7 @@ export const automod = (client: any) => {
           });
           automodRegister(user, "limitMention", guild);
         } catch (err: any) {
-          Logs(["automod", "mention"], "error", err);
+          Logs({ node: ["automod", "mention"], state: "error", content: err });
         }
         return;
       }
@@ -106,7 +106,7 @@ export const automod = (client: any) => {
           });
           automodRegister(user, "mentionEveryone", guild);
         } catch (err: any) {
-          Logs(["automod", "everyone"], "error", err);
+          Logs({ node: ["automod", "everyone"], state: "error", content: err });
         }
         return;
       }
@@ -141,12 +141,20 @@ export const automod = (client: any) => {
           });
           automodRegister(user, "sendInvite", guild);
         } catch (err: any) {
-          Logs(["automod", "send_invite"], "error", err);
+          Logs({
+            node: ["automod", "send_invite"],
+            state: "error",
+            content: err,
+          });
         }
         return;
       }
     } catch (err: any) {
-      Logs(["automod"], "error", err);
+      Logs({
+        node: ["automod"],
+        state: "error",
+        content: err,
+      });
     }
   });
 };

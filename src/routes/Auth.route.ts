@@ -124,7 +124,11 @@ router.post("/auth/login", rateLimiter, async (req: Request, res: Response) => {
           .status(204)
           .end();
       } catch (err: any) {
-        Logs(["auth", "update", "user"], "error", err);
+        Logs({
+          node: ["auth", "update", "user"],
+          state: "error",
+          content: err,
+        });
         res.status(500).json({ message: "Internal server error" });
       }
     } else {
@@ -180,12 +184,12 @@ router.post("/auth/login", rateLimiter, async (req: Request, res: Response) => {
           .status(204)
           .end();
       } catch (err: any) {
-        Logs(["auth", "make", "user"], "error", err);
+        Logs({ node: ["auth", "make", "user"], state: "error", content: err });
         res.status(500).json({ message: "Internal server error" });
       }
     }
   } catch (err: any) {
-    Logs(["auth", "login", "user"], "error", err);
+    Logs({ node: ["auth", "login", "user"], state: "error", content: err });
 
     if (err?.error === "invalid_grant") {
       res.status(400).json({ message: "Invalid code", error: err?.error });
@@ -217,7 +221,7 @@ router.get(
         user: sanitizeUser(user),
       });
     } catch (err: any) {
-      Logs(["auth", "me"], "error", err);
+      Logs({ node: ["auth", "me"], state: "error", content: err });
       res.status(500).json({ message: "Internal server error" });
     }
   }
@@ -253,7 +257,7 @@ router.post(
       res.clearCookie("pastille_token");
       res.status(200).json({ message: "Logged out successfully" });
     } catch (err: any) {
-      Logs(["auth", "logout"], "error", err);
+      Logs({ node: ["auth", "logout"], state: "error", content: err });
       res.status(500).json({ message: "Internal server error" });
     }
   }
@@ -279,7 +283,7 @@ router.post(
       res.clearCookie("pastille_token");
       res.status(200).json({ message: "Logged out from all devices" });
     } catch (err: any) {
-      Logs(["auth", "logout", "all"], "error", err);
+      Logs({ node: ["auth", "logout", "all"], state: "error", content: err });
       res.status(500).json({ message: "Internal server error" });
     }
   }
@@ -355,7 +359,7 @@ router.get(
 
       res.status(200).json(mappedGuilds);
     } catch (err: any) {
-      Logs(["auth", "guilds"], "error", err);
+      Logs({ node: ["auth", "guilds"], state: "error", content: err });
 
       // Check if the error is due to invalid/expired Discord token
       if (err?.code === 0 || err?.message === "401: Unauthorized") {

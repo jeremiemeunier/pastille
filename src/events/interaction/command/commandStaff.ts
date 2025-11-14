@@ -48,7 +48,12 @@ const commandStaffInit = async ({
       withResponse: false,
     });
   } catch (err: any) {
-    Logs(["command", "staff"], "error", err, interaction?.guild!.id!);
+    Logs({
+      node: ["command", "staff"],
+      state: "error",
+      content: err,
+      details: interaction?.guild!.id!,
+    });
   }
 };
 

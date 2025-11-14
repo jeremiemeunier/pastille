@@ -51,7 +51,7 @@ const buttonAcceptRuleInit = async ({
       content: "Une erreur est survenue",
       flags: MessageFlags.Ephemeral,
     });
-    Logs(["event", "accept_rule"], "error", err);
+    Logs({ node: ["event", "accept_rule"], state: "error", content: err });
     return;
   }
 };

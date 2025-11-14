@@ -23,7 +23,11 @@ export const reactionRemoveEventInit = (client: Client) => {
         try {
           await reaction.fetch();
         } catch (err: any) {
-          Logs(["reaction", "remove", "fetch"], "error", err);
+          Logs({
+            node: ["reaction", "remove", "fetch"],
+            state: "error",
+            content: err,
+          });
           return;
         }
       }

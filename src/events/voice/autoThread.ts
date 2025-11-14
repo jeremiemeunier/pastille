@@ -21,7 +21,12 @@ export const countMembers = async ({
     const connected = channel.members.map((x: any) => x).length;
     return connected;
   } catch (err: any) {
-    Logs(["voice", "count_members"], "error", err, guild?.id);
+    Logs({
+      node: ["voice", "count_members"],
+      state: "error",
+      content: err,
+      details: guild?.id,
+    });
   }
 };
 
@@ -61,7 +66,12 @@ export const getTextualChannel = async (
       return textual;
     }
   } catch (err: any) {
-    Logs(["voice", "search_textual"], "error", err, guild?.id);
+    Logs({
+      node: ["voice", "search_textual"],
+      state: "error",
+      content: err,
+      details: guild?.id,
+    });
   }
 };
 
@@ -229,7 +239,7 @@ export const autoThread = async ({
       }
     }
   } catch (err: any) {
-    Logs(["voice"], "error", err);
+    Logs({ node: ["voice"], state: "error", content: err, details: guild?.id });
     return;
   }
 };

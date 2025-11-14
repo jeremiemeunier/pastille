@@ -50,7 +50,12 @@ const commandThreadInit = async ({
     });
     const msg = await thread.send({ embeds: [embed] });
   } catch (err: any) {
-    Logs(["command", "thread"], "error", err);
+    Logs({
+      node: ["command", "thread"],
+      state: "error",
+      content: err,
+      details: interaction?.guild!.id!,
+    });
   }
 };
 

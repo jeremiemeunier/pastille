@@ -5,7 +5,7 @@ import { AxiosRequestConfig } from "axios";
 
 /**
  * Cached Discord API Client
- * 
+ *
  * Wrapper around DiscordAxios that provides automatic caching
  * for Discord API responses with security and performance optimizations.
  */
@@ -100,19 +100,19 @@ class CachedDiscordAxios {
     const shouldCache = this.shouldCache(url, "GET") && cacheEnabled;
 
     if (shouldCache) {
-      const namespace =
-        config?.cache?.namespace || this.getCacheNamespace(url);
+      const namespace = config?.cache?.namespace || this.getCacheNamespace(url);
       const identifier = this.getUserIdentifier(url, config);
 
       if (identifier) {
         // Try to get from cache
         const cached = discordCache.get(namespace, identifier);
         if (cached) {
-          Logs(
-            ["discord", "api", "cached"],
-            null,
-            `Returning cached data for ${url}`
-          );
+          Logs({
+            node: ["discord", "api", "cached"],
+            state: null,
+            content: `Returning cached data for ${url}`,
+            devOnly: true,
+          });
           return { data: cached };
         }
       }
@@ -130,8 +130,7 @@ class CachedDiscordAxios {
 
         if (identifier) {
           const ttl = config?.cache?.ttl || this.getCacheTTL(url);
-          const encrypt =
-            config?.cache?.encrypt ?? this.shouldEncrypt(url);
+          const encrypt = config?.cache?.encrypt ?? this.shouldEncrypt(url);
 
           discordCache.set(namespace, identifier, response.data, {
             ttl,
@@ -141,9 +140,9 @@ class CachedDiscordAxios {
       }
 
       return response;
-    } catch (error: any) {
-      Logs(["discord", "api", "error"], "error", error);
-      throw error;
+    } catch (err: any) {
+      Logs({ node: ["discord", "api", "error"], state: "error", content: err });
+      throw err;
     }
   }
 

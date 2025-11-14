@@ -88,12 +88,12 @@ const buttonDeleteMessage = async ({
       });
     }
   } catch (err: any) {
-    Logs(
-      ["button", "delete_reported", "base"],
-      "error",
-      err,
-      interaction?.guild?.id
-    );
+    Logs({
+      node: ["button", "delete_reported", "base"],
+      state: "error",
+      content: err,
+      details: interaction?.guild?.id,
+    });
   }
 };
 
@@ -122,7 +122,12 @@ const deleteReportedMessage = async (data: APIEmbedField[], guild: Guild) => {
     await reportedMessage.delete();
     return { err: false };
   } catch (err: any) {
-    Logs(["button", "delete", "reported_message"], "error", err, guild?.id);
+    Logs({
+      node: ["button", "delete", "reported_message"],
+      state: "error",
+      content: err,
+      details: guild?.id,
+    });
     return { err: true, message: "Somethings went wrong" };
   }
 };

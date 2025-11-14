@@ -22,7 +22,7 @@ const commandJusticeInit = async ({
       content: `Voici un résumé de tes sanctions et avertissement gérer par ${client.user?.displayName}`,
     });
   } catch (err: any) {
-    Logs(["command", "justice"], "error", err);
+    Logs({ node: ["command", "justice"], state: "error", content: err });
   }
 };
 

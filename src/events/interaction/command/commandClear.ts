@@ -30,7 +30,11 @@ const commandClearInit = async ({
         try {
           await thread.delete();
         } catch (err: any) {
-          Logs(["command", "clear", "threads"], "error", err);
+          Logs({
+            node: ["command", "clear", "threads"],
+            state: "error",
+            content: err,
+          });
         }
       });
 
@@ -43,7 +47,11 @@ const commandClearInit = async ({
         content: "Une erreur est survenue, veuillez réessayer plus tard",
         flags: MessageFlags.Ephemeral,
       });
-      Logs(["command", "clear", "threads"], "error", err);
+      Logs({
+        node: ["command", "clear", "threads"],
+        state: "error",
+        content: err,
+      });
     }
   }
 
@@ -57,7 +65,11 @@ const commandClearInit = async ({
         try {
           await message.delete();
         } catch (err: any) {
-          Logs(["command", "clear", "messages"], "error", err);
+          Logs({
+            node: ["command", "clear", "messages"],
+            state: "error",
+            content: err,
+          });
         }
       });
     });

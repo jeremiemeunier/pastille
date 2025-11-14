@@ -22,26 +22,46 @@ const bangExecute = async (message: any, guild: any, command: any) => {
       try {
         await message.reply({ content: response });
       } catch (err: any) {
-        Logs(["bang", "guild", "cmd", "send"], "error", err, guild?.id);
+        Logs({
+          node: ["bang", "guild", "cmd", "send"],
+          state: "error",
+          content: err,
+          details: guild?.id,
+        });
       }
     } else if (!channel_id && role_id && params.role) {
       try {
         await message.reply({ content: response });
       } catch (err: any) {
-        Logs(["bang", "guild", "cmd", "send"], "error", err, guild?.id);
+        Logs({
+          node: ["bang", "guild", "cmd", "send"],
+          state: "error",
+          content: err,
+          details: guild?.id,
+        });
       }
     } else if (!role_id && channel_id && params.channel) {
       try {
         await message.reply({ content: response });
       } catch (err: any) {
-        Logs(["bang", "guild", "cmd", "send"], "error", err, guild?.id);
+        Logs({
+          node: ["bang", "guild", "cmd", "send"],
+          state: "error",
+          content: err,
+          details: guild?.id,
+        });
       }
     }
   } else {
     try {
       await message.reply({ content: response });
     } catch (err: any) {
-      Logs(["bang", "guild", "cmd", "send"], "error", err, guild?.id);
+      Logs({
+        node: ["bang", "guild", "cmd", "send"],
+        state: "error",
+        content: err,
+        details: guild?.id,
+      });
     }
   }
 };
