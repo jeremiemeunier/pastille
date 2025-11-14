@@ -26,7 +26,12 @@ const bangStatus = async (
   try {
     await voiceChannelUser.setTopic(statusText);
   } catch (err: any) {
-    Logs(["voice", "text", "command", "status"], "error", err, guild?.id);
+    Logs({
+      node: ["voice", "text", "command", "status"],
+      state: "error",
+      content: err,
+      details: guild?.id,
+    });
   }
 };
 

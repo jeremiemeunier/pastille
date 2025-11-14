@@ -5,8 +5,8 @@ import Session from "@models/Session.model";
 import * as TokenManager from "@utils/TokenManager.utils";
 
 // Mock the models
-jest.mock("@models/User");
-jest.mock("@models/Session");
+jest.mock("@models/User.model");
+jest.mock("@models/Session.model");
 
 const app = createTestApp();
 
@@ -96,12 +96,12 @@ describe("User Routes", () => {
       expect(response.body.message).toBe("Profile updated successfully");
     });
 
-    it("should return 401 without authentication", async () => {
+    it("should return 403 without authentication (CSRF protection)", async () => {
       const response = await request(app)
         .put("/user/profile")
         .send({ avatar: "new_avatar" });
 
-      expect(response.status).toBe(401);
+      expect(response.status).toBe(403);
     });
 
     it("should return 400 if no valid fields to update", async () => {
@@ -166,10 +166,10 @@ describe("User Routes", () => {
       expect(response.body.message).toBe("Account deleted successfully");
     });
 
-    it("should return 401 without authentication", async () => {
+    it("should return 403 without authentication (CSRF protection)", async () => {
       const response = await request(app).delete("/user/account");
 
-      expect(response.status).toBe(401);
+      expect(response.status).toBe(403);
     });
   });
 });

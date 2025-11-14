@@ -17,7 +17,12 @@ export const getAddons = async ({ guild }: { guild: Guild }) => {
     ).data;
   } catch (err: any) {
     if (err.status === 404) return false;
-    Logs(["addon", "load", "guild"], "error", err, guild.id);
+    Logs({
+      node: ["addon", "load", "guild"],
+      state: "error",
+      content: err,
+      details: guild.id,
+    });
     return false;
   }
 };
@@ -38,7 +43,12 @@ export const getBanWord = async ({ guild }: { guild: Guild }) => {
     ).data;
   } catch (err: any) {
     if (err.status === 404) return false;
-    Logs(["automod", "load", "banword"], "error", err, guild.id);
+    Logs({
+      node: ["automod", "load", "banword"],
+      state: "error",
+      content: err,
+      details: guild.id,
+    });
     return false;
   }
 };
@@ -58,7 +68,12 @@ export const getStreamers = async ({ guild }: { guild: Guild }) => {
       })
     ).data;
   } catch (err: any) {
-    Logs(["global", "get", "streamer_list"], "error", err, guild.id);
+    Logs({
+      node: ["global", "get", "streamer_list"],
+      state: "error",
+      content: err,
+      details: guild.id,
+    });
     return false;
   }
 };
@@ -79,7 +94,12 @@ export const getRoles = async ({ guild }: { guild: Guild }) => {
     ).data;
   } catch (err: any) {
     if (err.status === 404) return false;
-    Logs(["roles", "load", "guild"], "error", err, guild.id);
+    Logs({
+      node: ["roles", "load", "guild"],
+      state: "error",
+      content: err,
+      details: guild.id,
+    });
     return false;
   }
 };
@@ -99,7 +119,12 @@ export const getRules = async ({ guild }: { guild: Guild }) => {
       })
     ).data;
   } catch (err: any) {
-    Logs(["rules", "load", "guild"], "error", err, guild.id);
+    Logs({
+      node: ["rules", "load", "guild"],
+      state: "error",
+      content: err,
+      details: guild.id,
+    });
     return false;
   }
 };
@@ -119,7 +144,12 @@ export const getCommands = async ({
         })
       ).data;
     } catch (err: any) {
-      Logs(["cmd", "load", "guild"], "error", err, guild.id);
+      Logs({
+        node: ["cmd", "load", "guild"],
+        state: "error",
+        content: err,
+        details: guild.id,
+      });
       return false;
     }
   } else {
@@ -131,7 +161,12 @@ export const getCommands = async ({
         })
       ).data;
     } catch (err: any) {
-      Logs(["cmds", "load", "guild"], "error", err, guild.id);
+      Logs({
+        node: ["cmds", "load", "guild"],
+        state: "error",
+        content: err,
+        details: guild.id,
+      });
       return false;
     }
   }
@@ -152,7 +187,12 @@ export const getParams = async ({ guild }: { guild: Guild }) => {
       })
     ).data;
   } catch (err: any) {
-    Logs(["params", "load", "guild"], "error", err, guild.id);
+    Logs({
+      node: ["params", "load", "guild"],
+      state: "error",
+      content: err,
+      details: guild.id,
+    });
     return false;
   }
 };
@@ -185,7 +225,12 @@ export const postWarnUser = async ({
       )
     ).data;
   } catch (err: any) {
-    Logs(["automod", "add", "warn"], "error", err, guild.id);
+    Logs({
+      node: ["automod", "add", "warn"],
+      state: "error",
+      content: err,
+      details: guild.id,
+    });
     return false;
   }
 };

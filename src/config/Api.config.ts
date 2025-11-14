@@ -52,7 +52,7 @@ const Api = () => {
   });
 
   App.listen(3000, () => {
-    Logs(["api"], "start", `Started on port 3000`);
+    Logs({ node: ["api"], state: "start", content: "Started on port 3000" });
   });
 };
 

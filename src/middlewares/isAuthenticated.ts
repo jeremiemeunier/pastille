@@ -68,7 +68,11 @@ export const isAuthenticated = async (
 
     next();
   } catch (err: any) {
-    Logs(["middleware", "isAuthenticated"], "error", err);
+    Logs({
+      node: ["middleware", "isAuthenticated"],
+      state: "error",
+      content: err,
+    });
     res.status(500).json({ message: "Authentication error" });
   }
 };
@@ -112,7 +116,11 @@ export const optionalAuth = async (
 
     next();
   } catch (err: any) {
-    Logs(["middleware", "optionalAuth"], "error", err);
+    Logs({
+      node: ["middleware", "optionalAuth"],
+      state: "error",
+      content: err,
+    });
     next(); // Continue even on error for optional auth
   }
 };

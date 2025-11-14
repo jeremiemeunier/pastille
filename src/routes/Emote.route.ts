@@ -25,7 +25,7 @@ router.get(
       res.status(404).json({ message: "No emotes found" });
     } catch (err: any) {
       res.status(500).json({ message: "Internal server error", error: err });
-      Logs(["api", "emotes", "get"], "error", err);
+      Logs({ node: ["api", "emotes", "get"], state: "error", content: err });
     }
   }
 );
@@ -56,7 +56,11 @@ router.get(
       res.status(404).json({ message: "No letters found" });
     } catch (err: any) {
       res.status(500).json({ message: "Internal server error", error: err });
-      Logs(["api", "emotes", "get", "all"], "error", err);
+      Logs({
+        node: ["api", "emotes", "get", "all"],
+        state: "error",
+        content: err,
+      });
     }
   }
 );
@@ -81,7 +85,11 @@ router.post(
       res.status(201).json({ message: "Emotes added" });
     } catch (err: any) {
       res.status(500).json({ message: "Internal server error", error: err });
-      Logs(["api", "emotes", "post", "mass"], "error", err);
+      Logs({
+        node: ["api", "emotes", "post", "mass"],
+        state: "error",
+        content: err,
+      });
     }
   }
 );

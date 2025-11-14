@@ -23,7 +23,11 @@ export const reactionAddEventInit = (client: Client) => {
         try {
           await reaction.fetch();
         } catch (err: any) {
-          Logs(["message", "reaction", "fetch"], "error", err);
+          Logs({
+            node: ["message", "reaction", "fetch"],
+            state: "error",
+            content: err,
+          });
           return;
         }
       }

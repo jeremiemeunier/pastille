@@ -56,7 +56,7 @@ const commandPollInit = async ({
           try {
             await response.resource!.message!.react(letter);
           } catch (err: any) {
-            Logs(["command", "poll"], "error", err);
+            Logs({ node: ["command", "poll"], state: "error", content: err });
           }
         }
       }

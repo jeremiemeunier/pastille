@@ -12,7 +12,11 @@ import {
 import Streamers from "@models/Streamer.model";
 
 const AddonTwitch = async (client: any) => {
-  Logs(["addons", "twitch", "start"], "start", "Starting twitch addons");
+  Logs({
+    node: ["addons", "twitch", "start"],
+    state: "start",
+    content: "Starting twitch addons",
+  });
 
   try {
     // getting auth token from twitch
@@ -52,12 +56,25 @@ const AddonTwitch = async (client: any) => {
 
               try {
                 await pastilleAxios.patch(`/twitch/streamers/${streamer._id}`);
-                Logs(["addon", "twitch"], null, "streamer.updated");
+                Logs({
+                  node: ["addon", "twitch"],
+                  state: null,
+                  content: "streamer.updated",
+                });
               } catch (err: any) {
-                Logs(["addon", "twitch"], "error", err);
+                Logs({
+                  node: ["addon", "twitch"],
+                  state: "error",
+                  content: err,
+                });
               }
 
-              Logs(["addon", "twitch"], null, req.data, "subscription.created");
+              Logs({
+                node: ["addon", "twitch"],
+                state: null,
+                content: req.data,
+                details: "subscription.created",
+              });
               resolve("subscription.created");
             } catch (err: any) {
               if (err.status === 409) {
@@ -65,23 +82,45 @@ const AddonTwitch = async (client: any) => {
                   await pastilleAxios.patch(
                     `/twitch/streamers/${streamer._id}`
                   );
-                  Logs(["addon", "twitch"], null, "streamer.updated");
+                  Logs({
+                    node: ["addon", "twitch"],
+                    state: null,
+                    content: "streamer.updated",
+                  });
                 } catch (err: any) {
-                  Logs(["addon", "twitch"], "error", err);
+                  Logs({
+                    node: ["addon", "twitch"],
+                    state: "error",
+                    content: err,
+                  });
                 }
               }
 
-              Logs(["addon", "twitch"], "error", err, "event_subscription");
+              Logs({
+                node: ["addon", "twitch"],
+                state: "error",
+                content: err,
+                details: "event_subscription",
+              });
             }
           })
       );
     } catch (err: any) {
       if (err.status !== 404)
-        Logs(["addon", "twitch"], "error", err, "get_streamers");
+        Logs({
+          node: ["addon", "twitch"],
+          state: "error",
+          content: err,
+          details: "get_streamers",
+        });
     }
 
     // now launch cron task
-    Logs(["addons", "twitch", "cron"], "start", "Launching cron task");
+    Logs({
+      node: ["addons", "twitch", "cron"],
+      state: "start",
+      content: "Launching cron task",
+    });
     cron.schedule("* * * * *", async () => {
       // handling gesture of live
       try {
@@ -144,20 +183,20 @@ const AddonTwitch = async (client: any) => {
                               components: [liveButton],
                             });
                           } catch (err: any) {
-                            Logs(
-                              ["addons", "twitch", "send"],
-                              "error",
-                              err,
-                              guild?.id
-                            );
+                            Logs({
+                              node: ["addons", "twitch", "send"],
+                              state: "error",
+                              content: err,
+                              details: guild?.id,
+                            });
                           }
                         } catch (err: any) {
-                          Logs(
-                            ["addons", "twitch", "ping"],
-                            "error",
-                            err,
-                            guild?.id
-                          );
+                          Logs({
+                            node: ["addons", "twitch", "ping"],
+                            state: "error",
+                            content: err,
+                            details: guild?.id,
+                          });
                         }
                       } else {
                         try {
@@ -166,12 +205,12 @@ const AddonTwitch = async (client: any) => {
                             { isLive: false }
                           );
                         } catch (err: any) {
-                          Logs(
-                            ["module", "twitch"],
-                            "error",
-                            err,
-                            "update_is_live_state"
-                          );
+                          Logs({
+                            node: ["module", "twitch"],
+                            state: "error",
+                            content: err,
+                            details: "update_is_live_state",
+                          });
                         }
                       }
 
@@ -188,26 +227,33 @@ const AddonTwitch = async (client: any) => {
                           { isAnnounce: true }
                         );
                       } catch (err: any) {
-                        Logs(
-                          ["module", "twitch"],
-                          "error",
-                          err,
-                          "update_is_live_state"
-                        );
+                        Logs({
+                          node: ["module", "twitch"],
+                          state: "error",
+                          content: err,
+                          details: "update_is_live_state",
+                        });
                       }
                     });
                   })
-                  .catch((err) => Logs(["module", "twitch"], "error", err));
+                  .catch((err) =>
+                    Logs({
+                      node: ["module", "twitch"],
+                      state: "error",
+                      content: err,
+                    })
+                  );
                 resolve("notif.send");
               })
           );
 
           await Promise.all(notifications).catch((err) =>
-            Logs(["module", "twitch"], "error", err)
+            Logs({ node: ["module", "twitch"], state: "error", content: err })
           );
         }
       } catch (err: any) {
-        if (err.status !== 404) Logs(["module", "twitch"], "error", err);
+        if (err.status !== 404)
+          Logs({ node: ["module", "twitch"], state: "error", content: err });
       }
 
       // handling gesture of new streamers
@@ -243,26 +289,36 @@ const AddonTwitch = async (client: any) => {
                   }
                 );
 
-                Logs(
-                  ["addon", "twitch"],
-                  null,
-                  req.data,
-                  "subscription.created"
-                );
+                Logs({
+                  node: ["addon", "twitch"],
+                  state: null,
+                  content: req.data,
+                  details: "subscription.created",
+                });
                 resolve("subscription.created");
               } catch (err: any) {
                 if (err.status !== 404)
-                  Logs(["addon", "twitch"], "error", err, "event_subscription");
+                  Logs({
+                    node: ["addon", "twitch"],
+                    state: "error",
+                    content: err,
+                    details: "event_subscription",
+                  });
               }
             })
         );
       } catch (err: any) {
         if (err.status !== 404)
-          Logs(["addons", "twitch"], "error", err, "register_webhook");
+          Logs({
+            node: ["addons", "twitch"],
+            state: "error",
+            content: err,
+            details: "register_webhook",
+          });
       }
     });
   } catch (err: any) {
-    Logs(["addon", "twitch"], "error", err);
+    Logs({ node: ["addon", "twitch"], state: "error", content: err });
   }
 };
 
@@ -284,7 +340,11 @@ const requestAuthenticator = async () => {
 
     return requestToken.data.access_token;
   } catch (err: any) {
-    Logs(["twitch", "auth"], "error", err.message || err);
+    Logs({
+      node: ["twitch", "auth"],
+      state: "error",
+      content: err.message || err,
+    });
   }
 };
 
@@ -312,7 +372,11 @@ const requestStreamerState = async (
     );
     return requestState.data.data[0];
   } catch (err: any) {
-    Logs(["twitch", "request", "state"], "error", err.message || err);
+    Logs({
+      node: ["twitch", "request", "state"],
+      state: "error",
+      content: err.message || err,
+    });
   }
 };
 

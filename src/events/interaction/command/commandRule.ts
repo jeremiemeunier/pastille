@@ -87,12 +87,12 @@ const commandRuleInit = async ({
         flags: MessageFlags.Ephemeral,
       });
     } catch (err: any) {
-      Logs(
-        ["rule", "embed"],
-        "error",
-        JSON.stringify(err),
-        interaction?.guild?.id
-      );
+      Logs({
+        node: ["rule", "embed"],
+        state: "error",
+        content: JSON.stringify(err),
+        details: interaction?.guild?.id!,
+      });
       interaction.reply({
         content: "Une erreur est survenue lors de l'envoi des règles",
         flags: MessageFlags.Ephemeral,

@@ -2,7 +2,7 @@ import request from "supertest";
 import { createTestApp } from "../testApp";
 import Addons from "@models/Addons.model";
 
-jest.mock("@models/Addons");
+jest.mock("@models/Addons.model");
 
 const app = createTestApp();
 
@@ -96,7 +96,7 @@ describe("Addons Routes", () => {
         role: "role_id",
       };
 
-      (Addons.findByIdAndUpdate as jest.Mock) = jest
+      (Addons.findOneAndUpdate as jest.Mock) = jest
         .fn()
         .mockResolvedValue(mockAddon);
 

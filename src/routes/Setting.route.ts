@@ -70,7 +70,12 @@ router.post(
       res.status(201).json(q_make);
     } catch (err: any) {
       res.status(500).json({ message: "Internal server error", error: err });
-      Logs(["api", "settings", "post"], "error", err, guild_id);
+      Logs({
+        node: ["api", "settings", "post"],
+        state: "error",
+        content: err,
+        details: guild_id as string,
+      });
     }
   }
 );
@@ -94,7 +99,12 @@ router.get(
       res.status(404).json({ message: "No settings found" });
     } catch (err: any) {
       res.status(500).json({ message: "Internal server error", error: err });
-      Logs(["api", "settings", "get"], "error", err, guild_id as string);
+      Logs({
+        node: ["api", "settings", "get"],
+        state: "error",
+        content: err,
+        details: guild_id as string,
+      });
     }
   }
 );

@@ -30,7 +30,12 @@ router.get(
         message: "Internal server error",
         error: err,
       });
-      Logs(["api", "commands", "get"], "error", err);
+      Logs({
+        node: ["api", "commands", "get"],
+        state: "error",
+        content: err,
+        details: guild_id as string,
+      });
     }
   }
 );
@@ -61,7 +66,11 @@ router.get(
         message: "Internal server error",
         error: err,
       });
-      Logs(["api", "commands", "get"], "error", err);
+      Logs({
+        node: ["api", "commands", "get"],
+        state: "error",
+        content: err,
+      });
     }
   }
 );
@@ -98,7 +107,12 @@ router.post(
           message: "Internal server error",
           error: err,
         });
-        Logs(["api", "commands", "add"], "error", err, guild_id);
+        Logs({
+          node: ["api", "commands", "add"],
+          state: "error",
+          content: err,
+          details: guild_id,
+        });
       }
     }
   }

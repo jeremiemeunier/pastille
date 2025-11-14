@@ -23,7 +23,7 @@ router.put(
       res.status(204).end();
     } catch (err: any) {
       res.status(500).json({ message: "Internal server error", error: err });
-      Logs(["api", "sanction", "put"], "error", err);
+      Logs({ node: ["api", "sanction", "put"], state: "error", content: err });
     }
   }
 );
@@ -51,7 +51,12 @@ router.post(
       res.status(204).end();
     } catch (err: any) {
       res.status(500).json({ message: "Internal server error", error: err });
-      Logs(["api", "sanction", "register", "post"], "error", err, guild_id);
+      Logs({
+        node: ["api", "sanction", "register", "post"],
+        state: "error",
+        content: err,
+        details: guild_id as string,
+      });
     }
   }
 );
@@ -71,7 +76,12 @@ router.get(
       res.status(200).json(q_list);
     } catch (err: any) {
       res.status(500).json({ message: "Internal server error", error: err });
-      Logs(["api", "sanction", "get", "all"], "error", err, guild_id as string);
+      Logs({
+        node: ["api", "sanction", "get", "all"],
+        state: "error",
+        content: err,
+        details: guild_id as string,
+      });
     }
   }
 );

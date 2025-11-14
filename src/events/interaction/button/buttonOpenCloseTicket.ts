@@ -56,7 +56,12 @@ const buttonOpenTicketInit = async ({
       flags: MessageFlags.Ephemeral,
     });
   } catch (err: any) {
-    Logs(["close", "staff", "channel"], "error", err, guild?.id);
+    Logs({
+      node: ["close", "staff", "channel"],
+      state: "error",
+      content: err,
+      details: guild?.id,
+    });
   }
 };
 

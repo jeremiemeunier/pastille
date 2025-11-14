@@ -67,7 +67,11 @@ export const verifyCsrfToken = (
     next();
 
     if (safePaths.includes(req.path))
-      Logs(["csrf", "skip"], null, `Skipping CSRF check for path: ${req.path}`);
+      Logs({
+        node: ["csrf", "skip"],
+        state: null,
+        content: `Skipping CSRF check for path: ${req.path}`,
+      });
 
     return;
   }
@@ -84,13 +88,21 @@ export const verifyCsrfToken = (
   const headerToken = req.headers[CSRF_HEADER_NAME] as string;
 
   if (!cookieToken) {
-    Logs(["csrf", "verification"], "error", "CSRF token missing in cookie");
+    Logs({
+      node: ["csrf", "verification"],
+      state: "error",
+      content: "CSRF token missing in cookie",
+    });
     res.status(403).json({ message: "CSRF token missing" });
     return;
   }
 
   if (!headerToken) {
-    Logs(["csrf", "verification"], "error", "CSRF token missing in header");
+    Logs({
+      node: ["csrf", "verification"],
+      state: "error",
+      content: "CSRF token missing in header",
+    });
     res.status(403).json({
       message: "CSRF token required in header",
       hint: `Include '${CSRF_HEADER_NAME}' header with value from '${CSRF_COOKIE_NAME}' cookie`,
@@ -100,7 +112,11 @@ export const verifyCsrfToken = (
 
   // Verify tokens match
   if (cookieToken !== headerToken) {
-    Logs(["csrf", "verification"], "error", "CSRF token mismatch");
+    Logs({
+      node: ["csrf", "verification"],
+      state: "error",
+      content: "CSRF token mismatch",
+    });
     res.status(403).json({ message: "Invalid CSRF token" });
     return;
   }

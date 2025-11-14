@@ -7,12 +7,19 @@ type Label =
   | "req"
   | "cron"
   | null;
-type Logs = (
-  node: string[],
-  state: Label,
-  content: string | {},
-  details?: string
-) => void;
+type Logs = ({
+  node,
+  state,
+  content,
+  details,
+  devOnly,
+}: {
+  node: string[];
+  state: Label;
+  content: string | {};
+  details?: string;
+  devOnly?: boolean;
+}) => void;
 
 const composeTime: () => string = () => {
   const now = new Date();
@@ -66,7 +73,7 @@ const composeDetails = (details: string | undefined): string => {
   return `\n└───    (${details})`.padEnd(39, " ");
 };
 
-const Logs: Logs = (node, state, content, details) => {
+const Logs: Logs = ({ node, state, content, details, devOnly }) => {
   const string: string[] = [
     composeState(state),
     composeNode(node),
@@ -80,13 +87,15 @@ const Logs: Logs = (node, state, content, details) => {
     string.push(content.message);
   } else {
     string.push(
-      typeof content === "string" ? content : JSON.stringify(content, null, 2)
+      typeof content === "string" ? content : JSON.stringify(content)
     );
   }
 
   if (details) string.push(composeDetails(details));
 
-  console.log(string.join(""));
+  // logging to console
+  if (process.env.DEV === "1" && devOnly) console.log(string.join(""));
+  if (!devOnly) console.log(string.join(""));
 };
 
 export default Logs;

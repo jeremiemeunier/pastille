@@ -30,7 +30,12 @@ const commandStatutInit = async ({
       flags: MessageFlags.Ephemeral,
     });
   } catch (err: any) {
-    Logs(["command", "status"], "error", err);
+    Logs({
+      node: ["command", "status"],
+      state: "error",
+      content: err,
+      details: interaction?.guild!.id!,
+    });
   }
 };
 

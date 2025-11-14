@@ -67,7 +67,12 @@ router.post(
               { new: true }
             );
           } catch (err: any) {
-            Logs(["webhook", "twitch"], "error", err, "valid_subscription");
+            Logs({
+              node: ["webhook", "twitch"],
+              state: "error",
+              content: err,
+              details: "valid_subscription",
+            });
           }
 
           res
@@ -88,7 +93,11 @@ router.post(
                 { isLive: true, isAnnounce: false }
               );
             } catch (err: any) {
-              Logs(["webhook", "twitch"], "error", err);
+              Logs({
+                node: ["webhook", "twitch"],
+                state: "error",
+                content: err,
+              });
             }
           }
 
@@ -99,7 +108,11 @@ router.post(
         }
       } else {
         res.status(403).json({ message: "Invalid signature" });
-        Logs(["webhook", "twitch"], "error", "Invalid signature");
+        Logs({
+          node: ["webhook", "twitch"],
+          state: "error",
+          content: "Invalid signature",
+        });
       }
     }
   }
@@ -138,7 +151,7 @@ router.post(
           Buffer.from(signature, "hex")
         );
       } catch (err: any) {
-        Logs(["webhook", "discord"], "error", err);
+        Logs({ node: ["webhook", "discord"], state: "error", content: err });
         return false;
       }
     })();

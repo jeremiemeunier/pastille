@@ -25,7 +25,12 @@ router.get(
       res.status(404).json({ message: "No rules found" });
     } catch (err: any) {
       res.status(500).json({ message: "Internal server error", error: err });
-      Logs(["api", "rules", "get"], "error", err);
+      Logs({
+        node: ["api", "rules", "get"],
+        state: "error",
+        content: err,
+        details: guild_id as string,
+      });
     }
   }
 );
@@ -52,7 +57,12 @@ router.post(
         res.status(201).json(q_make);
       } catch (err: any) {
         res.status(500).json({ message: "Internal server error", error: err });
-        Logs(["api", "rules", "post"], "error", err, guild_id);
+        Logs({
+          node: ["api", "rules", "post"],
+          state: "error",
+          content: err,
+          details: guild_id as string,
+        });
       }
     }
   }
@@ -97,7 +107,12 @@ router.put(
         res.status(201).json(q_update);
       } catch (err: any) {
         res.status(500).json({ message: "Internal server error", error: err });
-        Logs(["api", "rules", "put"], "error", err, guild_id);
+        Logs({
+          node: ["api", "rules", "put"],
+          state: "error",
+          content: err,
+          details: guild_id as string,
+        });
       }
     }
   }

@@ -32,7 +32,7 @@ const commandAnnounceInit = async ({
       content: "📢 **Annonce** ||@everyone||",
     });
   } catch (err: any) {
-    Logs(["command", "announce"], "error", err);
+    Logs({ node: ["command", "announce"], state: "error", content: err });
   }
 };
 

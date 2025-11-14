@@ -2,6 +2,7 @@
 process.env.BOT_ID = "test-bot-id";
 process.env.BOT_TOKEN = "test-bot-token";
 process.env.MONGO_URI = "mongodb://localhost:27017/pastille-test";
+process.env.JWT_SECRET = "test-jwt-secret-key-for-testing-purposes-at-least-64-characters-long";
 process.env.BOT_SECRET_SIG = "test-secret-sig";
 process.env.DISCORD_PUBLIC_KEY = "test-public-key";
 process.env.TWITCH_SECRET = "test-twitch-secret";

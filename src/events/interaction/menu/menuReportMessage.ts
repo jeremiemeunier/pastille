@@ -90,7 +90,12 @@ const contextReportMessage = async ({
       flags: MessageFlags.Ephemeral,
     });
   } catch (err: any) {
-    Logs(["command", "report", "message"], "error", err, guild?.id);
+    Logs({
+      node: ["command", "report", "message"],
+      state: "error",
+      content: err,
+      details: guild?.id,
+    });
   }
 };
 

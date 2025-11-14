@@ -2,7 +2,7 @@ import request from "supertest";
 import { createTestApp } from "../testApp";
 import Emote from "@models/Emote.model";
 
-jest.mock("@models/Emote");
+jest.mock("@models/Emote.model");
 
 const app = createTestApp();
 
