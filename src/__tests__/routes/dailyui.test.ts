@@ -2,7 +2,7 @@ import request from "supertest";
 import { createTestApp } from "../testApp";
 import Dailyui from "@models/Dailyui.model";
 
-jest.mock("@models/Dailyui");
+jest.mock("@models/Dailyui.model");
 
 const app = createTestApp();
 

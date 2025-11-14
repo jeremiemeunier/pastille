@@ -5,8 +5,8 @@ import Session from "@models/Session.model";
 import * as TokenManager from "@utils/TokenManager.utils";
 
 // Mock the models
-jest.mock("@models/User");
-jest.mock("@models/Session");
+jest.mock("@models/User.model");
+jest.mock("@models/Session.model");
 
 const app = createTestApp();
 

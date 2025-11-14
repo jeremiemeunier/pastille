@@ -7,9 +7,9 @@ import * as TokenManager from "@utils/TokenManager.utils";
 import DiscordAxios from "@utils/DiscordAxios.utils";
 
 // Mock the models
-jest.mock("@models/User");
-jest.mock("@models/Guild");
-jest.mock("@models/Session");
+jest.mock("@models/User.model");
+jest.mock("@models/Guild.model");
+jest.mock("@models/Session.model");
 jest.mock("@utils/DiscordAxios");
 
 const app = createTestApp();

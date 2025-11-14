@@ -2,7 +2,7 @@ import request from "supertest";
 import { createTestApp } from "../testApp";
 import Addons from "@models/Addons.model";
 
-jest.mock("@models/Addons");
+jest.mock("@models/Addons.model");
 
 const app = createTestApp();
 
