@@ -34,12 +34,16 @@ export const createTestApp = () => {
     })
   );
   
-  // Apply CSRF protection conditionally - skip for bot API calls and Bearer tokens
+  // Apply CSRF protection conditionally - skip for bot API calls, Bearer tokens, and webhooks
   app.use((req: Request, res: Response, next: NextFunction) => {
     // Skip CSRF for bot API calls (identified by pastille_botid header)
     // Skip CSRF for Bearer token authentication (not susceptible to CSRF)
+    // Skip CSRF for webhook endpoints
     const authHeader = req.headers.authorization;
-    if (req.headers.pastille_botid || (authHeader && authHeader.startsWith("Bearer "))) {
+    const safePaths = ["/twitch/webhook", "/discord/webhook"];
+    if (req.headers.pastille_botid || 
+        (authHeader && authHeader.startsWith("Bearer ")) ||
+        safePaths.includes(req.path)) {
       next();
     } else {
       lusca.csrf()(req, res, next);

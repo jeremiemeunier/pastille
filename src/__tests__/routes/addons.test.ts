@@ -96,7 +96,7 @@ describe("Addons Routes", () => {
         role: "role_id",
       };
 
-      (Addons.findByIdAndUpdate as jest.Mock) = jest
+      (Addons.findOneAndUpdate as jest.Mock) = jest
         .fn()
         .mockResolvedValue(mockAddon);
 

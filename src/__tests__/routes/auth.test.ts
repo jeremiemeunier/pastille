@@ -4,13 +4,13 @@ import User from "@models/User.model";
 import Guild from "@models/Guild.model";
 import Session from "@models/Session.model";
 import * as TokenManager from "@utils/TokenManager.utils";
-import DiscordAxios from "@utils/DiscordAxios.utils";
+import cachedDiscordAxios from "@utils/CachedDiscordAxios.utils";
 
 // Mock the models
 jest.mock("@models/User.model");
 jest.mock("@models/Guild.model");
 jest.mock("@models/Session.model");
-jest.mock("@utils/DiscordAxios");
+jest.mock("@utils/CachedDiscordAxios.utils");
 
 const app = createTestApp();
 
@@ -116,11 +116,10 @@ describe("Auth Routes", () => {
       expect(response.body.message).toBe("Logged out successfully");
     });
 
-    it("should return 401 without token", async () => {
+    it("should return 403 without token (CSRF protection)", async () => {
       const response = await request(app).post("/auth/logout");
 
-      expect(response.status).toBe(401);
-      expect(response.body.message).toBe("Authentication required");
+      expect(response.status).toBe(403);
     });
   });
 
@@ -213,7 +212,7 @@ describe("Auth Routes", () => {
       (User.findById as jest.Mock).mockResolvedValue(mockUser);
       (User.findByIdAndUpdate as jest.Mock).mockResolvedValue(mockUser);
       (Session.findOne as jest.Mock).mockResolvedValue(mockSession);
-      (DiscordAxios.get as jest.Mock).mockResolvedValue({ data: mockGuilds });
+      (cachedDiscordAxios.get as jest.Mock).mockResolvedValue({ data: mockGuilds });
       (Guild.find as jest.Mock).mockReturnValue({
         select: jest.fn().mockResolvedValue(mockBotGuilds),
       });
@@ -300,7 +299,7 @@ describe("Auth Routes", () => {
 
       (User.findById as jest.Mock).mockResolvedValue(mockUser);
       (Session.findOne as jest.Mock).mockResolvedValue(mockSession);
-      (DiscordAxios.get as jest.Mock).mockRejectedValue(
+      (cachedDiscordAxios.get as jest.Mock).mockRejectedValue(
         new Error("Discord API error")
       );
 
@@ -349,7 +348,7 @@ describe("Auth Routes", () => {
 
       (User.findById as jest.Mock).mockResolvedValue(mockUser);
       (Session.findOne as jest.Mock).mockResolvedValue(mockSession);
-      (DiscordAxios.get as jest.Mock).mockRejectedValue({
+      (cachedDiscordAxios.get as jest.Mock).mockRejectedValue({
         code: 0,
         message: "401: Unauthorized",
       });

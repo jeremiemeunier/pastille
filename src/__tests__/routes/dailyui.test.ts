@@ -14,7 +14,7 @@ describe("DailyUI Routes", () => {
   describe("PUT /dailyui", () => {
     it("should update a dailyui state", async () => {
       const mockDailyui = { _id: "507f1f77bcf86cd799439011", available: false };
-      (Dailyui.findByIdAndUpdate as jest.Mock) = jest
+      (Dailyui.findOneAndUpdate as jest.Mock) = jest
         .fn()
         .mockResolvedValue(mockDailyui);
 
