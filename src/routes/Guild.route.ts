@@ -285,6 +285,7 @@ router.patch(
         "moderation.channels.alert",
         "moderation.channels.report",
         "moderation.channels.automod",
+        "moderation.channels.shared",
         "moderation.limit.emoji",
         "moderation.limit.mention",
         "moderation.limit.link",
