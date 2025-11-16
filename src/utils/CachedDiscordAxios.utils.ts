@@ -73,10 +73,10 @@ class CachedDiscordAxios {
    */
   private getCacheTTL(url: string): number {
     if (url.includes("/users/@me/guilds")) {
-      return 10 * 60 * 1000; // 10 minutes for guild data
+      return 30 * 60 * 1000; // 30 minutes for guild data
     }
     if (url.includes("/users/@me")) {
-      return 5 * 60 * 1000; // 5 minutes for user data
+      return 60 * 60 * 1000; // 60 minutes for user data
     }
     return 5 * 60 * 1000; // Default 5 minutes
   }
