@@ -176,7 +176,7 @@ class DiscordCache {
       Logs({
         node: ["cache", "set"],
         state: null,
-        content: `Cached ${namespace} (TTL: ${ttl}ms, encrypted: ${encrypt})`,
+        content: `Cached ${namespace}${process.env.DEV === "1" ? `:${identifier.substring(0, 8)}...` : ""} (TTL: ${ttl}ms, encrypted: ${encrypt})`,
         devOnly: true,
       });
     } catch (err: any) {
@@ -217,7 +217,7 @@ class DiscordCache {
         Logs({
           node: ["cache", "get"],
           state: null,
-          content: `Cache expired for ${namespace}`,
+          content: `Cache expired for ${namespace}${process.env.DEV === "1" ? `:${identifier.substring(0, 8)}...` : ""}`,
           devOnly: true,
         });
         return null;
@@ -243,7 +243,7 @@ class DiscordCache {
       Logs({
         node: ["cache", "get"],
         state: null,
-        content: `Cache hit for ${namespace}:${identifier.substring(0, 8)}...`,
+        content: `Cache hit for ${namespace}${process.env.DEV === "1" ? `:${identifier.substring(0, 8)}...` : ""}`,
         devOnly: true,
       });
 
@@ -277,7 +277,7 @@ class DiscordCache {
       Logs({
         node: ["cache", "delete"],
         state: null,
-        content: `Deleted cache for ${namespace}`,
+        content: `Deleted cache for ${namespace}${process.env.DEV === "1" ? `:${identifier.substring(0, 8)}...` : ""}`,
         devOnly: true,
       });
     } catch (err: any) {

@@ -94,8 +94,16 @@ const Logs: Logs = ({ node, state, content, details, devOnly }) => {
   if (details) string.push(composeDetails(details));
 
   // logging to console
-  if (process.env.DEV === "1" && devOnly) console.log(string.join(""));
-  if (!devOnly) console.log(string.join(""));
+  // Only log if explicitly meant for all environments (!devOnly === true)
+  // or if in dev mode and devOnly === true
+  if (devOnly === true && process.env.DEV === "1") {
+    // Dev-only logs: only show in development
+    console.log(string.join(""));
+  } else if (devOnly === false || devOnly === undefined) {
+    // Production logs: show in all environments (default behavior)
+    console.log(string.join(""));
+  }
+  // If devOnly === true but not in dev mode, don't log anything
 };
 
 export default Logs;

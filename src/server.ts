@@ -97,7 +97,16 @@ const pastilleBooter = async () => {
     // API
     Api();
 
-    if (process.env.DEV !== "1") AddonTwitch(client);
+    if (process.env.DEV !== "1") {
+      AddonTwitch(client);
+    } else {
+      Logs({
+        node: ["server", "init"],
+        state: null,
+        content: "Skipping Twitch addon initialization in development mode",
+        devOnly: true,
+      });
+    }
 
     try {
       const allGuilds = client.guilds.cache;
