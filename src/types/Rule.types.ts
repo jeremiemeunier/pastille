@@ -4,4 +4,5 @@ export interface RuleTypes {
   name: string;
   description: string;
   active: boolean;
+  position: number;
 }
