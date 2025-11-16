@@ -2,7 +2,7 @@ import request from "supertest";
 import { createTestApp } from "../testApp";
 import Streamers from "@models/Streamer.model";
 
-jest.mock("@models/Streamers");
+jest.mock("@models/Streamer.model");
 
 const app = createTestApp();
 

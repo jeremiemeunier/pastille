@@ -19,6 +19,7 @@ export interface SettingTypes {
       alert: string;
       report: string;
       automod: string;
+      shared: string;
     };
     limit: {
       emoji: number;

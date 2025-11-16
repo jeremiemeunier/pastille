@@ -79,7 +79,12 @@ const modalReportUser = async ({
       content:
         "Une erreur est survenue lors du signalement veuillez réessayer plus tard.",
     });
-    Logs(["context", "report", "user"], "error", err, guild?.id);
+    Logs({
+      node: ["context", "report", "user"],
+      state: "error",
+      content: err,
+      details: guild?.id,
+    });
   }
 };
 

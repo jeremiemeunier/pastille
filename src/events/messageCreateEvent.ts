@@ -69,7 +69,11 @@ export const messageCreateEventInit = (client: any) => {
             reason: "New screenshots posted",
           });
         } catch (err: any) {
-          Logs(["thread", "screenshots"], "error", err);
+          Logs({
+            node: ["thread", "screenshots"],
+            state: "error",
+            content: err,
+          });
           return;
         }
       } else {
@@ -79,7 +83,11 @@ export const messageCreateEventInit = (client: any) => {
             "Tu es sur un channel dédié aux screenshots. Afin de garder de la clarté dans la lecture, tu peux commenter les posts des autres membres directement dans les fils liés."
           );
         } catch (err: any) {
-          Logs(["delete", "message", "screenshots"], "error", err);
+          Logs({
+            node: ["delete", "message", "screenshots"],
+            state: "error",
+            content: err,
+          });
           return;
         }
       }
@@ -128,16 +136,27 @@ export const messageCreateEventInit = (client: any) => {
           try {
             await msg.edit({ content: req.data.message.content });
           } catch (err: any) {
-            Logs(["message", "event", "ai", "reply"], "error", err);
+            Logs({
+              node: ["message", "event", "ai", "reply"],
+              state: "error",
+              content: err,
+            });
           }
         }
       } catch (err: any) {
-        Logs(["message", "event", "ai"], "error", err);
-
+        Logs({
+          node: ["message", "event", "ai"],
+          state: "error",
+          content: err,
+        });
         try {
           await msg.delete();
         } catch (err: any) {
-          Logs(["message", "event", "ai", "reply", "delete"], "error", err);
+          Logs({
+            node: ["message", "event", "ai", "reply", "delete"],
+            state: "error",
+            content: err,
+          });
         }
 
         await message.reply({

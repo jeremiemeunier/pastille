@@ -3,7 +3,7 @@ import Logs from "@libs/Logs";
 
 /**
  * Discord API Cache Utility
- * 
+ *
  * Provides secure caching for Discord API responses with:
  * - TTL-based expiration
  * - Encryption for sensitive data
@@ -39,9 +39,14 @@ class DiscordCache {
   constructor() {
     // Require JWT_SECRET to be set for encryption
     if (!process.env.JWT_SECRET) {
-      throw new Error("JWT_SECRET must be set for DiscordCache encryption to work reliably.");
+      throw new Error(
+        "JWT_SECRET must be set for DiscordCache encryption to work reliably."
+      );
     }
-    this.encryptionKey = crypto.createHash("sha256").update(process.env.JWT_SECRET).digest();
+    this.encryptionKey = crypto
+      .createHash("sha256")
+      .update(process.env.JWT_SECRET)
+      .digest();
 
     // Run cleanup every 5 minutes
     this.cleanupInterval = setInterval(() => {
@@ -62,7 +67,9 @@ class DiscordCache {
   private generateKey(namespace: string, identifier: string): string {
     const hash = crypto
       .createHash("sha256")
-      .update(`${namespace}:${identifier}:${this.encryptionKey.toString("hex")}`)
+      .update(
+        `${namespace}:${identifier}:${this.encryptionKey.toString("hex")}`
+      )
       .digest("hex");
     return hash;
   }
@@ -82,7 +89,11 @@ class DiscordCache {
       encrypted += cipher.final("hex");
       return `${iv.toString("hex")}:${encrypted}`;
     } catch (err: any) {
-      Logs(["cache", "encrypt"], "error", err);
+      Logs({
+        node: ["cache", "encrypt"],
+        state: "error",
+        content: err,
+      });
       throw new Error("Encryption failed");
     }
   }
@@ -92,7 +103,11 @@ class DiscordCache {
    */
   private decrypt(encryptedData: string): any {
     try {
-      if (!encryptedData || typeof encryptedData !== "string" || !encryptedData.includes(":")) {
+      if (
+        !encryptedData ||
+        typeof encryptedData !== "string" ||
+        !encryptedData.includes(":")
+      ) {
         throw new Error("Invalid encrypted data format");
       }
       const parts = encryptedData.split(":");
@@ -116,7 +131,11 @@ class DiscordCache {
       decrypted += decipher.final("utf8");
       return JSON.parse(decrypted);
     } catch (err: any) {
-      Logs(["cache", "decrypt"], "error", err);
+      Logs({
+        node: ["cache", "decrypt"],
+        state: "error",
+        content: err,
+      });
       throw new Error("Decryption failed");
     }
   }
@@ -132,10 +151,14 @@ class DiscordCache {
   ): void {
     try {
       if (!namespace || !identifier) {
-        Logs(["cache", "set"], "error", "Namespace and identifier are required");
+        Logs({
+          node: ["cache", "set"],
+          state: "error",
+          content: "Namespace and identifier are required",
+        });
         return;
       }
-      
+
       const key = this.generateKey(namespace, identifier);
       const ttl = config?.ttl || this.DEFAULT_TTLS.USER_DATA;
       const encrypt = config?.encrypt ?? false;
@@ -149,14 +172,19 @@ class DiscordCache {
       };
 
       this.cache.set(key, entry);
-      
-      Logs(
-        ["cache", "set"],
-        null,
-        `Cached ${namespace} for ${identifier.substring(0, 8)}... (TTL: ${ttl}ms, encrypted: ${encrypt})`
-      );
+
+      Logs({
+        node: ["cache", "set"],
+        state: null,
+        content: `Cached ${namespace}${process.env.DEV === "1" ? `:${identifier.substring(0, 8)}...` : ""} (TTL: ${ttl}ms, encrypted: ${encrypt})`,
+        devOnly: true,
+      });
     } catch (err: any) {
-      Logs(["cache", "set"], "error", err);
+      Logs({
+        node: ["cache", "set"],
+        state: "error",
+        content: err,
+      });
       // Don't throw, just log - cache failures shouldn't break the app
     }
   }
@@ -168,10 +196,14 @@ class DiscordCache {
   get(namespace: string, identifier: string): any | null {
     try {
       if (!namespace || !identifier) {
-        Logs(["cache", "get"], "error", "Namespace and identifier are required");
+        Logs({
+          node: ["cache", "get"],
+          state: "error",
+          content: "Namespace and identifier are required",
+        });
         return null;
       }
-      
+
       const key = this.generateKey(namespace, identifier);
       const entry = this.cache.get(key);
 
@@ -182,34 +214,46 @@ class DiscordCache {
       // Check if entry is expired
       if (Date.now() - entry.timestamp > entry.ttl) {
         this.cache.delete(key);
-        Logs(
-          ["cache", "get"],
-          null,
-          `Cache expired for ${namespace}:${identifier.substring(0, 8)}...`
-        );
+        Logs({
+          node: ["cache", "get"],
+          state: null,
+          content: `Cache expired for ${namespace}${process.env.DEV === "1" ? `:${identifier.substring(0, 8)}...` : ""}`,
+          devOnly: true,
+        });
         return null;
       }
 
       // Return decrypted or plain data
       const data = entry.isEncrypted
-        ? (entry.encryptedData ? this.decrypt(entry.encryptedData) : null)
+        ? entry.encryptedData
+          ? this.decrypt(entry.encryptedData)
+          : null
         : entry.data;
 
       if (data === null && entry.isEncrypted) {
-        Logs(["cache", "get"], "error", "Encrypted data is missing");
+        Logs({
+          node: ["cache", "get"],
+          state: "error",
+          content: "Encrypted data is missing",
+        });
         this.cache.delete(key);
         return null;
       }
 
-      Logs(
-        ["cache", "get"],
-        null,
-        `Cache hit for ${namespace}:${identifier.substring(0, 8)}...`
-      );
+      Logs({
+        node: ["cache", "get"],
+        state: null,
+        content: `Cache hit for ${namespace}${process.env.DEV === "1" ? `:${identifier.substring(0, 8)}...` : ""}`,
+        devOnly: true,
+      });
 
       return data;
     } catch (err: any) {
-      Logs(["cache", "get"], "error", err);
+      Logs({
+        node: ["cache", "get"],
+        state: "error",
+        content: err,
+      });
       return null;
     }
   }
@@ -220,19 +264,28 @@ class DiscordCache {
   delete(namespace: string, identifier: string): void {
     try {
       if (!namespace || !identifier) {
-        Logs(["cache", "delete"], "error", "Namespace and identifier are required");
+        Logs({
+          node: ["cache", "delete"],
+          state: "error",
+          content: "Namespace and identifier are required",
+        });
         return;
       }
-      
+
       const key = this.generateKey(namespace, identifier);
       this.cache.delete(key);
-      Logs(
-        ["cache", "delete"],
-        null,
-        `Deleted cache for ${namespace}:${identifier.substring(0, 8)}...`
-      );
+      Logs({
+        node: ["cache", "delete"],
+        state: null,
+        content: `Deleted cache for ${namespace}${process.env.DEV === "1" ? `:${identifier.substring(0, 8)}...` : ""}`,
+        devOnly: true,
+      });
     } catch (err: any) {
-      Logs(["cache", "delete"], "error", err);
+      Logs({
+        node: ["cache", "delete"],
+        state: "error",
+        content: err,
+      });
     }
   }
 
@@ -244,9 +297,18 @@ class DiscordCache {
       // Invalidate user data
       this.delete("user", userId);
       this.delete("guilds", userId);
-      Logs(["cache", "invalidate"], null, `Invalidated all cache for user ${userId.substring(0, 8)}...`);
+      Logs({
+        node: ["cache", "invalidate"],
+        state: null,
+        content: `Invalidated all cache for user`,
+        devOnly: true,
+      });
     } catch (err: any) {
-      Logs(["cache", "invalidate"], "error", err);
+      Logs({
+        node: ["cache", "invalidate"],
+        state: "error",
+        content: err,
+      });
     }
   }
 
@@ -265,7 +327,12 @@ class DiscordCache {
     }
 
     if (cleaned > 0) {
-      Logs(["cache", "cleanup"], null, `Cleaned up ${cleaned} expired entries`);
+      Logs({
+        node: ["cache", "cleanup"],
+        state: null,
+        content: `Cleaned up ${cleaned} expired entries`,
+        devOnly: true,
+      });
     }
   }
 
@@ -275,7 +342,12 @@ class DiscordCache {
   clear(): void {
     const size = this.cache.size;
     this.cache.clear();
-    Logs(["cache", "clear"], null, `Cleared ${size} cache entries`);
+    Logs({
+      node: ["cache", "clear"],
+      state: null,
+      content: `Cleared ${size} cache entries`,
+      devOnly: true,
+    });
   }
 
   /**

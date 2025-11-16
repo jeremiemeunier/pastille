@@ -51,7 +51,7 @@ router.get(
       res.status(200).json(q_get);
       return;
     } catch (err: any) {
-      Logs(["api", "guild"], "error", err);
+      Logs({ node: ["api", "guild"], state: "error", content: err });
       res.status(500).json({ error: "Internal server error" });
       return;
     }
@@ -98,7 +98,11 @@ router.get(
       res.status(200).json(q_get);
       return;
     } catch (err: any) {
-      Logs(["api", "guild", "settings"], "error", err);
+      Logs({
+        node: ["api", "guild", "settings"],
+        state: "error",
+        content: err,
+      });
       res.status(500).json({ error: "Internal server error" });
       return;
     }
@@ -151,7 +155,11 @@ router.get(
       res.status(200).json(response.data.filter((ch: any) => ch.type === 0));
       return;
     } catch (err: any) {
-      Logs(["api", "guild", "channels"], "error", err);
+      Logs({
+        node: ["api", "guild", "channels"],
+        state: "error",
+        content: err,
+      });
 
       if (err.response?.status === 404) {
         res.status(404).json({ message: "Guild not found" });
@@ -217,7 +225,7 @@ router.get(
       res.status(200).json(response.data);
       return;
     } catch (err: any) {
-      Logs(["api", "guild", "roles"], "error", err);
+      Logs({ node: ["api", "guild", "roles"], state: "error", content: err });
 
       if (err.response?.status === 404) {
         res.status(404).json({ message: "Guild not found" });
@@ -277,6 +285,7 @@ router.patch(
         "moderation.channels.alert",
         "moderation.channels.report",
         "moderation.channels.automod",
+        "moderation.channels.shared",
         "moderation.limit.emoji",
         "moderation.limit.mention",
         "moderation.limit.link",
@@ -329,7 +338,11 @@ router.patch(
       res.status(204).send();
       return;
     } catch (err: any) {
-      Logs(["api", "guild", "settings", "update"], "error", err);
+      Logs({
+        node: ["api", "guild", "settings", "update"],
+        state: "error",
+        content: err,
+      });
       res.status(500).json({ error: "Internal server error" });
       return;
     }
@@ -353,7 +366,11 @@ router.post(
           res.status(409).json({ message: "Guild already exists" });
           return;
         } catch (err: any) {
-          Logs(["api", "guild", "update"], "error", err);
+          Logs({
+            node: ["api", "guild", "update"],
+            state: "error",
+            content: err,
+          });
           res.status(409).json({ message: "Guild already exists" });
           return;
         }
@@ -363,12 +380,40 @@ router.post(
         id: req.body.id,
         data: req.body,
       });
-      await q_make.save();
+      const q_make_setting = new SettingModel({
+        guild_id: req.body.id,
+      });
+      
+      // Save guild first, and if successful, save settings
+      // If settings save fails, delete the guild to maintain consistency
+      try {
+        await q_make.save();
+        try {
+          await q_make_setting.save();
+        } catch (settingErr: any) {
+          // Rollback guild creation if settings creation fails
+          await Guild.findByIdAndDelete(q_make._id);
+          throw settingErr;
+        }
+      } catch (saveErr: any) {
+        Logs({
+          node: ["api", "guild", "join"],
+          state: "error",
+          content: "Failed to create guild and settings",
+          details: saveErr,
+        });
+        res.status(500).json({ error: "Failed to create guild" });
+        return;
+      }
 
       res.status(201).json({ message: "Guild added successfully" });
       return;
     } catch (err: any) {
-      Logs(["api", "guild", "join"], "error", err);
+      Logs({
+        node: ["api", "guild", "join"],
+        state: "error",
+        content: err,
+      });
       res.status(500).json({ error: "Internal server error" });
       return;
     }

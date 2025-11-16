@@ -68,7 +68,11 @@ export const buildConversationContext = async (
           currentMessage = referencedMessage;
         } catch (err: any) {
           // Message might be deleted or inaccessible
-          Logs(["message", "context", "fetch"], "warning", err);
+          Logs({
+            node: ["message", "context", "fetch"],
+            state: "warning",
+            content: err,
+          });
           break;
         }
       } else {
@@ -77,7 +81,11 @@ export const buildConversationContext = async (
       }
     }
   } catch (err: any) {
-    Logs(["message", "context", "build"], "error", err);
+    Logs({
+      node: ["message", "context", "build"],
+      state: "error",
+      content: err,
+    });
   }
 
   return conversationMessages;

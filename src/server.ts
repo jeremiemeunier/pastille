@@ -45,12 +45,12 @@ const client = new Client({
 
 const guildStarter = async (guild: Guild) => {
   try {
-    Logs(
-      ["booter", "guild_starter"],
-      "start",
-      "start all functions",
-      guild?.id
-    );
+    Logs({
+      node: ["booter", "guild_starter"],
+      state: "start",
+      content: "start all functions",
+      details: guild?.id,
+    });
     AutomodDaemon(guild);
     CommandRegisterDaemon(guild);
     AddonRegisterDaemon(guild);
@@ -81,14 +81,32 @@ const setStatus = async () => {
 const pastilleBooter = async () => {
   Start();
 
-  Logs(["booter"], "start", "pastille has started successfully");
-  Logs(["booter"], null, `authenticated has ${client.user?.displayName}`);
+  Logs({
+    node: ["booter"],
+    state: "start",
+    content: "pastille has started successfully",
+  });
+  Logs({
+    node: ["booter"],
+    state: null,
+    content: `authenticated has ${client.user?.displayName}`,
+  });
   setStatus();
 
   try {
     // API
     Api();
-    AddonTwitch(client);
+
+    if (process.env.DEV !== "1") {
+      AddonTwitch(client);
+    } else {
+      Logs({
+        node: ["server", "init"],
+        state: null,
+        content: "Skipping Twitch addon initialization in development mode",
+        devOnly: true,
+      });
+    }
 
     try {
       const allGuilds = client.guilds.cache;
@@ -105,29 +123,34 @@ const pastilleBooter = async () => {
       messageEditInit(client);
       automod(client);
     } catch (err: any) {
-      Logs(["booter"], "error", err);
+      Logs({ node: ["booter"], state: "error", content: err });
     }
   } catch (err: any) {
-    Logs(["api", "server"], "error", err);
+    Logs({ node: ["api", "server"], state: "error", content: err });
   }
 
   client.on(Events.GuildCreate, (event) => {
-    Logs(["events", "new_guild"], null, "join a new guild", event?.id);
+    Logs({
+      node: ["events", "new_guild"],
+      state: null,
+      content: "join a new guild",
+      details: event?.id,
+    });
     guildStarter(event);
     setStatus();
   });
 
   client.on(Events.GuildDelete, async (event) => {
-    Logs(
-      ["events", "leave_guild"],
-      null,
-      "left or kicked from a guild",
-      event?.id
-    );
+    Logs({
+      node: ["events", "leave_guild"],
+      state: null,
+      content: "left or kicked from a guild",
+      details: event?.id,
+    });
     try {
       await GuildModel.findOneAndDelete({ id: event.id });
     } catch (err: any) {
-      Logs(["events", "leave_guild"], "error", err);
+      Logs({ node: ["events", "leave_guild"], state: "error", content: err });
     }
     setStatus();
   });
@@ -137,5 +160,5 @@ try {
   client.on("clientReady", pastilleBooter);
   client.login(process.env.BOT_TOKEN);
 } catch (err: any) {
-  Logs(["client", "connect"], "error", err);
+  Logs({ node: ["client", "connect"], state: "error", content: err });
 }

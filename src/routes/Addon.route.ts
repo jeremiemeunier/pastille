@@ -30,7 +30,12 @@ router.get(
         message: "Internal server error",
         error: err,
       });
-      Logs(["api", "addons", "get"], "error", err, guild_id as string);
+      Logs({
+        node: ["api", "addons", "get"],
+        state: "error",
+        content: err,
+        details: guild_id as string,
+      });
     }
   }
 );
@@ -59,7 +64,12 @@ router.post("/addons/add", isPastille, rateLimiter, async (req, res) => {
       message: "Internal server error",
       error: err,
     });
-    Logs(["api", "addons", "post"], "error", err, guild_id);
+    Logs({
+      node: ["api", "addons", "post"],
+      state: "error",
+      content: err,
+      details: guild_id,
+    });
   }
 });
 
@@ -110,7 +120,12 @@ router.put(
         message: "Internal server error",
         error: err,
       });
-      Logs(["api", "addons", "put"], "error", err, guild_id);
+      Logs({
+        node: ["api", "addons", "put"],
+        state: "error",
+        content: err,
+        details: guild_id,
+      });
     }
   }
 );

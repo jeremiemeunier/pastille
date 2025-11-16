@@ -2,7 +2,7 @@
 
 Pastille is a feature-rich Discord bot written in TypeScript, designed to manage community servers with powerful moderation, role management, and integration features.
 
-![Pastille](https://images.cdn.jeremiemeunier.fr/github/pastille_couv.png)
+![Pastille](https://images.cdn.jeremiemeunier.fr/github/pastille_couv.png?v=3.0.0)
 
 ## Features
 
@@ -77,21 +77,22 @@ Each Discord server can be configured with custom settings through the `/setting
 
 The following environment variables are required:
 
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `BOT_TOKEN` | Discord bot token from [Discord Developers](https://discord.com/developers/applications) | Yes |
-| `BOT_ID` | Your Discord bot user ID | Yes |
-| `MONGO_URI` | MongoDB connection URI | Yes |
-| `JWT_SECRET` | Secret key for JWT token generation (64+ random characters recommended) | Yes |
-| `DISCORD_CLIENT` | Discord OAuth2 application client ID | For user authentication |
-| `DISCORD_SECRET` | Discord OAuth2 application client secret | For user authentication |
-| `TWITCH_SECRET` | Twitch application secret token from [Twitch Developers](https://dev.twitch.tv/console/apps/create) | For Twitch addon |
-| `TWITCH_CLIENT` | Twitch application client ID | For Twitch addon |
-| `BOT_SECRET_SIG` | Secret for Twitch webhook signature verification | For Twitch addon |
-| `DISCORD_PUBLIC_KEY` | Discord application public key for webhook verification | For Discord webhooks |
-| `DEV` | Set to "1" for development mode (affects cookie security and redirect URIs) | No |
+| Variable             | Description                                                                                         | Required                |
+| -------------------- | --------------------------------------------------------------------------------------------------- | ----------------------- |
+| `BOT_TOKEN`          | Discord bot token from [Discord Developers](https://discord.com/developers/applications)            | Yes                     |
+| `BOT_ID`             | Your Discord bot user ID                                                                            | Yes                     |
+| `MONGO_URI`          | MongoDB connection URI                                                                              | Yes                     |
+| `JWT_SECRET`         | Secret key for JWT token generation (64+ random characters recommended)                             | Yes                     |
+| `DISCORD_CLIENT`     | Discord OAuth2 application client ID                                                                | For user authentication |
+| `DISCORD_SECRET`     | Discord OAuth2 application client secret                                                            | For user authentication |
+| `TWITCH_SECRET`      | Twitch application secret token from [Twitch Developers](https://dev.twitch.tv/console/apps/create) | For Twitch addon        |
+| `TWITCH_CLIENT`      | Twitch application client ID                                                                        | For Twitch addon        |
+| `BOT_SECRET_SIG`     | Secret for Twitch webhook signature verification                                                    | For Twitch addon        |
+| `DISCORD_PUBLIC_KEY` | Discord application public key for webhook verification                                             | For Discord webhooks    |
+| `DEV`                | Set to "1" for development mode (affects cookie security and redirect URIs)                         | No                      |
 
 **Example .env file:**
+
 ```bash
 BOT_TOKEN=your_discord_bot_token
 BOT_ID=your_bot_user_id
@@ -107,6 +108,7 @@ DEV=1
 ```
 
 **Generating JWT_SECRET:**
+
 ```bash
 # Generate a secure random secret key
 node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
@@ -123,6 +125,7 @@ Pastille exposes a REST API on port 3000 for managing bot data and integrations.
 The API supports two authentication methods:
 
 1. **Bot Authentication**: Internal API endpoints require the `pastille_botid` header
+
    ```
    pastille_botid: YOUR_BOT_ID
    ```
@@ -154,6 +157,7 @@ See [API.md](API.md) for detailed caching documentation.
 Pastille implements several security measures to protect user data and ensure system integrity:
 
 ### Authentication & Authorization
+
 - **JWT-based session management** with secure token generation
 - **httpOnly cookies** to prevent XSS attacks
 - **Session validation** against database for real-time revocation
@@ -161,6 +165,7 @@ Pastille implements several security measures to protect user data and ensure sy
 - **Multi-device session support** with ability to logout from all devices
 
 ### Data Protection
+
 - **User data sanitization** - Sensitive fields (email, credentials, private data) are never exposed in API responses
 - **Separate public and authenticated views** - Public endpoints show minimal user information
 - **Field-level access control** - Users can only update non-sensitive profile fields
@@ -168,6 +173,7 @@ Pastille implements several security measures to protect user data and ensure sy
 - **Discord API caching** - Encrypted caching with automatic expiration and secure key generation
 
 ### Best Practices
+
 - **Rate limiting** on all endpoints to prevent abuse
 - **CORS configuration** for cross-origin request control
 - **Environment-based security** - Secure cookies in production, relaxed in development
@@ -180,6 +186,7 @@ Pastille implements several security measures to protect user data and ensure sy
 #### Infractions
 
 **POST /infraction** - Create a new infraction
+
 ```json
 {
   "user_id": "string",
@@ -190,6 +197,7 @@ Pastille implements several security measures to protect user data and ensure sy
 ```
 
 **GET /infraction/all** - Get infraction count
+
 ```
 Query params: user_id, guild_id
 ```
@@ -197,6 +205,7 @@ Query params: user_id, guild_id
 #### Sanctions
 
 **POST /sanction/add** - Create a sanction
+
 ```json
 {
   "user_id": "string",
@@ -208,11 +217,13 @@ Query params: user_id, guild_id
 ```
 
 **GET /sanction** - Get all checkable sanctions for a guild
+
 ```
 Query params: guild_id
 ```
 
 **PUT /sanction/update** - Mark sanction as checked
+
 ```
 Query params: id
 ```
@@ -220,6 +231,7 @@ Query params: id
 #### DailyUI
 
 **POST /dailyui** - Add a daily UI challenge
+
 ```json
 {
   "guild_id": "string",
@@ -230,6 +242,7 @@ Query params: id
 ```
 
 **POST /dailyui/mass** - Add multiple daily UI challenges
+
 ```json
 {
   "data": [
@@ -243,11 +256,13 @@ Query params: id
 ```
 
 **GET /dailyui** - Get available daily UI challenge
+
 ```
 Query params: guild_id
 ```
 
 **PUT /dailyui** - Mark daily UI as sent
+
 ```
 Query params: id
 ```
@@ -259,6 +274,7 @@ Query params: id
 **GET /twitch/live** - Get live streamers to announce
 
 **POST /twitch/streamers** - Add streamer notification
+
 ```json
 {
   "streamer_id": "string",
@@ -274,6 +290,7 @@ Query params: id
 **PATCH /twitch/streamers/:id** - Validate streamer
 
 **DELETE /twitch/streamers** - Remove streamer notification
+
 ```json
 {
   "streamer_id": "string",
@@ -286,11 +303,13 @@ Query params: id
 #### Rules
 
 **GET /rules** - Get all rules for a guild
+
 ```
 Query params: guild_id
 ```
 
 **POST /rules/add** - Create a rule
+
 ```json
 {
   "guild_id": "string",
@@ -301,6 +320,7 @@ Query params: guild_id
 ```
 
 **PUT /rules/update** - Update a rule
+
 ```json
 {
   "id": "string",
@@ -314,11 +334,13 @@ Query params: guild_id
 #### Roles
 
 **GET /roles** - Get all roles for a guild
+
 ```
 Query params: guild_id
 ```
 
 **POST /roles/add** - Create a role
+
 ```json
 {
   "guild_id": "string",
@@ -330,6 +352,7 @@ Query params: guild_id
 ```
 
 **PUT /roles/update** - Update a role
+
 ```json
 {
   "id": "string",
@@ -344,11 +367,13 @@ Query params: guild_id
 #### Addons
 
 **GET /addons** - Get all addons for a guild
+
 ```
 Query params: guild_id
 ```
 
 **POST /addons/add** - Register an addon
+
 ```json
 {
   "guild_id": "string",
@@ -360,6 +385,7 @@ Query params: guild_id
 ```
 
 **PUT /addons/update** - Update an addon
+
 ```json
 {
   "id": "string",
@@ -374,11 +400,13 @@ Query params: guild_id
 #### Settings
 
 **GET /settings** - Get guild settings
+
 ```
 Query params: guild_id
 ```
 
 **POST /settings/add** - Create guild settings
+
 ```json
 {
   "guild_id": "string",
@@ -425,16 +453,19 @@ Query params: guild_id
 #### Commands
 
 **GET /commands** - Get all commands for a guild
+
 ```
 Query params: guild_id
 ```
 
 **GET /commands/id** - Get a specific command
+
 ```
 Query params: id
 ```
 
 **POST /commands/add** - Create a command
+
 ```json
 {
   "guild_id": "string",
@@ -447,16 +478,19 @@ Query params: id
 #### Emotes
 
 **GET /emotes** - Get emote by letter
+
 ```
 Query params: letter
 ```
 
 **GET /emotes/all** - Get all emotes
+
 ```
 Query params: limit (optional)
 ```
 
 **POST /emotes/mass** - Add multiple emotes
+
 ```json
 {
   "emotes": [
@@ -568,6 +602,7 @@ We welcome contributions! Please follow these guidelines:
 ### Reporting Issues
 
 Use GitHub Issues to report bugs or request features. Please include:
+
 - Clear description of the issue
 - Steps to reproduce
 - Expected vs actual behavior
@@ -580,6 +615,7 @@ This project is licensed under the ISC License - see the LICENSE file for detail
 ## Support
 
 For support, please:
+
 - Open an issue on GitHub
 - Check existing documentation
 - Review the API documentation above
@@ -587,6 +623,7 @@ For support, please:
 ## Acknowledgments
 
 Built with:
+
 - [Discord.js](https://discord.js.org/) - Discord API library
 - [Express](https://expressjs.com/) - Web framework
 - [Mongoose](https://mongoosejs.com/) - MongoDB ODM

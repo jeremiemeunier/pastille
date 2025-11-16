@@ -14,18 +14,18 @@ export const AddonsRegister = async (addons: any, guild: Guild) => {
     try {
       addons.map((item: AddonsTypes) => {
         item.active
-          ? Logs(
-              ["daemon", "addons"],
-              null,
-              `[\x1b[32m ACTIVE \x1b[0m] ${item.name}`,
-              guild?.id
-            )
-          : Logs(
-              ["daemon", "addons"],
-              null,
-              `[\x1b[31mINACTIVE\x1b[0m] ${item.name}`,
-              guild?.id
-            );
+          ? Logs({
+              node: ["daemon", "addons"],
+              state: null,
+              content: `[\x1b[32m ACTIVE \x1b[0m] ${item.name}`,
+              details: guild?.id,
+            })
+          : Logs({
+              node: ["daemon", "addons"],
+              state: null,
+              content: `[\x1b[31mINACTIVE\x1b[0m] ${item.name}`,
+              details: guild?.id,
+            });
 
         if (item.active) {
           try {
@@ -34,12 +34,16 @@ export const AddonsRegister = async (addons: any, guild: Guild) => {
             }`);
             addonsLoaded(guild, item);
           } catch (err: any) {
-            Logs(["daemon", "addons", "load"], "error", err);
+            Logs({
+              node: ["daemon", "addons", "load"],
+              state: "error",
+              content: err,
+            });
           }
         }
       });
     } catch (err: any) {
-      Logs(["daemon", "addons", "map"], "error", err);
+      Logs({ node: ["daemon", "addons", "map"], state: "error", content: err });
     }
   }
 };

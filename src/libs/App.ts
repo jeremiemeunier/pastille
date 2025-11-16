@@ -20,18 +20,19 @@ App.use(cookieParser());
 
 App.use((req: Request, res: Response, next: NextFunction) => {
   morgan((tokens, req, res): any => {
-    Logs(
-      ["http", "requests"],
-      "req",
-      [
+    Logs({
+      node: ["http", "requests"],
+      state: "req",
+      content: [
         tokens.method(req, res)?.padEnd(5, " "),
         tokens.status(req, res),
         tokens.url(req, res),
         "-",
         tokens["response-time"](req, res),
         "ms",
-      ].join(" ")
-    );
+      ].join(" "),
+      devOnly: true,
+    });
   })(req, res, next);
 });
 

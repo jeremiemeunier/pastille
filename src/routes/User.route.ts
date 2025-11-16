@@ -35,7 +35,7 @@ router.get(
       // Return only public information
       res.status(200).json({ user: sanitizeUserPublic(user) });
     } catch (err: any) {
-      Logs(["user", "get"], "error", err);
+      Logs({ node: ["user", "get"], state: "error", content: err });
       res.status(500).json({ message: "Internal server error" });
     }
   }
@@ -86,7 +86,7 @@ router.put(
         user: sanitizeUser(updatedUser!),
       });
     } catch (err: any) {
-      Logs(["user", "update"], "error", err);
+      Logs({ node: ["user", "update"], state: "error", content: err });
       res.status(500).json({ message: "Internal server error" });
     }
   }
@@ -112,7 +112,7 @@ router.delete(
       res.clearCookie("pastille_token");
       res.status(200).json({ message: "Account deleted successfully" });
     } catch (err: any) {
-      Logs(["user", "delete"], "error", err);
+      Logs({ node: ["user", "delete"], state: "error", content: err });
       res.status(500).json({ message: "Internal server error" });
     }
   }

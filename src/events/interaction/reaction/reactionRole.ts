@@ -37,12 +37,12 @@ const addRole = async (
       try {
         await member.roles.add(roleItem);
       } catch (err: any) {
-        Logs(
-          ["reaction", "role", "add"],
-          "error",
-          err,
-          reaction.message.guild!.id
-        );
+        Logs({
+          node: ["reaction", "role", "add"],
+          state: "error",
+          content: err,
+          details: reaction.message.guild!.id,
+        });
         return;
       }
     }
@@ -78,12 +78,12 @@ const removeRole = async (
       try {
         await member.roles.remove(roleItem);
       } catch (err: any) {
-        Logs(
-          ["reaction", "role", "remove"],
-          "error",
-          err,
-          reaction.message.guild!.id
-        );
+        Logs({
+          node: ["reaction", "role", "remove"],
+          state: "error",
+          content: err,
+          details: reaction.message.guild!.id,
+        });
         return;
       }
     }
