@@ -383,8 +383,28 @@ router.post(
       const q_make_setting = new SettingModel({
         guild_id: req.body.id,
       });
-      await q_make.save();
-      await q_make_setting.save();
+      
+      // Save guild first, and if successful, save settings
+      // If settings save fails, delete the guild to maintain consistency
+      try {
+        await q_make.save();
+        try {
+          await q_make_setting.save();
+        } catch (settingErr: any) {
+          // Rollback guild creation if settings creation fails
+          await Guild.findByIdAndDelete(q_make._id);
+          throw settingErr;
+        }
+      } catch (saveErr: any) {
+        Logs({
+          node: ["api", "guild", "join"],
+          state: "error",
+          content: "Failed to create guild and settings",
+          details: saveErr,
+        });
+        res.status(500).json({ error: "Failed to create guild" });
+        return;
+      }
 
       res.status(201).json({ message: "Guild added successfully" });
       return;

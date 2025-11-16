@@ -4,6 +4,9 @@ import pkg from "mongoose";
 const { Schema, model, models } = pkg;
 
 const schema = new Schema<SettingTypes>({
+  // Note: unique constraint added to prevent duplicate settings per guild
+  // Ensure no duplicate guild_id entries exist before deploying this change
+  // Run: db.settings.aggregate([{$group: {_id: "$guild_id", count: {$sum: 1}}}, {$match: {count: {$gt: 1}}}])
   guild_id: { type: String, required: true, unique: true },
   premium: { type: Boolean, default: false },
   premium_end: { type: String, default: "" },
