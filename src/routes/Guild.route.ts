@@ -114,6 +114,8 @@ router.get(
   rateLimiter,
   isAuthenticated,
   async (req: Request, res: Response) => {
+    const { type } = req.query;
+
     try {
       // First verify the user has access to this guild
       const user = await User.findById(req.user?.user_id);
@@ -152,7 +154,13 @@ router.get(
         }
       );
 
-      res.status(200).json(response.data.filter((ch: any) => ch.type === 0));
+      res
+        .status(200)
+        .json(
+          response.data.filter(
+            (ch: any) => ch.type === parseInt(type as string)
+          )
+        );
       return;
     } catch (err: any) {
       Logs({
