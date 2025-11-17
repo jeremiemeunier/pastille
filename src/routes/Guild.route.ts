@@ -281,6 +281,7 @@ router.patch(
         "options.channels.help",
         "options.channels.voiceText",
         "options.channels.screenshots",
+        "options.channels.voices",
         "moderation.sharing",
         "moderation.channels.alert",
         "moderation.channels.report",
