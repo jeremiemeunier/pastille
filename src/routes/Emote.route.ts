@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { isPastille } from "../middlewares/isPastille";
+import { isPastille } from "../middlewares/isPastille.middle";
 import Emote from "@models/Emote.model";
 import { EmoteTypes } from "@/types/Emote.types";
 import Logs from "@libs/Logs";

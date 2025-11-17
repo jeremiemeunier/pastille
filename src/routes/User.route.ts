@@ -2,9 +2,9 @@ import { Request, Response, Router, json } from "express";
 import Logs from "@libs/Logs";
 import { rateLimiter } from "@libs/RateLimiter";
 import User from "@models/User.model";
-import { isAuthenticated } from "@middlewares/isAuthenticated";
+import { isAuthenticated } from "@middlewares/isAuthenticated.middle";
 import { sanitizeUser, sanitizeUserPublic } from "@utils/UserSanitizer.utils";
-import { ensureCsrfToken } from "@middlewares/csrfProtection";
+import { ensureCsrfToken } from "@middlewares/csrfProtection.middle";
 
 const router = Router();
 router.use(json());

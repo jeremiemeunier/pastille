@@ -9,7 +9,7 @@ import express, {
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import rateLimit from "express-rate-limit";
-import { ensureCsrfToken } from "@middlewares/csrfProtection";
+import { ensureCsrfToken } from "@middlewares/csrfProtection.middle";
 import morgan from "morgan";
 import Logs from "./Logs";
 

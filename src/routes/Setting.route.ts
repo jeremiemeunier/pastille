@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { isPastille } from "../middlewares/isPastille";
+import { isPastille } from "../middlewares/isPastille.middle";
 import Setting from "@models/Setting.model";
 import Logs from "@libs/Logs";
 import { rateLimiter } from "@libs/RateLimiter";

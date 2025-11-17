@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { isPastille } from "../middlewares/isPastille";
+import { isPastille } from "../middlewares/isPastille.middle";
 import Dailyui from "@models/Dailyui.model";
 import { DailyUiTypes } from "@/types/Dailyui.types";
 import Logs from "@libs/Logs";

@@ -1,10 +1,10 @@
 import { Request, Response, Router } from "express";
-import { isPastille } from "../middlewares/isPastille";
+import { isPastille } from "../middlewares/isPastille.middle";
 import Logs from "@libs/Logs";
 import { rateLimiter } from "@libs/RateLimiter";
 import Guild from "@models/Guild.model";
 import SettingModel from "@models/Setting.model";
-import { isAuthenticated } from "@middlewares/isAuthenticated";
+import { isAuthenticated } from "@middlewares/isAuthenticated.middle";
 import GuildModel from "@models/Guild.model";
 import cachedDiscordAxios from "@utils/CachedDiscordAxios.utils";
 import User from "@models/User.model";
@@ -383,7 +383,7 @@ router.post(
       const q_make_setting = new SettingModel({
         guild_id: req.body.id,
       });
-      
+
       // Save guild first, and if successful, save settings
       // If settings save fails, delete the guild to maintain consistency
       try {
