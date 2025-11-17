@@ -18,6 +18,7 @@ const schema = new Schema<SettingTypes>({
       help: { type: String, default: "" },
       voiceText: { type: String, default: "" },
       screenshots: { type: String, default: "" },
+      voices: { type: [String], default: [] },
     },
   },
   moderation: {
