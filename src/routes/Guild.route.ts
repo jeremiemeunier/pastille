@@ -1,10 +1,10 @@
 import { Request, Response, Router } from "express";
-import { isPastille } from "../middlewares/isPastille";
+import { isPastille } from "../middlewares/isPastille.middle";
 import Logs from "@libs/Logs";
 import { rateLimiter } from "@libs/RateLimiter";
 import Guild from "@models/Guild.model";
 import SettingModel from "@models/Setting.model";
-import { isAuthenticated } from "@middlewares/isAuthenticated";
+import { isAuthenticated } from "@middlewares/isAuthenticated.middle";
 import GuildModel from "@models/Guild.model";
 import cachedDiscordAxios from "@utils/CachedDiscordAxios.utils";
 import User from "@models/User.model";
@@ -114,6 +114,8 @@ router.get(
   rateLimiter,
   isAuthenticated,
   async (req: Request, res: Response) => {
+    const { type } = req.query;
+
     try {
       // First verify the user has access to this guild
       const user = await User.findById(req.user?.user_id);
@@ -152,7 +154,13 @@ router.get(
         }
       );
 
-      res.status(200).json(response.data.filter((ch: any) => ch.type === 0));
+      res
+        .status(200)
+        .json(
+          response.data.filter(
+            (ch: any) => ch.type === parseInt(type as string)
+          )
+        );
       return;
     } catch (err: any) {
       Logs({
@@ -281,6 +289,7 @@ router.patch(
         "options.channels.help",
         "options.channels.voiceText",
         "options.channels.screenshots",
+        "options.channels.voices",
         "moderation.sharing",
         "moderation.channels.alert",
         "moderation.channels.report",
@@ -383,7 +392,7 @@ router.post(
       const q_make_setting = new SettingModel({
         guild_id: req.body.id,
       });
-      
+
       // Save guild first, and if successful, save settings
       // If settings save fails, delete the guild to maintain consistency
       try {

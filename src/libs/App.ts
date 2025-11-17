@@ -9,7 +9,7 @@ import express, {
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import rateLimit from "express-rate-limit";
-import { ensureCsrfToken } from "@middlewares/csrfProtection";
+import { ensureCsrfToken } from "@middlewares/csrfProtection.middle";
 import morgan from "morgan";
 import Logs from "./Logs";
 
@@ -41,7 +41,7 @@ App.use(ensureCsrfToken);
 
 const limiter = rateLimit({
   windowMs: 60 * 1000,
-  max: 100,
+  max: 600,
   standardHeaders: true,
   legacyHeaders: false,
 });

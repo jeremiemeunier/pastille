@@ -8,6 +8,7 @@ const schema = new Schema<RuleTypes>({
   name: String,
   description: String,
   active: Boolean,
+  position: Number,
 });
 
 export default models.Rule || model("Rule", schema);

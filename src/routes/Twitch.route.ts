@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { isPastille } from "../middlewares/isPastille";
+import { isPastille } from "../middlewares/isPastille.middle";
 import Logs from "@libs/Logs";
 import Streamers from "@models/Streamer.model";
 import { StreamerAnnouncerTypes } from "@/types/Streamers.types";

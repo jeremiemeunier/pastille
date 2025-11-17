@@ -10,9 +10,9 @@ import {
   revokeSession,
   revokeAllUserSessions,
 } from "@utils/TokenManager.utils";
-import { isAuthenticated } from "@middlewares/isAuthenticated";
+import { isAuthenticated } from "@middlewares/isAuthenticated.middle";
 import { sanitizeUser } from "@utils/UserSanitizer.utils";
-import { ensureCsrfToken } from "@middlewares/csrfProtection";
+import { ensureCsrfToken } from "@middlewares/csrfProtection.middle";
 
 const router = Router();
 router.use(json());
